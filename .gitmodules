@@ -1,0 +1,6 @@
+[submodule "packages/lynx-stack"]
+	path = packages/lynx-stack
+	url = https://github.com/bitcode-framework/lynx-stack.git
+[submodule "packages/expr-js"]
+	path = packages/expr-js
+	url = https://github.com/bitcode-framework/expr-js.git
