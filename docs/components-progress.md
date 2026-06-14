@@ -4,82 +4,116 @@
 > berubah status. Untuk *kenapa* dan *arsitektur*, baca [ADR](./adr/README.md).
 > Untuk *bagaimana spec engine*, baca `engine/docs/features/*.md`.
 
-**Last updated:** 2026-06-14
+**Last updated:** 2026-06-14 (post-ADR-006)
+
+## Major Architecture Update (ADR-006)
+
+**ADR-006 Universal Component Strategy** mengubah model tier komponen:
+
+- **2 tier baru:** Pure (1 source Mitosis) vs Adapt (web + native impl, kontrak sama).
+- **Semua komponen wajib jalan di 4 target:** Stencil (legacy frozen), React, Vue, React Native.
+- **Tidak ada lagi "Tier 3 platform-only"** — semua komponen wajib universal di caller side.
+- **Phase 0 spike** wajib selesai sebelum P0 ekspansi (lihat section "Phase 0" di bawah).
+
+Lihat [ADR-006](./adr/006-universal-component-strategy.md) untuk detail lengkap.
 
 ## Ringkasan
 
 | Bucket | Total Target | Stencil ✅ | Mitosis ✅ | Contract ✅ | A11y ✅ | Done (semua) |
 |---|---|---|---|---|---|---|
-| **P0 (ERP-Critical)** | 20 | 13 | 8 | 0 | 0 | 0 |
-| **P1 (High Value)** | ~45 | ~40 | ~25 | 0 | 0 | 0 |
-| **P2 (Polish)** | ~25 | 14 | 4 | 0 | 0 | 0 |
-| **Tier 2/3 net-new** | ~20 | 0 | 0 | 0 | 0 | 0 |
-| **Total** | ~110 | 127* | 59 | 0 | 0 | 0 |
+| **Phase 0 (Spike & Cleanup)** | 6 tasks | – | – | – | – | 0 |
+| **P0 (ERP-Critical)** | 22 | 13 | 14 | 0 | 0 | 0 |
+| **P1 (High Value)** | ~58 | ~40 | ~25 | 0 | 0 | 0 |
+| **P2 (Polish)** | ~29 | 14 | 4 | 0 | 0 | 0 |
+| **Total komponen visual** | ~110 | 127* | 59 | 0 | 0 | 0 |
 
-\* 127 Stencil = 128 folder, beberapa overlap target / akan disatukan saat porting.
+\* 127 Stencil = 128 folder, beberapa overlap target / akan disatukan saat porting. Stencil **frozen** post-ADR-006 (tidak dapat fitur baru).
 
 ## Status Legend
 
-- **Stencil** = ada di `packages/components/src/components/` (legacy, working)
-- **Mitosis** = ada di `packages/ui/src/components/` sebagai `.lite.tsx`
-- **Contract** = sesuai Section 4 ADR-002 (Field/DataView/Overlay contract penuh)
-- **A11y** = aria roles + keyboard nav + focus management diverifikasi
-- **Done** = semua kolom di atas ✅ + Tier A pass + token-based styling
+- **Tier (Pure/Adapt)** = klasifikasi implementasi per ADR-006 Section 2 (Pure = 1 source `.lite.tsx`, Adapt = `.web.tsx` + `.native.tsx` manual)
+- **Stencil** = ada di `packages/components/src/components/` (legacy, frozen post-ADR-006)
+- **Mitosis** = ada di `packages/ui/src/components/` sebagai `.lite.tsx` (Pure) atau `.web.tsx`+`.native.tsx` (Adapt)
+- **Contract** = `BcXxx.contract.ts` ada + sesuai Section 4 ADR-002 (Field/DataView/Overlay) + ADR-006 Section 5
+- **A11y** = aria roles + keyboard nav (web) + screen reader test (web+mobile) + touch target ≥44px
+- **Done** = semua kolom ✅ + 4-target build pass + token-based + smoke test pass per ADR-006 Section 5 DoD
 - `–` = tidak applicable
 - `?` = belum diaudit
 
 ## Aturan Update
 
 1. Komponen baru selesai → ubah baris di tabel + update Ringkasan.
-2. **Jangan tandai Done sebelum semua sub-cell ✅.**
-3. Status Stencil/Mitosis = "ada filenya". Status Contract/A11y = "sudah diverifikasi sesuai ADR".
-4. Kalau komponen di-rename / di-merge → tambah catatan di kolom Notes, jangan hapus baris.
+2. **Jangan tandai Done sebelum semua sub-cell ✅** sesuai ADR-006 Section 5 DoD.
+3. Status Mitosis = "ada filenya" (`.lite.tsx` untuk Pure, `.web.tsx`+`.native.tsx` untuk Adapt).
+4. Status Contract/A11y = "sudah diverifikasi sesuai ADR-002 + ADR-006".
+5. Kalau komponen di-rename / di-merge → tambah catatan di kolom Notes, jangan hapus baris.
 
 ---
 
-## Next 5 to Build (rekomendasi urutan eksekusi)
+## Phase 0 — Spike & Cleanup (PREREQUISITE)
 
-Berdasarkan ADR-003 Section 5 (Build Sequence) + dependency:
+**Wajib selesai sebelum ekspansi ke P0** (per ADR-006 Section 6).
 
-1. **Fondasi token + contract** (ADR-002 Phase 0–2) — bukan komponen, tapi prasyarat.
-2. **BcSlot + BcPortal + BcVisuallyHidden** (P0 fondasi a11y) — dipakai semua overlay.
-3. **BcStack family (Stack/XStack/YStack/Box)** (P0 fondasi layout) — dipakai banyak komponen lain.
-4. **BcForm + BcList** (P0 view inti) — jantung low-code ERP.
-5. **BcDataTable upgrade** (P0, ADR-003 Section 4) — gold standard grid.
+| # | Task | Status | Notes |
+|---|---|---|---|
+| 1 | Drop Lynx artifacts (`output/lynx/`, `scripts/lynx-*.mjs`, `demos/lynx-app/`) | ❌ | Update ADR-001 §15 superseded |
+| 2 | Auto-generate token pipeline (`scripts/generate-tokens.mjs`) | ❌ | Replace hardcoded `nativewind.preset.cjs` |
+| 3 | Tambah RN target ke Mitosis (`mitosis.config.js` + `package.json` exports) | ❌ | Verify NativeWind className output |
+| 4 | Build resolver setup (Vite `.web.tsx` + Metro `.native.tsx`) | ❌ | Demo Vite + RN demo |
+| 5 | PoC Pure component (BcStack atau BcBadge) jalan di 4 target | ❌ | Validates Mitosis RN pipeline |
+| 6 | PoC Adapt component (BcPopover atau BcDrawer) di-resolve correctly | ❌ | Validates dual-impl pattern |
 
-Setelah 5 ini selesai, baru lanjut P0 standalone (Steps, Accordion, Drawer, dll).
+**Acceptance gate Phase 0:** Semua 6 task done + ADR-006 di-update dengan temuan konkret (replace "estimasi" jadi "verified") + ADR-006 di-promote dari "Proposed pending spike" jadi "Accepted".
+
+---
+
+## Next 5 to Build (rekomendasi urutan eksekusi POST-Phase-0)
+
+Setelah Phase 0 done, urutan build P0:
+
+1. **BcSlot + BcPortal + BcVisuallyHidden** (P0 fondasi a11y, Pure) — dipakai semua overlay.
+2. **BcStack family (Stack/XStack/YStack/Box)** (P0 fondasi layout, Pure) — dipakai banyak komponen lain.
+3. **BcBackdrop + BcLoadingOverlay + BcToastQueue** (P0 fondasi feedback, mostly Pure).
+4. **BcForm + BcList** (P0 view inti, Pure with adapt sub-component) — jantung low-code ERP.
+5. **BcDataTable upgrade** (P0, ADR-003 Section 4, **Adapt** — web grid vs MobileList) — gold standard grid.
+
+Setelah 5 ini selesai, baru lanjut P0 standalone (Steps, Accordion, Drawer, ContextMenu, dll — campuran Pure/Adapt).
 
 ---
 
 ## P0 — ERP-Critical (Wajib Enterprise Grade)
 
-| # | Component | Group | Stencil | Mitosis | Contract | A11y | Done | Notes |
-|---|---|---|---|---|---|---|---|---|
-| 1 | BcForm | views | ✅ `bc-view-form` | ❌ | ❌ | ❌ | ❌ | Jantung low-code |
-| 2 | BcList | views | ✅ `bc-view-list` | ❌ | ❌ | ❌ | ❌ | Migrate dari Stencil |
-| 3 | BcDataTable | views | ✅ `bc-datatable` | ✅ `data/datatable` | ❌ | ❌ | ❌ | Upgrade ke spec ADR-003 §4 |
-| 4 | BcDescriptions | data-display | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
-| 5 | BcSteps / BcStepper | navigation | ❌ | ✅ `navigation/steps` | ❌ | ❌ | ❌ | Net-new |
-| 6 | BcAccordion / BcCollapse | layout | ❌ | ✅ `layout/accordion` | ❌ | ❌ | ❌ | Net-new |
-| 7 | BcContextMenu | overlays | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
-| 8 | BcSplitter | layout | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
-| 9 | BcDrawer | overlays | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
-| 10 | BcTransfer | forms | ❌ | ✅ `forms/transfer` | ❌ | ❌ | ❌ | Net-new |
-| 11 | BcCascader | forms | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
-| 12 | BcTreeSelect | forms | ❌ | ✅ `forms/treeselect` | ❌ | ❌ | ❌ | Net-new |
-| 13 | BcStatistic | data-display | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
-| 14 | BcEmpty | feedback | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
-| 15 | BcResult | feedback | ❌ | ✅ `feedback/result` | ❌ | ❌ | ❌ | Net-new |
-| 16 | BcOtp / BcPin | forms | ❌ | ✅ `forms/otp` | ❌ | ❌ | ❌ | Net-new |
-| 17 | **BcSlot** | primitives | ❌ | ❌ | ❌ | – | ❌ | **NEW from Tier 2/3 — fondasi** |
-| 18 | **BcPortal** | primitives | ❌ | ❌ | ❌ | – | ❌ | **NEW** |
-| 19 | **BcVisuallyHidden** | primitives | ❌ | ❌ | ❌ | ✅* | ❌ | **NEW** *(by definition)* |
-| 20 | **BcStack family** (Stack/XStack/YStack/Box) | primitives | ❌ | ❌ | ❌ | – | ❌ | **NEW** |
-| 21 | **BcBackdrop / BcLoadingOverlay** | feedback | ❌ | ❌ | ❌ | ❌ | ❌ | **NEW** |
-| 22 | **BcToastQueue** (Sonner-style) | overlays | ❌ | ❌ | ❌ | ❌ | ❌ | **NEW** — beda dari `overlays/toast` tunggal |
+Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal — boleh berubah saat implementasi kalau ternyata Pure tidak feasible.
 
-**P0 status:** 13/22 ada di Stencil, 14/22 ada di Mitosis (sebagai `.lite.tsx` skeleton),
-0/22 verified Done. **Fondasi (#17–#22) belum dimulai.**
+| # | Component | Group | Tier | Stencil | Mitosis | Contract | A11y | Done | Notes |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | BcForm | views | P+A* | ✅ `bc-view-form` | ❌ | ❌ | ❌ | ❌ | Jantung low-code; `*` sub-component picker mungkin Adapt |
+| 2 | BcList | views | P | ✅ `bc-view-list` | ❌ | ❌ | ❌ | ❌ | Migrate dari Stencil |
+| 3 | BcDataTable | views | **A** | ✅ `bc-datatable` | ✅ `data/datatable` | ❌ | ❌ | ❌ | Upgrade ke spec ADR-003 §4; mobile = MobileList variant |
+| 4 | BcDescriptions | data-display | P | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
+| 5 | BcSteps / BcStepper | navigation | P | ❌ | ✅ `navigation/steps` | ❌ | ❌ | ❌ | Net-new |
+| 6 | BcAccordion / BcCollapse | layout | P | ❌ | ✅ `layout/accordion` | ❌ | ❌ | ❌ | Net-new |
+| 7 | BcContextMenu | overlays | **A** | ❌ | ✅ | ❌ | ❌ | ❌ | Right-click web vs long-press actionsheet mobile |
+| 8 | BcSplitter | layout | **A** | ❌ | ✅ | ❌ | ❌ | ❌ | Drag-resize web vs stacked-collapse mobile |
+| 9 | BcDrawer | overlays | **A** | ❌ | ✅ | ❌ | ❌ | ❌ | Slide panel web vs sheet mobile |
+| 10 | BcTransfer | forms | P | ❌ | ✅ `forms/transfer` | ❌ | ❌ | ❌ | Net-new |
+| 11 | BcCascader | forms | **A** | ❌ | ✅ | ❌ | ❌ | ❌ | Dropdown web vs picker mobile |
+| 12 | BcTreeSelect | forms | **A** | ❌ | ✅ `forms/treeselect` | ❌ | ❌ | ❌ | Dropdown web vs sheet mobile |
+| 13 | BcStatistic | data-display | P | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
+| 14 | BcEmpty | feedback | P | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
+| 15 | BcResult | feedback | P | ❌ | ✅ `feedback/result` | ❌ | ❌ | ❌ | Net-new |
+| 16 | BcOtp / BcPin | forms | P | ❌ | ✅ `forms/otp` | ❌ | ❌ | ❌ | Net-new |
+| 17 | **BcSlot** | primitives | P | ❌ | ❌ | ❌ | – | ❌ | **NEW Tier 2/3 — fondasi** |
+| 18 | **BcPortal** | primitives | **A** | ❌ | ❌ | ❌ | – | ❌ | **NEW** Web `createPortal` vs RN `Modal`/`Portal` |
+| 19 | **BcVisuallyHidden** | primitives | P | ❌ | ❌ | ❌ | ✅* | ❌ | **NEW** *(a11y by definition)* |
+| 20 | **BcStack family** (Stack/XStack/YStack/Box) | primitives | P | ❌ | ❌ | ❌ | – | ❌ | **NEW** — kandidat PoC Pure Phase 0 |
+| 21 | **BcBackdrop / BcLoadingOverlay** | feedback | P | ❌ | ❌ | ❌ | ❌ | ❌ | **NEW** |
+| 22 | **BcToastQueue** (Sonner-style) | overlays | P | ❌ | ❌ | ❌ | ❌ | ❌ | **NEW** — beda dari `overlays/toast` tunggal |
+
+**P0 Tier breakdown (estimasi):** 14 Pure + 7 Adapt + 1 Hybrid (BcForm).
+
+**P0 status:** 13/22 ada di Stencil (legacy frozen), 14/22 ada di Mitosis (skeleton `.lite.tsx`),
+0/22 verified Done. **Fondasi (#17–#22) belum dimulai.** **Phase 0 spike belum mulai.**
 
 ---
 
@@ -233,18 +267,21 @@ Bukan komponen visual. Tracker ini hanya untuk awareness.
 
 ---
 
-## Foundation Phases (ADR-002 Section 8)
+## Foundation Phases (ADR-002 Section 8 + ADR-006 Section 6)
 
 Bukan komponen, tapi prasyarat. Tracker ringkas:
 
 | Phase | Status | Notes |
 |---|---|---|
-| Phase 0 — Spike Token + Contract | ❌ | Belum ada bukti spike |
-| Phase 1 — Fondasi (token, contract, exports) | ❌ | — |
-| Phase 2 — Perbaiki komponen rusak | ❌ | — |
-| Phase 3 — Migrasi Views (jantung ERP) | ❌ | — |
-| Phase 4 — Komponen enterprise baru (ADR-003) | ❌ | Sebagian Mitosis sudah ada skeleton |
-| Phase 5 — Tier B/C (Tamagui/gluestack/Flutter) | ❌ | Tunda |
+| **Phase 0 (ADR-006)** — Spike & Cleanup | ❌ | **Active — see "Phase 0" section above** |
+| Phase 1 — Fondasi (token auto-gen, contract template, exports map) | ❌ | Sebagian setup ada (`tokens/*`), butuh auto-gen pipeline |
+| Phase 2 — Perbaiki komponen rusak (BcDataTable, BcInput refactor, BcSelect a11y) | ❌ | Per ADR-002 Section 6 Findings Register |
+| Phase 3 — P0 Fondasi a11y/layout (#17-22 di tabel P0) | ❌ | Pasca Phase 0 spike sukses |
+| Phase 4 — P0 Views (BcForm, BcList) + DataTable upgrade | ❌ | Jantung ERP |
+| Phase 5 — P0 sisanya (Steps, Drawer, ContextMenu, Cascader, dll) | ❌ | — |
+| Phase 6 — P1 ekspansi | ❌ | Setelah P0 stabil |
+| Phase 7 — P2 polish | ❌ | Opsional, after P1 |
+| Phase 8 — Tier B/C (Tamagui/gluestack/Flutter codegen) | ❌ | Per ADR-002, tetap ditunda |
 
 ---
 
