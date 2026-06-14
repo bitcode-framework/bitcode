@@ -87,7 +87,7 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 
 | # | Component | Group | Tier | Stencil | Mitosis | Contract | A11y | Done | Notes |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | BcForm | views | P+A* | ✅ `bc-view-form` | ❌ | ❌ | ❌ | ❌ | Jantung low-code; `*` sub-component picker mungkin Adapt |
+| 1 | BcForm | views | P+A* | ✅ `bc-view-form` | ✅ `views/form` | ❌ | ❌ | ❌ | Reactive engine (ADR-004 Level 1) terintegrasi opt-in via `reactions` prop; `*` sub-component picker mungkin Adapt |
 | 2 | BcList | views | P | ✅ `bc-view-list` | ❌ | ❌ | ❌ | ❌ | Migrate dari Stencil |
 | 3 | BcDataTable | views | **A** | ✅ `bc-datatable` | ✅ `data/datatable` | ❌ | ❌ | ❌ | Upgrade ke spec ADR-003 §4; mobile = MobileList variant |
 | 4 | BcDescriptions | data-display | P | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
@@ -266,6 +266,8 @@ Bukan komponen visual. Tracker ini hanya untuk awareness.
 | `core/adapt/` contract | ⚠️ | `AdaptProps` + `isPlatformCondition` + canonical breakpoints. Implementasi runtime (Popover→Sheet) belum. |
 
 > **Update 2026-06-14 — Fase A done.** Cross-tier infrastructure (ADR-002 §9) skeleton landed in `packages/ui/src/core/{providers,hooks,animation,adapt}/` with unit-test coverage. Adoption into 22 P0 components is the next gate.
+
+> **Update 2026-06-14 — Fase B done (partial).** Reactive engine (ADR-004) gained scope resolution (`$self`/`$parent`/`$root`/`$index`), `Evaluator` plug-in interface (Phase E slot), `BcReactiveScope` Level 2 wrapper, and **opt-in integration into `BcForm`** (`reactions` + `onReactiveChange` props). 10 new tests pass on top of the existing 6. Repeater (Phase B per ADR-004) and BitCode JSON feed (Phase D) remain pending.
 
 ---
 
