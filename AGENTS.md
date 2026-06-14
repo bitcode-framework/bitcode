@@ -10,6 +10,8 @@ Read these docs **before** making any changes:
 | [`docs/codebase.md`](docs/codebase.md) | Full file map with one-line descriptions per file | When you need to find where something lives |
 | [`docs/features.md`](docs/features.md) | Feature inventory (67 features), status, gaps, roadmap | When planning work or understanding what exists vs what's missing |
 | [`engine/docs/features/`](engine/docs/features/) | Per-feature deep docs (models, APIs, processes, views, etc.) | When working on a specific engine feature |
+| [`docs/adr/README.md`](docs/adr/README.md) | ADR index — daftar 5 ADR (Mitosis compiler, cross-platform arch, component roadmap, reactive engine, metadata-driven UI) | When asking *why* a UI architectural decision was made, or before adding a new ADR |
+| [`docs/components-progress.md`](docs/components-progress.md) | Component progress tracker — Stencil/Mitosis/Contract/A11y status per component (P0/P1/P2) | When asking *which UI components are done* or planning next component to build |
 
 ## Project Overview
 
