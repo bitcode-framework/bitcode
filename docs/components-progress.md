@@ -103,17 +103,18 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 | 14 | BcEmpty | feedback | P | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
 | 15 | BcResult | feedback | P | ❌ | ✅ `feedback/result` | ❌ | ❌ | ❌ | Net-new |
 | 16 | BcOtp / BcPin | forms | P | ❌ | ✅ `forms/otp` | ❌ | ❌ | ❌ | Net-new |
-| 17 | **BcSlot** | primitives | P | ❌ | ❌ | ❌ | – | ❌ | **NEW Tier 2/3 — fondasi** |
-| 18 | **BcPortal** | primitives | **A** | ❌ | ❌ | ❌ | – | ❌ | **NEW** Web `createPortal` vs RN `Modal`/`Portal` |
-| 19 | **BcVisuallyHidden** | primitives | P | ❌ | ❌ | ❌ | ✅* | ❌ | **NEW** *(a11y by definition)* |
-| 20 | **BcStack family** (Stack/XStack/YStack/Box) | primitives | P | ❌ | ❌ | ❌ | – | ❌ | **NEW** — kandidat PoC Pure Phase 0 |
-| 21 | **BcBackdrop / BcLoadingOverlay** | feedback | P | ❌ | ❌ | ❌ | ❌ | ❌ | **NEW** |
-| 22 | **BcToastQueue** (Sonner-style) | overlays | P | ❌ | ❌ | ❌ | ❌ | ❌ | **NEW** — beda dari `overlays/toast` tunggal |
+| 17 | **BcSlot** | primitives | P | ❌ | ✅ `primitives/slot` | ✅ | – | ⚠️ | Composition primitive; `display:contents` wrapper, source-level tests pass |
+| 18 | **BcPortal** | primitives | **A** | ❌ | ✅ `primitives/portal` | ✅ | – | ⚠️ | Adapt: web `createPortal` (SSR-safe + Esc → onRequestClose), native `Modal`; 11/11 contract tests pass |
+| 19 | **BcVisuallyHidden** | primitives | P | ❌ | ✅ `primitives/visually-hidden` | ✅ | ✅ | ⚠️ | sr-only utility, focus-restore variant, no `aria-hidden` (kept in a11y tree) |
+| 20 | **BcStack family** (Stack/XStack/YStack/Box) | primitives | P | ❌ | ⚠️ `BcStack` only | ✅ `BcStack` | – | ⚠️ | BcStack PoC done (Phase 0); XStack/YStack/Box belum |
+| 21 | **BcBackdrop / BcLoadingOverlay** | feedback | P | ❌ | ✅ `feedback/{backdrop,loading-overlay}` | ✅ | ✅ | ⚠️ | Backdrop: dim layer + dismissable + reduced-motion; LoadingOverlay: aria-busy + role=status + sr-only label |
+| 22 | **BcToastQueue** (Sonner-style) | overlays | P | ❌ | ❌ | ❌ | ❌ | ❌ | **Pending** — depends on existing `overlays/toast` consolidation |
 
 **P0 Tier breakdown (estimasi):** 14 Pure + 7 Adapt + 1 Hybrid (BcForm).
 
-**P0 status:** 13/22 ada di Stencil (legacy frozen), 14/22 ada di Mitosis (skeleton `.lite.tsx`),
-0/22 verified Done. **Fondasi (#17–#22) belum dimulai.** **Phase 0 spike belum mulai.**
+**P0 status:** 13/22 ada di Stencil (legacy frozen), 19/22 ada di Mitosis (skeleton + 5 fondasi baru), 5/22 contract+a11y verified, 0/22 verified Done (DoD §5 butuh Mitosis build smoke + e2e). **Fondasi 5/6 (#17–#19, #21) selesai source+contract+test.** Sisa fondasi: BcStack family ekstension (#20) + BcToastQueue (#22).
+
+> **Update 2026-06-14 — Fase C batch 1.** Five missing P0 primitives landed source-side: BcSlot, BcPortal (Adapt), BcVisuallyHidden, BcBackdrop, BcLoadingOverlay. 38 new source-level contract tests pass (no Mitosis-build dependency). Each follows the BcStack/BcPopover convention: `BcXxx.contract.ts` + `BcXxx.lite.tsx` (Pure) or `BcXxx.{web,native}.tsx` + `index.ts` (Adapt) + `BcXxx.test.ts`. Tokens drift check passes.
 
 ---
 
