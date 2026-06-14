@@ -90,18 +90,18 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 | 1 | BcForm | views | P+A* | ✅ `bc-view-form` | ✅ `views/form` | ❌ | ❌ | ❌ | Reactive engine (ADR-004 Level 1) terintegrasi opt-in via `reactions` prop; `*` sub-component picker mungkin Adapt |
 | 2 | BcList | views | P | ✅ `bc-view-list` | ❌ | ❌ | ❌ | ❌ | Migrate dari Stencil |
 | 3 | BcDataTable | views | **A** | ✅ `bc-datatable` | ✅ `data/datatable` | ❌ | ❌ | ❌ | Upgrade ke spec ADR-003 §4; mobile = MobileList variant |
-| 4 | BcDescriptions | data-display | P | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
-| 5 | BcSteps / BcStepper | navigation | P | ❌ | ✅ `navigation/steps` | ❌ | ❌ | ❌ | Net-new |
-| 6 | BcAccordion / BcCollapse | layout | P | ❌ | ✅ `layout/accordion` | ❌ | ❌ | ❌ | Net-new |
+| 4 | BcDescriptions | data-display | P | ❌ | ✅ `data-display/descriptions` | ✅ | ⚠️ | ⚠️ | grid layout, span per item, em-dash placeholder; source-level tests pass |
+| 5 | BcSteps / BcStepper | navigation | P | ❌ | ✅ `navigation/steps` | ✅ | ✅ | ⚠️ | aria-current=step on active marker, clickable gate, token-driven colors |
+| 6 | BcAccordion / BcCollapse | layout | P | ❌ | ✅ `layout/accordion` | ✅ | ✅ | ⚠️ | aria-expanded reflects open, single/multi-expand, chevron rotates with transition |
 | 7 | BcContextMenu | overlays | **A** | ❌ | ✅ | ❌ | ❌ | ❌ | Right-click web vs long-press actionsheet mobile |
 | 8 | BcSplitter | layout | **A** | ❌ | ✅ | ❌ | ❌ | ❌ | Drag-resize web vs stacked-collapse mobile |
 | 9 | BcDrawer | overlays | **A** | ❌ | ✅ | ❌ | ❌ | ❌ | Slide panel web vs sheet mobile |
 | 10 | BcTransfer | forms | P | ❌ | ✅ `forms/transfer` | ❌ | ❌ | ❌ | Net-new |
 | 11 | BcCascader | forms | **A** | ❌ | ✅ | ❌ | ❌ | ❌ | Dropdown web vs picker mobile |
 | 12 | BcTreeSelect | forms | **A** | ❌ | ✅ `forms/treeselect` | ❌ | ❌ | ❌ | Dropdown web vs sheet mobile |
-| 13 | BcStatistic | data-display | P | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
-| 14 | BcEmpty | feedback | P | ❌ | ✅ | ❌ | ❌ | ❌ | Net-new |
-| 15 | BcResult | feedback | P | ❌ | ✅ `feedback/result` | ❌ | ❌ | ❌ | Net-new |
+| 13 | BcStatistic | data-display | P | ❌ | ✅ `data-display/statistic` | ✅ | ⚠️ | ⚠️ | trend coloring via semantic tokens, tabular-nums, decorative arrows aria-hidden |
+| 14 | BcEmpty | feedback | P | ❌ | ✅ `feedback/empty` | ✅ | ✅ | ⚠️ | default SVG illustration + icon override, decorative visuals aria-hidden, action <Slot /> |
+| 15 | BcResult | feedback | P | ❌ | ✅ `feedback/result` | ✅ | ✅ | ⚠️ | 7 status variants (success/error/warning/info/404/403/500), semantic token colors, action <Slot /> |
 | 16 | BcOtp / BcPin | forms | P | ❌ | ✅ `forms/otp` | ❌ | ❌ | ❌ | Net-new |
 | 17 | **BcSlot** | primitives | P | ❌ | ✅ `primitives/slot` | ✅ | – | ⚠️ | Composition primitive; `display:contents` wrapper, source-level tests pass |
 | 18 | **BcPortal** | primitives | **A** | ❌ | ✅ `primitives/portal` | ✅ | – | ⚠️ | Adapt: web `createPortal` (SSR-safe + Esc → onRequestClose), native `Modal`; 11/11 contract tests pass |
@@ -115,6 +115,8 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 **P0 status:** 13/22 ada di Stencil (legacy frozen), 19/22 ada di Mitosis (skeleton + 5 fondasi baru), 5/22 contract+a11y verified, 0/22 verified Done (DoD §5 butuh Mitosis build smoke + e2e). **Fondasi 5/6 (#17–#19, #21) selesai source+contract+test.** Sisa fondasi: BcStack family ekstension (#20) + BcToastQueue (#22).
 
 > **Update 2026-06-14 — Fase C batch 1.** Five missing P0 primitives landed source-side: BcSlot, BcPortal (Adapt), BcVisuallyHidden, BcBackdrop, BcLoadingOverlay. 38 new source-level contract tests pass (no Mitosis-build dependency). Each follows the BcStack/BcPopover convention: `BcXxx.contract.ts` + `BcXxx.lite.tsx` (Pure) or `BcXxx.{web,native}.tsx` + `index.ts` (Adapt) + `BcXxx.test.ts`. Tokens drift check passes.
+
+> **Update 2026-06-14 — Fase C batch 2.** Six existing P0 skeletons gained `BcXxx.contract.ts` + source-level `BcXxx.test.ts` without source rewrites: BcDescriptions (#4), BcSteps (#5), BcAccordion (#6), BcStatistic (#13), BcEmpty (#14), BcResult (#15). +46 source-level tests pass — verifying token-only colors, aria attributes, semantic state markers, and contract surface. Total cumulative: **136 pass / 11 fail** (the 11 failing tests remain the pre-existing BcStack output-level checks awaiting `npm run build`).
 
 ---
 
