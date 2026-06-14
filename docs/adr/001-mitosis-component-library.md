@@ -451,7 +451,13 @@ export function reactAttributePlugin() {
 
 ### 15. Lynx (ReactLynx) — Native Mobile Target Only
 
-**Status: Phase Candidate (generator smoke-verified 2026-06-05)**
+**Status: ⛔ SUPERSEDED by [ADR-006](./006-universal-component-strategy.md) (2026-06-14)**
+
+> **Lynx target dropped.** Mobile sekarang ditangani oleh React Native via NativeWind
+> sebagai inti Tier A (lihat ADR-006 §6). Artifacts Lynx (`output/lynx/`,
+> `scripts/lynx-generator.mjs`, `scripts/generate-lynx.mjs`, `demos/lynx-app/`) sudah
+> dibersihkan. Section di bawah dipertahankan sebagai **historical record** untuk
+> menjelaskan kenapa Lynx dipertimbangkan dan kenapa akhirnya tidak dipakai.
 
 [Lynx](https://lynxjs.org/) adalah cross-platform native rendering engine dari ByteDance (TikTok). Production-proven dengan 2B+ users.
 
@@ -504,6 +510,18 @@ export function reactAttributePlugin() {
 - Lynx target **bukan priority** — focus web (React, Vue, Stencil) dulu
 - Kalau butuh mobile, React Native target sudah tersedia di Mitosis
 - Lynx target sebagai **Phase 8** (future) — setelah Flutter generator
+
+**Update 2026-06-14 (ADR-006):** Lynx track ditutup. Visi "satu library, jalan di
+web + desktop + mobile" dipenuhi dengan **React Native + NativeWind** sebagai inti
+Tier A (bersama React + Vue + Stencil), bukan via target tambahan Lynx. Alasan:
+
+- React Native + NativeWind sudah memberi Tailwind-driven mobile UI tanpa generator custom.
+- Maintenance dua mobile-stack (Lynx + RN) tidak proporsional untuk tim ukuran sekarang.
+- Lynx web renderer masih tidak layak (lihat di atas) → tidak menambah nilai untuk Tauri/web.
+- ADR-006 fokus ke "Single Caller API" cross-platform; Lynx menambah complexity tanpa
+  benefit yang setimpal di luar use-case TikTok-style native shell.
+
+Lihat **[ADR-006 §6 (Cleanup Tasks)](./006-universal-component-strategy.md#section-6--cleanup-tasks-phase-0)** untuk daftar artifact yang dihapus.
 
 ## Consequences
 

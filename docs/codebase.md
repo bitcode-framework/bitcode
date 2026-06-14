@@ -20,6 +20,7 @@ bitcode/
 ├── engine/                                     # Go runtime (the core)
 ├── packages/                                   # Shared libraries
 │   ├── components/                             # Stencil Web Components
+│   ├── ui/                                     # Mitosis cross-framework UI library (React/Vue/Stencil; React Native via ADR-006 Phase 0)
 │   ├── go-json/                                # go-json — JSON/JSONC programming language engine (Go)
 │   ├── go-json-runtimes/                       # Script runtime engines for go-json (separate go.mod)
 │   └── tauri/                                  # Tauri native shell (desktop + mobile)
@@ -339,6 +340,37 @@ engine/
 
 Stencil.js Web Component library (`@bitcode/components`).
 
+---
+
+## Packages / UI PoC (`packages/ui/`)
+
+Cross-framework BitCode UI proof-of-concept using Mitosis source components and per-target demos.
+
+```
+packages/ui/
+├── package.json                                # @bitcode/ui (Mitosis-driven cross-framework UI library)
+├── mitosis.config.js                           # Targets: stencil, react, vue (react-native added in Phase 0 per ADR-006)
+├── tokens/                                     # Design tokens (theme.css = source of truth)
+│   ├── theme.css                               #   --bc-* HSL channel variables (light + .dark)
+│   ├── tailwind.preset.cjs                     #   Tailwind v3 preset (auto-generated in Phase 0)
+│   ├── tailwind.theme.css                      #   Tailwind v4 @theme inline (auto-generated in Phase 0)
+│   └── nativewind.preset.cjs                   #   NativeWind preset for React Native (auto-generated in Phase 0)
+├── src/
+│   ├── core/                                   # Reactive store, registry, context, data-source, types
+│   ├── components/                             # 65 Mitosis .lite.tsx components across 11 groups
+│   └── themes/default.css                      # Default theme bundle
+├── scripts/                                    # Build helpers (dev, fix-react-output, generate-index/registry)
+├── output/                                     # Generated targets (gitignored — produced by mitosis build)
+└── demos/
+    └── react-app/                              # Vite + React playground that consumes all components
+                                                # (RN/Tauri demos to be added in Phase 0)
+```
+
+> Lynx target (formerly ADR-001 §15) was dropped per ADR-006. Mobile is now React
+> Native + NativeWind, sharing the same Mitosis pipeline as React/Vue.
+
+---
+
 ```
 packages/components/
 ├── package.json                                # @bitcode/components v0.1.0
@@ -357,6 +389,10 @@ packages/components/
     │   ├── bc-setup.ts                         # BcSetup singleton — global config (auth, headers, theme, RTL, validators, reactivity rules). setTheme/getTheme/onThemeChange/setRtl/isRtl
     │   ├── bc-native.ts                        # BcNative — bridge abstraction for native capabilities (camera, GPS, SQLite, barcode, biometrics). Detects Tauri vs browser.
     │   ├── bc-native.spec.ts                   # BcNative tests (10 tests — environment detection, browser fallbacks)
+    │   ├── code-editor-theme.ts                # Shared CodeMirror theme extensions — IDE-style syntax highlighting, gutters, caret, selection, and editor chrome tokens.
+    │   ├── chart-theme.ts                      # Pure chart theme patching helpers — resolves active theme, reads CSS vars, and applies text/axis/legend color defaults.
+    │   ├── chart-utils.ts                      # Shared ECharts bootstrap, option builders, and runtime theme sync for canvas chart text, axis, legend, and toolbox colors.
+    │   ├── chart-utils.spec.ts                 # Chart theming tests for title, axis, parallel-axis, and series label color patching.
     │   ├── offline-store.ts                    # OfflineStore — CRUD routing layer. SQLite for offline models, fetch() for online. Outbox recording.
     │   ├── offline-store.spec.ts               # OfflineStore tests (11 tests — routing, CRUD, outbox, table mapping)
     │   ├── data-fetcher.ts                     # 4-level data fetching (local, URL, event intercept, custom fetcher). Standalone — uses native fetch()
@@ -456,6 +492,17 @@ packages/components/
         │   ├── bc-view-tree/                   # Tree/hierarchy view
         │   ├── bc-view-report/                 # Report view
         │   └── bc-view-activity/               # Activity stream view
+        │
+        ├── kanban/                             # Enterprise kanban components (Trello/Jira-level)
+        │   ├── core/                           # Shared utilities
+        │   │   ├── kanban-types.ts             # 25+ interfaces (cards, columns, events, configs)
+        │   │   ├── kanban-data-fetcher.ts      # Shared 4-layer CRUD (kanbanFetch/Create/Update/Remove/Upload)
+        │   │   └── mention-parser.ts           # @mention parse/highlight/extract utilities
+        │   ├── bc-kanban-board/                # Main board — drag-drop, column CRUD, card detail panel, inline dialogs
+        │   ├── bc-kanban-card-subtasks/        # Checklist with progress bar, toggle/create/delete
+        │   ├── bc-kanban-card-comments/        # Comments with @mention dropdown, inline file attachments
+        │   ├── bc-kanban-card-attachments/     # File list with upload, thumbnails, delete
+        │   └── bc-kanban-card-activity/        # Timeline with relative time (read-only)
         │
         ├── charts/                             # Chart components (23 ECharts + 3 pure CSS)
         │   ├── bc-chart-line/                  # Line chart

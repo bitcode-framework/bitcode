@@ -56,7 +56,7 @@ Lihat [ADR-006](./adr/006-universal-component-strategy.md) untuk detail lengkap.
 
 | # | Task | Status | Notes |
 |---|---|---|---|
-| 1 | Drop Lynx artifacts (`output/lynx/`, `scripts/lynx-*.mjs`, `demos/lynx-app/`) | ❌ | Update ADR-001 §15 superseded |
+| 1 | Drop Lynx artifacts (`output/lynx/`, `scripts/lynx-*.mjs`, `demos/lynx-app/`) | ✅ | Artifacts already removed; ADR-001 §15 marked superseded by ADR-006 (2026-06-14) |
 | 2 | Auto-generate token pipeline (`scripts/generate-tokens.mjs`) | ❌ | Replace hardcoded `nativewind.preset.cjs` |
 | 3 | Tambah RN target ke Mitosis (`mitosis.config.js` + `package.json` exports) | ❌ | Verify NativeWind className output |
 | 4 | Build resolver setup (Vite `.web.tsx` + Metro `.native.tsx`) | ❌ | Demo Vite + RN demo |
