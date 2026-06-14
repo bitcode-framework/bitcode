@@ -259,11 +259,13 @@ Bukan komponen visual. Tracker ini hanya untuk awareness.
 
 | Item | Status | Notes |
 |---|---|---|
-| `core/providers/AppProvider` | ❌ | Theme/locale/RTL/messageQueue runtime |
-| `core/hooks/` subset P0 (8 hooks) | ❌ | useDisclosure, useControllableState, useId, useDebouncedValue, useClipboard, useMediaQuery, useFocusTrap, useElementSize |
+| `core/providers/AppProvider` | ⚠️ | `AppConfigStore` + `BcAppContext` + `attachSystemThemeWatcher` + Mitosis `.lite.tsx`. 9/9 unit test pass. Belum diadopsi komponen P0. |
+| `core/hooks/` subset P0 (8 hooks) | ⚠️ | Implementasi headless: `useId`/`useDisclosure`/`resolveControllable`/`DebouncedValue`/`copyToClipboard`/`createMediaQueryWatcher`/`createFocusTrap`/`createElementSizeObserver`. 13/13 unit test pass. Belum dipakai komponen P0. |
 | `core/hooks/` subset P1 (6 hooks) | ❌ | useHover, useFocusVisible, useEventListener, useThrottledCallback, useLocalStorage, useIsomorphicLayoutEffect |
-| `core/animation/` contract | ❌ | AnimationProps, reduced-motion handling |
-| `core/adapt/` contract | ❌ | Popover↔Sheet morphing |
+| `core/animation/` contract | ⚠️ | `AnimationProps` + `ANIMATION_DEFAULT` exported. Implementasi per-tier (CSS transition / RN Animated) belum. |
+| `core/adapt/` contract | ⚠️ | `AdaptProps` + `isPlatformCondition` + canonical breakpoints. Implementasi runtime (Popover→Sheet) belum. |
+
+> **Update 2026-06-14 — Fase A done.** Cross-tier infrastructure (ADR-002 §9) skeleton landed in `packages/ui/src/core/{providers,hooks,animation,adapt}/` with unit-test coverage. Adoption into 22 P0 components is the next gate.
 
 ---
 
