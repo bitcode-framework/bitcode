@@ -4,3 +4,6 @@
 [submodule "packages/expr-js"]
 	path = packages/expr-js
 	url = https://github.com/bitcode-framework/expr-js.git
+[submodule "packages/ui"]
+	path = packages/ui
+	url = https://github.com/bitcode-framework/ui.git
