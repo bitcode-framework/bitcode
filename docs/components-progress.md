@@ -59,9 +59,9 @@ Lihat [ADR-006](./adr/006-universal-component-strategy.md) untuk detail lengkap.
 | 1 | Drop Lynx artifacts (`output/lynx/`, `scripts/lynx-*.mjs`, `demos/lynx-app/`) | ✅ | Artifacts already removed; ADR-001 §15 marked superseded by ADR-006 (2026-06-14) |
 | 2 | Auto-generate token pipeline (`scripts/generate-tokens.mjs`) | ✅ | `tokens:generate` + `tokens:check` (CI guard); emits `tailwind.preset.cjs`, `tailwind.theme.css`, `nativewind.preset.cjs`, `tokens.ts` from `theme.css`. NativeWind preset now exposes 25 color keys (incl `info`) + dark palette via `__rawPalette.dark`. |
 | 3 | Tambah RN target ke Mitosis (`mitosis.config.js` + `package.json` exports) | ✅ | `targets:[stencil,react,vue,reactNative]`, `stylesType:'native-wind'`. Mitosis 0.13.1 NATIVE_WIND_STYLES_PLUGIN had `[object Object]` bug for dynamic class bindings — fixed via `patch-package` (`patches/@builder.io+mitosis+0.13.1.patch`). Verified: 65/65 RN outputs emit proper static `className="..."` or dynamic `className={\`tpl\`}`. Package exports `./native` + `react-native`/`nativewind` peerDeps added. |
-| 4 | Build resolver setup (Vite `.web.tsx` + Metro `.native.tsx`) | ❌ | Demo Vite + RN demo |
-| 5 | PoC Pure component (BcStack atau BcBadge) jalan di 4 target | ❌ | Validates Mitosis RN pipeline |
-| 6 | PoC Adapt component (BcPopover atau BcDrawer) di-resolve correctly | ❌ | Validates dual-impl pattern |
+| 4 | Build resolver setup (Vite `.web.tsx` + Metro `.native.tsx`) | ✅ | Vite `extensions:['.web.tsx',...]` configured. `demos/rn-app/scripts/resolver-check.mjs` replays both bundlers' algorithms — 3/3 PASS. |
+| 5 | PoC Pure component (BcStack atau BcBadge) jalan di 4 target | ✅ | BcStack authored. Mitosis emits 66/66 components × 4 targets. Contract tests 16/16 PASS (react/vue/reactNative/stencil). RN output uses `<View className={...}>`, no `[object Object]` regression. |
+| 6 | PoC Adapt component (BcPopover atau BcDrawer) di-resolve correctly | ✅ | `src/components/adapt-poc/popover/` with shared `BcPopover.contract.ts`, web (`<span>` + absolute positioning), native (`Modal` bottom sheet). Resolver smoke 3/3 PASS. Contract tests 8/8 PASS. |
 
 **Acceptance gate Phase 0:** Semua 6 task done + ADR-006 di-update dengan temuan konkret (replace "estimasi" jadi "verified") + ADR-006 di-promote dari "Proposed pending spike" jadi "Accepted".
 
