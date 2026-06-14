@@ -87,8 +87,8 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 
 | # | Component | Group | Tier | Stencil | Mitosis | Contract | A11y | Done | Notes |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | BcForm | views | P+A* | ✅ `bc-view-form` | ✅ `views/form` | ❌ | ❌ | ❌ | Reactive engine (ADR-004 Level 1) terintegrasi opt-in via `reactions` prop; `*` sub-component picker mungkin Adapt |
-| 2 | BcList | views | P | ✅ `bc-view-list` | ❌ | ❌ | ❌ | ❌ | Migrate dari Stencil |
+| 1 | BcForm | views | P+A* | ✅ `bc-view-form` | ✅ `views/form` | ✅ | ⚠️ | ⚠️ | Reactive engine ADR-004 Level 1 opt-in via `reactions` prop. Validation: required + min/max + email + pattern (silent invalid-pattern fallback). Render gates on meta.visible/disabled/required. 14 source-level tests pass. |
+| 2 | BcList | views | P | ✅ `bc-view-list` | ✅ `views/list` | ✅ | ✅ | ⚠️ | 4-layer DataSource integration with idle/loading/error/empty/ready states. Custom renderItem slot. Pagination with disabled boundary + a11y labels. 14 source-level tests pass. |
 | 3 | BcDataTable | views | **A** | ✅ `bc-datatable` | ✅ `data/datatable` | ❌ | ❌ | ❌ | Upgrade ke spec ADR-003 §4; mobile = MobileList variant |
 | 4 | BcDescriptions | data-display | P | ❌ | ✅ `data-display/descriptions` | ✅ | ⚠️ | ⚠️ | grid layout, span per item, em-dash placeholder; source-level tests pass |
 | 5 | BcSteps / BcStepper | navigation | P | ❌ | ✅ `navigation/steps` | ✅ | ✅ | ⚠️ | aria-current=step on active marker, clickable gate, token-driven colors |
@@ -119,6 +119,8 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 > **Update 2026-06-14 — Fase C batch 2.** Six existing P0 skeletons gained `BcXxx.contract.ts` + source-level `BcXxx.test.ts` without source rewrites: BcDescriptions (#4), BcSteps (#5), BcAccordion (#6), BcStatistic (#13), BcEmpty (#14), BcResult (#15). +46 source-level tests pass — verifying token-only colors, aria attributes, semantic state markers, and contract surface. Total cumulative: **136 pass / 11 fail** (the 11 failing tests remain the pre-existing BcStack output-level checks awaiting `npm run build`).
 
 > **Update 2026-06-14 — Fase C batch 3.** Six more P0 skeletons gained contract+tests: BcDrawer (#9, source fix `bg-black/50` → `bg-foreground/50` for token compliance), BcTransfer (#10), BcCascader (#11), BcTreSelect (#12), BcOtp (#16), BcContextMenu (#7). +57 source-level tests pass. **Adapt-marked components** (BcContextMenu, BcDrawer, BcCascader, BcTreSelect) currently live as Pure `.lite.tsx`; the Adapt split (web/native) is deferred until `BcPortal` is wired and per-component native UX is designed. Total cumulative: **193 pass / 11 fail**.
+
+> **Update 2026-06-14 — Fase C batch khusus (BcForm + BcList).** The two view "jantung low-code" components gained contracts+tests. **BcForm (#1)**: BcFormContract pulls Reaction from core/reactive — Level 0 controlled validation + Level 1 reactive engine wiring both verified at source level (14 tests). Render gates on meta.visible/disabled/required composability. **BcList (#2)**: BcListContract pulls DataSource from core/types — 4-layer source/data fallback, full lifecycle status union (idle/loading/error/empty/ready), pagination clamping, custom renderItem slot (14 tests). Total cumulative: **220 pass / 11 fail**. **15/22 P0 components now have contract + source-level tests; 6 partial Adapt-target conversions deferred + BcDataTable enterprise upgrade + BcSplitter & BcStack-family + BcToastQueue remain.**
 
 ---
 
