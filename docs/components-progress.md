@@ -201,14 +201,14 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 ### Data Display / Layout (P1)
 | Component | Group | Stencil | Mitosis | Contract | A11y | Notes |
 |---|---|---|---|---|---|---|
-| BcCarousel | data-display | ❌ | ✅ | ❌ | ❌ | Net-new |
-| BcOrgChart | data-display | ❌ | ❌ | ❌ | ❌ | HRM critical |
-| BcInplace | data-display | ❌ | ❌ | ❌ | ❌ | Inline edit |
-| **BcAspectRatio** | primitives | ❌ | ❌ | – | ✅* | **NEW Tier 2** |
-| **BcDisclosure / BcDisclosureGroup** | data-display | ❌ | ❌ | ❌ | ❌ | **NEW Tier 2** spec-correct |
-| **BcTagGroup** (read-only) | data-display | ❌ | ❌ | ❌ | ❌ | **NEW Tier 2** |
-| **BcFlex** | layout | ❌ | ❌ | – | – | **NEW Tier 2** |
-| **BcSparkline** | charts | ❌ | ❌ | ❌ | ❌ | **NEW Tier 1 (MUI X)** |
+| BcCarousel | data-display | ❌ | ✅ `data-display/carousel` | ✅ | ✅ | role=region + aria-roledescription=carousel; data-bc-carousel-index; arrows + dots gated on count>1; bg-foreground caption (no bg-black/text-white). 10 tests pass. |
+| BcOrgChart | data-display | ❌ | ✅ `data-display/orgchart` | ✅ | ✅ | Net-new HRM critical. role=tree+treeitem+aria-level+aria-expanded; flat-render via depth (Mitosis-safe); 64-level cycle break; chevron stopPropagation; avatar alt="" decorative. 10 tests pass. |
+| BcInplace | data-display | ❌ | ✅ `data-display/inplace` | ✅ | ✅ | Net-new inline edit. enter/commit/cancel state; Enter+blur commits, Escape cancels; withButtons mode for explicit Save/Cancel; FieldChangeEvent only when draft != oldValue. 11 tests pass. |
+| **BcAspectRatio** | primitives | ❌ | ✅ `primitives/aspectratio` | ✅ | ✅ | Net-new Radix primitive. CSS aspect-ratio property; absolute inset-0 child wrapper for full-cover content; uses Mitosis Slot. 6 tests pass. |
+| **BcDisclosure / BcDisclosureGroup** | data-display | ❌ | ✅ `data-display/disclosure` | ✅ | ✅ | Net-new react-aria spec-correct. WAI-ARIA pattern: button wrapped in h3, aria-expanded+aria-controls, panel role=region; group with role=group + data-exclusive flag. 10 tests pass. |
+| **BcTagGroup** (read-only) | data-display | ❌ | ✅ `data-display/taggroup` | ✅ | ✅ | Net-new react-aria. role=list+listitem; 5 variants via semantic tokens (success/warning/destructive/info/default); optional remove buttons with aria-label. 8 tests pass. |
+| **BcFlex** | layout | ❌ | ✅ `layout/flex` | ✅ | ✅ | Net-new layout primitive. 4 directions, 5 align, 6 justify, 3 wrap, gap scale 0-12, inline-flex mode; data-direction marker; uses Mitosis Slot. 9 tests pass. |
+| **BcSparkline** | charts | ❌ | ✅ `charts/sparkline` | ✅ | ✅ | Net-new MUI X parity. SVG line/bar variants with currentColor; preserveAspectRatio=none; bounds.range fallback to 1; optional last-point dot; role=img wrapper + aria-label. 11 tests pass. |
 
 ### Media & Social (P1) — semua di Stencil, perlu migrate
 | Component | Stencil | Mitosis | Notes |
