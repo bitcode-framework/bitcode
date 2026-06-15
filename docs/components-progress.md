@@ -175,11 +175,11 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 ### Navigation (P1)
 | Component | Group | Stencil | Mitosis | Contract | A11y | Notes |
 |---|---|---|---|---|---|---|
-| BcCommand (palette) | overlays | ❌ | ❌ | ❌ | ❌ | Net-new |
-| BcMenubar | navigation | ❌ | ❌ | ❌ | ❌ | Net-new |
-| BcMegaMenu | navigation | ❌ | ❌ | ❌ | ❌ | Net-new |
-| BcNavigationMenu | navigation | ❌ | ❌ | ❌ | ❌ | Net-new |
-| BcAffix | navigation | ❌ | ❌ | ❌ | ❌ | Net-new |
+| BcCommand (palette) | overlays | ❌ | ✅ `overlays/command` | ✅ | ✅ | Net-new. cmdk-style command palette; role=dialog+aria-modal+combobox+listbox+option; ArrowDown/Up/Enter/Escape keyboard nav; group-by support; case-insensitive filter; backdrop close. 12 tests pass. |
+| BcMenubar | navigation | ❌ | ✅ `navigation/menubar` | ✅ | ✅ | Net-new. Horizontal menu bar; role=menubar+menu+menuitem+separator; aria-haspopup+aria-expanded; toggle pattern (-1 = closed); separator + disabled items. 9 tests pass. |
+| BcMegaMenu | navigation | ❌ | ✅ `navigation/megamenu` | ✅ | ✅ | Net-new. Wide multi-column dropdown; role=menu+menuitem; opens on hover (onMouseEnter) + click; CSS grid with column count; per-link description support. 9 tests pass. |
+| BcNavigationMenu | navigation | ❌ | ✅ `navigation/navigationmenu` | ✅ | ✅ | Net-new. Radix-style nav; conditional aria-haspopup based on links presence; inline panel (not dropdown) below bar; 2-col grid layout; pickRoot vs pickLink dispatch. 9 tests pass. |
+| BcAffix | navigation | ❌ | ✅ `navigation/affix` | ✅ | ✅ | Net-new. Sticky element via getBoundingClientRect; offsetTop or offsetBottom modes; scroll+resize listeners (passive); onChange fires only on state change; SSR-safe. 11 tests pass. |
 | BcAnchor | navigation | ❌ | ✅ `navigation/anchor` | ✅ | ✅ | Net-new. In-page nav with smooth scroll; aria-current=true on active; vertical (border-l) vs horizontal layouts; SSR-safe (typeof document guard). 9 tests pass. |
 | BcBackTop | navigation | ❌ | ✅ `navigation/backtop` | ✅ | ✅ | Net-new. Floating back-to-top button; visibility gated on scrollY > visibilityHeight; passive scroll listener with onMount/onUnMount lifecycle; SSR-safe. 9 tests pass. |
 | BcBreadcrumb | navigation | ❌ | ✅ `navigation/breadcrumb` | ✅ | ✅ | aria-label=Breadcrumb on nav; aria-current=page on active item; separator aria-hidden; configurable separator string. 7 tests pass. |
