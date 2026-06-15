@@ -1,12 +1,20 @@
 # ADR-005: Metadata-Driven UI (BcRenderer)
 
-## Status: **Proposed**
+## Status: **Accepted (Phases 1-3 implemented 2026-06-15)**
 
 ## Date: 2026-06-06
 
 ## Depends on: [ADR-002](./002-cross-platform-architecture.md), [ADR-003](./003-component-roadmap.md), [ADR-004](./004-reactive-engine.md)
 
 ## Related: `packages/go-json` (ekspresi authoritative di backend)
+## Implementation status (2026-06-15)
+
+- [x] **Phase 1 — Form renderer dasar.** `UiSchema` + `FieldNode` + `FieldType` + `BcRendererProps` types, default `FieldResolver` (`resolveField` / `resolveFields` / `resolveFieldType`), `BcRenderer.lite.tsx` with `'form'` / `'detail'` branches composing `<BcForm>`. Plain JS reactions (Level 0). 22 source-level + unit tests at `core/renderer/`.
+- [x] **Phase 2 — Reaktivitas terintegrasi.** `schema.reactions` forwarded into `<BcForm>`'s reactive engine (Level 1). All four ADR-004 effect kinds (DATA / VALIDATION / UI / VALUE) ride through unchanged via the existing wiring.
+- [x] **Phase 3 — Layout & nested.** `'section'` + `'grid'` grouping kinds with recursive `<BcRenderer>` calls; `gridTemplateColumns: repeat(columns, ...)`. `'list'` kind composes `<BcDataTable>`. `'custom'` kind emits a sentinel `<div data-bc-renderer-custom>` for host-portal replacement. Repeater (array field) deferred to a follow-up sub-phase.
+- [ ] **Phase 4 — BitCode JSON mapping** — transformer lives in the BitCode engine, outside `@bitcode/ui` scope.
+- [ ] **Phase 5 — Custom resolver / Flutter track** — opt-in extension. Hosts pre-process the schema into known field types before handing it to `BcRenderer` (the renderer itself stays Mitosis-friendly with no runtime dynamic dispatch).
+
 
 ---
 
