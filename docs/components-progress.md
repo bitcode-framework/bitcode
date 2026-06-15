@@ -158,14 +158,14 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 | BcMultiSelect | forms | ❌ | ✅ `forms/multiselect` | ✅ | ✅ | Net-new. Tag-style multi-choice dropdown; selected items as removable chips; role=combobox+option+aria-selected; maxSelected guard; case-insensitive filter; emits `string[]`. 12 tests pass. |
 | BcColorPicker | forms | ✅ `bc-field-color` | ✅ `forms/colorpicker` | ✅ | ✅ | Migrate + reuse. Native `<input type="color">` for system pickers; preset swatches with active ring; tabular-nums uppercase hex; FieldChangeEvent. 13 source-level tests pass. |
 | BcRate | forms | ✅ `bc-field-rating` | ✅ `forms/rate` | ✅ | ✅ | role=radiogroup + aria-pressed per star; click-to-clear (antd idiom); sm/md/lg sizes; warning token (no hardcoded yellow); decorative SVG aria-hidden. 13 source-level tests pass. |
-| BcTagsInput | forms | ✅ `bc-field-tags` | ❌ | ❌ | ❌ | Migrate |
-| BcRichText | forms | ✅ `bc-field-richtext` | ❌ | ❌ | ❌ | Migrate |
-| BcCode | forms | ✅ `bc-field-code` | ❌ | ❌ | ❌ | Migrate |
-| BcFile | forms | ✅ `bc-field-file` | ❌ | ❌ | ❌ | Migrate |
-| BcJson | forms | ✅ `bc-field-json` | ❌ | ❌ | ❌ | Migrate |
-| BcSignature | forms | ✅ `bc-field-signature` | ❌ | ❌ | ❌ | Migrate |
-| BcBarcode | forms | ✅ `bc-field-barcode` | ❌ | ❌ | ❌ | Migrate |
-| BcGeo | forms | ✅ `bc-field-geo` | ❌ | ❌ | ❌ | Migrate |
+| BcTagsInput | forms | ✅ `bc-field-tags` | ✅ `forms/tagsinput` | ✅ | ✅ | Migrate. Free-form tag input; Enter/comma to add; Backspace on empty removes last; chips with remove buttons; maxTags guard; emits `string[]`. 11 tests pass. |
+| BcRichText | forms | ✅ `bc-field-richtext` | ✅ `forms/richtext` | ✅ | ✅ | Migrate. contentEditable div (not textarea); role=textbox + aria-multiline; hidden input for form submission; minHeight from rows prop; token-driven palette. 8 tests pass. |
+| BcCode | forms | ✅ `bc-field-code` | ✅ `forms/code` | ✅ | ✅ | Migrate. Monospace textarea with spellcheck=false; language badge (pointer-events-none); fontFamily via `--bc-font-mono` CSS var; tabular-nums. 7 tests pass. |
+| BcFile | forms | ✅ `bc-field-file` | ✅ `forms/file` | ✅ | ✅ | Migrate. Native file input with `file:` pseudo-element token styling; maxSize validation; file list with remove buttons (type=button); B/KB/MB size formatting; role=alert error. 8 tests pass. |
+| BcJson | forms | ✅ `bc-field-json` | ✅ `forms/json` | ✅ | ✅ | Migrate. Monospace textarea with JSON.parse validation; onBlur pretty-prints valid JSON; aria-invalid reflects validity; role=alert error on invalid; tabular-nums. 8 tests pass. |
+| BcSignature | forms | ✅ `bc-field-signature` | ✅ `forms/signature` | ✅ | ✅ | Migrate. Canvas + PointerEvents for stylus/finger; strokeStyle via `--bc-foreground` token; touch-none for mobile; Clear button gated on disabled/!hasInk; emits dataURL via toDataURL. 10 tests pass. |
+| BcBarcode | forms | ✅ `bc-field-barcode` | ✅ `forms/barcode` | ✅ | ✅ | Migrate. Monospace input with autocomplete=off; format hint on data-bc-barcode-format for consumer libraries (JsBarcode/bwip-js); display area role=img with tracking-wider; tabular-nums. 7 tests pass. |
+| BcGeo | forms | ✅ `bc-field-geo` | ✅ `forms/geo` | ✅ | ✅ | Migrate. Lat/lng input pair with step=any; Number.isNaN guard; emits `{ lat, lng }` object in FieldChangeEvent; tabular-nums; distinct aria-labels for lat vs lng. 9 tests pass. |
 | **BcDateField** (input-only) | forms | ❌ | ✅ `forms/datefield` | ✅ | ✅ | Net-new. Input-only date field (react-aria DateField); type=text with Intl.DateTimeFormat for display; isValidISO via regex+Date.parse; aria-invalid reflects validity. 11 tests pass. |
 | **BcTimeField** (input-only) | forms | ❌ | ✅ `forms/timefield` | ✅ | ✅ | Net-new. Input-only time field (react-aria TimeField); type=text with HH:mm(:ss) validation + range check (h 0-23, m 0-59); aria-invalid reflects validity. 10 tests pass. |
 | **BcNumberField** (locale-aware) | forms | ❌ | ✅ `forms/numberfield` | ✅ | ✅ | Net-new. Locale-aware numeric input (react-aria NumberField); type=text + inputMode=decimal; Intl.NumberFormat for display; parse strips grouping separators; ArrowUp/Down nudge by step; min/max clamp; tabular-nums. 14 tests pass. |
