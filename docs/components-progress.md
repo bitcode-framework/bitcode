@@ -180,11 +180,11 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 | BcMegaMenu | navigation | ❌ | ❌ | ❌ | ❌ | Net-new |
 | BcNavigationMenu | navigation | ❌ | ❌ | ❌ | ❌ | Net-new |
 | BcAffix | navigation | ❌ | ❌ | ❌ | ❌ | Net-new |
-| BcAnchor | navigation | ❌ | ✅ | ❌ | ❌ | Net-new |
-| BcBackTop | navigation | ❌ | ✅ `navigation/backtop` | ❌ | ❌ | Net-new |
-| BcBreadcrumb | navigation | ❌ | ✅ | ❌ | ❌ | — |
-| BcPagination | navigation | ❌ | ✅ | ❌ | ❌ | — |
-| BcDropdown | navigation | ❌ | ✅ | ❌ | ❌ | — |
+| BcAnchor | navigation | ❌ | ✅ `navigation/anchor` | ✅ | ✅ | Net-new. In-page nav with smooth scroll; aria-current=true on active; vertical (border-l) vs horizontal layouts; SSR-safe (typeof document guard). 9 tests pass. |
+| BcBackTop | navigation | ❌ | ✅ `navigation/backtop` | ✅ | ✅ | Net-new. Floating back-to-top button; visibility gated on scrollY > visibilityHeight; passive scroll listener with onMount/onUnMount lifecycle; SSR-safe. 9 tests pass. |
+| BcBreadcrumb | navigation | ❌ | ✅ `navigation/breadcrumb` | ✅ | ✅ | aria-label=Breadcrumb on nav; aria-current=page on active item; separator aria-hidden; configurable separator string. 7 tests pass. |
+| BcPagination | navigation | ❌ | ✅ `navigation/pagination` | ✅ | ✅ | Sibling-count windowed pages with -1/-2 ellipsis sentinels; First/Prev/Next/Last all aria-labeled; aria-current=page; goTo guards on disabled+out-of-range. 9 tests pass. |
+| BcDropdown | navigation | ❌ | ✅ `navigation/dropdown` | ✅ | ✅ | Trigger via Mitosis Slot; aria-haspopup=menu + aria-expanded; role=menu/menuitem; 4 placement variants (top/bottom × start/end); separators + disabled items. 9 tests pass. |
 
 ### Feedback / Overlays (P1)
 | Component | Group | Stencil | Mitosis | Contract | A11y | Notes |
