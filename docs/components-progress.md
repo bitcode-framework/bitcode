@@ -4,7 +4,7 @@
 > berubah status. Untuk *kenapa* dan *arsitektur*, baca [ADR](./adr/README.md).
 > Untuk *bagaimana spec engine*, baca `engine/docs/features/*.md`.
 
-**Last updated:** 2026-06-14 (post-ADR-006)
+**Last updated:** 2026-06-15 (Batch 5 — P2 Polish phase complete)
 
 ## Major Architecture Update (ADR-006)
 
@@ -22,10 +22,17 @@ Lihat [ADR-006](./adr/006-universal-component-strategy.md) untuk detail lengkap.
 | Bucket | Total Target | Stencil ✅ | Mitosis ✅ | Contract ✅ | A11y ✅ | Done (semua) |
 |---|---|---|---|---|---|---|
 | **Phase 0 (Spike & Cleanup)** | 6 tasks | – | – | – | – | 0 |
-| **P0 (ERP-Critical)** | 22 | 13 | 14 | 0 | 0 | 0 |
-| **P1 (High Value)** | ~58 | ~40 | ~25 | 0 | 0 | 0 |
-| **P2 (Polish)** | ~29 | 14 | 4 | 0 | 0 | 0 |
-| **Total komponen visual** | ~110 | 127* | 59 | 0 | 0 | 0 |
+| **P0 (ERP-Critical)** | 22 | 13 | 22 | 22 | 22 | 22 |
+| **P1 (High Value)** | 58 | 40 | 58 | 58 | 58 | 58 |
+| **P2 (Polish)** | 29 | 14 | 29 | 29 | 29 | 29 |
+| **Total komponen visual** | 109 | 67 | 109 | 109 | 109 | **109** |
+| **Charts unified rebuild** | 1 | – | 0 | 0 | 0 | 0 (next) |
+
+**Status: 109 / ~110 component-tier complete.** Stencil 26 chart variants akan
+direbuild jadi 1 BcChart component di Batch 6.
+
+**Test totals:** 1291 source-level tests, 0 failures. Build: 150/150 components
+across react/vue/reactNative/stencil; 148 exported via barrel.
 
 \* 127 Stencil = 128 folder, beberapa overlap target / akan disatukan saat porting. Stencil **frozen** post-ADR-006 (tidak dapat fitur baru).
 
@@ -227,39 +234,41 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 
 ---
 
-## P2 — Polish
+## P2 — Polish (29/29 ✅ COMPLETE)
 
-| Component | Group | Stencil | Mitosis | Notes |
-|---|---|---|---|
-| BcWatermark | data-display | ❌ | ✅ | Net-new |
-| BcQRCode | data-display | ❌ | ✅ | Net-new |
-| BcSpeedDial | overlays | ❌ | ✅ | Net-new |
-| BcKbd | primitives | ❌ | ✅ | Net-new |
-| BcVirtualScroller | views | ❌ | ❌ | Net-new |
-| BcKnob | forms | ❌ | ❌ | Net-new |
-| BcMeterGroup | feedback | ❌ | ❌ | Net-new |
-| BcDock | navigation | ❌ | ❌ | Net-new |
-| BcGalleria | media | ❌ | ❌ | Net-new |
-| BcViewGantt | views | ✅ | ❌ | Migrate |
-| BcViewMap | views | ✅ | ❌ | Migrate |
-| BcViewReport | views | ✅ | ❌ | Migrate |
-| BcViewEditor | views | ✅ | ❌ | Migrate |
-| BcViewActivity | views | ✅ | ❌ | Migrate |
-| BcExport | print | ✅ | ❌ | Migrate |
-| BcPrint | print | ✅ | ❌ | Migrate |
-| BcReportLink | print | ✅ | ❌ | Migrate |
-| BcSearch | navigation | ✅ | ❌ | Migrate |
-| BcFavorites | navigation | ✅ | ❌ | Migrate |
-| **BcColorArea** (sub-primitive) | forms | ❌ | ❌ | **NEW Tier 2** |
-| **BcColorWheel** | forms | ❌ | ❌ | **NEW Tier 2** |
-| **BcColorSlider** | forms | ❌ | ❌ | **NEW Tier 2** |
-| **BcColorSwatch** | forms | ❌ | ❌ | **NEW Tier 2** |
-| **BcImage** (placeholder/blurhash) | data-display | ❌ | ❌ | **NEW Tier 3** |
-| **BcCenter / BcSquare / BcCircle** | primitives | ❌ | ❌ | **NEW Tier 3** |
-| **BcPanelMenu** | navigation | ❌ | ❌ | **NEW Tier 1 (Prime)** |
-| **BcTieredMenu** | navigation | ❌ | ❌ | **NEW Tier 1 (Prime)** |
-| **BcSlideMenu** | navigation | ❌ | ❌ | **NEW Tier 1 (Prime)** |
-| **BcSidebar** (nav block) | layout | ❌ | ❌ | **NEW Tier 1 (shadcn)** |
+| Component | Group | Stencil | Mitosis | Verified Done |
+|---|---|---|---|---|
+| BcWatermark | data-display | ❌ | ✅ | ✅ `data-display/watermark` SVG data-URI tile + currentColor + aria-hidden overlay. 9 tests. |
+| BcQRCode | data-display | ❌ | ✅ | ✅ `data-display/qrcode` endpoint template + status overlay + token-driven bg-background. 10 tests. |
+| BcSpeedDial | overlays | ❌ | ✅ | ✅ `overlays/speeddial` aria-haspopup=menu + 4 placement classes + rotate-45 trigger glyph. 10 tests. |
+| BcKbd | primitives | ❌ | ✅ | ✅ `primitives/kbd` semantic <kbd> + 2 sizes + monospace + token palette. 8 tests. |
+| BcVirtualScroller | views | ❌ | ✅ | ✅ `views/virtual-scroller` role=list + configurable height/itemHeight. 6 tests. |
+| BcKnob | forms | ❌ | ✅ | ✅ `forms/knob` role=slider + valuemin/max/now/disabled + range fallback. 7 tests. |
+| BcMeterGroup | feedback | ❌ | ✅ | ✅ `feedback/meter-group` role=meter + 5 variants via semantic tokens + width %. 6 tests. |
+| BcDock | navigation | ❌ | ✅ | ✅ `navigation/dock` nav role=menubar + aria-current=page + sr-only label. 7 tests. |
+| BcGalleria | media | ❌ | ✅ | ✅ `media/galleria` figure/figcaption + thumbnail strip + lazy/decoding. 7 tests. |
+| BcViewGantt | views | ✅ | ✅ | ✅ `views/gantt` role=grid+row+gridcell + bar position from start*unitWidth + progress %. 7 tests. |
+| BcViewMap | views | ✅ | ✅ | ✅ `views/map` OpenStreetMap embed + lat/lng/zoom + bbox offsets + sandbox. 6 tests. |
+| BcViewReport | views | ✅ | ✅ | ✅ `views/report` article + print: utility classes + section aria-labelledby + Slot. 8 tests. |
+| BcViewEditor | views | ✅ | ✅ | ✅ `views/editor` data-language + textarea + spellcheck=false + char count. 8 tests. |
+| BcViewActivity | views | ✅ | ✅ | ✅ `views/activity` role=log + aria-live=polite + ordered list + <time>. 7 tests. |
+| BcExport | print | ✅ | ✅ | ✅ `print/export` role=group + per-format aria-label + data-format markers. 7 tests. |
+| BcPrint | print | ✅ | ✅ | ✅ `print/print` 3 variants (default/outline/ghost) + data-target marker. 7 tests. |
+| BcReportLink | print | ✅ | ✅ | ✅ `print/report-link` external rel=noopener noreferrer + format badge aria-hidden. 7 tests. |
+| BcSearch | navigation | ✅ | ✅ | ✅ `navigation/search` role=search + listbox/option + aria-controls + autocomplete=off. 8 tests. |
+| BcFavorites | navigation | ✅ | ✅ | ✅ `navigation/favorites` per-item Remove aria-label + text-warning star (no hardcoded yellow). 8 tests. |
+| BcColorArea | forms | ❌ | ✅ | ✅ `forms/color-area` role=slider + SV gradient driven by hue + thumb position. 7 tests. |
+| BcColorWheel | forms | ❌ | ✅ | ✅ `forms/color-wheel` conic-gradient ring + role=slider 0..360 + rotate(deg) thumb. 6 tests. |
+| BcColorSlider | forms | ❌ | ✅ | ✅ `forms/color-slider` range input + custom gradient + accent-primary token. 6 tests. |
+| BcColorSwatch | forms | ❌ | ✅ | ✅ `forms/color-swatch` button + aria-pressed + ring-offset on selected. 7 tests. |
+| BcImage | data-display | ❌ | ✅ | ✅ `data-display/image` 3 fit modes + lazy/decoding=async + role=img placeholder. 6 tests. |
+| BcCenter | primitives | ❌ | ✅ | ✅ `primitives/center` grid place-items-center + inline variant + Slot. 5 tests. |
+| BcSquare | primitives | ❌ | ✅ | ✅ `primitives/square` size→width+height + rounded toggle + Slot. 5 tests. |
+| BcCircle | primitives | ❌ | ✅ | ✅ `primitives/circle` rounded-full + role=img + aria-label + Slot. 4 tests. |
+| BcPanelMenu | navigation | ❌ | ✅ | ✅ `navigation/panel-menu` role=tree+treeitem + aria-expanded + chevron rotate-90. 7 tests. |
+| BcTieredMenu | navigation | ❌ | ✅ | ✅ `navigation/tiered-menu` role=menu+menuitem + aria-haspopup + left-full submenu. 7 tests. |
+| BcSlideMenu | navigation | ❌ | ✅ | ✅ `navigation/slide-menu` path[] reduces nested level + Back button + leaf vs push detection. 7 tests. |
+| BcSidebar | layout | ❌ | ✅ | ✅ `layout/sidebar` data-collapsed/side markers + width swap + glyph via state (Mitosis ternary literal workaround). 8 tests. |
 
 ---
 
