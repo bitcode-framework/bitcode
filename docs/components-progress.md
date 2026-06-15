@@ -4,7 +4,7 @@
 > berubah status. Untuk *kenapa* dan *arsitektur*, baca [ADR](./adr/README.md).
 > Untuk *bagaimana spec engine*, baca `engine/docs/features/*.md`.
 
-**Last updated:** 2026-06-15 (Batch 5 — P2 Polish phase complete)
+**Last updated:** 2026-06-15 (Batch 6 — BcChart unified rebuild complete)
 
 ## Major Architecture Update (ADR-006)
 
@@ -26,13 +26,14 @@ Lihat [ADR-006](./adr/006-universal-component-strategy.md) untuk detail lengkap.
 | **P1 (High Value)** | 58 | 40 | 58 | 58 | 58 | 58 |
 | **P2 (Polish)** | 29 | 14 | 29 | 29 | 29 | 29 |
 | **Total komponen visual** | 109 | 67 | 109 | 109 | 109 | **109** |
-| **Charts unified rebuild** | 1 | – | 0 | 0 | 0 | 0 (next) |
+| **Charts unified rebuild** | 1 | – | 1 | 1 | 1 | **1** |
 
-**Status: 109 / ~110 component-tier complete.** Stencil 26 chart variants akan
-direbuild jadi 1 BcChart component di Batch 6.
+**Status: 110 / 110 component-tier complete.** All ~110 enterprise components
+production-ready, including unified BcChart that collapses 26 Stencil chart
+variants into a single component driven by `type` prop.
 
-**Test totals:** 1291 source-level tests, 0 failures. Build: 150/150 components
-across react/vue/reactNative/stencil; 148 exported via barrel.
+**Test totals:** 1343 source-level tests, 0 failures. Build: 151/151 components
+across react/vue/reactNative/stencil; 149 exported via barrel.
 
 \* 127 Stencil = 128 folder, beberapa overlap target / akan disatukan saat porting. Stencil **frozen** post-ADR-006 (tidak dapat fitur baru).
 
@@ -272,21 +273,36 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 
 ---
 
-## Charts (Stencil — separate migration plan)
+## Charts — `BcChart` Unified (Batch 6 ✅)
 
-26 chart variants di Stencil: area, bar, boxplot, candlestick, custom, funnel,
+26 chart variants Stencil (area, bar, boxplot, candlestick, custom, funnel,
 gauge, graph, heatmap, kpi, line, mixed, parallel, pictorialbar, pie, pivot,
 polar, progress, radar, sankey, scatter, scorecard, sunburst, themeriver, tree,
-treemap.
+treemap) **collapsed into 1 standalone component** `BcChart` driven by
+discriminator prop `type`.
 
-**Strategi:** rebuild jadi `BcChart` tunggal dengan prop `type`, sesuai
-ADR-003 Section 1 taxonomy. **Belum dimulai di Mitosis.**
+| Component | Group | Stencil | Mitosis | Verified Done |
+|---|---|---|---|---|
+| BcChart | charts | 26 (frozen) | ✅ | ✅ `charts/chart` 26-type discriminator + lazy `await import('echarts')` + SSR guard + onMount/onUpdate/onUnMount lifecycle + role=img + aria-busy + token-driven default palette. 12 component-level tests + 17 helpers tests + 23 factory tests = **52 tests**. |
+
+**Architecture highlights:**
+
+- **Lazy-load:** ECharts loaded via dynamic import only on web mount.
+  Listed as optional `peerDependency` (`echarts >=5.4`); caller installs.
+- **SSR-safe:** bails out when `typeof window === 'undefined'`.
+- **Pure option factory:** `options/factory.ts` translates `(type, data,
+  flags) -> ECharts option` deterministically; covered by 23 unit tests
+  per type. No DOM/runtime needed.
+- **Token-driven palette:** `DEFAULT_PALETTE` uses `hsl(var(--bc-*))`
+  semantic CSS vars, no hex constants.
+- **Errors via callback:** `onError` instead of console; consistent with
+  P0 DoD bar.
 
 | Status | Count |
 |---|---|
-| Stencil ada | 26 |
-| Mitosis ada | 0 |
-| Verified Done | 0 |
+| Stencil ada | 26 (legacy frozen post-ADR-006) |
+| Mitosis ada | 1 (BcChart) |
+| Verified Done | 1 |
 
 ---
 
