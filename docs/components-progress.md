@@ -144,6 +144,7 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 
 ---
 
+> **Update 2026-06-15 — Batch 1B: P1 Forms net-new (7 components from scratch).** Seven brand-new P1 Forms components authored with skeleton + contract + tests at P0-DoD bar: **BcToggleGroup** (10 tests; Radix-style multi-toggle, single mode click-to-clear or multi mode indexOf-splice, aria-pressed, sm/md/lg), **BcNumberField** (14 tests; locale-aware numeric input using Intl.NumberFormat, type=text+inputMode=decimal, ArrowUp/Down step nudge, min/max clamp, tabular-nums, suffix slot), **BcDateField** (11 tests; input-only date using type=text+Intl.DateTimeFormat, isValidISO via regex+Date.parse, aria-invalid reflects validity, Enter/blur commit), **BcTimeField** (10 tests; input-only time validating HH:mm(:ss) with 0-23/0-59 range check, aria-invalid, tabular-nums), **BcMultiSelect** (12 tests; tag-style dropdown with removable chips, role=combobox+option+aria-selected, maxSelected guard, case-insensitive filter, emits string[]), **BcRangeSlider** (12 tests; dual-thumb min/max using two overlapping native range inputs with [&::-webkit-slider-thumb]:pointer-events-auto Tailwind arbitrary variants, cross-guard prevents thumbs passing, emits [number, number] tuple), **BcDropZone** (14 tests; drag-and-drop file upload region with role=button, maxSize + accept MIME validation, maxFiles guard, role=alert error, file list with remove buttons, B/KB/MB/GB size formatter). Discovered two new Mitosis 0.13.1 bugs during this batch and applied established workarounds: (a) get accessor at file top-level (outside useStore) triggers BABEL_PARSE_ERROR MissingSemicolon — removed the unused accessor from BcNumberField; (b) JSDoc /** */ block headers above the component function + inline JSDoc on state members collapse into adjacent code lines in the React generator output, breaking Prettier TS parser — stripped JSDoc from BcDropZone via scripts/strip-inline-comments.mjs + manual removal of the component header. **+83 source-level tests** total. Cumulative: **676 pass / 0 fail.** Mitosis full-glob build green: **84/84** components across react/vue/reactNative/stencil; 82 exported via barrel. **13/22 P1 Forms now contract+test verified** (Batch 1A existing skeletons + Batch 1B net-new). Stencil migrate cohort (8 components: TagsInput/RichText/Code/File/Json/Signature/Barcode/Geo) follows.
 ## P1 — High Value
 
 ### Forms (P1)
@@ -152,9 +153,9 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 | BcSegmented | forms | ❌ | ✅ | ✅ | ✅ | Net-new. role=tablist + role=tab + aria-selected; controlled/uncontrolled; sm/md/lg sizes; FieldChangeEvent. 10 source-level tests pass. |
 | BcMentions | forms | ❌ | ✅ | ✅ | ✅ | Untuk Chatter. @-prefix token detector + filtered popover; whitespace closes; pick replaces token with `prefix+value+space`; emits onChange + onSelect. 12 source-level tests pass. |
 | BcSlider | forms | ❌ | ✅ `forms/slider` | ✅ | ✅ | Net-new. Native `<input type="range">` for free a11y; %-driven gradient track via `--bc-primary`/`--bc-muted`; aria-label fallback; tabular-nums value display. 13 source-level tests pass. |
-| BcRangeSlider | forms | ❌ | ❌ | ❌ | ❌ | Net-new |
+| BcRangeSlider | forms | ❌ | ✅ `forms/rangeslider` | ✅ | ✅ | Net-new. Dual-thumb min/max range slider; two overlapping native range inputs with webkit-slider-thumb pointer-events layering; cross-guard prevents thumbs passing each other; emits `[number, number]` tuple. 12 tests pass. |
 | BcCombobox / BcAutocomplete | forms | ❌ | ✅ `forms/combobox` | ✅ | ✅ | Net-new. role=combobox + aria-expanded; case-insensitive trim filter; focus reopens; emptyText state; FieldChangeEvent on pick (label inserted, value emitted). 12 source-level tests pass. |
-| BcMultiSelect | forms | ❌ | ❌ | ❌ | ❌ | Net-new |
+| BcMultiSelect | forms | ❌ | ✅ `forms/multiselect` | ✅ | ✅ | Net-new. Tag-style multi-choice dropdown; selected items as removable chips; role=combobox+option+aria-selected; maxSelected guard; case-insensitive filter; emits `string[]`. 12 tests pass. |
 | BcColorPicker | forms | ✅ `bc-field-color` | ✅ `forms/colorpicker` | ✅ | ✅ | Migrate + reuse. Native `<input type="color">` for system pickers; preset swatches with active ring; tabular-nums uppercase hex; FieldChangeEvent. 13 source-level tests pass. |
 | BcRate | forms | ✅ `bc-field-rating` | ✅ `forms/rate` | ✅ | ✅ | role=radiogroup + aria-pressed per star; click-to-clear (antd idiom); sm/md/lg sizes; warning token (no hardcoded yellow); decorative SVG aria-hidden. 13 source-level tests pass. |
 | BcTagsInput | forms | ✅ `bc-field-tags` | ❌ | ❌ | ❌ | Migrate |
@@ -165,11 +166,11 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 | BcSignature | forms | ✅ `bc-field-signature` | ❌ | ❌ | ❌ | Migrate |
 | BcBarcode | forms | ✅ `bc-field-barcode` | ❌ | ❌ | ❌ | Migrate |
 | BcGeo | forms | ✅ `bc-field-geo` | ❌ | ❌ | ❌ | Migrate |
-| **BcDateField** (input-only) | forms | ❌ | ❌ | ❌ | ❌ | **NEW Tier 2** |
-| **BcTimeField** (input-only) | forms | ❌ | ❌ | ❌ | ❌ | **NEW Tier 2** |
-| **BcNumberField** (locale-aware) | forms | ❌ | ❌ | ❌ | ❌ | **NEW Tier 2** |
-| **BcDropZone** | forms | ❌ | ❌ | ❌ | ❌ | **NEW Tier 2** |
-| **BcToggleGroup** | forms | ❌ | ❌ | ❌ | ❌ | **NEW Tier 2** |
+| **BcDateField** (input-only) | forms | ❌ | ✅ `forms/datefield` | ✅ | ✅ | Net-new. Input-only date field (react-aria DateField); type=text with Intl.DateTimeFormat for display; isValidISO via regex+Date.parse; aria-invalid reflects validity. 11 tests pass. |
+| **BcTimeField** (input-only) | forms | ❌ | ✅ `forms/timefield` | ✅ | ✅ | Net-new. Input-only time field (react-aria TimeField); type=text with HH:mm(:ss) validation + range check (h 0-23, m 0-59); aria-invalid reflects validity. 10 tests pass. |
+| **BcNumberField** (locale-aware) | forms | ❌ | ✅ `forms/numberfield` | ✅ | ✅ | Net-new. Locale-aware numeric input (react-aria NumberField); type=text + inputMode=decimal; Intl.NumberFormat for display; parse strips grouping separators; ArrowUp/Down nudge by step; min/max clamp; tabular-nums. 14 tests pass. |
+| **BcDropZone** | forms | ❌ | ✅ `forms/dropzone` | ✅ | ✅ | Net-new. Drag-and-drop file upload region (react-aria DropZone); role=button + drag event wiring; maxSize + accept MIME validation; maxFiles guard; role=alert error; file list with remove buttons; B/KB/MB/GB size formatting. 14 tests pass. |
+| **BcToggleGroup** | forms | ❌ | ✅ `forms/togglegroup` | ✅ | ✅ | Net-new. Multi-toggle button group (Radix ToggleGroup); role=group + aria-pressed per toggle; single mode click-to-clear (empty string), multi mode indexOf splice pattern; sm/md/lg sizes. 10 tests pass. |
 
 ### Navigation (P1)
 | Component | Group | Stencil | Mitosis | Contract | A11y | Notes |
