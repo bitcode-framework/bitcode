@@ -189,13 +189,13 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 ### Feedback / Overlays (P1)
 | Component | Group | Stencil | Mitosis | Contract | A11y | Notes |
 |---|---|---|---|---|---|---|
-| BcNotification | feedback | ❌ | ❌ | ❌ | ❌ | Beda dari Toast |
-| BcTour | feedback | ❌ | ❌ | ❌ | ❌ | Net-new |
-| BcAlertDialog | overlays | ✅ `bc-dialog-alert` | ❌ | ❌ | ❌ | Migrate |
-| BcPrompt | overlays | ✅ `bc-dialog-prompt` | ❌ | ❌ | ❌ | Migrate |
-| BcWizard | overlays | ✅ `bc-dialog-wizard` | ❌ | ❌ | ❌ | Migrate |
-| BcHoverCard | overlays | ❌ | ❌ | ❌ | ❌ | Net-new |
-| **BcActionsheet** | overlays | ❌ | ❌ | ❌ | ❌ | **NEW Tier 3** mobile bottom-sheet |
+| BcNotification | feedback | ❌ | ✅ `feedback/notification` | ✅ | ✅ | Net-new. 4 status (info/success/warning/error) with semantic tokens; role=alert+aria-live=assertive for error/warning, role=status+polite for info/success; closable+actionLabel optional. 8 tests pass. |
+| BcTour | feedback | ❌ | ✅ `feedback/tour` | ✅ | ✅ | Net-new. Onboarding tour with steps; role=dialog+aria-modal+aria-labelledby; setStep clamps [0,total-1]; isLast triggers onFinish; tabular-nums step counter. 11 tests pass. |
+| BcAlertDialog | overlays | ✅ `bc-dialog-alert` | ✅ `overlays/alertdialog` | ✅ | ✅ | role=alertdialog + aria-modal + aria-labelledby/describedby; default and destructive variants use bg-primary / bg-destructive tokens (no hardcoded red); backdrop bg-foreground (no bg-black). 9 tests pass. |
+| BcPrompt | overlays | ✅ `bc-dialog-prompt` | ✅ `overlays/prompt` | ✅ | ✅ | role=dialog with input; Enter submits + Escape cancels; required guard prevents submit on empty trim; autofocus + focus-visible ring. 10 tests pass. |
+| BcWizard | overlays | ✅ `bc-dialog-wizard` | ✅ `overlays/wizard` | ✅ | ✅ | Multi-step dialog with stepper; aria-current=step on active; canAdvance gate hook; setStep clamps; data-bc-wizard-step exposes index; Slot for body. 13 tests pass. |
+| BcHoverCard | overlays | ❌ | ✅ `overlays/hovercard` | ✅ | ✅ | Net-new. role=tooltip; opens on hover AND focus (keyboard equivalent); openDelay/closeDelay timers with clearTimeout; 4 placement variants; controlled+uncontrolled. 11 tests pass. |
+| **BcActionsheet** | overlays | ❌ | ✅ `overlays/actionsheet` | ✅ | ✅ | Net-new mobile bottom-sheet (gluestack parity); items-end anchored; role=dialog+aria-modal; role=list+menuitem; destructive items via text-destructive token; backdrop bg-foreground. 9 tests pass. |
 | **BcAdapt** | overlays | ❌ | ❌ | – | – | **NEW Tier 3** responsive contract |
 
 ### Data Display / Layout (P1)
