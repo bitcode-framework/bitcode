@@ -213,17 +213,17 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 ### Media & Social (P1) — semua di Stencil, perlu migrate
 | Component | Stencil | Mitosis | Notes |
 |---|---|---|
-| BcViewerPdf | ✅ | ❌ | Migrate |
-| BcViewerImage | ✅ | ❌ | Migrate |
-| BcViewerDocument | ✅ | ❌ | Migrate |
-| BcViewerVideo | ✅ | ❌ | Migrate |
-| BcViewerAudio | ✅ | ❌ | Migrate |
-| BcViewerYoutube | ✅ | ❌ | Migrate |
-| BcViewerInstagram | ✅ | ❌ | Migrate |
-| BcViewerTiktok | ✅ | ❌ | Migrate |
-| BcChatter | ✅ | ❌ | Migrate |
-| BcActivity | ✅ | ❌ | Migrate |
-| BcTimeline (social) | ✅ | ❌ | Migrate |
+| BcViewerPdf | ✅ | ✅ `media/viewer-pdf` | iframe + lazy + #toolbar=0 toggle. 7 tests. |
+| BcViewerImage | ✅ | ✅ `media/viewer-image` | object-fit variants + zoom toggle + lazy/decoding=async. 8 tests. |
+| BcViewerDocument | ✅ | ✅ `media/viewer-document` | Office Online + Google Docs engines + sandbox + encodeURIComponent. 6 tests. |
+| BcViewerVideo | ✅ | ✅ `media/viewer-video` | <video> + playsinline + preload=metadata + <track captions>. 8 tests. |
+| BcViewerAudio | ✅ | ✅ `media/viewer-audio` | <audio> + preload=metadata + aria-label. 7 tests. |
+| BcViewerYoutube | ✅ | ✅ `media/viewer-youtube` | youtube-nocookie embed + ID extractor regex + aspect-ratio. 7 tests. |
+| BcViewerInstagram | ✅ | ✅ `media/viewer-instagram` | /embed + /captioned conditional + sandbox. 5 tests. |
+| BcViewerTiktok | ✅ | ✅ `media/viewer-tiktok` | tiktok.com/embed/v2 + ID extractor + sandbox. 6 tests. |
+| BcChatter | ✅ | ✅ `social/chatter` | role=region+list+listitem; avatar fallback to letter chip; Enter (no shift) submits; send button gated on empty trim. 11 tests. |
+| BcActivity | ✅ | ✅ `social/activity` | role=region; 5 variants via semantic tokens; data-variant marker; tabular-nums timestamp. 9 tests. |
+| BcTimeline (social) | ✅ | ✅ `social/timeline` | role=feed + <article aria-labelledby>; like/comment/share buttons all aria-labeled; tabular-nums counters. 9 tests. |
 
 ---
 
