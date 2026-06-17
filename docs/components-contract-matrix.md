@@ -34,11 +34,11 @@
 
 | Surface | Component / Module | State | Events | Methods | Slots/Parts | A11y | Adapter Mapping | Tests | Notes |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| Form control | BcInput | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract added with semantic `onValueChange`, legacy `onChange` compatibility, approved methods, a11y contract, adapter mapping, and source-level ADR-008 tests. Slots/parts are typed but not fully wired in implementation yet. |
-| Form control | BcSelect | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract added with value/open controlled pairs, semantic value/open events, Web Component event bridge, methods, a11y contract, adapter mapping, and source tests. Slots/parts typed but not fully wired. |
-| Form control | BcCombobox | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with value/open controlled pairs, semantic value/open events, Web Component event bridge, methods, a11y contract, adapter mapping, and source tests. Slots/parts typed but not fully wired. |
-| Form control | BcCheckbox | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract added with checked/defaultChecked/onCheckedChange, semantic events, methods, a11y, adapter mapping. Slots typed not fully wired. |
-| Form control | BcToggle | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract added with checked/defaultChecked/onCheckedChange, role=switch, semantic events, methods, a11y, adapter mapping. Slots typed not fully wired. |
+| Form control | BcInput | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Contract + source fully wired per ADR-007 §6.1 Runtime Part Resolution. `partClass` + `data-part` on root, label, control, input, description, error parts. slotProps passthrough verified in build (151 components, 4 targets). |
+| Form control | BcSelect | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part="root"` wired per ADR-007 §6.1. Controlled pairs, semantic events, WC bridge, methods, a11y, adapter mapping verified. |
+| Form control | BcCombobox | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part="root"` wired per ADR-007 §6.1. Controlled pairs, semantic events, WC bridge, methods, a11y, adapter mapping verified. |
+| Form control | BcCheckbox | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part` on root, control parts per ADR-007 §6.1. Checked/defaultChecked/onCheckedChange, semantic events, methods, a11y, adapter mapping verified. |
+| Form control | BcToggle | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part="root"` wired per ADR-007 §6.1. Checked/defaultChecked/onCheckedChange, role=switch, semantic events, methods, a11y, adapter mapping verified. |
 | Form control | BcSegmented | ✅ | ✅ | – | ⚠️ | ✅ | ✅ | ✅ | Contract updated with onValueChange, Web Component events, a11y, adapter mapping. |
 | Form control | BcNumberField | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with onValueChange, methods, Web Component events, a11y, adapter mapping. |
 | Form control | BcDateField | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with onValueChange, methods, Web Component events, a11y, adapter mapping. |
@@ -48,10 +48,10 @@
 | Forms/reactive | BcReactiveScope | ⚠️ | ⚠️ | ❌ | – | – | ⚠️ | ⚠️ | ADR-004 Level 2 scope; contract needs formal freeze but internal API stable. |
 | Forms/reactive | ReactiveStore | ⚠️ | ⚠️ | ⚠️ | – | – | ⚠️ | ⚠️ | Headless core stable per ADR-004; public API freeze deferred to consumer-level freeze. |
 | Forms/reactive | Field wrappers | ⚠️ | – | – | ⚠️ | ⚠️ | ⚠️ | ⚠️ | Composition defined in contracts (label/description/error parts per field component). Full standalone wrapper deferred. |
-| Overlay | BcDialog | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract added with open/defaultOpen/onOpenChange, role=dialog, aria-modal, aria-labelledby/describedby, reason meta, Web Component events, adapter mapping. |
+| Overlay | BcDialog | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part` on overlay, content parts per ADR-007 §6.1. open/defaultOpen/onOpenChange, role=dialog, aria-modal, reason meta, WC events, adapter mapping verified. |
 | Overlay | BcAlertDialog | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with defaultOpen/onOpenChange, alertdialog a11y, Web Component events, adapter mapping. |
 | Overlay | BcDrawer | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with defaultOpen/onOpenChange, drawer a11y, Web Component events, adapter mapping. |
-| Overlay | BcPopover | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract added with open/defaultOpen/onOpenChange, semantic reason meta, adapter mapping. |
+| Overlay | BcPopover | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part="root"` wired per ADR-007 §6.1. open/defaultOpen/onOpenChange, semantic reason meta, adapter mapping verified. |
 | Overlay | BcTooltip | ✅ | ✅ | – | ⚠️ | ✅ | ✅ | ✅ | Contract added with open/defaultOpen/onOpenChange, tooltip role, adapter mapping. |
 | Overlay | BcDropdown | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with open/defaultOpen/onOpenChange, onAction, Web Component events, adapter mapping. |
 | Overlay | BcContextMenu | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with open/action semantic events, long-press mapping, Web Component events, adapter mapping. |
@@ -71,6 +71,7 @@
 | Infrastructure | Tokens/theme | ⚠️ | – | – | – | – | ⚠️ | ⚠️ | Pipeline exists per ADR-006 Phase 0; Flutter token output deferred. |
 | Infrastructure | Portal/focus utilities | ⚠️ | ⚠️ | ⚠️ | – | ⚠️ | ⚠️ | ⚠️ | BcPortal Adapt PoC exists; centralized focus trap deferred. |
 | Infrastructure | Web Component event bridge | ✅ | ✅ | – | – | – | ✅ | ✅ | `core/wc-event-bridge.ts` implemented with `dispatchBcEvent()`, `buildMeta()`, and `BC_EVENTS` constants. SSR/RN safe. Covers all ADR-007 semantic events. Per-component wiring into Mitosis source is incremental (components call `dispatchBcEvent` alongside semantic callbacks). |
+| Infrastructure | Runtime Part Resolution | ✅ | – | – | ✅ | – | ✅ | ✅ | `core/part-props.ts` implemented per ADR-007 §6.1 with `partClass`, `partAttr`, `partStyle`. 7 source components wired: BcInput, BcSelect, BcCombobox, BcCheckbox, BcToggle, BcDialog, BcPopover. className additive, data-part emitted, Mitosis 4-target build verified. |
 
 ## Audit Notes
 

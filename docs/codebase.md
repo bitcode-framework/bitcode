@@ -356,7 +356,7 @@ packages/ui/
 │   ├── tailwind.theme.css                      #   Tailwind v4 @theme inline (auto-generated in Phase 0)
 │   └── nativewind.preset.cjs                   #   NativeWind preset for React Native (auto-generated in Phase 0)
 ├── src/
-│   ├── core/                                   # Reactive store, registry, context, data-source, types, wc-event-bridge
+│   ├── core/                                   # Reactive store, registry, context, data-source, types, wc-event-bridge, part-props
 │   ├── components/                             # 65 Mitosis .lite.tsx components across 11 groups
 │   └── themes/default.css                      # Default theme bundle
 ├── scripts/                                    # Build helpers (dev, fix-react-output, generate-index/registry)
