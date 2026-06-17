@@ -23,3 +23,7 @@ _Avoid_: event emitter, event dispatcher, Stencil events
 **BcKey / BcSelection**:
 Standard collection types defined in `core/types.ts` per ADR-007 Section 9. `BcKey = string | number`. `BcSelection = 'all' | Set<BcKey> | BcKey[]`. Used by data components (BcDataTable, BcList) for key-based selection APIs instead of index-only APIs.
 _Avoid_: row id, selection set, selected indexes
+
+**Runtime Part Resolution**:
+The mechanism for `slotProps` passthrough defined in ADR-007 Section 6.1. Pure function helpers (`partClass`, `partAttr` in `core/part-props.ts`) that components call per-element to read individual values from `slotProps`, avoiding dynamic object spread which Mitosis cannot compile. className is additive (concat after base classes), not replace. Portable to Flutter (no DOM dependency).
+_Avoid_: slot injection, compile-time spread, Mitosis plugin hack

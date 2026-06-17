@@ -183,6 +183,67 @@ Standard extension points:
 
 Named parts should be stable for behavior primitives and enterprise components. Examples: `root`, `trigger`, `content`, `label`, `description`, `error`, `item`, `indicator`, `header`, `body`, `footer`, `row`, `cell`, `toolbar`, `pagination`.
 
+### Section 6.1: Runtime Part Resolution (slotProps Implementation Mechanism)
+
+Mitosis does not support dynamic object spread (`{...props.slotProps?.root}`) on JSX elements. This is a deliberate Mitosis limitation, not a bug, because several output targets (Stencil, Vue, Angular) do not support arbitrary dynamic attribute spread.
+
+The chosen mechanism is **Runtime Part Resolution**: a pure function helper that components call per-element to read individual values from `slotProps`, avoiding spread entirely. This approach:
+
+- Works within Mitosis compilation constraints (property access and string concatenation are valid Mitosis JSX).
+- Is portable to Flutter (pure TS logic, no DOM/framework dependency).
+- Keeps components dumb (ADR-004 principle: headless, per-instance, no global state).
+- Is runtime, not compile-time, so metadata-driven UI (ADR-005) can provide `slotProps` from schema data at render time.
+
+#### Implementation shape
+
+```ts
+// core/part-props.ts
+
+export function partClass(
+  slotProps: Record<string, Record<string, unknown>> | undefined,
+  partName: string,
+  baseClass: string,
+): string {
+  const extra = slotProps?.[partName]?.className;
+  if (!extra || typeof extra !== 'string') return baseClass;
+  return baseClass + ' ' + extra;
+}
+
+export function partAttr(
+  slotProps: Record<string, Record<string, unknown>> | undefined,
+  partName: string,
+  attrName: string,
+): unknown {
+  return slotProps?.[partName]?.[attrName];
+}
+```
+
+#### Usage in Mitosis source
+
+```tsx
+// BcInput.lite.tsx
+import { partClass, partAttr } from '@/core/part-props';
+
+<div
+  class={partClass(props.slotProps, 'root', baseRootClass)}
+  data-part="root"
+  data-testid={partAttr(props.slotProps, 'root', 'data-testid') as string}
+>
+  <label
+    class={partClass(props.slotProps, 'label', baseLabelClass)}
+    data-part="label"
+  >
+```
+
+#### Rules
+
+1. **className is additive, not replace.** `slotProps.root.className` is concatenated after the component's base classes. Token-driven classes from Tailwind/NativeWind remain the source of truth (ADR-002 Section 4, ADR-006 Section 4). Consumer classes append, never override the base.
+2. **Supported attribute categories.** Components should wire `slotProps` passthrough for: `className` (styling), `data-*` attributes (testing, analytics), `aria-*` attributes (a11y overrides), `style` (inline style where supported). Event handler passthrough is intentionally excluded to keep the component surface controlled.
+3. **`data-part` attribute required.** Every element that accepts `slotProps` must emit `data-part="{partName}"` so consumers can target parts via CSS selectors and testing tools, independent of `slotProps`.
+4. **Explicit wiring per attribute.** Components wire only the attributes they explicitly support per part. This is a feature, not a limitation: enterprise UI libraries should have a controlled surface. Arbitrary prop passthrough invites breakage across framework targets.
+5. **Flutter parity.** `partClass` and `partAttr` are pure functions with no DOM dependency. A Dart port can implement the same contract. Flutter adapters receive `slotProps` as a typed map and apply values through the equivalent Dart widget API.
+6. **Metadata-driven integration.** `BcRenderer` (ADR-005) may populate `slotProps` from `UiSchema` metadata at render time. For example, a schema field with `density: 'compact'` could translate to `slotProps.root.className = 'p-1'` via the field resolver. This keeps the renderer a simple compositor without per-component knowledge.
+
 ## Section 7: Form Contract
 
 Form controls must be native-form-compatible on web, form-library-agnostic in React/Vue, and adapter-friendly for BitCode metadata forms.
