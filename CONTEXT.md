@@ -15,3 +15,11 @@ _Avoid_: top components, most used components, first batch
 **Semantic Event**:
 A renderer-neutral component event whose payload carries the UI meaning directly, such as a changed value, open state, or selection. DOM and native events may be included as metadata, but they are not the primary contract.
 _Avoid_: raw event, DOM-first event, framework event payload
+
+**Web Component Event Bridge**:
+The `core/wc-event-bridge.ts` utility that dispatches `bc-*` CustomEvents on the host element for Web Component consumers. Each semantic callback (e.g. `onValueChange`) has a corresponding `bc-*` event (e.g. `bc-value-change`). SSR-safe and RN-safe (no-ops when `document` is unavailable).
+_Avoid_: event emitter, event dispatcher, Stencil events
+
+**BcKey / BcSelection**:
+Standard collection types defined in `core/types.ts` per ADR-007 Section 9. `BcKey = string | number`. `BcSelection = 'all' | Set<BcKey> | BcKey[]`. Used by data components (BcDataTable, BcList) for key-based selection APIs instead of index-only APIs.
+_Avoid_: row id, selection set, selected indexes

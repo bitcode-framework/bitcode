@@ -60,9 +60,9 @@
 | Navigation/layout | BcAccordion | ✅ | ✅ | – | ⚠️ | ✅ | ✅ | ✅ | Contract updated with expandedKeys/defaultExpandedKeys/onExpandedChange, Web Component events, adapter mapping. |
 | Navigation/layout | BcDisclosure | ✅ | ✅ | – | ⚠️ | ✅ | ✅ | ✅ | Contract updated with onOpenChange semantic events, Web Component events, adapter mapping. |
 | Navigation/layout | BcSplitter | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with size/defaultSize/onSizeChange, Web Component events, separator a11y, stacked mobile mapping. |
-| Data | BcDataTable | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with ADR-008 parts, methods, Web Component events, grid a11y, adapter mapping. `initialX` to `defaultX` migration still pending in source. |
+| Data | BcDataTable | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract and source migrated to ADR-007 controlled/uncontrolled pairs: `sortModel/defaultSortModel/onSortModelChange`, `filterModel/defaultFilterModel/onFilterModelChange`, `selectedKeys/defaultSelectedKeys`, `expandedKeys/defaultExpandedKeys`, `onColumnStateChange`. Legacy `initialX` and `onSortChange/onFilterChange/onColumnsChange` kept as deprecated aliases. WC events renamed to `bc-sort-model-change`, `bc-filter-model-change`, `bc-column-state-change`. |
 | Data | BcList | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with action events, list a11y, parts, methods, adapter mapping. |
-| Data | Collection selection contracts | ⚠️ | ⚠️ | – | – | ⚠️ | ⚠️ | ⚠️ | BcKey/BcSelection semantics specified in ADR-007; formal types deferred to core/types. |
+| Data | Collection selection contracts | ✅ | ⚠️ | – | – | ⚠️ | ⚠️ | ⚠️ | `BcKey` and `BcSelection` types added to `core/types.ts` per ADR-007 §9. Consumer-level integration pending. |
 | Metadata | BcRenderer | ⚠️ | ⚠️ | ❌ | – | – | ⚠️ | ⚠️ | Schema-driven compositor per ADR-005; public API stable; formal ADR-008 contract deferred. |
 | Metadata | FieldResolver | ⚠️ | – | – | – | – | ⚠️ | ⚠️ | Stable extension contract per ADR-005; formal ADR-008 freeze deferred. |
 | Metadata | UiSchema | ⚠️ | ⚠️ | – | – | ⚠️ | ⚠️ | ⚠️ | Schema types stable per ADR-005; adapter hints deferred. |
@@ -70,7 +70,7 @@
 | Infrastructure | Config/context | ⚠️ | ⚠️ | ❌ | – | – | ⚠️ | ⚠️ | BcContext interface stable in core/types; SSR rules documented in ADR-006. |
 | Infrastructure | Tokens/theme | ⚠️ | – | – | – | – | ⚠️ | ⚠️ | Pipeline exists per ADR-006 Phase 0; Flutter token output deferred. |
 | Infrastructure | Portal/focus utilities | ⚠️ | ⚠️ | ⚠️ | – | ⚠️ | ⚠️ | ⚠️ | BcPortal Adapt PoC exists; centralized focus trap deferred. |
-| Infrastructure | Web Component event bridge | ⚠️ | ⚠️ | – | – | – | ⚠️ | ⚠️ | Event naming convention (`bc-*` + detail payload) defined in ADR-007; per-component events typed in contracts. Implementation deferred to Stencil output post-processing. |
+| Infrastructure | Web Component event bridge | ✅ | ✅ | – | – | – | ✅ | ✅ | `core/wc-event-bridge.ts` implemented with `dispatchBcEvent()`, `buildMeta()`, and `BC_EVENTS` constants. SSR/RN safe. Covers all ADR-007 semantic events. Per-component wiring into Mitosis source is incremental (components call `dispatchBcEvent` alongside semantic callbacks). |
 
 ## Audit Notes
 

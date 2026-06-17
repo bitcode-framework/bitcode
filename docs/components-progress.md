@@ -41,7 +41,7 @@ Core Integration Surface yang wajib diaudit dulu:
 | Imperative Methods | ✅ | Methods typed per contract (focus/blur/validate/reset/submit/open/close/scrollToIndex/exportCsv). |
 | A11y Behavior Contract | ✅ | All P0 interactive components define role, ARIA, keyboard, mobile equivalent in contract files. |
 | Adapter Mapping | ✅ | All P0 contracts include React/Vue/RN/Stencil/Tauri/Flutter adapter mapping interfaces. |
-| Compatibility Tests | ✅ | 1388/1388 source-level tests pass including ADR-008 contract surface, semantic event, and a11y wiring tests. |
+| Compatibility Tests | ✅ | 1411/1411 source-level tests pass including ADR-008 contract surface, semantic event, a11y wiring, and ADR-007 migration tests. |
 
 ## Ringkasan
 
@@ -347,6 +347,8 @@ Bukan komponen visual. Tracker ini hanya untuk awareness.
 > **Update 2026-06-14 — Fase A done.** Cross-tier infrastructure (ADR-002 §9) skeleton landed in `packages/ui/src/core/{providers,hooks,animation,adapt}/` with unit-test coverage. Adoption into 22 P0 components is the next gate.
 
 > **Update 2026-06-14 — Fase B done (partial).** Reactive engine (ADR-004) gained scope resolution (`$self`/`$parent`/`$root`/`$index`), `Evaluator` plug-in interface (Phase E slot), `BcReactiveScope` Level 2 wrapper, and **opt-in integration into `BcForm`** (`reactions` + `onReactiveChange` props). 10 new tests pass on top of the existing 6. Repeater (Phase B per ADR-004) and BitCode JSON feed (Phase D) remain pending.
+
+> **Update 2026-06-18 — ADR-008 hardening: collection types, BcDataTable ADR-007 migration, WC event bridge.** Three ADR-008 acceptance criteria progressed: **(1) `BcKey`/`BcSelection` collection types** added to `core/types.ts` per ADR-007 Section 9 (key-based APIs instead of index-only). **(2) BcDataTable source migration** from `initialX` props to ADR-007 controlled/uncontrolled pairs: `sortModel/defaultSortModel/onSortModelChange`, `filterModel/defaultFilterModel/onFilterModelChange`, `selectedKeys/defaultSelectedKeys`, `expandedKeys/defaultExpandedKeys`, `onColumnStateChange`. Legacy `initialSort/initialFilters/initialSelected/initialExpanded` and `onSortChange/onFilterChange/onColumnsChange` kept as `@deprecated` aliases for backward compatibility. WC events renamed to `bc-sort-model-change`, `bc-filter-model-change`, `bc-column-state-change`. **(3) Web Component event bridge** implemented as `core/wc-event-bridge.ts` with `dispatchBcEvent()` (SSR/RN-safe CustomEvent dispatch with `bubbles: true, composed: true`), `buildMeta()` helper, and `BC_EVENTS` constants covering all 14 ADR-007 semantic event names. Slots/Parts wiring investigated: Mitosis 0.13.1 lacks native slot composition for `slotProps` passthrough, so per-component wiring deferred until Mitosis supports it or a renderProp workaround is viable. **+23 new tests** (15 BcDataTable ADR-007 migration + 10 WC event bridge - 2 overlap). Total cumulative: **1411 pass / 0 fail.**
 
 ---
 
