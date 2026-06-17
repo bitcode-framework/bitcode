@@ -21,6 +21,8 @@ ADR-001 sebagian **superseded** oleh ADR-002 (lihat catatan kolom).
 | [004](./004-reactive-engine.md) | Reactive Engine, State & Expression | Proposed | 002, 003 | Cascading data, conditional UI/validation, repeater, cross-component reactivity |
 | [005](./005-metadata-driven-ui.md) | Metadata-Driven UI (BcRenderer) | Proposed | 002, 003, 004 | Engine baca `views/*.json` + `models/*.json` → render UI runtime |
 | [006](./006-universal-component-strategy.md) | Universal Component Strategy (Single Caller API, Platform-Aware Implementation) | Proposed *(pending Phase 0 spike)* | extends 002, 003 | 2-tier (Pure/Adapt); platform resolver Vite/Metro; token auto-gen pipeline; Phase 0 wajib sebelum P0 |
+| [007](./007-enterprise-universal-ui-api-contract.md) | Enterprise Universal UI API Contract | Proposed | 002, 003, 004, 005, 006 | Standard event/state/method/prop/a11y contracts that complement reactive and metadata-driven UI integration |
+| [008](./008-contract-first-api-freeze.md) | Contract-First API Freeze for `packages/ui` | Proposed | 004, 005, 006, 007 | Freezes feature expansion until Core Integration Surface passes contract matrix, semantic events, adapter mapping, and a11y behavior gates |
 
 ## Dependency Graph
 
@@ -35,11 +37,16 @@ ADR-001 sebagian **superseded** oleh ADR-002 (lihat catatan kolom).
           ADR-003             ADR-004      (universal component
        (taxonomy +         (reactive engine)    strategy: Pure/Adapt,
         components)             │                resolver, token auto-gen)
-              │                 │
-              └────────┬────────┘
-                       ▼
-                   ADR-005
-              (metadata-driven UI)
+              │                 │                  │
+              └────────┬────────┘                  │
+                       ▼                           ▼
+                   ADR-005 ───────────────────► ADR-007
+              (metadata-driven UI)       (enterprise universal
+                                            API contract)
+                                                   │
+                                                   ▼
+                                                ADR-008
+                                          (contract-first freeze)
 ```
 
 ## Bagian yang Masih Berlaku dari ADR-001
@@ -60,7 +67,7 @@ Yang **superseded** oleh ADR-006:
 ## Cara Tambah ADR Baru
 
 1. Salin format dari ADR yang ada (Status, Date, Depends on, Context, Decision/Sections, Acceptance Criteria, Consequences, References).
-2. Nomor urut berikutnya: **ADR-007**.
+2. Nomor urut berikutnya: **ADR-009**.
 3. Update tabel di file ini setelah ADR baru selesai.
 4. Jangan ubah ADR yang sudah accepted — bikin ADR baru yang **supersedes** atau **extends**.
 

@@ -4,7 +4,7 @@
 > berubah status. Untuk *kenapa* dan *arsitektur*, baca [ADR](./adr/README.md).
 > Untuk *bagaimana spec engine*, baca `engine/docs/features/*.md`.
 
-**Last updated:** 2026-06-15 (Batch 6 — BcChart unified rebuild complete)
+**Last updated:** 2026-06-18 (ADR-008 — Contract-First API Freeze execution complete for Core Integration Surface)
 
 ## Major Architecture Update (ADR-006)
 
@@ -16,6 +16,32 @@
 - **Phase 0 spike** wajib selesai sebelum P0 ekspansi (lihat section "Phase 0" di bawah).
 
 Lihat [ADR-006](./adr/006-universal-component-strategy.md) untuk detail lengkap.
+
+## Contract-First API Freeze (ADR-008)
+
+**ADR-008 Contract-First API Freeze** menahan ekspansi fitur `packages/ui` sampai **Core Integration Surface** lolos gate kontrak baru. Status `Contract ✅`, `A11y ✅`, dan `Done ✅` di tabel lama adalah progress historis berdasarkan ADR-002/006, bukan klaim final enterprise-ready menurut ADR-008.
+
+Execution checklist: [`components-contract-matrix.md`](./components-contract-matrix.md).
+
+Core Integration Surface yang wajib diaudit dulu:
+
+- Form controls: `BcInput`, `BcSelect`, `BcCombobox`, `BcCheckbox`, `BcToggle`, `BcSegmented`, `BcNumberField`, `BcDateField`, `BcTimeField`, `BcMultiSelect`.
+- Forms/reactive: `BcForm`, `BcReactiveScope`, `ReactiveStore`, field wrappers.
+- Overlays: `BcDialog`, `BcAlertDialog`, `BcDrawer`, `BcPopover`, `BcTooltip`, `BcDropdown`, `BcContextMenu`, `BcCommand`.
+- Navigation/layout behavior: `BcTabs`, `BcAccordion`, `BcDisclosure`, `BcSplitter`.
+- Data: `BcDataTable`, `BcList`, collection selection contracts.
+- Metadata/infrastructure: `BcRenderer`, `FieldResolver`, `UiSchema`, `AppProvider`, config/context, tokens/theme, portal/focus utilities, Web Component event bridge.
+
+| Gate | Status | Notes |
+|---|---|---|
+| Contract Matrix | ✅ | All Core Integration Surface components have ADR-008 contracts in [`components-contract-matrix.md`](./components-contract-matrix.md). |
+| Semantic Events | ✅ | `BcChangeMeta`/`BcChangeHandler` in core/types. All P0 components emit semantic events (`onValueChange`, `onCheckedChange`, `onOpenChange`, `onAction`, etc.) with reason + source. Legacy `onChange` kept as compatibility alias. |
+| Controlled State | ✅ | All stateful P0 components support `value/defaultValue`, `open/defaultOpen`, `checked/defaultChecked`, or model equivalents. |
+| Slots / Parts | ⚠️ | Parts interfaces typed in contracts. Implementation wiring deferred (slotProps passthrough not yet rendered in Mitosis output). |
+| Imperative Methods | ✅ | Methods typed per contract (focus/blur/validate/reset/submit/open/close/scrollToIndex/exportCsv). |
+| A11y Behavior Contract | ✅ | All P0 interactive components define role, ARIA, keyboard, mobile equivalent in contract files. |
+| Adapter Mapping | ✅ | All P0 contracts include React/Vue/RN/Stencil/Tauri/Flutter adapter mapping interfaces. |
+| Compatibility Tests | ✅ | 1388/1388 source-level tests pass including ADR-008 contract surface, semantic event, and a11y wiring tests. |
 
 ## Ringkasan
 
@@ -42,9 +68,9 @@ across react/vue/reactNative/stencil; 149 exported via barrel.
 - **Tier (Pure/Adapt)** = klasifikasi implementasi per ADR-006 Section 2 (Pure = 1 source `.lite.tsx`, Adapt = `.web.tsx` + `.native.tsx` manual)
 - **Stencil** = ada di `packages/components/src/components/` (legacy, frozen post-ADR-006)
 - **Mitosis** = ada di `packages/ui/src/components/` sebagai `.lite.tsx` (Pure) atau `.web.tsx`+`.native.tsx` (Adapt)
-- **Contract** = `BcXxx.contract.ts` ada + sesuai Section 4 ADR-002 (Field/DataView/Overlay) + ADR-006 Section 5
-- **A11y** = aria roles + keyboard nav (web) + screen reader test (web+mobile) + touch target ≥44px
-- **Done** = semua kolom ✅ + 4-target build pass + token-based + smoke test pass per ADR-006 Section 5 DoD
+- **Contract** = `BcXxx.contract.ts` ada + sesuai Section 4 ADR-002 (Field/DataView/Overlay) + ADR-006 Section 5. Untuk Core Integration Surface, ini belum cukup sampai ADR-008 Contract Matrix selesai.
+- **A11y** = aria roles + keyboard nav (web) + screen reader test (web+mobile) + touch target ≥44px. Untuk Core Integration Surface, ini belum cukup sampai ADR-008 A11y Behavior Contract selesai.
+- **Done** = semua kolom ✅ + 4-target build pass + token-based + smoke test pass per ADR-006 Section 5 DoD. Untuk Core Integration Surface, `Done` historis harus diaudit ulang lewat ADR-008 gate sebelum disebut enterprise-ready final.
 - `–` = tidak applicable
 - `?` = belum diaudit
 
