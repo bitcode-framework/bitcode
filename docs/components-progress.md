@@ -37,11 +37,11 @@ Core Integration Surface yang wajib diaudit dulu:
 | Contract Matrix | ✅ | All Core Integration Surface components have ADR-008 contracts in [`components-contract-matrix.md`](./components-contract-matrix.md). |
 | Semantic Events | ✅ | `BcChangeMeta`/`BcChangeHandler` in core/types. All P0 components emit semantic events (`onValueChange`, `onCheckedChange`, `onOpenChange`, `onAction`, etc.) with reason + source. Legacy `onChange` kept as compatibility alias. |
 | Controlled State | ✅ | All stateful P0 components support `value/defaultValue`, `open/defaultOpen`, `checked/defaultChecked`, or model equivalents. |
-| Slots / Parts | ✅ | 25 Core Integration Surface source components wired across all surfaces. All components with source implementations now have Runtime Part Resolution. |
+| Slots / Parts | ✅ | 25 Core Integration Surface source components wired across all surfaces. All components with source implementations now have Runtime Part Resolution. Remaining infrastructure items (BcReactiveScope, Field wrappers, Collection contracts, FieldResolver, UiSchema, Config/context, Tokens/theme) now have formal ADR-008 contracts with Parts/Methods/A11y/AdapterMapping defined. |
 | Imperative Methods | ✅ | Methods typed per contract (focus/blur/validate/reset/submit/open/close/scrollToIndex/exportCsv). |
 | A11y Behavior Contract | ✅ | All P0 interactive components define role, ARIA, keyboard, mobile equivalent in contract files. |
 | Adapter Mapping | ✅ | All P0 contracts include React/Vue/RN/Stencil/Tauri/Flutter adapter mapping interfaces. |
-| Compatibility Tests | ✅ | 1488/1488 source-level tests pass including ADR-008 contract surface, semantic event, a11y wiring, ADR-007 migration tests, WC event bridge, Runtime Part Resolution helper tests, Data/View wiring tests, and Overlay/Navigation/Layout rollout tests. |
+| Compatibility Tests | ✅ | 1508/1508 source-level tests pass including ADR-008 contract surface, semantic event, a11y wiring, ADR-007 migration tests, WC event bridge, Runtime Part Resolution helper tests, Data/View wiring tests, Overlay/Navigation/Layout rollout tests, and formal contract freeze tests for BcReactiveScope, Collection selection, FieldResolver, UiSchema, Config/context, and Tokens/theme. |
 
 ## Ringkasan
 
@@ -58,7 +58,7 @@ Core Integration Surface yang wajib diaudit dulu:
 production-ready, including unified BcChart that collapses 26 Stencil chart
 variants into a single component driven by `type` prop.
 
-**Test totals:** 1343 source-level tests, 0 failures. Build: 151/151 components
+**Test totals:** 1508 source-level tests, 0 failures. Build: 151/151 components
 across react/vue/reactNative/stencil; 149 exported via barrel.
 
 \* 127 Stencil = 128 folder, beberapa overlap target / akan disatukan saat porting. Stencil **frozen** post-ADR-006 (tidak dapat fitur baru).
