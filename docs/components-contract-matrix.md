@@ -39,15 +39,15 @@
 | Form control | BcCombobox | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part="root"` wired per ADR-007 §6.1. Controlled pairs, semantic events, WC bridge, methods, a11y, adapter mapping verified. |
 | Form control | BcCheckbox | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part` on root, control parts per ADR-007 §6.1. Checked/defaultChecked/onCheckedChange, semantic events, methods, a11y, adapter mapping verified. |
 | Form control | BcToggle | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part="root"` wired per ADR-007 §6.1. Checked/defaultChecked/onCheckedChange, role=switch, semantic events, methods, a11y, adapter mapping verified. |
-| Form control | BcSegmented | ✅ | ✅ | – | – | ✅ | ✅ | ✅ | Contract-only (no `.lite.tsx` source yet). Runtime Part Resolution deferred until source implementation exists. onValueChange, WC events, a11y, adapter mapping in contract. |
-| Form control | BcNumberField | ✅ | ✅ | ✅ | – | ✅ | ✅ | ✅ | Contract-only (no `.lite.tsx` source yet). Runtime Part Resolution deferred until source implementation exists. onValueChange, methods, WC events, a11y, adapter mapping in contract. |
-| Form control | BcDateField | ✅ | ✅ | ✅ | – | ✅ | ✅ | ✅ | Contract-only (no `.lite.tsx` source yet). Runtime Part Resolution deferred until source implementation exists. onValueChange, methods, WC events, a11y, adapter mapping in contract. |
-| Form control | BcTimeField | ✅ | ✅ | ✅ | – | ✅ | ✅ | ✅ | Contract-only (no `.lite.tsx` source yet). Runtime Part Resolution deferred until source implementation exists. onValueChange, methods, WC events, a11y, adapter mapping in contract. |
-| Form control | BcMultiSelect | ✅ | ✅ | ✅ | – | ✅ | ✅ | ✅ | Contract-only (no `.lite.tsx` source yet). Runtime Part Resolution deferred until source implementation exists. value/open events, methods, WC events, a11y, adapter mapping in contract. |
+| Form control | BcSegmented | ✅ | ✅ | – | ✅ | ✅ | ✅ | ✅ | Source implementation created. partClass + data-part on root, option. |
+| Form control | BcNumberField | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Source implementation created. partClass + data-part on root, label, input, suffix. |
+| Form control | BcDateField | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Source implementation created. partClass + data-part on root, label, input. |
+| Form control | BcTimeField | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Source implementation created. partClass + data-part on root, label, input. |
+| Form control | BcMultiSelect | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Source implementation created. partClass + data-part on root, label, trigger, chip, content, option. |
 | Forms/reactive | BcForm | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Contract + source wired per ADR-007 §6.1. `partClass` + `data-part` on root, field, label, control, description, error, actions, submitButton parts. Submit/validate lifecycle, form a11y, WC events, methods, adapter mapping verified. |
 | Forms/reactive | BcReactiveScope | ⚠️ | ⚠️ | ❌ | – | – | ⚠️ | ⚠️ | ADR-004 Level 2 scope; contract needs formal freeze but internal API stable. |
-| Forms/reactive | ReactiveStore | ⚠️ | ⚠️ | ⚠️ | – | – | ⚠️ | ⚠️ | Headless core stable per ADR-004; public API freeze deferred to consumer-level freeze. |
-| Forms/reactive | Field wrappers | ⚠️ | – | – | ⚠️ | ⚠️ | ⚠️ | ⚠️ | Composition defined in contracts (label/description/error parts per field component). Full standalone wrapper deferred. |
+| Forms/reactive | ReactiveStore | ✅ | ✅ | ✅ | – | ✅ | ✅ | ✅ | Formal ADR-008 contract frozen: Methods, a11y (headless), adapter mapping (headless-pure-ts-portable). |
+| Forms/reactive | Field wrappers | ⚠️ | – | – | ✅ | ⚠️ | ⚠️ | ⚠️ | Composition defined in contracts and wired through BcForm field/label/control/description/error parts. |
 | Overlay | BcDialog | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part` on overlay, content parts per ADR-007 §6.1. open/defaultOpen/onOpenChange, role=dialog, aria-modal, reason meta, WC events, adapter mapping verified. |
 | Overlay | BcAlertDialog | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Runtime Part Resolution wired on root, overlay, content, title, description, confirmButton, cancelButton. defaultOpen/onOpenChange, alertdialog a11y, WC events, adapter mapping verified. |
 | Overlay | BcDrawer | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Runtime Part Resolution wired on root, overlay, content, header, title, description, body, closeButton. defaultOpen/onOpenChange, drawer a11y, WC events, adapter mapping verified. |
@@ -63,15 +63,15 @@
 | Data | BcDataTable | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Contract/source migrated to ADR-007 controlled pairs and wired per ADR-007 §6.1. `partClass` + `data-part` on root, toolbar, search, header, headerCell, body, row, cell, loading, error, empty, pagination, contextMenu. Legacy aliases kept deprecated. WC events use `bc-sort-model-change`, `bc-filter-model-change`, `bc-column-state-change`. |
 | Data | BcList | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Contract + source wired per ADR-007 §6.1. `partClass` + `data-part` on root, item, pagination, empty, loading, error parts. Action events, list a11y, methods, adapter mapping verified. |
 | Data | Collection selection contracts | ✅ | ⚠️ | – | – | ⚠️ | ⚠️ | ⚠️ | `BcKey` and `BcSelection` types added to `core/types.ts` per ADR-007 §9. Consumer-level integration pending. |
-| Metadata | BcRenderer | ⚠️ | ⚠️ | ❌ | – | – | ⚠️ | ⚠️ | Schema-driven compositor per ADR-005; public API stable; formal ADR-008 contract deferred. |
+| Metadata | BcRenderer | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Formal ADR-008 contract frozen: Parts (root + 6 schema kinds), adapter mapping, a11y contract. Phases 1-3 implemented. |
 | Metadata | FieldResolver | ⚠️ | – | – | – | – | ⚠️ | ⚠️ | Stable extension contract per ADR-005; formal ADR-008 freeze deferred. |
 | Metadata | UiSchema | ⚠️ | ⚠️ | – | – | ⚠️ | ⚠️ | ⚠️ | Schema types stable per ADR-005; adapter hints deferred. |
-| Infrastructure | AppProvider | ⚠️ | ⚠️ | ❌ | – | – | ⚠️ | ⚠️ | Provider contract for theme/locale/rtl/portal exists in core/context; formal ADR-008 freeze deferred. |
+| Infrastructure | AppProvider | ✅ | ✅ | ❌ | – | ✅ | ✅ | ✅ | Formal ADR-008 contract frozen: Parts, a11y (htmlDir/htmlLang), adapter mapping. |
 | Infrastructure | Config/context | ⚠️ | ⚠️ | ❌ | – | – | ⚠️ | ⚠️ | BcContext interface stable in core/types; SSR rules documented in ADR-006. |
 | Infrastructure | Tokens/theme | ⚠️ | – | – | – | – | ⚠️ | ⚠️ | Pipeline exists per ADR-006 Phase 0; Flutter token output deferred. |
-| Infrastructure | Portal/focus utilities | ⚠️ | ⚠️ | ⚠️ | – | ⚠️ | ⚠️ | ⚠️ | BcPortal Adapt PoC exists; centralized focus trap deferred. |
-| Infrastructure | Web Component event bridge | ✅ | ✅ | – | – | – | ✅ | ✅ | `core/wc-event-bridge.ts` implemented with `dispatchBcEvent()`, `buildMeta()`, and `BC_EVENTS` constants. SSR/RN safe. Covers all ADR-007 semantic events. Per-component wiring into Mitosis source is incremental (components call `dispatchBcEvent` alongside semantic callbacks). |
-| Infrastructure | Runtime Part Resolution | ✅ | – | – | ✅ | – | ✅ | ✅ | `core/part-props.ts` implemented per ADR-007 §6.1 with `partClass`, `partAttr`, `partStyle`. 20 Core Integration Surface components wired across forms, overlays, navigation/layout, and data/view surfaces. className additive, data-part emitted, Mitosis 4-target build verified. |
+| Infrastructure | Portal/focus utilities | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Formal ADR-008 contract frozen: Parts (root, content), a11y (focus-trap/restore), adapter mapping. |
+| Infrastructure | Web Component event bridge | ✅ | ✅ | – | – | – | ✅ | ✅ | `core/wc-event-bridge.ts` wired into 19 source components (BcTooltip skipped: CSS-only hover). SSR/RN safe. |
+| Infrastructure | Runtime Part Resolution | ✅ | – | – | ✅ | – | ✅ | ✅ | `core/part-props.ts` implemented per ADR-007 §6.1 with `partClass`, `partAttr`, `partStyle`. 25 Core Integration Surface components wired across forms, overlays, navigation/layout, and data/view surfaces. className additive, data-part emitted, Mitosis 4-target build verified. |
 
 ## Audit Notes
 
