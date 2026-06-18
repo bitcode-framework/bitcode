@@ -44,7 +44,7 @@
 | Form control | BcDateField | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with onValueChange, methods, Web Component events, a11y, adapter mapping. |
 | Form control | BcTimeField | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with onValueChange, methods, Web Component events, a11y, adapter mapping. |
 | Form control | BcMultiSelect | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with value/open events, methods, Web Component events, a11y, adapter mapping. |
-| Forms/reactive | BcForm | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with submit/validate lifecycle, form role a11y, Web Component events, methods, adapter mapping. |
+| Forms/reactive | BcForm | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Contract + source wired per ADR-007 §6.1. `partClass` + `data-part` on root, field, label, control, description, error, actions, submitButton parts. Submit/validate lifecycle, form a11y, WC events, methods, adapter mapping verified. |
 | Forms/reactive | BcReactiveScope | ⚠️ | ⚠️ | ❌ | – | – | ⚠️ | ⚠️ | ADR-004 Level 2 scope; contract needs formal freeze but internal API stable. |
 | Forms/reactive | ReactiveStore | ⚠️ | ⚠️ | ⚠️ | – | – | ⚠️ | ⚠️ | Headless core stable per ADR-004; public API freeze deferred to consumer-level freeze. |
 | Forms/reactive | Field wrappers | ⚠️ | – | – | ⚠️ | ⚠️ | ⚠️ | ⚠️ | Composition defined in contracts (label/description/error parts per field component). Full standalone wrapper deferred. |
@@ -60,8 +60,8 @@
 | Navigation/layout | BcAccordion | ✅ | ✅ | – | ⚠️ | ✅ | ✅ | ✅ | Contract updated with expandedKeys/defaultExpandedKeys/onExpandedChange, Web Component events, adapter mapping. |
 | Navigation/layout | BcDisclosure | ✅ | ✅ | – | ⚠️ | ✅ | ✅ | ✅ | Contract updated with onOpenChange semantic events, Web Component events, adapter mapping. |
 | Navigation/layout | BcSplitter | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with size/defaultSize/onSizeChange, Web Component events, separator a11y, stacked mobile mapping. |
-| Data | BcDataTable | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract and source migrated to ADR-007 controlled/uncontrolled pairs: `sortModel/defaultSortModel/onSortModelChange`, `filterModel/defaultFilterModel/onFilterModelChange`, `selectedKeys/defaultSelectedKeys`, `expandedKeys/defaultExpandedKeys`, `onColumnStateChange`. Legacy `initialX` and `onSortChange/onFilterChange/onColumnsChange` kept as deprecated aliases. WC events renamed to `bc-sort-model-change`, `bc-filter-model-change`, `bc-column-state-change`. |
-| Data | BcList | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with action events, list a11y, parts, methods, adapter mapping. |
+| Data | BcDataTable | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Contract/source migrated to ADR-007 controlled pairs and wired per ADR-007 §6.1. `partClass` + `data-part` on root, toolbar, search, header, headerCell, body, row, cell, loading, error, empty, pagination, contextMenu. Legacy aliases kept deprecated. WC events use `bc-sort-model-change`, `bc-filter-model-change`, `bc-column-state-change`. |
+| Data | BcList | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Contract + source wired per ADR-007 §6.1. `partClass` + `data-part` on root, item, pagination, empty, loading, error parts. Action events, list a11y, methods, adapter mapping verified. |
 | Data | Collection selection contracts | ✅ | ⚠️ | – | – | ⚠️ | ⚠️ | ⚠️ | `BcKey` and `BcSelection` types added to `core/types.ts` per ADR-007 §9. Consumer-level integration pending. |
 | Metadata | BcRenderer | ⚠️ | ⚠️ | ❌ | – | – | ⚠️ | ⚠️ | Schema-driven compositor per ADR-005; public API stable; formal ADR-008 contract deferred. |
 | Metadata | FieldResolver | ⚠️ | – | – | – | – | ⚠️ | ⚠️ | Stable extension contract per ADR-005; formal ADR-008 freeze deferred. |
