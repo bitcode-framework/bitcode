@@ -39,11 +39,11 @@
 | Form control | BcCombobox | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part="root"` wired per ADR-007 §6.1. Controlled pairs, semantic events, WC bridge, methods, a11y, adapter mapping verified. |
 | Form control | BcCheckbox | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part` on root, control parts per ADR-007 §6.1. Checked/defaultChecked/onCheckedChange, semantic events, methods, a11y, adapter mapping verified. |
 | Form control | BcToggle | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part="root"` wired per ADR-007 §6.1. Checked/defaultChecked/onCheckedChange, role=switch, semantic events, methods, a11y, adapter mapping verified. |
-| Form control | BcSegmented | ✅ | ✅ | – | ⚠️ | ✅ | ✅ | ✅ | Contract updated with onValueChange, Web Component events, a11y, adapter mapping. |
-| Form control | BcNumberField | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with onValueChange, methods, Web Component events, a11y, adapter mapping. |
-| Form control | BcDateField | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with onValueChange, methods, Web Component events, a11y, adapter mapping. |
-| Form control | BcTimeField | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with onValueChange, methods, Web Component events, a11y, adapter mapping. |
-| Form control | BcMultiSelect | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with value/open events, methods, Web Component events, a11y, adapter mapping. |
+| Form control | BcSegmented | ✅ | ✅ | – | – | ✅ | ✅ | ✅ | Contract-only (no `.lite.tsx` source yet). Runtime Part Resolution deferred until source implementation exists. onValueChange, WC events, a11y, adapter mapping in contract. |
+| Form control | BcNumberField | ✅ | ✅ | ✅ | – | ✅ | ✅ | ✅ | Contract-only (no `.lite.tsx` source yet). Runtime Part Resolution deferred until source implementation exists. onValueChange, methods, WC events, a11y, adapter mapping in contract. |
+| Form control | BcDateField | ✅ | ✅ | ✅ | – | ✅ | ✅ | ✅ | Contract-only (no `.lite.tsx` source yet). Runtime Part Resolution deferred until source implementation exists. onValueChange, methods, WC events, a11y, adapter mapping in contract. |
+| Form control | BcTimeField | ✅ | ✅ | ✅ | – | ✅ | ✅ | ✅ | Contract-only (no `.lite.tsx` source yet). Runtime Part Resolution deferred until source implementation exists. onValueChange, methods, WC events, a11y, adapter mapping in contract. |
+| Form control | BcMultiSelect | ✅ | ✅ | ✅ | – | ✅ | ✅ | ✅ | Contract-only (no `.lite.tsx` source yet). Runtime Part Resolution deferred until source implementation exists. value/open events, methods, WC events, a11y, adapter mapping in contract. |
 | Forms/reactive | BcForm | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Contract + source wired per ADR-007 §6.1. `partClass` + `data-part` on root, field, label, control, description, error, actions, submitButton parts. Submit/validate lifecycle, form a11y, WC events, methods, adapter mapping verified. |
 | Forms/reactive | BcReactiveScope | ⚠️ | ⚠️ | ❌ | – | – | ⚠️ | ⚠️ | ADR-004 Level 2 scope; contract needs formal freeze but internal API stable. |
 | Forms/reactive | ReactiveStore | ⚠️ | ⚠️ | ⚠️ | – | – | ⚠️ | ⚠️ | Headless core stable per ADR-004; public API freeze deferred to consumer-level freeze. |
