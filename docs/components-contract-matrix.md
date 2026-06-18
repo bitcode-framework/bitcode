@@ -49,17 +49,17 @@
 | Forms/reactive | ReactiveStore | ⚠️ | ⚠️ | ⚠️ | – | – | ⚠️ | ⚠️ | Headless core stable per ADR-004; public API freeze deferred to consumer-level freeze. |
 | Forms/reactive | Field wrappers | ⚠️ | – | – | ⚠️ | ⚠️ | ⚠️ | ⚠️ | Composition defined in contracts (label/description/error parts per field component). Full standalone wrapper deferred. |
 | Overlay | BcDialog | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part` on overlay, content parts per ADR-007 §6.1. open/defaultOpen/onOpenChange, role=dialog, aria-modal, reason meta, WC events, adapter mapping verified. |
-| Overlay | BcAlertDialog | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with defaultOpen/onOpenChange, alertdialog a11y, Web Component events, adapter mapping. |
-| Overlay | BcDrawer | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with defaultOpen/onOpenChange, drawer a11y, Web Component events, adapter mapping. |
+| Overlay | BcAlertDialog | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Runtime Part Resolution wired on root, overlay, content, title, description, confirmButton, cancelButton. defaultOpen/onOpenChange, alertdialog a11y, WC events, adapter mapping verified. |
+| Overlay | BcDrawer | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Runtime Part Resolution wired on root, overlay, content, header, title, description, body, closeButton. defaultOpen/onOpenChange, drawer a11y, WC events, adapter mapping verified. |
 | Overlay | BcPopover | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `partClass` + `data-part="root"` wired per ADR-007 §6.1. open/defaultOpen/onOpenChange, semantic reason meta, adapter mapping verified. |
-| Overlay | BcTooltip | ✅ | ✅ | – | ⚠️ | ✅ | ✅ | ✅ | Contract added with open/defaultOpen/onOpenChange, tooltip role, adapter mapping. |
-| Overlay | BcDropdown | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with open/defaultOpen/onOpenChange, onAction, Web Component events, adapter mapping. |
-| Overlay | BcContextMenu | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with open/action semantic events, long-press mapping, Web Component events, adapter mapping. |
-| Overlay | BcCommand | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with open/action semantic events, command palette a11y, Web Component events, adapter mapping. |
-| Navigation/layout | BcTabs | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract added with activeKey/defaultActiveKey/onActiveKeyChange, tablist/tab/tabpanel roles, keyboard, adapter mapping. |
-| Navigation/layout | BcAccordion | ✅ | ✅ | – | ⚠️ | ✅ | ✅ | ✅ | Contract updated with expandedKeys/defaultExpandedKeys/onExpandedChange, Web Component events, adapter mapping. |
-| Navigation/layout | BcDisclosure | ✅ | ✅ | – | ⚠️ | ✅ | ✅ | ✅ | Contract updated with onOpenChange semantic events, Web Component events, adapter mapping. |
-| Navigation/layout | BcSplitter | ✅ | ✅ | ✅ | ⚠️ | ✅ | ✅ | ✅ | Contract updated with size/defaultSize/onSizeChange, Web Component events, separator a11y, stacked mobile mapping. |
+| Overlay | BcTooltip | ✅ | ✅ | – | ✅ | ✅ | ✅ | ✅ | Runtime Part Resolution wired on root/content. open/defaultOpen/onOpenChange, tooltip role, adapter mapping verified. |
+| Overlay | BcDropdown | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Runtime Part Resolution wired on root, trigger, content, item, separator. open/defaultOpen/onOpenChange, onAction, WC events, adapter mapping verified. |
+| Overlay | BcContextMenu | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Runtime Part Resolution wired on root, backdrop, content, item, separator. open/action semantic events, long-press mapping, WC events, adapter mapping verified. |
+| Overlay | BcCommand | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Runtime Part Resolution wired on root, input, list, group, item, empty. open/action semantic events, command palette a11y, WC events, adapter mapping verified. |
+| Navigation/layout | BcTabs | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Runtime Part Resolution wired on root, tablist, tab. activeKey/defaultActiveKey/onActiveKeyChange, tablist/tab roles, keyboard, adapter mapping verified. |
+| Navigation/layout | BcAccordion | ✅ | ✅ | – | ✅ | ✅ | ✅ | ✅ | Runtime Part Resolution wired on root, item, trigger, content. expandedKeys/defaultExpandedKeys/onExpandedChange, WC events, adapter mapping verified. |
+| Navigation/layout | BcDisclosure | ✅ | ✅ | – | ✅ | ✅ | ✅ | ✅ | Runtime Part Resolution wired on root, trigger, content. onOpenChange semantic events, WC events, adapter mapping verified. |
+| Navigation/layout | BcSplitter | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Runtime Part Resolution wired on root, startPane, handle, endPane. size/defaultSize/onSizeChange, WC events, separator a11y, stacked mobile mapping verified. |
 | Data | BcDataTable | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Contract/source migrated to ADR-007 controlled pairs and wired per ADR-007 §6.1. `partClass` + `data-part` on root, toolbar, search, header, headerCell, body, row, cell, loading, error, empty, pagination, contextMenu. Legacy aliases kept deprecated. WC events use `bc-sort-model-change`, `bc-filter-model-change`, `bc-column-state-change`. |
 | Data | BcList | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Contract + source wired per ADR-007 §6.1. `partClass` + `data-part` on root, item, pagination, empty, loading, error parts. Action events, list a11y, methods, adapter mapping verified. |
 | Data | Collection selection contracts | ✅ | ⚠️ | – | – | ⚠️ | ⚠️ | ⚠️ | `BcKey` and `BcSelection` types added to `core/types.ts` per ADR-007 §9. Consumer-level integration pending. |
@@ -71,7 +71,7 @@
 | Infrastructure | Tokens/theme | ⚠️ | – | – | – | – | ⚠️ | ⚠️ | Pipeline exists per ADR-006 Phase 0; Flutter token output deferred. |
 | Infrastructure | Portal/focus utilities | ⚠️ | ⚠️ | ⚠️ | – | ⚠️ | ⚠️ | ⚠️ | BcPortal Adapt PoC exists; centralized focus trap deferred. |
 | Infrastructure | Web Component event bridge | ✅ | ✅ | – | – | – | ✅ | ✅ | `core/wc-event-bridge.ts` implemented with `dispatchBcEvent()`, `buildMeta()`, and `BC_EVENTS` constants. SSR/RN safe. Covers all ADR-007 semantic events. Per-component wiring into Mitosis source is incremental (components call `dispatchBcEvent` alongside semantic callbacks). |
-| Infrastructure | Runtime Part Resolution | ✅ | – | – | ✅ | – | ✅ | ✅ | `core/part-props.ts` implemented per ADR-007 §6.1 with `partClass`, `partAttr`, `partStyle`. 7 source components wired: BcInput, BcSelect, BcCombobox, BcCheckbox, BcToggle, BcDialog, BcPopover. className additive, data-part emitted, Mitosis 4-target build verified. |
+| Infrastructure | Runtime Part Resolution | ✅ | – | – | ✅ | – | ✅ | ✅ | `core/part-props.ts` implemented per ADR-007 §6.1 with `partClass`, `partAttr`, `partStyle`. 20 Core Integration Surface components wired across forms, overlays, navigation/layout, and data/view surfaces. className additive, data-part emitted, Mitosis 4-target build verified. |
 
 ## Audit Notes
 

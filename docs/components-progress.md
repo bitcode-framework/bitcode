@@ -37,11 +37,11 @@ Core Integration Surface yang wajib diaudit dulu:
 | Contract Matrix | ✅ | All Core Integration Surface components have ADR-008 contracts in [`components-contract-matrix.md`](./components-contract-matrix.md). |
 | Semantic Events | ✅ | `BcChangeMeta`/`BcChangeHandler` in core/types. All P0 components emit semantic events (`onValueChange`, `onCheckedChange`, `onOpenChange`, `onAction`, etc.) with reason + source. Legacy `onChange` kept as compatibility alias. |
 | Controlled State | ✅ | All stateful P0 components support `value/defaultValue`, `open/defaultOpen`, `checked/defaultChecked`, or model equivalents. |
-| Slots / Parts | ⚠️ | Runtime Part Resolution landed in `core/part-props.ts`; 10 Core Integration Surface source components wired (BcInput, BcSelect, BcCombobox, BcCheckbox, BcToggle, BcDialog, BcPopover, BcForm, BcList, BcDataTable). Remaining P0 contracts still pending per-component wiring. |
+| Slots / Parts | ⚠️ | Runtime Part Resolution landed in `core/part-props.ts`; 20 Core Integration Surface source components wired across forms, data/view, overlay, and navigation/layout surfaces. Remaining P0 contracts still pending per-component wiring for a few form controls and metadata/infra surfaces. |
 | Imperative Methods | ✅ | Methods typed per contract (focus/blur/validate/reset/submit/open/close/scrollToIndex/exportCsv). |
 | A11y Behavior Contract | ✅ | All P0 interactive components define role, ARIA, keyboard, mobile equivalent in contract files. |
 | Adapter Mapping | ✅ | All P0 contracts include React/Vue/RN/Stencil/Tauri/Flutter adapter mapping interfaces. |
-| Compatibility Tests | ✅ | 1442/1442 source-level tests pass including ADR-008 contract surface, semantic event, a11y wiring, ADR-007 migration tests, WC event bridge, Runtime Part Resolution helper tests, and Data/View part wiring tests. |
+| Compatibility Tests | ✅ | 1445/1445 source-level tests pass including ADR-008 contract surface, semantic event, a11y wiring, ADR-007 migration tests, WC event bridge, Runtime Part Resolution helper tests, Data/View wiring tests, and Overlay/Navigation/Layout rollout tests. |
 
 ## Ringkasan
 
@@ -353,6 +353,8 @@ Bukan komponen visual. Tracker ini hanya untuk awareness.
 > **Update 2026-06-18 — Runtime Part Resolution landed for first Core Integration Surface cohort.** ADR-007 Section 6.1 implementation added as `core/part-props.ts`: `partClass()` (additive className concat), `partAttr()` (explicit data/aria attr lookup), `partStyle()` (inline style lookup). **7 source components wired:** BcInput (root/label/control/input/description/error), BcSelect (root), BcCombobox (root), BcCheckbox (root/control), BcToggle (root), BcDialog (overlay/content), BcPopover (root). All wired elements emit `data-part`. This solves slotProps passthrough without Mitosis spread, without plugin/fork, and remains Flutter-portable as pure functions. **+28 helper tests. Total cumulative: 1439 pass / 0 fail.** Mitosis full build green: 151 components, 149 exports, 4 targets (React/Vue/Stencil/RN).
 
 > **Update 2026-06-18 — Runtime Part Resolution Data/View rollout.** The Data/View family now has ADR-007 §6.1 wiring: **BcForm** (root/field/label/control/description/error/actions/submitButton), **BcList** (root/item/pagination/empty/loading/error), and **BcDataTable** (root/toolbar/search/header/headerCell/body/row/cell/loading/error/empty/pagination/contextMenu). Contract props `className` + `slotProps` were added where missing so source and contract stay aligned. **+3 source-level wiring tests. Total cumulative: 1442 pass / 0 fail.** Mitosis full build remains green: 151 components, 149 exports, 4 targets.
+
+> **Update 2026-06-18 — Runtime Part Resolution Overlay/Navigation/Layout rollout.** The next P0 cohort now has ADR-007 §6.1 wiring: **BcAlertDialog**, **BcDrawer**, **BcTooltip**, **BcDropdown**, **BcContextMenu**, **BcCommand**, **BcTabs**, **BcAccordion**, **BcDisclosure**, and **BcSplitter**. Each component exposes `className` + `slotProps` in source when previously contract-only and uses additive `partClass()` plus `data-part` on named parts. Added aggregate rollout tests covering all 10 components. **+3 source-level tests. Total cumulative: 1445 pass / 0 fail.** Mitosis full build remains green: 151 components, 149 exports, 4 targets.
 
 ---
 
