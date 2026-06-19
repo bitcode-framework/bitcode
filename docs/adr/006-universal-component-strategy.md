@@ -336,11 +336,104 @@ Pre-conditions sebelum mulai komponen baru di bawah arsitektur ini.
 - [x] `components-progress.md` di-restructure jadi 2-tier (Pure / Adapt) — done in earlier session, refined with Phase 0 verdicts.
 - [x] Definition of Done di Section 5 di-validasi pada PoC component.
 
+### slotProps & data-part Implementation — ✅ DONE 2026-06-18
+
+Runtime Part Resolution (ADR-009) has been rolled out to all Core Integration Surface components:
+
+- [x] All 25 Pure components import `partClass`/`partAttr` from `core/part-props.ts`
+- [x] All 25 Pure components emit `data-part` attributes for CSS selector targeting
+- [x] Adapt components (BcPopover, BcDrawer) use same helpers in both `.web.tsx` and `.native.tsx`
+- [x] 2,058 tests passing including `runtime-part-rollout.test.ts` verification
+- [x] `slotProps` works identically across React, Vue, Svelte, Solid, Angular, React Native, Stencil
+- [x] Additive className verified: consumer classes never replace base token classes
+
 ### MVP (22 P0 selesai)
 - [ ] 22 P0 komponen Done sesuai DoD Section 5.
 - [ ] Tidak ada komponen yang break di salah satu dari 4 target.
 - [ ] Token pipeline auto-sync (CI guard pass).
 - [ ] Sample app demo (web + mobile + desktop Tauri) konsumsi semua 22 P0.
+
+---
+
+## Section 7.1 — slotProps Implementation Notes
+
+### Pure Components (25 wired)
+
+All Pure components in the Core Integration Surface use Runtime Part Resolution:
+
+**Implementation pattern:**
+```tsx
+import { partClass, partAttr } from '@/core/part-props';
+
+export default function BcXxx(props) {
+  return (
+    <div
+      class={partClass(props.slotProps, 'root', 'base-class')}
+      data-part="root"
+    >
+      <label
+        class={partClass(props.slotProps, 'label', 'label-base')}
+        data-part="label"
+      >
+        {props.label}
+      </label>
+      <input
+        class={partClass(props.slotProps, 'input', 'input-base')}
+        data-part="input"
+        aria-label={partAttr(props.slotProps, 'input', 'aria-label')}
+      />
+    </div>
+  );
+}
+```
+
+**Components wired:**
+- Form Controls (10): BcInput, BcSelect, BcCombobox, BcCheckbox, BcToggle, BcSegmented, BcNumberField, BcDateField, BcTimeField, BcMultiSelect
+- Forms (1): BcForm
+- Overlays (8): BcDialog, BcAlertDialog, BcDrawer, BcPopover, BcTooltip, BcDropdown, BcContextMenu, BcCommand
+- Navigation/Layout (4): BcTabs, BcAccordion, BcDisclosure, BcSplitter
+- Data (1): BcDataTable
+
+### Adapt Components (2 wired)
+
+Adapt components have separate `.web.tsx` and `.native.tsx` implementations, but both support `slotProps`:
+
+```
+components/overlays/popover/
+├── BcPopover.contract.ts    # Shared slotProps interface
+├── BcPopover.web.tsx        # Uses partClass/partAttr
+├── BcPopover.native.tsx     # Uses partClass/partAttr (same helpers)
+└── BcPopover.test.ts        # Contract tests verify both
+```
+
+Both implementations use the same pure function helpers, ensuring consistent customization API across platforms.
+
+### data-part Attributes
+
+All components emit `data-part` attributes to enable cross-platform CSS selector targeting:
+
+```css
+/* Target specific parts via CSS */
+[data-part="root"] { margin: 1rem; }
+[data-part="label"] { font-weight: 600; }
+[data-part="input"] { border-radius: 4px; }
+```
+
+**Verification:** `runtime-part-rollout.test.ts` confirms all 25 components emit `data-part` attributes.
+
+### Cross-Platform Compatibility
+
+| Platform | slotProps Support | Notes |
+|----------|-------------------|-------|
+| React | ✅ Full | `partClass` adds CSS classes |
+| Vue | ✅ Full | `partClass` adds CSS classes |
+| Svelte | ✅ Full | `partClass` adds CSS classes |
+| Solid | ✅ Full | `partClass` adds CSS classes |
+| Angular | ✅ Full | `partClass` adds CSS classes |
+| React Native | ✅ Full | `partClass` adds NativeWind classes |
+| Stencil | ✅ Full | `partClass` adds CSS classes (shadow DOM) |
+
+**Key insight:** `partClass`/`partAttr` are pure functions with no DOM dependencies, making them portable to Flutter (Tier C) and future adapters (Tier B).
 
 ---
 

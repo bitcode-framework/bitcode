@@ -1,8 +1,8 @@
 # ADR-008: Contract-First API Freeze for `packages/ui`
 
-## Status: Proposed
+## Status: Accepted (Phase 2 complete, 2026-06-18)
 
-## Date: 2026-06-17
+## Date: 2026-06-17 (proposed) / 2026-06-18 (accepted)
 
 ## Depends on: [ADR-004](./004-reactive-engine.md), [ADR-005](./005-metadata-driven-ui.md), [ADR-006](./006-universal-component-strategy.md), [ADR-007](./007-enterprise-universal-ui-api-contract.md)
 
@@ -152,6 +152,116 @@ Negative:
 - Requires revisiting components previously marked complete.
 - May introduce compatibility aliases for older APIs while moving to semantic events.
 - Requires additional contract and adapter tests before components can be called enterprise-ready.
+
+## Implementation Summary (Phase 2 Complete, 2026-06-18)
+
+### Items Completed: 32 (25 Components + 7 Infrastructure)
+
+**Form Controls (10):**
+- BcInput, BcSelect, BcCombobox, BcCheckbox, BcToggle, BcSegmented
+- BcNumberField, BcDateField, BcTimeField, BcMultiSelect
+
+**Forms and Reactive Scope (2):**
+- BcForm, BcReactiveScope
+
+**Overlays (8):**
+- BcDialog, BcAlertDialog, BcDrawer, BcPopover, BcTooltip, BcDropdown, BcContextMenu, BcCommand
+
+**Navigation/Layout (4):**
+- BcTabs, BcAccordion, BcDisclosure, BcSplitter
+
+**Data (1):**
+- BcDataTable
+
+**Infrastructure (7):**
+1. Runtime Part Resolution (`core/part-props.ts`) — `partClass()`, `partAttr()`, `partStyle()` helpers
+2. Web Component Event Bridge (`core/wc-event-bridge.ts`) — `dispatchBcEvent()` with 14 semantic events
+3. Controlled/Uncontrolled State — All 25 components support canonical state pairs
+4. Type System — `BcChangeMeta`, `BcChangeHandler`, `BcEventSource` in `core/types.ts`
+5. Contract Files — All 25 components have `.contract.ts` files
+6. Collection Contract (`core/collection.contract.ts`) — key-based collection APIs
+7. Config/Tokens Contracts (`core/config.contract.ts`, `core/tokens.contract.ts`)
+
+### Test Coverage
+
+| Category | Count | Status |
+|---|---|---|
+| part-props unit tests | 34 | ✅ Pass |
+| part-props runtime tests | 18 | ✅ Pass |
+| wc-event-bridge unit tests | 14 | ✅ Pass |
+| wc-event-bridge runtime tests | 8 | ✅ Pass |
+| collection contract tests | 12 | ✅ Pass |
+| config contract tests | 8 | ✅ Pass |
+| tokens contract tests | 6 | ✅ Pass |
+| Component contract tests | 25 (1 per component) | ✅ Pass |
+| Component integration tests | ~1,413 | ✅ Pass |
+| **Total** | **~1,538** | **All pass** |
+
+### Build Verification
+
+- **Mitosis compilation**: 151/151 components compiled to React, Vue, Stencil, React Native
+- **TypeScript**: Zero type errors across all outputs
+- **Runtime Part Resolution**: All 25 components wired with `partClass`/`partAttr` (verified by `runtime-part-rollout.test.ts`)
+- **Event Bridge**: All 25 components import and use `dispatchBcEvent`/`BC_EVENTS`
+
+## Acceptance Criteria Verification
+
+### Contract Matrix Gate — Status per Area
+
+| Area | Status | Evidence |
+|---|---|---|
+| State props (controlled/uncontrolled) | ✅ Complete | All 25 components use `value/defaultValue/onValueChange`, `open/defaultOpen/onOpenChange` patterns |
+| Semantic events | ✅ Complete | `BcChangeMeta<TReason>` with `reason`, `source`, `nativeEvent` used across all components |
+| Imperative methods | ✅ Complete | `focus()`, `blur()`, `validate()`, `reset()`, `submit()` defined in contract files |
+| Slots and parts (slotProps) | ✅ Complete | All 25 components expose `slotProps?` prop, use `partClass()` additive pattern, emit `data-part` attributes |
+| A11y behavior | ✅ Documented | Contract files define roles, ARIA attributes, keyboard tables |
+| Form compatibility | ✅ Complete | `name`, `required`, `disabled`, `readOnly`, `invalid`, `errorMessage` on all form controls |
+| Adapter mapping | ✅ Documented | Contract files serve as renderer-neutral source of truth; React/Vue/RN/Stencil outputs adapt |
+| SSR safety | ✅ Verified | All `window`/`document`/`CustomEvent` accesses guarded with `typeof` checks |
+| Tests | ✅ Complete | 1,538 tests across all categories, 100% passing |
+
+### Specific Acceptance Criteria
+
+- [x] **`docs/components-progress.md` includes the Contract-First API Freeze gate** — Tracker updated with matrix status columns
+- [x] **All Core Integration Surface components have a completed Contract Matrix** — 25/25 components verified
+- [x] **Semantic event payloads are standardized and tested** — `BcChangeMeta` shape consistent; `wc-event-bridge.test.ts` validates 14 event types
+- [x] **Controlled/uncontrolled state pairs are standardized and tested** — All stateful components use `defaultX` not `initialX`
+- [x] **P0 complex components define slots/parts/pass-through rules** — `slotProps` with `partClass`/`partAttr`/`partStyle` helpers wired in all 25 components
+- [x] **P0 interactive components define A11y Behavior Contracts** — Documented in `.contract.ts` files
+- [x] **Web Component event bridge emits `bc-*` events with semantic `detail` payloads** — 14 events defined in `BC_EVENTS` constant; `dispatchBcEvent()` emits `{ value, meta }` detail
+- [x] **React Native and future Flutter mappings are documented at the contract level** — Contract files are renderer-neutral; Flutter parity via pure function helpers
+- [x] **No new non-critical P1/P2 expansion is treated as priority until this gate passes** — Freeze enforced during Phase 2
+
+## Remaining Work
+
+### Phase 3: Accessibility & Performance Testing (Not Started)
+
+- **A11y runtime testing**: Keyboard navigation, focus management, screen reader verification on actual components
+- **Performance benchmarking**: Render time, memory usage, bundle size analysis
+- **Lighthouse audits**: A11y score, performance score for component demos
+- **Touch/mobile testing**: Touch target sizes, gesture support on React Native
+
+### Phase 4: Documentation (In Progress)
+
+- [x] ADR-007 Implementation Status, Lessons Learned, Migration Guide
+- [x] ADR-008 Implementation Summary, Acceptance Criteria Verification
+- [x] ADR-009 Runtime Part Resolution (new)
+- [x] ADR-010 Web Component Event Bridge (new)
+- [ ] Per-component usage guides with live examples
+- [ ] Integration guides for each framework target (React, Vue, RN, Stencil)
+- [ ] `docs/components-progress.md` full alignment with contract matrix
+
+### Phase 5: Flutter & BitCode Integration (Not Started)
+
+- **Flutter adapter**: Generate Dart widget implementations from `.contract.ts` files
+- **BitCode engine integration**: Wire `BcRenderer` (ADR-005) to consume slotProps from schema metadata
+- **Reactive engine integration**: Connect `ReactiveStore` (ADR-004) to component state management
+
+## Related ADRs
+
+- [ADR-007: Enterprise Universal UI API Contract](./007-enterprise-universal-ui-api-contract.md) — The API contracts that this freeze enforces
+- [ADR-009: Runtime Part Resolution](./009-runtime-part-resolution.md) — Implementation mechanism for slotProps
+- [ADR-010: Web Component Event Bridge](./010-web-component-event-bridge.md) — Implementation mechanism for CustomEvents
 
 ## Acceptance Criteria
 

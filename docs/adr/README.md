@@ -23,6 +23,8 @@ ADR-001 sebagian **superseded** oleh ADR-002 (lihat catatan kolom).
 | [006](./006-universal-component-strategy.md) | Universal Component Strategy (Single Caller API, Platform-Aware Implementation) | Proposed *(pending Phase 0 spike)* | extends 002, 003 | 2-tier (Pure/Adapt); platform resolver Vite/Metro; token auto-gen pipeline; Phase 0 wajib sebelum P0 |
 | [007](./007-enterprise-universal-ui-api-contract.md) | Enterprise Universal UI API Contract | Proposed | 002, 003, 004, 005, 006 | Standard event/state/method/prop/a11y contracts that complement reactive and metadata-driven UI integration |
 | [008](./008-contract-first-api-freeze.md) | Contract-First API Freeze for `packages/ui` | Proposed | 004, 005, 006, 007 | Freezes feature expansion until Core Integration Surface passes contract matrix, semantic events, adapter mapping, and a11y behavior gates |
+| [009](./009-runtime-part-resolution.md) | Runtime Part Resolution | Accepted | 007, 008 | Solves Mitosis spread limitation via pure function helpers (`partClass`/`partAttr`); enables cross-platform slotProps |
+| [010](./010-web-component-event-bridge.md) | Web Component Event Bridge | Accepted | 007, 008 | Framework-agnostic semantic events via `dispatchBcEvent`; enables Web Component CustomEvent emission |
 
 ## Dependency Graph
 
@@ -47,6 +49,11 @@ ADR-001 sebagian **superseded** oleh ADR-002 (lihat catatan kolom).
                                                    ▼
                                                 ADR-008
                                           (contract-first freeze)
+                                                   │
+                                    ┌──────────────┴──────────────┐
+                                    ▼                              ▼
+                               ADR-009                       ADR-010
+                       (Runtime Part Resolution)    (Web Component Event Bridge)
 ```
 
 ## Bagian yang Masih Berlaku dari ADR-001

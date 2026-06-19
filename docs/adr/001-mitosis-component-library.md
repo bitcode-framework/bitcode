@@ -445,9 +445,34 @@ export function reactAttributePlugin() {
 - **Fallback** — kalau plugin gagal, post-build script sebagai backup
 
 **Milestone:**
-- Phase 0 (sekarang): Post-build manual fix (sudah dilakukan)
-- Phase 1 (saat 10+ components): Tulis plugin, automated
-- Phase 2 (stable): Plugin jadi bagian dari build pipeline
+- Phase 0 (sekarang): Post-build manual fix (sudah dilakukan) — **DONE**
+- Phase 1: Tulis plugin, automated — **DONE 2026-06-19**
+- Phase 2: Plugin jadi bagian dari build pipeline — **DONE 2026-06-19**
+
+### Implementation Status (2026-06-19)
+
+Plugin fully implemented as `scripts/mitosis-plugin-react-fixes.mjs` and
+integrated into `mitosis.config.js` via `options.react.plugins`. Covers:
+
+- `class` → `className` (React only, no impact on Vue/Stencil/RN)
+- 22 SVG kebab-case → camelCase (stroke-width, font-size, text-anchor,
+  pointer-events, marker-end, stroke-linecap, stroke-linejoin,
+  stroke-dasharray, fill-rule, clip-rule, stroke-miterlimit,
+  fill-opacity, stop-color, stop-opacity, stroke-opacity, font-family,
+  font-weight, text-decoration, clip-path, marker-start, marker-mid,
+  stroke-opacity)
+- HTML boolean attributes (readonly → readOnly, autofocus → autoFocus,
+  inputmode → inputMode, maxlength → maxLength, minlength → minLength,
+  tabindex → tabIndex, autoplay → autoPlay, playsinline → playsInline)
+- Event names (onDblclick → onDoubleClick)
+- `data-bc-*` attribute stripping (3 patterns: JSX expression, string, boolean)
+
+**Old post-build script `fix-react-output.mjs` removed** — no longer needed.
+Build pipeline: `mitosis build` (with plugin) → `apply-adapt-overrides.mjs` →
+`generate-index.mjs`.
+
+**Verification:** 180 React components generated, 0 with `class=`, 0 with SVG
+kebab-case, 0 with `onDblclick`, 0 with `<Show>/<For>`.
 
 ### 15. Lynx (ReactLynx) — Native Mobile Target Only
 

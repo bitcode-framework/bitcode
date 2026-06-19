@@ -52,3 +52,6 @@ dist/
 .ruff_cache/
 # CocoIndex Code (ccc)
 /.cocoindex_code/
+
+# JCE context index runtime state
+.opencode-jce/context/
