@@ -74,6 +74,60 @@
 - **Status:** fixed (commit pending)
 - **Blast radius:** Every component with an `if (cond) return;` guard was silently broken in the React output. This is likely the root cause of the "0 onValueChange calls" pattern that A1 will surface across many components. Re-running all runtime tests after this fix is mandatory.
 
+### BC-004 — BcSelect: listbox missing accessible name + combobox missing aria-controls/activedescendant
+
+- **Date:** 2026-06-20
+- **Component:** BcSelect
+- **Severity:** P1 (a11y)
+- **Phase:** A1.3 (runtime test — BcSelect)
+- **Classification:** a11y (source)
+- **Reproduction:**
+  1. Render `<BcSelect label="Fruit" options={[...]} />` in jsdom.
+  2. Open the listbox.
+  3. Run axe-core.
+- **Expected:** Zero axe violations.
+- **Actual:** 3 violations:
+  - `aria-input-field-name` — the `<div role="listbox">` has no accessible name (no aria-label / aria-labelledby).
+  - `aria-required-attr` — the `<button role="combobox">` is missing `aria-controls` (and optionally `aria-activedescendant`).
+  - `button-name` — axe flags the combobox button as having no discernible text (false-ish positive: the button has a `<span>` child with text, but axe's heuristic misses it when the span text is a placeholder color).
+- **Fix (Phase B2 — a11y runtime hardening):**
+  - Add `aria-labelledby={labelId}` to the listbox, deriving labelId from the label element's id.
+  - Add `aria-controls={listboxId}` to the combobox button and `id={listboxId}` to the listbox.
+  - Ensure the combobox button has an `aria-label` or visible text that axe recognizes as discernible.
+- **Status:** deferred to Phase B2
+
+### BC-005 — BcSelect: clearable prop declared but clear button never rendered
+
+- **Date:** 2026-06-20
+- **Component:** BcSelect
+- **Severity:** P1 (feature gap)
+- **Phase:** A1.3 (runtime test — BcSelect)
+- **Classification:** source
+- **Reproduction:**
+  1. Render `<BcSelect clearable defaultValue="apple" options={[...]} />`.
+  2. Inspect the DOM for a clear button.
+- **Expected:** A clear button appears when `clearable=true` and a value is set.
+- **Actual:** No clear button is rendered. The `handleClear` function exists in the component but is never wired to any JSX element.
+- **Root cause:** Source `BcSelect.lite.tsx` declares `clearable` prop and `handleClear` method, but the JSX return never conditionally renders a clear button. The contract promises `clearButton` as a part, but it's missing from the implementation.
+- **Fix:** Add a clear button to the trigger area, gated on `props.clearable && currentValue()`, with `aria-label="Clear"` and `onClick={state.handleClear}`. Mirror the pattern from BcInput's clear button.
+- **Status:** deferred to Phase B (feature gap fill during parity audit)
+
+### BC-006 — BcCombobox: controlled `value` prop does not reflect in the input display
+
+- **Date:** 2026-06-20
+- **Component:** BcCombobox
+- **Severity:** P1 (controlled-mode broken)
+- **Phase:** A1.3 (runtime test — BcCombobox)
+- **Classification:** source
+- **Reproduction:**
+  1. Render `<BcCombobox value="cherry" options={[{label:'Cherry',value:'cherry'},...]} />`.
+  2. Read the input value.
+- **Expected:** Input displays "Cherry" (the label matching the controlled value).
+- **Actual:** Input is empty. The `query` state is seeded only from `defaultValue`, with no effect that syncs it to `props.value` when the controlled value changes externally.
+- **Root cause:** No `useEffect` watches `props.value` and updates `query` to the matching option's label. The component claims controlled support in its contract but only honors `defaultValue` for the initial render.
+- **Fix:** Add a `useEffect` that, when `props.value` is defined, resolves the matching option label and sets `query`. If no option matches, set `query` to the raw value (or empty, per design decision).
+- **Status:** deferred to Phase B (controlled-state hardening)
+
 <!-- Template:
 ### BC-NNN — <component>: <short summary>
 - **Date:** YYYY-MM-DD
