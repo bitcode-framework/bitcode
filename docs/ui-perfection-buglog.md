@@ -37,6 +37,11 @@
 | BC-015 | 2026-06-20 | BcCommand | P1 | A1.3 | source | deferred | stale-state closure in keydown handler (rapid ArrowDown) |
 | BC-016 | 2026-06-20 | BcAccordion | P1 | A1.3 | source | deferred | onToggle callback receives stale openIds |
 | BC-017 | 2026-06-20 | BcSplitter | P2 | A1.3 | test | wontfix | pointer drag unreliable in jsdom (stale state + zero rects) |
+| BC-018 | 2026-06-20 | BcForm | P1 | A1.3 | source+plugin | deferred | select onChange passes Event instead of value |
+| BC-019 | 2026-06-20 | BcForm | P1 | A1.3 | source | deferred | stale-state closure in validateAll and setField |
+| BC-020 | 2026-06-20 | BcList | P1 | A1.3 | source | deferred | local mode status 'empty' instead of 'ready' (stale total) |
+| BC-021 | 2026-06-20 | BcRenderer | P1 | A1.3 | mitosis-output | deferred | custom sentinel data-bc-renderer-custom stripped by plugin |
+| BC-022 | 2026-06-20 | BcDataTable | P0 | A1.3 | mitosis-output | deferred | defaultGetRowId is not defined (crashes on render) |
 
 ## Bug Details
 
@@ -339,5 +344,85 @@
 - **Root cause:** Two compounding issues: (1) React state batching means `dragging` may not be `true` when `pointerMove` fires synchronously after `pointerDown`. (2) jsdom does not implement layout, so `getBoundingClientRect` returns all zeros.
 - **Fix:** Not a production bug — real browsers fire pointer events asynchronously after state settles and return real rects. The keyboard nudge path (which doesn't depend on rects or pointer state) is tested and works. The drag interaction will be verified in A3 (demo app browser verification). If jsdom testing is needed, use `userEvent` (which awaits re-renders) and mock `getBoundingClientRect` on the container element.
 - **Status:** wontfix (testing limitation; drag verified in A3)
+
+### BC-018 — BcForm: select onChange passes Event instead of value (Mitosis value-events plugin mismatch)
+
+- **Date:** 2026-06-20
+- **Component:** BcForm
+- **Severity:** P1 (select field values not stored correctly)
+- **Phase:** A1.3 (runtime test — BcForm)
+- **Classification:** source + plugin interaction
+- **Reproduction:**
+  1. Render `<BcForm fields={[{ name: 'role', type: 'select', options: [...] }]} />`.
+  2. Change the select value.
+- **Expected:** `onChange` fires with the form values including the selected option value.
+- **Actual:** `onChange` fires but the stored value for the select field is the Event object, not the selected value string.
+- **Root cause:** The compiled `<select>` uses `onChange={value => setField(field, value)}` which passes the React Event object as `value`. The Mitosis value-events plugin rewrote `onInput` to `onChange` for text/textarea (correctly extracting `e.target.value`), but the source `<select>` used `onChange` directly (not `onInput`), so the plugin left it as-is and the handler receives the Event instead of the string value.
+- **Fix:** Change the source `<select>` to use `onInput` (like text/textarea) so the plugin applies the same value-first transform. Alternatively, refactor `setField` to accept the Event for select specifically.
+- **Status:** deferred to Phase B (value-first refactor)
+
+### BC-019 — BcForm: stale-state closure in validateAll and setField (errors may not update correctly)
+
+- **Date:** 2026-06-20
+- **Component:** BcForm
+- **Severity:** P1 (validation errors may not render on first submit or clear on correction)
+- **Phase:** A1.3 (runtime test — BcForm)
+- **Classification:** source (React state pattern)
+- **Reproduction:**
+  1. Render `<BcForm fields={[{ name: 'email', type: 'email', required: true }]} values={{ email: 'bad' }} />`.
+  2. Click Submit.
+- **Expected:** The email validation error "Invalid email address" appears.
+- **Actual:** The error may not render. `validateAll` reads `formValues` from the closure, which is seeded from `props.values` at mount. The validation runs against the correct values, but the `setErrors` state update may not flush before the DOM is checked. Similarly, `setField` uses stale `formValues` when computing the next error state after a user correction.
+- **Root cause:** React state batching means `setErrors(nextErrors)` may not be visible immediately after `validateAll()` returns. The closure-captured `formValues` in `setField` is stale after `setFormValues` is called.
+- **Fix:** Use functional state updates: `setFormValues(prev => ({ ...prev, [field.name]: value }))` and `setErrors(prev => { ... })`. Also compute validation results synchronously and pass them directly to callbacks.
+- **Status:** deferred to Phase B (state callback contract hardening)
+
+### BC-020 — BcList: local mode status set to 'empty' instead of 'ready' (stale total closure)
+
+- **Date:** 2026-06-20
+- **Component:** BcList
+- **Severity:** P1 (pagination never renders for local data)
+- **Phase:** A1.3 (runtime test — BcList)
+- **Classification:** source (React state pattern)
+- **Reproduction:**
+  1. Render `<BcList data={[...5 items...]} pageSize={2} />`.
+  2. Check for pagination controls.
+- **Expected:** Pagination renders (5 items / 2 per page = 3 pages).
+- **Actual:** No pagination. `loadData()` for local mode calls `setTotal(props.data.length)` then checks `total === 0` to set status. But `total` is the stale closure value (0 from initial state), so status is set to 'empty' instead of 'ready'. Pagination only renders when `status === 'ready'`.
+- **Root cause:** `setStatus(total === 0 ? 'empty' : 'ready')` uses the stale `total` from the closure (initial value 0), not the updated value after `setTotal(props.data.length)`.
+- **Fix:** Compute the new total first: `const newTotal = props.data ? props.data.length : 0; setTotal(newTotal); setStatus(newTotal === 0 ? 'empty' : 'ready');`
+- **Status:** deferred to Phase B (state callback contract hardening)
+
+### BC-021 — BcRenderer: custom sentinel `data-bc-renderer-custom` attribute stripped by Mitosis plugin
+
+- **Date:** 2026-06-20
+- **Component:** BcRenderer
+- **Severity:** P1 (custom sentinel unidentifiable in DOM)
+- **Phase:** A1.3 (runtime test — BcRenderer)
+- **Classification:** mitosis-output (plugin strips data-bc-* attributes)
+- **Reproduction:**
+  1. Render `<BcRenderer schema={{ type: 'custom', name: 'my-widget' }} />`.
+  2. Query for `[data-bc-renderer-custom="my-widget"]`.
+- **Expected:** The sentinel div has `data-bc-renderer-custom="my-widget"`.
+- **Actual:** The attribute is missing. The `mitosis-plugin-react-fixes.mjs` step strips all `data-bc-*` attributes from the compiled output, including the custom sentinel identifier. Only `data-payload` survives.
+- **Root cause:** The plugin's `data-bc-*` stripping rule is too aggressive — it strips ALL `data-bc-*` attributes, including those that are intentionally part of the component's API (like `data-bc-renderer-custom`, `data-bc-dialog`, `data-bc-drawer`, etc.).
+- **Fix:** Either (1) change the stripping rule to only strip `data-bc-*` attributes that are NOT in a whitelist, or (2) use a different attribute naming convention for sentinel markers (e.g., `data-renderer-custom` without the `bc-` prefix), or (3) remove the stripping rule entirely and handle the underlying issue differently.
+- **Status:** deferred to Phase B (Mitosis plugin hardening)
+
+### BC-022 — BcDataTable: `defaultGetRowId is not defined` (Mitosis compilation issue)
+
+- **Date:** 2026-06-20
+- **Component:** BcDataTable
+- **Severity:** P0 (component crashes on render)
+- **Phase:** A1.3 (runtime test — BcRenderer list schema)
+- **Classification:** mitosis-output
+- **Reproduction:**
+  1. Render `<BcRenderer schema={{ type: 'list', columns_def: [...], data: [...] }} />`.
+  2. Or render `<BcDataTable columns={[...]} data={[...]} />` directly.
+- **Expected:** The table renders with rows.
+- **Actual:** `ReferenceError: defaultGetRowId is not defined` — the compiled output references a function that Mitosis failed to emit.
+- **Root cause:** The BcDataTable source likely defines or imports a `defaultGetRowId` function that the Mitosis compiler does not include in the React output. This could be a scope issue where the function is defined inside a closure that Mitosis doesn't traverse.
+- **Fix:** Investigate the BcDataTable source for `defaultGetRowId`. If it's a local function, move it to module scope. If it's imported, ensure the import is preserved in the compiled output. This blocks all BcDataTable runtime tests.
+- **Status:** deferred to Phase B (BcDataTable is 110KB of source, needs dedicated investigation)
 
 
