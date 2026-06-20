@@ -128,6 +128,25 @@
 - **Fix:** Add a `useEffect` that, when `props.value` is defined, resolves the matching option label and sets `query`. If no option matches, set `query` to the raw value (or empty, per design decision).
 - **Status:** deferred to Phase B (controlled-state hardening)
 
+### BC-007 — BcCheckbox / BcToggle: button lacks accessible name (label not wired via aria-labelledby)
+
+- **Date:** 2026-06-20
+- **Component:** BcCheckbox, BcToggle (and likely BcCheckbox-like patterns elsewhere)
+- **Severity:** P1 (a11y)
+- **Phase:** A1.3 (runtime tests)
+- **Classification:** a11y (source)
+- **Reproduction:**
+  1. Render `<BcCheckbox name="x" label="I agree" />`.
+  2. Run axe-core.
+- **Expected:** Zero violations.
+- **Actual:** `button-name` violation — the `<button role="checkbox">` has no accessible name. The label text sits in a sibling `<label>` element, but there is no `id`/`for`/`aria-labelledby` linkage, so screen readers cannot associate the label with the button.
+- **Root cause:** Source renders `<button>` and `<label>` as siblings without `htmlFor`/`id` or `aria-labelledby`. The `<label>` element does not wrap the button, so clicking the label also does not toggle the checkbox.
+- **Fix (Phase B2):**
+  - Add `id={name}` to the button and `htmlFor={name}` to the label, OR
+  - Wrap the button inside the `<label>` element so clicking the label toggles it, OR
+  - Add `aria-labelledby={labelId}` to the button pointing at the label's id.
+- **Status:** deferred to Phase B2
+
 <!-- Template:
 ### BC-NNN — <component>: <short summary>
 - **Date:** YYYY-MM-DD
