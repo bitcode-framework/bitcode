@@ -178,6 +178,24 @@ Komponen di-klasifikasi **Adapt** kalau salah satu kondisi terpenuhi:
 
 Selain itu, **default ke Pure**. Ini meminimalkan maintenance burden.
 
+### 2.4 Web-Only Components (carve-out)
+
+**Definisi:** Komponen yang implementasi-nya bergantung pada web-only API yang **tidak punya padanan langsung** di React Native dan tidak feasible di-port dengan effort wajar. Berbeda dari Adapt (yang punya `.native.tsx` hand-written), komponen web-only **tidak di-emit ke target RN** sama sekali.
+
+**Klasifikasi:**
+- Inline SVG berat (`<svg>`, `<path>`, `<rect>`, `<line>`, `<circle>`, `<g>`) yang butuh `react-native-svg` adapter besar.
+- Komponen yang pakai DOM API spesifik (canvas, WebGL, dll) tanpa abstraksi cross-platform.
+
+**Mekanisme:**
+- `scripts/apply-adapt-overrides.mjs` menghapus file mitosis-generated di `output/react-native/src/components/.../BcXxx.tsx` pasca-build.
+- Konsumer RN yang meng-import komponen web-only akan dapat resolver error (clear signal bahwa komponen tidak tersedia di RN), bukan build rusak diam-diam.
+- Daftar komponen web-only didefinisikan di `WEB_ONLY_COMPONENTS` array dalam script tersebut.
+
+**Komponen web-only saat ini:**
+- `BcViewGantt` — Gantt chart dengan inline SVG berat (`<svg>`, `<path>`, `<rect>`, `<line>`, `<circle>`, `<g>`). Adapter `react-native-svg` penuh di-defer sampai ada permintaan konsumen RN yang konkret.
+
+**Catatan:** Web-only adalah pilihan terakhir. Setiap komponen web-only adalah tech debt yang harus di-revisit kalau ada kebutuhan RN. Alternatif jangka panjang: tulis ulang dengan react-native-svg, atau mark sebagai Adapt dengan `.native.tsx` minimal (loading state / "not available" message).
+
 ---
 
 ## Section 3 — Build Resolver per Platform
