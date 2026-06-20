@@ -161,3 +161,36 @@
 - **Fix:** <commit hash or description>
 - **Status:** fixed | deferred | wontfix
 -->
+
+### BC-008 — BcDialog: default props set `open: false`, breaking uncontrolled mode (defaultOpen never works)
+
+- **Date:** 2026-06-20
+- **Component:** BcDialog (likely same pattern in BcAlertDialog, BcDrawer, BcPopover, BcTooltip)
+- **Severity:** P0 (uncontrolled mode completely broken)
+- **Phase:** A1.3 (runtime test — BcDialog)
+- **Classification:** source
+- **Reproduction:**
+  1. Render `<BcDialog defaultOpen title="T">Body</BcDialog>`.
+  2. Query for `role="dialog"`.
+- **Expected:** Dialog renders.
+- **Actual:** Dialog does not render. `props.open` is `false` (from default), so `isOpen()` returns `false` always.
+- **Root cause:** Default props merge sets `open: false`, making the `props.open !== undefined` check always true.
+- **Fix:** Remove `open: false` from defaults, OR change check to `'open' in props`. Will fix in-source now since it blocks 8+ overlay tests.
+- **Status:** fixing in-source (blocks A1.3 overlay tests)
+
+### BC-009 — BcDialog: closeOnEscape prop declared but no Escape key handler wired
+
+- **Date:** 2026-06-20
+- **Component:** BcDialog (likely BcAlertDialog, BcDrawer, BcCommand too)
+- **Severity:** P1 (a11y + UX)
+- **Phase:** A1.3 (runtime test — BcDialog)
+- **Classification:** source (feature gap)
+- **Reproduction:**
+  1. Render `<BcDialog defaultOpen closeOnEscape title="T">Body</BcDialog>`.
+  2. Press Escape.
+- **Expected:** `onOpenChange(false, {reason:'escape'})` fires.
+- **Actual:** Nothing happens. No `keydown`/`onKeyDown` listener attached to the dialog or document.
+- **Fix:** Add a `useEffect` that listens for `keydown` Escape on `document` when `isOpen() && props.closeOnEscape`, calling `emitClose('escape')`. Cleanup on close/unmount.
+- **Status:** deferred to Phase B (keyboard nav hardening — B2)
+
+
