@@ -32,16 +32,18 @@
 | BC-010 | 2026-06-20 | BcPopover | P1 | A1.3 | mitosis-output | deferred | hover trigger crashes (ternary compiles to broken IIFE) |
 | BC-011 | 2026-06-20 | BcPopover | P1 | A1.3 | mitosis-output | deferred | named slot compiles to props string instead of slot content |
 | BC-012 | 2026-06-20 | BcContextMenu | P1 | A1.3 | a11y | deferred | separator items wrapped in role=menuitem (should be role=separator) |
-| BC-013 | 2026-06-20 | BcCommand | P0 | A1.3 | source+plugin | deferred | search filtering broken (handler expects Event, receives string) |
+| BC-013 | 2026-06-20 | BcCommand | P0 | A1.3 | source+plugin | fixed | search filtering broken (handler expects Event, receives string) |
 | BC-014 | 2026-06-20 | BcCommand | P1 | A1.3 | a11y | deferred | 3 a11y violations (dialog name, listbox name, combobox aria-controls) |
 | BC-015 | 2026-06-20 | BcCommand | P1 | A1.3 | source | deferred | stale-state closure in keydown handler (rapid ArrowDown) |
 | BC-016 | 2026-06-20 | BcAccordion | P1 | A1.3 | source | deferred | onToggle callback receives stale openIds |
 | BC-017 | 2026-06-20 | BcSplitter | P2 | A1.3 | test | wontfix | pointer drag unreliable in jsdom (stale state + zero rects) |
 | BC-018 | 2026-06-20 | BcForm | P1 | A1.3 | source+plugin | deferred | select onChange passes Event instead of value |
-| BC-019 | 2026-06-20 | BcForm | P1 | A1.3 | source | deferred | stale-state closure in validateAll and setField |
-| BC-020 | 2026-06-20 | BcList | P1 | A1.3 | source | deferred | local mode status 'empty' instead of 'ready' (stale total) |
+| BC-019 | 2026-06-20 | BcForm | P1 | A1.3 | source | fixed | stale-state closure in validateAll and setField |
+| BC-020 | 2026-06-20 | BcList | P1 | A1.3 | source | fixed | local mode status 'empty' instead of 'ready' (stale total) |
 | BC-021 | 2026-06-20 | BcRenderer | P1 | A1.3 | mitosis-output | deferred | custom sentinel data-bc-renderer-custom stripped by plugin |
-| BC-022 | 2026-06-20 | BcDataTable | P0 | A1.3 | mitosis-output | deferred | defaultGetRowId is not defined (crashes on render) |
+| BC-022 | 2026-06-20 | BcDataTable | P0 | A1.3 | mitosis-output | fixed | defaultGetRowId is not defined (crashes on render) |
+| BC-023 | 2026-06-21 | BcDataTable | P1 | A1.3 | source | deferred | props.loading not wired to status state |
+| BC-024 | 2026-06-21 | BcReactiveScope | P1 | A1.3 | source | deferred | onChange subscription may not persist in test env |
 
 ## Bug Details
 
@@ -277,7 +279,8 @@
 - **Actual:** The query state never updates. All items remain visible regardless of what is typed. Typing "zzz" does not show the empty state.
 - **Root cause:** Source `handleInput(e: any)` reads `e?.target?.value`. The `react-value-events` Mitosis plugin rewrites `onInput={(e) => state.handleInput(e)}` to `onChange={e => handleInput(e.target.value)}`, passing a string. The handler then reads `.target.value` on the string (undefined), setting `query` to `''` always.
 - **Fix:** Refactor `handleInput` to the value-first pattern: `handleInput(value: string)`. Same fix as BC-001 for BcInput.
-- **Status:** deferred to Phase B (value-first refactor — same as BC-001 follow-up)
+- **Fix applied:** Refactored `handleInput(e: any)` to `handleInput(value: string)` in BcCommand.lite.tsx. The Mitosis value-events plugin now correctly extracts `e.target.value` and passes it as a string.
+- **Status:** fixed (commit 5814114)
 
 ### BC-014 — BcCommand: three a11y violations (dialog name, listbox name, combobox aria-controls)
 
@@ -375,7 +378,8 @@
 - **Actual:** The error may not render. `validateAll` reads `formValues` from the closure, which is seeded from `props.values` at mount. The validation runs against the correct values, but the `setErrors` state update may not flush before the DOM is checked. Similarly, `setField` uses stale `formValues` when computing the next error state after a user correction.
 - **Root cause:** React state batching means `setErrors(nextErrors)` may not be visible immediately after `validateAll()` returns. The closure-captured `formValues` in `setField` is stale after `setFormValues` is called.
 - **Fix:** Use functional state updates: `setFormValues(prev => ({ ...prev, [field.name]: value }))` and `setErrors(prev => { ... })`. Also compute validation results synchronously and pass them directly to callbacks.
-- **Status:** deferred to Phase B (state callback contract hardening)
+- **Fix applied:** Refactored `setField` to validate against the NEW value (`nextValues[field.name]`) instead of the stale `formValues` closure. Inlined the validation logic in `setField` to avoid the stale-state read. Error clearing on field correction now works.
+- **Status:** fixed (commit 5814114)
 
 ### BC-020 — BcList: local mode status set to 'empty' instead of 'ready' (stale total closure)
 
@@ -391,7 +395,8 @@
 - **Actual:** No pagination. `loadData()` for local mode calls `setTotal(props.data.length)` then checks `total === 0` to set status. But `total` is the stale closure value (0 from initial state), so status is set to 'empty' instead of 'ready'. Pagination only renders when `status === 'ready'`.
 - **Root cause:** `setStatus(total === 0 ? 'empty' : 'ready')` uses the stale `total` from the closure (initial value 0), not the updated value after `setTotal(props.data.length)`.
 - **Fix:** Compute the new total first: `const newTotal = props.data ? props.data.length : 0; setTotal(newTotal); setStatus(newTotal === 0 ? 'empty' : 'ready');`
-- **Status:** deferred to Phase B (state callback contract hardening)
+- **Fix applied:** Used a local `newTotal` variable in `loadData()` instead of reading `state.total` after `state.total = ...`. Pagination now renders correctly for local data.
+- **Status:** fixed (commit 5814114)
 
 ### BC-021 — BcRenderer: custom sentinel `data-bc-renderer-custom` attribute stripped by Mitosis plugin
 
@@ -423,6 +428,38 @@
 - **Actual:** `ReferenceError: defaultGetRowId is not defined` — the compiled output references a function that Mitosis failed to emit.
 - **Root cause:** The BcDataTable source likely defines or imports a `defaultGetRowId` function that the Mitosis compiler does not include in the React output. This could be a scope issue where the function is defined inside a closure that Mitosis doesn't traverse.
 - **Fix:** Investigate the BcDataTable source for `defaultGetRowId`. If it's a local function, move it to module scope. If it's imported, ensure the import is preserved in the compiled output. This blocks all BcDataTable runtime tests.
-- **Status:** deferred to Phase B (BcDataTable is 110KB of source, needs dedicated investigation)
+- **Fix applied:** Moved `defaultGetRowId` from function body to module scope. Also moved `can()` permission helper from function-body `const` into `useStore` (same Mitosis drop pattern). Also fixed all ternary-in-JSX event handlers (onClick, onKeyDown, onContextMenu, onDblClick, onScroll, onDragStart) that compiled to broken IIFEs (BC-010 pattern).
+- **Status:** fixed (commit a746018)
+
+### BC-023 — BcDataTable: props.loading not wired to status state
+
+- **Date:** 2026-06-21
+- **Component:** BcDataTable
+- **Severity:** P1
+- **Phase:** A1.3 (runtime test — BcDataTable)
+- **Classification:** source (feature gap)
+- **Reproduction:**
+  1. Render `<BcDataTable columns={[...]} data={[]} loading />`.
+  2. Check for loading state indicator.
+- **Expected:** The table shows a loading indicator.
+- **Actual:** The table shows the empty state. `props.loading` is declared in the interface and defaults to false, but the component never reads it to set `status` to `'loading'`. The loading state only appears when `source` is a fetcher (async).
+- **Fix:** In `onMount` or a `useEffect`, check `props.loading` and set `status = 'loading'` when true.
+- **Status:** deferred to Phase B
+
+### BC-024 — BcReactiveScope: onChange subscription may not persist in test env
+
+- **Date:** 2026-06-21
+- **Component:** BcReactiveScope
+- **Severity:** P1
+- **Phase:** A1.3 (runtime test — BcReactiveScope)
+- **Classification:** source (React effect timing)
+- **Reproduction:**
+  1. Render `<BcReactiveScope store={externalStore} onChange={fn}>...</BcReactiveScope>`.
+  2. Call `externalStore.set('x', 1)`.
+- **Expected:** `onChange` fires with the updated values.
+- **Actual:** `onChange` is not called. The `useEffect` that subscribes `onChange` runs on mount, but the subscription appears to not persist after React's effect flushing in the test environment. The `setScopeOff(off)` state update may cause a re-render that interferes with the subscription.
+- **Root cause:** The compiled `useEffect` calls `store.subscribe(snap => { ...props.onChange... })` and stores the unsubscribe function via `setScopeOff(off)`. This state update triggers a re-render. The subscription should persist (empty deps array), but in jsdom + React test environment, the callback may not fire.
+- **Fix:** The ReactiveStore.subscribe/unsubscribe contract is verified in the ReactiveStore test suite (26 tests). The component-level onChange wiring needs investigation in Phase B. Possible fix: use a `useRef` instead of `useState` for `scopeOff` to avoid re-renders.
+- **Status:** deferred to Phase B
 
 
