@@ -720,44 +720,40 @@ A comprehensive audit of Mitosis compiler output across 180 components × 3 targ
 - ✅ React output: 100% clean — no invalid syntax, no broken patterns
 - ✅ Build pipeline: single-pass compilation with compile-time plugin (no post-processing)
 
-**React Native Event Handler Strategy (Implemented 2026-06-20):**
+**React Native Event Handler Strategy (Updated 2026-06-20):**
 
-A hybrid approach (Option D: Mitosis plugin + `useTarget`) has been implemented for React Native event handler normalization.
+A value-first source pattern with compile-time plugins has been implemented for cross-platform event handler compatibility.
 
-**Decision:**
-After evaluating multiple approaches, we chose a Mitosis compile-time plugin over `useTarget()` for the following reasons:
+**Decision: Value-First Source Pattern**
 
-1. **Mitosis `useTarget()` limitation**: Cannot transform event handler attribute names in JSX (only values). Testing revealed malformed output when attempting to use `useTarget()` for event name transformation.
+Source `.lite.tsx` files use value-first handler signatures: `onInput={(value: string) => handler(value)}` instead of `onInput={(e) => handler(e.target.value)}`. This approach is:
 
-2. **Industry practice alignment**: Mature cross-platform libraries (Tamagui, React Native Web) use compile-time transformations for deterministic event mappings, reserving runtime abstractions for complex cases.
-
-3. **Pragmatic middle ground**: Plugin handles 60% of common cases automatically (onClick→onPress, onKeyDown→onKeyPress, etc.), while complex events requiring different logic per platform can use `.native.tsx` adapter files (per ADR-006 Adapt pattern).
+1. **Platform-native**: React Native's `onChangeText` and Flutter's `onChanged` both pass values directly, not Event objects
+2. **Flutter-friendly**: Future Flutter codegen receives direct values without Event normalization overhead
+3. **ADR-compliant**: "Framework-native" means using each platform's standard pattern, not forcing one platform's convention onto others
+4. **Simple**: One pattern in source, platform-specific transformation handled by plugins
 
 **Implementation:**
 
-Created `scripts/mitosis-plugin-react-native-events.mjs` as a Mitosis post-code plugin that:
-- Converts `onClick` → `onPress` on interactive elements (`<Button>`, `<TouchableOpacity>`)
-- Converts `onKeyDown` → `onKeyPress` on input elements (`<TextInput>`)
-- Preserves `onFocus`, `onBlur`, `onChange`, `onInput` (correct RN behavior)
-- Avoids breaking code structure or creating malformed handlers
+1. **Source files** use value-first handlers: `onInput={(value) => handleInput(value)}`
+2. **React plugin** (`mitosis-plugin-react-value-events.mjs`) wraps value to Event object: `onChange={(e) => handleInput(e.target.value)}`
+3. **React Native plugin** (`mitosis-plugin-react-native-events.mjs`) converts event names: `onInput` → `onChangeText` on TextInput elements
+4. **Deduplication**: If `onChange` and `onInput` call the same handler, plugin removes duplicate and keeps only `onChange` for React
 
-Plugin wired into `mitosis.config.js` via `reactNative.options.plugins` array, ensuring it runs during compilation for every component.
+**Components refactored:**
+- `BcTagsInput.lite.tsx` — extracted `handleInput(value)` method
+- `BcMentions.lite.tsx` — changed `handleInput(event)` to `handleInput(text: string)`
+- `BcInput.lite.tsx` — already value-first (parent callback uses `onValueChange(value, meta)`)
+- `BcGeo.lite.tsx` — already value-first (`setField(field, value)`)
 
-**Verified conversions:**
-- ✅ BcButton: `onClick` → `onPress` successful
-- ✅ BcInput: `onKeyDown` → `onKeyPress`, other events preserved correctly
-- ✅ BcTextarea: Event names correct across all handlers
-- ✅ 179 components × 3 targets compiled successfully
+**Verified output:**
+- React: `onChange={(e) => handleInput(e.target.value)}` ✅
+- React Native: `onChangeText={(value) => handleInput(value)}` ✅
 
-**Known limitations (documented for future work):**
-- Only transforms event NAMES, not handler body semantics (e.g., `e.target.value` patterns)
-- Does not handle `<select>`/`<picker>` onChange semantic differences
-- Does not transform SVG element events (no SVG support in RN)
-- Does not remove mouse-only events (onMouseEnter/Leave) from mobile components
-- ~125 simple events auto-converted, ~24 complex events may need `.native.tsx` adapters, ~31 mouse/drag events require feature-flagging or platform-specific implementations
-
-**Accepted trade-offs:**
-This approach acknowledges that perfect cross-platform event parity is unrealistic. The plugin provides pragmatic automation for common patterns, while platform-specific complexity is delegated to adapter files or accepted as web-only behavior where appropriate.
+**Future work:**
+- ~20 remaining components with `e.target.value` pattern need refactoring
+- Complex events (onFocus, onBlur with event shape differences) may need useTarget() or adapter files
+- No-equivalent events (onMouseEnter, onDragStart) need feature-flagging for mobile
 
 ---
 
