@@ -88,6 +88,7 @@ interface ReactiveStore {
   set(path: string, value: unknown): void;     // memicu reaksi
   getMeta(path: string): FieldMeta;             // visible/disabled/required/options/rules/error
   subscribe(listener: (change) => void): () => void;
+  unsubscribe(listener: (change) => void): void;  // symmetric removal (BC-024)
   evaluate(expr: string, scope?: Scope): unknown;
   run(): void;                                  // recompute reaksi terdampak
   snapshot(): Record<string, unknown>;
@@ -346,6 +347,63 @@ Level 3 — BitCode JSON (platform feed)
   map + recompute + fungsi JS; bukan observable graph penuh.
 - Cross-component (Level 2/3) beririsan dengan rombak engine BitCode -> jaga
   primitif tetap netral agar engine bisa men-drive via JSON nanti.
+
+---
+
+## Subscription Cleanup (BC-024 fix, 2026-06-21)
+
+### Problem
+
+Mitosis `useStore` compiles to React `useState`. When a component stores the
+disposer returned by `store.subscribe()` in `useStore` state and reads it in
+`onUnMount` (which compiles to `useEffect` cleanup with `deps: []`), the
+cleanup closure captures the **initial** value from the first render (null),
+not the updated value after `setScopeOff(off)` in the mount effect. The
+`unsubscribe` is never invoked, leaking the listener — especially dangerous
+for externally-owned stores where `dispose()` is not called on unmount.
+
+### Solution: Dual Storage Pattern
+
+Components that subscribe to a `ReactiveStore` must use **two storage slots**:
+
+1. **`useRef` for the cleanup path** — `useRef.current` is a mutable container
+   that is always current regardless of closure capture. The mount effect
+   writes the listener (and store, if internally created) to refs; the
+   unmount cleanup reads from refs.
+2. **`useStore` for the render path** — state that the render function reads
+   (e.g. `state.reactiveStore` for `handleSet` to call `store.set()`) stays
+   in `useStore` so React re-renders when it changes.
+
+### Symmetric `unsubscribe(listener)` method
+
+`ReactiveStore` now exposes `unsubscribe(listener)` alongside the existing
+`subscribe(listener) => () => void` disposer API. This mirrors the DOM
+`EventTarget` add/removeEventListener pattern and lets components that store
+the **listener function** (stable reference) clean up deterministically,
+without relying on the disposer closure being current.
+
+Both APIs are supported. The disposer return-value pattern remains for
+backward compatibility and one-shot subscriptions; the symmetric
+`unsubscribe(listener)` is preferred for component lifecycle cleanup.
+
+### Affected components
+
+- `BcReactiveScope` — `changeListenerRef` (useRef) + `store.unsubscribe`.
+- `BcForm` — `reactiveListenerRef` + `reactiveStoreRef` (both useRef) +
+  `store.unsubscribe` + `store.dispose`. (Before the fix, `state.reactiveStore`
+  was also stale in cleanup, so `dispose()` never ran — the listener genuinely
+  leaked, not just theoretically.)
+- `AppProvider` — `disposersRef` (useRef array) holds all disposers;
+  cleanup iterates the ref.
+
+### Build reproducibility
+
+Regular `.ts` files (stores, types, utilities) under `src/` are mirrored to
+each Mitosis output target's `src/` directory by `scripts/sync-regular-ts.mjs`
+(run as a build step). Without this, compiled components that import
+`ReactiveStore` would resolve to stale artifacts in `output/` and silently
+use old source — the `unsubscribe` method added to `store.ts` was not visible
+to `BcForm.tsx` until this sync step was added.
 
 ---
 

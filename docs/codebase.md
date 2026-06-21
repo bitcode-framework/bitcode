@@ -359,7 +359,7 @@ packages/ui/
 │   ├── core/                                   # Reactive store, registry, context, data-source, types, wc-event-bridge, part-props, renderer, providers
 │   ├── components/                             # 65 Mitosis .lite.tsx components across 11 groups
 │   └── themes/default.css                      # Default theme bundle
-├── scripts/                                    # Build helpers (dev, fix-react-output, generate-index/registry)
+├── scripts/                                    # Build helpers (dev, fix-react-output, generate-index/registry, sync-regular-ts)
 ├── output/                                     # Generated targets (gitignored — produced by mitosis build)
 └── demos/
     └── react-app/                              # Vite + React playground that consumes all components
