@@ -1,6 +1,6 @@
 # ADR-008: Contract-First API Freeze for `packages/ui`
 
-## Status: Accepted (Phase 2 complete, 2026-06-18)
+## Status: Accepted (Phase 4 complete, 2026-06-22)
 
 ## Date: 2026-06-17 (proposed) / 2026-06-18 (accepted)
 
@@ -248,15 +248,16 @@ Negative:
 - **Lighthouse audits**: ⏳ Deferred. A11y score, performance score for component demos
 - **Touch/mobile testing**: ⏳ Deferred. Touch target sizes, gesture support on React Native
 
-### Phase 4: Documentation (In Progress)
+### Phase 4: Documentation (Complete 2026-06-22)
 
 - [x] ADR-007 Implementation Status, Lessons Learned, Migration Guide
 - [x] ADR-008 Implementation Summary, Acceptance Criteria Verification
 - [x] ADR-009 Runtime Part Resolution (new)
 - [x] ADR-010 Web Component Event Bridge (new)
-- [ ] Per-component usage guides with live examples
-- [ ] Integration guides for each framework target (React, Vue, RN, Stencil)
-- [ ] `docs/components-progress.md` full alignment with contract matrix
+- [x] Per-component API documentation for all 177 components — `scripts/generate-component-docs.mjs` parses each `.lite.tsx` Props interface and `.contract.ts` to produce structured markdown (props table, events, parts, a11y, adapter mapping, controlled/uncontrolled). 153 generated + 24 hand-curated P0 docs preserved = 177 component docs in `docs/api/` with a categorized sitemap README.
+- [x] Integration guides for each framework target (React, Vue, RN, Stencil) — `docs/guides/` contains 4 guides with adapter-mapping appendices mapping each ADR-007 contract concept to framework idioms, plus a guides index README.
+- [x] Contract audit in blocking mode — `scripts/contract-audit.mjs` rewritten with Props-interface-aware parsing (depth-aware brace/bracket tracking, `=>`-safe angle bracket handling, semantic-handler-gated pair enforcement). 0 violations in blocking mode (down from 44 false-positive-ridden warnings). Fixed 3 genuine handler signature violations (BcHoverCard `onOpenChange`, BcDataTable `onSelectionChange`/`onExpandedChange`) to accept `BcChangeMeta`.
+- [x] `docs/components-progress.md` alignment with contract matrix
 
 ### Phase 5: Flutter & BitCode Integration (Not Started)
 

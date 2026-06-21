@@ -342,28 +342,41 @@ Stencil.js Web Component library (`@bitcode/components`).
 
 ---
 
-## Packages / UI PoC (`packages/ui/`)
+## Packages / UI (`packages/ui/`)
 
-Cross-framework BitCode UI proof-of-concept using Mitosis source components and per-target demos.
+Cross-framework BitCode UI library using Mitosis source components compiled to React, Vue, Stencil, and React Native. Contract-first API per ADR-007/008.
 
 ```
 packages/ui/
-├── package.json                                # @bitcode/ui (Mitosis-driven cross-framework UI library)
-├── mitosis.config.js                           # Targets: stencil, react, vue (react-native added in Phase 0 per ADR-006)
+├── package.json                                # @bitcode/ui (Mitosis-driven cross-framework UI library, 177 components)
+├── mitosis.config.js                           # Targets: stencil, react, vue, react-native (per ADR-006)
 ├── tokens/                                     # Design tokens (theme.css = source of truth)
 │   ├── theme.css                               #   --bc-* HSL channel variables (light + .dark)
-│   ├── tailwind.preset.cjs                     #   Tailwind v3 preset (auto-generated in Phase 0)
-│   ├── tailwind.theme.css                      #   Tailwind v4 @theme inline (auto-generated in Phase 0)
-│   └── nativewind.preset.cjs                   #   NativeWind preset for React Native (auto-generated in Phase 0)
+│   ├── tailwind.preset.cjs                     #   Tailwind v3 preset (auto-generated)
+│   ├── tailwind.theme.css                      #   Tailwind v4 @theme inline (auto-generated)
+│   └── nativewind.preset.cjs                   #   NativeWind preset for React Native
 ├── src/
-│   ├── core/                                   # Reactive store, registry, context, data-source, types, wc-event-bridge, part-props, renderer, providers
-│   ├── components/                             # 65 Mitosis .lite.tsx components across 11 groups
+│   ├── core/                                   # Reactive store, registry, context, data-source, types, wc-event-bridge, part-props, renderer, providers, collection contract
+│   ├── components/                             # 177 Mitosis .lite.tsx components across 13 groups (charts, data, data-display, feedback, forms, input, layout, media, navigation, overlays, primitives, print, social, views)
 │   └── themes/default.css                      # Default theme bundle
-├── scripts/                                    # Build helpers (dev, fix-react-output, generate-index/registry, sync-regular-ts)
+├── scripts/                                    # Build & tooling helpers
+│   ├── contract-audit.mjs                      # ADR-007/008/009 contract compliance auditor (blocking mode, Props-interface-aware parsing)
+│   ├── generate-component-docs.mjs             # ADR-008 Phase 4 per-component API doc generator (parses .lite.tsx + .contract.ts → markdown)
+│   ├── generate-a11y-tests.mjs                 # A11y runtime test generator (axe-core smoke tests for all components)
+│   ├── generate-tokens.mjs                     # Design token sync (theme.css ↔ tailwind/nativewind presets)
+│   ├── generate-index.mjs                      # Component index generator (src/index.ts + per-target index)
+│   ├── generate-registry.mjs                   # Component registry generator
+│   ├── sync-regular-ts.mjs                     # Mirrors .ts files across all 4 output targets
+│   ├── apply-adapt-overrides.mjs               # Copies hand-tuned native impls into react-native output
+│   ├── reformat-react-output.mjs               # Post-processes React output for hooks compatibility
+│   ├── run-source-tests.mjs                    # Source-level test runner (node:test)
+│   └── dev.mjs                                 # Dev server
+├── docs/                                       # ADR-008 Phase 4 documentation
+│   ├── api/                                    # 177 per-component API docs + categorized sitemap README
+│   └── guides/                                 # 4 framework integration guides (React, Vue, RN, Stencil) + index README
 ├── output/                                     # Generated targets (gitignored — produced by mitosis build)
 └── demos/
     └── react-app/                              # Vite + React playground that consumes all components
-                                                # (RN/Tauri demos to be added in Phase 0)
 ```
 
 > Lynx target (formerly ADR-001 §15) was dropped per ADR-006. Mobile is now React

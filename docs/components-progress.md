@@ -4,7 +4,7 @@
 > berubah status. Untuk *kenapa* dan *arsitektur*, baca [ADR](./adr/README.md).
 > Untuk *bagaimana spec engine*, baca `engine/docs/features/*.md`.
 
-**Last updated:** 2026-06-22 (Phase B2 a11y enforcement complete: 151 component a11y tests generated, BC-025..BC-044 all fixed, 0 test failures)
+**Last updated:** 2026-06-22 (Phase D documentation complete: contract audit blocking mode 0 violations, 177 per-component API docs generated, 4 framework integration guides written, 0 test failures)
 
 ## Phase C3 Sign-Off (2026-06-22 update)
 
@@ -21,9 +21,16 @@
 | B3 Edge Case Hardening | ✅ Complete | All 45 bug log entries (BC-001 s/d BC-045) resolved: 44 fixed, 1 wontfix. 0 test failures across all suites. |
 | C1 ADR Promotion | ✅ Complete | ADR-001, ADR-003, ADR-004 promoted to Accepted. 8/10 ADRs now Accepted. |
 | C2 Parity Matrix Gate | ✅ Complete | Stencil + antd/Prime matrices frozen as formal gates. |
-| C3 DoD Sign-Off | ✅ This document | `docs/components-progress.md` updated with Phase C verification status. |
+| C3 DoD Sign-Off | ✅ Complete | `docs/components-progress.md` updated with Phase C verification status. |
+| D1 Contract Audit (Blocking) | ✅ Complete | `scripts/contract-audit.mjs` rewritten with Props-interface-aware parsing. 0 violations in blocking mode (down from 44 warnings). Fixed 3 genuine handler signature violations (BcHoverCard `onOpenChange`, BcDataTable `onSelectionChange`/`onExpandedChange`). |
+| D2 Per-Component Docs | ✅ Complete | `scripts/generate-component-docs.mjs` parses each `.lite.tsx` + `.contract.ts` to produce structured markdown. 153 generated + 24 hand-curated P0 preserved = 177 component docs in `docs/api/` with categorized sitemap. |
+| D3 Framework Integration Guides | ✅ Complete | 4 guides in `docs/guides/` (React, Vue, React Native, Stencil) with adapter-mapping appendices mapping each ADR-007 contract concept to framework idioms. |
 
 **Test totals (2026-06-22):** 1558 source + 797 runtime (13 skipped — jsdom iframe/canvas limitations) + 11 E2E = **2366 tests, 0 failures.**
+
+**Contract audit:** 0 violations in blocking mode (`npm run audit:contract`).
+
+**Documentation:** 177 per-component API docs (`docs/api/`) + 4 framework integration guides (`docs/guides/`) + categorized sitemap.
 
 **Build:** 179 components × 4 targets (React, Vue, React Native, Stencil), 0 reformat failures, 202 `.ts` files synced per target via `sync-regular-ts.mjs`.
 
@@ -64,7 +71,7 @@ Core Integration Surface yang wajib diaudit dulu:
 | Imperative Methods | ✅ | Methods typed per contract (focus/blur/validate/reset/submit/open/close/scrollToIndex/exportCsv). |
 | A11y Behavior Contract | ✅ | All P0 interactive components define role, ARIA, keyboard, mobile equivalent in contract files. |
 | Adapter Mapping | ✅ | All P0 contracts include React/Vue/RN/Stencil/Tauri/Flutter adapter mapping interfaces. |
-| Compatibility Tests | ✅ | 2095/2095 tests pass (1583 source + 501 runtime + 11 E2E) including ADR-008 contract surface, semantic event, a11y wiring, ADR-007 migration tests, WC event bridge, Runtime Part Resolution helper tests, Data/View wiring tests, Overlay/Navigation/Layout rollout tests, formal contract freeze tests, Phase A4 data-source uniformity tests, Phase B1 reactivity E2E scenarios, and Phase A3 Playwright browser verification. |
+| Compatibility Tests | ✅ | 2366 tests pass (1558 source + 797 runtime + 11 E2E) including ADR-008 contract surface, semantic event, a11y wiring, ADR-007 migration tests, WC event bridge, Runtime Part Resolution helper tests, Data/View wiring tests, Overlay/Navigation/Layout rollout tests, formal contract freeze tests, Phase A4 data-source uniformity tests, Phase B1 reactivity E2E scenarios, Phase A3 Playwright browser verification, and contract-audit blocking mode (0 violations). |
 
 ## Ringkasan
 
