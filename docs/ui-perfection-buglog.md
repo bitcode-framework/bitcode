@@ -21,7 +21,7 @@
 | # | Date | Component | Severity | Phase | Classification | Status | Summary |
 |---|------|-----------|----------|-------|----------------|--------|---------|
 | BC-001 | 2026-06-20 | BcInput | P0 | A1.2 | source+plugin | fixed | handleChange crash (value-first pattern) |
-| BC-002 | 2026-06-20 | BcInput | P1 | A1.2 | source | deferred | slotProps.label attributes not applied (Mitosis can't spread) |
+| BC-002 | 2026-06-20 | BcInput | P1 | A1.2 | source | deferred | slotProps.label attributes not applied (partAttr wiring not yet implemented; design solution exists in ADR-009) |
 | BC-003 | 2026-06-20 | BcInput+all | P0 | A1.2 | mitosis-output | fixed | `if (cond) return;` → `if (cond); return;` |
 | BC-004 | 2026-06-20 | BcSelect | P1 | A1.3 | a11y | fixed | listbox aria-label + combobox aria-controls + listbox id |
 | BC-005 | 2026-06-20 | BcSelect | P1 | A1.3 | source | fixed | clearable prop — clear button now rendered and wired |
@@ -36,14 +36,14 @@
 | BC-014 | 2026-06-20 | BcCommand | P1 | A1.3 | a11y | fixed | dialog aria-label, listbox aria-label, combobox aria-controls |
 | BC-015 | 2026-06-20 | BcCommand | P1 | A1.3 | source | fixed | stale activeIndex — local var computation |
 | BC-016 | 2026-06-20 | BcAccordion | P1 | A1.3 | source | fixed | onToggle — compute nextIds before passing to callback |
-| BC-017 | 2026-06-20 | BcSplitter | P2 | A1.3 | test | wontfix | pointer drag unreliable in jsdom (stale state + zero rects) |
+| BC-017 | 2026-06-20 | BcSplitter | P2 | A1.3 | test+source | fixed | (a) jsdom pointer-event workaround via MouseEvent constructor, (b) stale-dragging fixed with useRef |
 | BC-018 | 2026-06-20 | BcForm | P1 | A1.3 | source+plugin | fixed | select onChange — e.target.value extraction |
 | BC-019 | 2026-06-20 | BcForm | P1 | A1.3 | source | fixed | stale-state closure in setField — validate against nextValues |
 | BC-020 | 2026-06-20 | BcList | P1 | A1.3 | source | fixed | local mode — local newTotal variable |
 | BC-021 | 2026-06-20 | BcRenderer | P1 | A1.3 | mitosis-output | fixed | data-bc-renderer-custom — whitelist in plugin |
 | BC-022 | 2026-06-20 | BcDataTable | P0 | A1.3 | mitosis-output | fixed | defaultGetRowId — module scope + can() to useStore + IIFE fixes |
 | BC-023 | 2026-06-21 | BcDataTable | P1 | A1.3 | source | fixed | props.loading wired in onMount |
-| BC-024 | 2026-06-21 | BcReactiveScope | P1 | A1.3 | source | deferred | onChange subscription timing in test env (verify in A3) |
+| BC-024 | 2026-06-21 | BcReactiveScope | P1 | A1.3 | source | fixed | (a) test-timing fixed with waitFor poll; (b) cleanup memory leak fixed with useRef + unsubscribe; pattern also applied to BcForm + AppProvider |
 
 ## Bug Details
 
@@ -76,9 +76,10 @@
   2. Inspect the rendered `<label>` element.
 - **Expected:** The label has `data-testid="lbl"` and `className` includes `c`.
 - **Actual:** `className` is merged correctly (partClass works), but `data-testid` is `null` — non-class slotProps entries are silently dropped.
-- **Root cause:** Source `BcInput.lite.tsx` only calls `partClass(props.slotProps, 'label', base)` on the label. It never calls `partAttr(props.slotProps, 'label')` to spread remaining attributes. Same gap exists on every part (root, control, input, description, error, etc.).
-- **Fix:** Add `{...partAttr(props.slotProps, 'label')}` to the `<label>` element (and audit other parts for the same gap). For now, the test is relaxed to only assert className passthrough; the full attribute passthrough becomes a Phase B task (slotProps contract hardening across all components).
-- **Status:** test relaxed; full fix deferred to Phase B (slotProps audit)
+- **Root cause:** Source `BcInput.lite.tsx` imports `partAttr` but never calls it. Only `partClass(props.slotProps, 'label', base)` is used on the label element. Non-class slotProps entries (data-*, aria-*, etc.) are silently dropped. Same gap exists on every part (root, control, input, description, error, etc.).
+- **Correction (2026-06-21 grilling session):** The original bug log stated "Mitosis can't spread `{...partAttr()}`" and classified this as an architecture change. This was inaccurate. ADR-009 (Runtime Part Resolution) documents that dynamic object spread (`{...props.slotProps?.root}`) is not supported by Mitosis across all targets (Stencil, Vue, Angular, Flutter). The design solution already exists: `partAttr(slotProps, partName, attrName)` is a single-attribute accessor that avoids spread entirely. BcInput simply has not wired `partAttr` calls for each supported attribute on each part. This is a source-level feature gap (missing wiring), not an architecture limitation.
+- **Fix:** Wire `partAttr` calls explicitly per supported attribute per part. Example for label: `data-testid={partAttr(props.slotProps, 'label', 'data-testid')}`, `aria-label={partAttr(props.slotProps, 'label', 'aria-label')}`. The supported attribute categories per ADR-009 are: className (via partClass), data-*, aria-*, style (via partStyle). This is a Phase B audit task across all components, not an architecture change.
+- **Status:** test relaxed (className passthrough only); full fix deferred to Phase B (partAttr wiring audit across all components)
 
 ### BC-003 — BcInput (and all components): `if (cond) return;` compiled to `if (cond); return;` — handler always returns unconditionally
 
@@ -332,21 +333,25 @@
 - **Fix:** Compute the next array first, call `setOpenIds(next)`, then pass `next` to `onToggle` and `dispatchBcEvent`. This avoids relying on state updates being synchronous.
 - **Status:** deferred to Phase B (state callback contract hardening)
 
-### BC-017 — BcSplitter: pointer drag unreliable in jsdom (stale-state closure + zero rects)
+### BC-017 — BcSplitter: pointer drag unreliable in jsdom (split into BC-017a wontfix + BC-017b fixed)
 
-- **Date:** 2026-06-20
+- **Date:** 2026-06-20 (updated 2026-06-21)
 - **Component:** BcSplitter
-- **Severity:** P2 (testing limitation, not a production bug)
+- **Severity:** P2 (testing limitation)
 - **Phase:** A1.3 (runtime test — BcSplitter)
-- **Classification:** test (jsdom limitation)
+- **Classification:** test (jsdom limitation) + source (stale-state closure)
 - **Reproduction:**
   1. Render `<BcSplitter start="A" end="B" onResize={fn} />`.
   2. `fireEvent.pointerDown(handle)` then `fireEvent.pointerMove(handle, { clientX: 700 })`.
 - **Expected:** `onResize` called with the computed percentage (70).
-- **Actual:** `onResize` called with NaN (or not called at all, depending on timing). The `onMove` handler reads `dragging` state which may be stale (false) after `pointerDown`, causing an early return. Additionally, `getBoundingClientRect` returns zeros in jsdom, producing NaN in the percentage calculation.
-- **Root cause:** Two compounding issues: (1) React state batching means `dragging` may not be `true` when `pointerMove` fires synchronously after `pointerDown`. (2) jsdom does not implement layout, so `getBoundingClientRect` returns all zeros.
-- **Fix:** Not a production bug — real browsers fire pointer events asynchronously after state settles and return real rects. The keyboard nudge path (which doesn't depend on rects or pointer state) is tested and works. The drag interaction will be verified in A3 (demo app browser verification). If jsdom testing is needed, use `userEvent` (which awaits re-renders) and mock `getBoundingClientRect` on the container element.
-- **Status:** wontfix (testing limitation; drag verified in A3)
+- **Actual:** `onResize` called with NaN. Two compounding issues identified and split:
+
+**BC-017a (jsdom limitation, FIXED via workaround):** jsdom's `fireEvent.pointerMove` does not deliver `clientX`/`clientY` to the event handler (they arrive as `undefined`), so the percentage calculation produces NaN. Additionally, jsdom does not implement layout, so `getBoundingClientRect` returns all zeros. **Fix:** the test constructs a `MouseEvent` with `type: 'pointermove'` and `clientX/clientY` properties (jsdom's MouseEvent constructor honors these, unlike fireEvent.pointerMove), and mocks `getBoundingClientRect` on the root element. The test now asserts the exact percentage value (70). Production browsers deliver real PointerEvents and rects without workaround.
+
+**BC-017b (stale-state closure, FIXED):** The `onMove` handler read `dragging` from the React state closure, which could be stale (`false`) when `pointerDown` and `pointerMove` fired without an intervening re-render. This is the same pattern as BC-015 (BcCommand) and BC-019 (BcForm) which were already fixed.
+
+- **Fix (BC-017b):** Added `draggingRef = useRef<boolean>(false)` that mirrors `state.dragging`. `startDrag`/`stopDrag`/`onMove` read from `draggingRef` (always current) instead of `state.dragging` (may be stale in closure). `state.dragging` remains the source of truth for render (`data-dragging` attribute + overlay `Show`). The test now verifies that `onMove` ran (onResize was called) — without the fix, onMove would early-return on the stale `dragging=false` and onResize would never fire.
+- **Status:** BC-017a fixed (MouseEvent constructor + getBoundingClientRect mock workaround). BC-017b fixed (useRef for dragging flag).
 
 ### BC-018 — BcForm: select onChange passes Event instead of value (Mitosis value-events plugin mismatch)
 
@@ -446,20 +451,28 @@
 - **Fix:** In `onMount` or a `useEffect`, check `props.loading` and set `status = 'loading'` when true.
 - **Status:** deferred to Phase B
 
-### BC-024 — BcReactiveScope: onChange subscription may not persist in test env
+### BC-024 — BcReactiveScope: onChange subscription timing + cleanup memory leak (split into BC-024a deferred + BC-024b fixed)
 
-- **Date:** 2026-06-21
+- **Date:** 2026-06-21 (updated 2026-06-21)
 - **Component:** BcReactiveScope
 - **Severity:** P1
 - **Phase:** A1.3 (runtime test — BcReactiveScope)
-- **Classification:** source (React effect timing)
+- **Classification:** source (React effect timing + cleanup closure)
 - **Reproduction:**
   1. Render `<BcReactiveScope store={externalStore} onChange={fn}>...</BcReactiveScope>`.
   2. Call `externalStore.set('x', 1)`.
 - **Expected:** `onChange` fires with the updated values.
-- **Actual:** `onChange` is not called. The `useEffect` that subscribes `onChange` runs on mount, but the subscription appears to not persist after React's effect flushing in the test environment. The `setScopeOff(off)` state update may cause a re-render that interferes with the subscription.
-- **Root cause:** The compiled `useEffect` calls `store.subscribe(snap => { ...props.onChange... })` and stores the unsubscribe function via `setScopeOff(off)`. This state update triggers a re-render. The subscription should persist (empty deps array), but in jsdom + React test environment, the callback may not fire.
-- **Fix:** The ReactiveStore.subscribe/unsubscribe contract is verified in the ReactiveStore test suite (26 tests). The component-level onChange wiring needs investigation in Phase B. Possible fix: use a `useRef` instead of `useState` for `scopeOff` to avoid re-renders.
-- **Status:** deferred to Phase B
+- **Actual:** Two distinct issues identified and split:
+
+**BC-024a (test-timing, FIXED with waitFor):** The `useEffect` that subscribes `onChange` runs on mount, but in jsdom + React test env, `store.set()` may fire before the subscription is established (effect not yet flushed). **Fix:** the test uses `waitFor` to poll until `onChange` has fired at least once on a probe value, then mutates the real value and asserts the callback receives it. This replaces the previous fixed `setTimeout(50)` which was unreliable.
+
+**BC-024b (cleanup memory leak, FIXED):** The compiled `useEffect` cleanup (deps `[]`) captured `scopeOff` from the first render (initial value `null` from `mkScopeOff()`). After `setScopeOff(off)` in the mount effect triggered a re-render, the cleanup closure still held the stale `null` — so `unsubscribe` was never invoked on unmount. With an externally-owned store (`props.store` provided), the store is NOT disposed on unmount, so the listener leaked: `store.set()` after unmount would still fire the stale `onChange` callback.
+
+- **Fix (BC-024b):** Two changes:
+  1. Added `unsubscribe(listener)` method to `ReactiveStore` (symmetric with `subscribe`, mirrors DOM EventTarget add/removeEventListener pattern).
+  2. Refactored `BcReactiveScope.lite.tsx` to store the listener function in a `useRef` (`changeListenerRef`) instead of `useStore` state. `useRef.current` is a mutable container that is always current regardless of closure capture, so `onUnMount` reads the real listener and calls `store.unsubscribe(changeListenerRef.current)`. Removed `ScopeOff` type and `mkScopeOff` factory (no longer needed).
+- **Test:** Added "unsubscribes onChange listener on unmount (BC-024b fix)" test in `reactive.rtl.test.tsx` — renders with external store + onChange, unmounts, then asserts `onChange` is NOT called after `store.set()` post-unmount.
+- **Note (extended fix):** During the 2026-06-21 follow-up session, the same stale-disposer pattern was found in `BcForm.lite.tsx` and `AppProvider.lite.tsx`. Deeper investigation revealed that **`BcForm` had a worse latent bug**: `reactiveStore` was also read from the cleanup closure (always null from the first render), so `dispose()` was never invoked — meaning the listener actually DID leak, contrary to the initial assumption that disposal saves it. **Fix:** both components now use the dual-storage pattern: `useStore` for render-reactive state and `useRef` for cleanup-stable references. `BcForm` adds `reactiveStoreRef` + `reactiveListenerRef`; `AppProvider` moves `disposers` to `disposersRef`. All three components now have deterministic cleanup regardless of closure capture.
+- **Status:** BC-024a fixed (waitFor poll workaround for test-timing). BC-024b fixed (useRef + unsubscribe method). Same pattern applied to BcForm + AppProvider.
 
 
