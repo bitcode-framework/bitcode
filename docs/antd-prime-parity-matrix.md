@@ -1,6 +1,9 @@
 # antd / PrimeReact Parity Matrix
 
 > Phase C2 deliverable per [UI Perfection Roadmap](../plans/2026-06-20-ui-perfection-roadmap.md).
+> **Phase C2: FROZEN as formal gate** (2026-06-21). New antd/PrimeReact
+> feature gaps must be added as new rows with status 🔜 and linked to a
+> tracking issue. Do not retroactively change existing status without a PR.
 >
 > Checklist of enterprise features present in antd and PrimeReact for
 > equivalent component categories, mapped to `packages/ui` status.

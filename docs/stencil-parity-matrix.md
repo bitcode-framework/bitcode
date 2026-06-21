@@ -1,6 +1,10 @@
 ﻿# Stencil-to-Mitosis Parity Matrix
 
 > **Phase A2 deliverable** per the UI Perfection Roadmap.
+> **Phase C2: FROZEN as formal gate** (2026-06-21). Changes to this matrix
+> require a PR that updates both the matrix and the consuming component's
+> contract. Do not edit in-place for new gaps — add a new row with status
+> and link the tracking issue.
 >
 > This document maps every `@Prop` / `@Event` / `@Method` in the Stencil Web Components
 > (`packages/components/src/components/`) to its Mitosis equivalent in

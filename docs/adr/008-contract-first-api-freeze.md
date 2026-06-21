@@ -234,6 +234,13 @@ Negative:
 
 ## Remaining Work
 
+### Phase C2: Parity Matrix Gate (Complete 2026-06-21)
+
+- [x] `docs/stencil-parity-matrix.md` frozen as formal gate (7345 lines, 127 Stencil → 176 Mitosis, 81.1% coverage)
+- [x] `docs/antd-prime-parity-matrix.md` frozen as formal gate (266 lines, 63 antd + 58 PrimeReact features, 79%/86% coverage)
+- [x] Both matrices marked "FROZEN as formal gate" in document headers
+- [x] Gap summary with priority order documented (1771 Stencil gaps, 10 antd/Prime missing features)
+
 ### Phase 3: Accessibility & Performance Testing (Not Started)
 
 - **A11y runtime testing**: Keyboard navigation, focus management, screen reader verification on actual components
