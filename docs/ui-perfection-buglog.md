@@ -21,29 +21,29 @@
 | # | Date | Component | Severity | Phase | Classification | Status | Summary |
 |---|------|-----------|----------|-------|----------------|--------|---------|
 | BC-001 | 2026-06-20 | BcInput | P0 | A1.2 | source+plugin | fixed | handleChange crash (value-first pattern) |
-| BC-002 | 2026-06-20 | BcInput | P1 | A1.2 | source | deferred | slotProps.label attributes not applied |
+| BC-002 | 2026-06-20 | BcInput | P1 | A1.2 | source | deferred | slotProps.label attributes not applied (Mitosis can't spread) |
 | BC-003 | 2026-06-20 | BcInput+all | P0 | A1.2 | mitosis-output | fixed | `if (cond) return;` → `if (cond); return;` |
-| BC-004 | 2026-06-20 | BcSelect | P1 | A1.3 | a11y | deferred | listbox missing aria-label + combobox missing aria-controls |
-| BC-005 | 2026-06-20 | BcSelect | P1 | A1.3 | source | deferred | clearable prop declared but clear button never rendered |
-| BC-006 | 2026-06-20 | BcCombobox | P1 | A1.3 | source | deferred | controlled value prop doesn't sync to query state |
-| BC-007 | 2026-06-20 | BcCheckbox/Toggle | P1 | A1.3 | a11y | deferred | button lacks accessible name (label not wired) |
+| BC-004 | 2026-06-20 | BcSelect | P1 | A1.3 | a11y | fixed | listbox aria-label + combobox aria-controls + listbox id |
+| BC-005 | 2026-06-20 | BcSelect | P1 | A1.3 | source | fixed | clearable prop — clear button now rendered and wired |
+| BC-006 | 2026-06-20 | BcCombobox | P1 | A1.3 | source | fixed | controlled value sync via onMount |
+| BC-007 | 2026-06-20 | BcCheckbox/Toggle | P1 | A1.3 | a11y | fixed | button aria-label + label htmlFor |
 | BC-008 | 2026-06-20 | BcDialog | P0 | A1.3 | source | fixed | default props set `open: false`, breaking uncontrolled mode |
-| BC-009 | 2026-06-20 | BcDialog | P1 | A1.3 | source | deferred | closeOnEscape declared but no Escape handler wired |
-| BC-010 | 2026-06-20 | BcPopover | P1 | A1.3 | mitosis-output | deferred | hover trigger crashes (ternary compiles to broken IIFE) |
-| BC-011 | 2026-06-20 | BcPopover | P1 | A1.3 | mitosis-output | deferred | named slot compiles to props string instead of slot content |
-| BC-012 | 2026-06-20 | BcContextMenu | P1 | A1.3 | a11y | deferred | separator items wrapped in role=menuitem (should be role=separator) |
-| BC-013 | 2026-06-20 | BcCommand | P0 | A1.3 | source+plugin | fixed | search filtering broken (handler expects Event, receives string) |
-| BC-014 | 2026-06-20 | BcCommand | P1 | A1.3 | a11y | deferred | 3 a11y violations (dialog name, listbox name, combobox aria-controls) |
-| BC-015 | 2026-06-20 | BcCommand | P1 | A1.3 | source | deferred | stale-state closure in keydown handler (rapid ArrowDown) |
-| BC-016 | 2026-06-20 | BcAccordion | P1 | A1.3 | source | deferred | onToggle callback receives stale openIds |
+| BC-009 | 2026-06-20 | BcDialog | P1 | A1.3 | source | fixed | closeOnEscape — keydown listener via onMount/onUnMount |
+| BC-010 | 2026-06-20 | BcPopover | P1 | A1.3 | mitosis-output | fixed | hover trigger — if-guard replaces ternary IIFE |
+| BC-011 | 2026-06-20 | BcPopover | P1 | A1.3 | mitosis-output | fixed | named slot — triggerContent render-prop replaces Slot |
+| BC-012 | 2026-06-20 | BcContextMenu | P1 | A1.3 | a11y | fixed | separator role=separator (not menuitem) |
+| BC-013 | 2026-06-20 | BcCommand | P0 | A1.3 | source+plugin | fixed | search filtering — value-first handler |
+| BC-014 | 2026-06-20 | BcCommand | P1 | A1.3 | a11y | fixed | dialog aria-label, listbox aria-label, combobox aria-controls |
+| BC-015 | 2026-06-20 | BcCommand | P1 | A1.3 | source | fixed | stale activeIndex — local var computation |
+| BC-016 | 2026-06-20 | BcAccordion | P1 | A1.3 | source | fixed | onToggle — compute nextIds before passing to callback |
 | BC-017 | 2026-06-20 | BcSplitter | P2 | A1.3 | test | wontfix | pointer drag unreliable in jsdom (stale state + zero rects) |
-| BC-018 | 2026-06-20 | BcForm | P1 | A1.3 | source+plugin | deferred | select onChange passes Event instead of value |
-| BC-019 | 2026-06-20 | BcForm | P1 | A1.3 | source | fixed | stale-state closure in validateAll and setField |
-| BC-020 | 2026-06-20 | BcList | P1 | A1.3 | source | fixed | local mode status 'empty' instead of 'ready' (stale total) |
-| BC-021 | 2026-06-20 | BcRenderer | P1 | A1.3 | mitosis-output | deferred | custom sentinel data-bc-renderer-custom stripped by plugin |
-| BC-022 | 2026-06-20 | BcDataTable | P0 | A1.3 | mitosis-output | fixed | defaultGetRowId is not defined (crashes on render) |
-| BC-023 | 2026-06-21 | BcDataTable | P1 | A1.3 | source | deferred | props.loading not wired to status state |
-| BC-024 | 2026-06-21 | BcReactiveScope | P1 | A1.3 | source | deferred | onChange subscription may not persist in test env |
+| BC-018 | 2026-06-20 | BcForm | P1 | A1.3 | source+plugin | fixed | select onChange — e.target.value extraction |
+| BC-019 | 2026-06-20 | BcForm | P1 | A1.3 | source | fixed | stale-state closure in setField — validate against nextValues |
+| BC-020 | 2026-06-20 | BcList | P1 | A1.3 | source | fixed | local mode — local newTotal variable |
+| BC-021 | 2026-06-20 | BcRenderer | P1 | A1.3 | mitosis-output | fixed | data-bc-renderer-custom — whitelist in plugin |
+| BC-022 | 2026-06-20 | BcDataTable | P0 | A1.3 | mitosis-output | fixed | defaultGetRowId — module scope + can() to useStore + IIFE fixes |
+| BC-023 | 2026-06-21 | BcDataTable | P1 | A1.3 | source | fixed | props.loading wired in onMount |
+| BC-024 | 2026-06-21 | BcReactiveScope | P1 | A1.3 | source | deferred | onChange subscription timing in test env (verify in A3) |
 
 ## Bug Details
 
