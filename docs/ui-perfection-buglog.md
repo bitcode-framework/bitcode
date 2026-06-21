@@ -44,26 +44,26 @@
 | BC-022 | 2026-06-20 | BcDataTable | P0 | A1.3 | mitosis-output | fixed | defaultGetRowId — module scope + can() to useStore + IIFE fixes |
 | BC-023 | 2026-06-21 | BcDataTable | P1 | A1.3 | source | fixed | props.loading wired in onMount |
 | BC-024 | 2026-06-21 | BcReactiveScope | P1 | A1.3 | source | fixed | (a) test-timing fixed with waitFor poll; (b) cleanup memory leak fixed with useRef + unsubscribe; pattern also applied to BcForm + AppProvider |
-| BC-025 | 2026-06-22 | BcBackdrop | P0 | B2 | source | open | `opacityClass` ReferenceError at render — Mitosis codegen drops getter |
-| BC-026 | 2026-06-22 | BcFieldDuration | P0 | B2 | source | open | `inputClass` ReferenceError at render — Mitosis codegen drops getter |
-| BC-027 | 2026-06-22 | BcFieldDynLink | P0 | B2 | source | open | `modelDisabled` ReferenceError at render — Mitosis codegen drops getter |
-| BC-028 | 2026-06-22 | BcFieldMorph | P0 | B2 | source | open | `typeDisabled` ReferenceError at render — Mitosis codegen drops getter |
-| BC-029 | 2026-06-22 | BcFieldTableSelect | P0 | B2 | source | open | `tableWrapClass` ReferenceError at render — Mitosis codegen drops getter |
-| BC-030 | 2026-06-22 | BcLoadingOverlay | P0 | B2 | source | open | `visible` ReferenceError at render — Mitosis codegen drops getter |
-| BC-031 | 2026-06-22 | BcViewGantt | P0 | B2 | source | open | `chartH` ReferenceError at render — Mitosis codegen drops getter |
-| BC-032 | 2026-06-22 | BcButton | P1 | B2 | a11y | open | button-name axe violation — missing accessible name |
-| BC-033 | 2026-06-22 | BcCode/BcJson | P1 | B2 | a11y | open | label axe violation — missing accessible name |
-| BC-034 | 2026-06-22 | BcTextarea/BcNumber/BcMentions | P1 | B2 | a11y | open | label axe violation — missing accessible name |
-| BC-035 | 2026-06-22 | BcDateTime | P1 | B2 | a11y | open | label axe violation — missing accessible name |
-| BC-036 | 2026-06-22 | BcFile | P1 | B2 | a11y | open | label axe violation — missing accessible name |
-| BC-037 | 2026-06-22 | BcSlider | P1 | B2 | a11y | open | label axe violation — missing accessible name |
-| BC-038 | 2026-06-22 | BcRichText | P1 | B2 | a11y | open | aria-input-field-name axe violation |
-| BC-039 | 2026-06-22 | BcDropZone | P1 | B2 | a11y | open | aria-allowed-role + nested-interactive axe violations |
-| BC-040 | 2026-06-22 | BcColorArea/BcColorWheel/BcKnob | P1 | B2 | a11y | open | nested-interactive axe violations |
-| BC-041 | 2026-06-22 | BcMeterGroup | P1 | B2 | a11y | open | aria-required-attr axe violation |
-| BC-042 | 2026-06-22 | BcSearch | P1 | B2 | a11y | open | aria-allowed-attr axe violation |
-| BC-043 | 2026-06-22 | BcSeparator | P1 | B2 | a11y | open | aria-allowed-attr axe violation |
-| BC-044 | 2026-06-22 | BcTimelineSocial | P1 | B2 | a11y | open | aria-required-children axe violation |
+| BC-025 | 2026-06-22 | BcBackdrop | P0 | B2 | source | fixed | `opacityClass` ReferenceError at render — Mitosis codegen drops getter |
+| BC-026 | 2026-06-22 | BcFieldDuration | P0 | B2 | source | fixed | `inputClass` ReferenceError at render — Mitosis codegen drops getter |
+| BC-027 | 2026-06-22 | BcFieldDynLink | P0 | B2 | source | fixed | `modelDisabled` ReferenceError at render — Mitosis codegen drops getter |
+| BC-028 | 2026-06-22 | BcFieldMorph | P0 | B2 | source | fixed | `typeDisabled` ReferenceError at render — Mitosis codegen drops getter |
+| BC-029 | 2026-06-22 | BcFieldTableSelect | P0 | B2 | source | fixed | `tableWrapClass` ReferenceError at render — Mitosis codegen drops getter |
+| BC-030 | 2026-06-22 | BcLoadingOverlay | P0 | B2 | source | fixed | `visible` ReferenceError at render — Mitosis codegen drops getter |
+| BC-031 | 2026-06-22 | BcViewGantt | P0 | B2 | source | fixed | `chartH` ReferenceError at render — Mitosis codegen drops getter |
+| BC-032 | 2026-06-22 | BcButton | P1 | B2 | a11y | fixed | button-name axe violation — missing accessible name |
+| BC-033 | 2026-06-22 | BcCode/BcJson | P1 | B2 | a11y | fixed | label axe violation — missing accessible name |
+| BC-034 | 2026-06-22 | BcTextarea/BcNumber/BcMentions | P1 | B2 | a11y | fixed | label axe violation — missing accessible name |
+| BC-035 | 2026-06-22 | BcDateTime | P1 | B2 | a11y | fixed | label axe violation — missing accessible name |
+| BC-036 | 2026-06-22 | BcFile | P1 | B2 | a11y | fixed | label axe violation — missing accessible name |
+| BC-037 | 2026-06-22 | BcSlider | P1 | B2 | a11y | fixed | label axe violation — missing accessible name |
+| BC-038 | 2026-06-22 | BcRichText | P1 | B2 | a11y | fixed | aria-input-field-name axe violation |
+| BC-039 | 2026-06-22 | BcDropZone | P1 | B2 | a11y | fixed | aria-allowed-role + nested-interactive axe violations |
+| BC-040 | 2026-06-22 | BcColorArea/BcColorWheel/BcKnob | P1 | B2 | a11y | fixed | nested-interactive axe violations |
+| BC-041 | 2026-06-22 | BcMeterGroup | P1 | B2 | a11y | fixed | aria-required-attr axe violation |
+| BC-042 | 2026-06-22 | BcSearch | P1 | B2 | a11y | fixed | aria-allowed-attr axe violation |
+| BC-043 | 2026-06-22 | BcSeparator | P1 | B2 | a11y | fixed | aria-allowed-attr axe violation |
+| BC-044 | 2026-06-22 | BcTimelineSocial | P1 | B2 | a11y | fixed | aria-required-children axe violation |
 | BC-045 | 2026-06-22 | Media viewers (6) | P2 | B2 | test | wontfix | axe-core cannot analyze iframes in jsdom — verify in A3 browser |
 
 ## Bug Details
