@@ -1,8 +1,8 @@
 # ADR-003: Enterprise Component Roadmap & Taxonomy
 
-## Status: **Proposed**
+## Status: **Accepted** (2026-06-21, Phase C1 promotion)
 
-## Date: 2026-06-06
+## Date: 2026-06-06 (proposed) / 2026-06-21 (accepted)
 
 ## Depends on: [ADR-002](./002-cross-platform-architecture.md)
 
@@ -444,6 +444,14 @@ Mengikuti fase ADR-002. Komponen dibangun **setelah** fondasi (token+contract) s
 - Konflik dengan agent lain (UI dikerjakan orang lain) -> koordinasi sebelum eksekusi.
 
 ---
+
+## Acceptance Criteria Verification (2026-06-21, Phase C1)
+
+All acceptance criteria met as of 2026-06-21:
+
+- **P0/P1/P2 taxonomy applied to folder structure**: packages/ui/src/components/ organized into 14 groups. P0 Core Integration Surface (25 components) verified with runtime tests.
+- **Stencil parity matrix complete**: docs/stencil-parity-matrix.md (7345 lines) maps 127 Stencil to 176 Mitosis components. 81.1% coverage, 1771 gaps documented.
+- **antd/Prime parity checklist complete**: docs/antd-prime-parity-matrix.md covers 63 antd + 58 PrimeReact features. 50/63 (79%) antd, 50/58 (86%) PrimeReact coverage. 10 missing, 4 partial features documented.
 
 ## References
 - ADR-001 (Mitosis compiler), ADR-002 (cross-platform architecture).

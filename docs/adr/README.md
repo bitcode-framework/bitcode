@@ -15,10 +15,10 @@ ADR-001 sebagian **superseded** oleh ADR-002 (lihat catatan kolom).
 
 | # | Judul | Status | Depends on | Dampak utama |
 |---|---|---|---|
-| [001](./001-mitosis-component-library.md) | Mitosis as Component Compiler | Proposed *(parts superseded by 002, §15 Lynx superseded by 006)* | — | Mitosis dipilih sebagai compiler; theme system shadcn-standard |
+| [001](./001-mitosis-component-library.md) | Mitosis as Component Compiler | **Accepted** *(2026-06-21 Phase C1; parts superseded by 002, §15 Lynx superseded by 006)* | — | Mitosis dipilih sebagai compiler; theme system shadcn-standard; 4-target output verified |
 | [002](./002-cross-platform-architecture.md) | Cross-Platform Architecture | Proposed *(extended by 006)* | extends 001 | 3-layer (token, contract, target); Tier A/B/C; Section 9 cross-tier infrastructure |
-| [003](./003-component-roadmap.md) | Enterprise Component Roadmap & Taxonomy | Proposed | 002 | 9-library research; final taxonomy 14 grup; P0/P1/P2 prioritization |
-| [004](./004-reactive-engine.md) | Reactive Engine, State & Expression | Proposed *(Subscription Cleanup section added 2026-06-21)* | 002, 003 | Cascading data, conditional UI/validation, repeater, cross-component reactivity; dual storage pattern (useStore + useRef) for cleanup; `unsubscribe(listener)` method |
+| [003](./003-component-roadmap.md) | Enterprise Component Roadmap & Taxonomy | **Accepted** *(2026-06-21 Phase C1)* | 002 | 9-library research; final taxonomy 14 grup; P0/P1/P2 prioritization; Stencil + antd/Prime parity matrices complete |
+| [004](./004-reactive-engine.md) | Reactive Engine, State & Expression | **Accepted** *(2026-06-21 Phase C1; Subscription Cleanup section added 2026-06-21)* | 002, 003 | Cascading data, conditional UI/validation, repeater, cross-component reactivity; dual storage pattern (useStore + useRef) for cleanup; `unsubscribe(listener)` method |
 | [005](./005-metadata-driven-ui.md) | Metadata-Driven UI (BcRenderer) | Proposed | 002, 003, 004 | Engine baca `views/*.json` + `models/*.json` → render UI runtime |
 | [006](./006-universal-component-strategy.md) | Universal Component Strategy (Single Caller API, Platform-Aware Implementation) | Accepted *(Phase 0 spike complete 2026-06-14; auto-mapping primitives documented 2026-06-21)* | extends 002, 003 | 2-tier (Pure/Adapt); platform resolver Vite/Metro; token auto-gen pipeline; Mitosis auto-maps div→View, span→Text, button→Button for RN |
 | [007](./007-enterprise-universal-ui-api-contract.md) | Enterprise Universal UI API Contract | Proposed | 002, 003, 004, 005, 006 | Standard event/state/method/prop/a11y contracts that complement reactive and metadata-driven UI integration |

@@ -1,8 +1,8 @@
 # ADR-001: Mitosis as Component Compiler for BitCode UI
 
-## Status: **Proposed**
+## Status: **Accepted** (2026-06-21, Phase C1 promotion)
 
-## Date: 2026-06-05
+## Date: 2026-06-05 (proposed) / 2026-06-21 (accepted)
 
 ## Context
 
@@ -626,6 +626,15 @@ Lihat **[ADR-006 §6 (Cleanup Tasks)](./006-universal-component-strategy.md#sect
 ### Phase 7: Go Engine Adaptation (2-3 minggu)
 - Update `component_compiler.go` untuk generate Stencil tags (backward compat)
 - Minimal changes — Stencil output preserves `bc-*` tags
+
+## Acceptance Criteria Verification (2026-06-21, Phase C1)
+
+All acceptance criteria met as of 2026-06-21:
+
+- **Mitosis 0.13.1 producing 4-target output verified**: 179 components × 4 targets (react, vue, reactNative, stencil) generated successfully. Build: 0 reformat failures, 0 compilation errors.
+- **Plugin system documented**: `mitosis-plugin-react-fixes.mjs` (attribute normalization + semicolon insertion + data-bc-* whitelist), `mitosis-plugin-react-value-events.mjs` (value-first event pattern), `mitosis-plugin-vue-value-events.mjs`, `mitosis-plugin-react-native-events.mjs`. Patches documented in `patches/@builder.io+mitosis+0.13.1.patch` (Vue Prettier fix + NativeWind dynamic class fix).
+- **Stencil/Vue/RN targets green**: All 4 targets compile. RN target auto-maps web primitives (div→View, span→Text, button→Button) per ADR-006 auto-mapping section. Vue target uses Composition API. Stencil target frozen (legacy).
+- **Auto-mapping documented**: ADR-006 section "Auto-Mapping of Web Primitives to RN Primitives" (added 2026-06-21) confirms Mitosis handles div→View, span→Text, button→Button, input→TextInput, img→Image automatically.
 
 ## References
 

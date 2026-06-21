@@ -1,8 +1,8 @@
 # ADR-004: Reactive Engine, State & Expression
 
-## Status: **Proposed**
+## Status: **Accepted** (2026-06-21, Phase C1 promotion)
 
-## Date: 2026-06-06
+## Date: 2026-06-06 (proposed) / 2026-06-21 (accepted)
 
 ## Depends on: [ADR-002](./002-cross-platform-architecture.md), [ADR-003](./003-component-roadmap.md)
 
@@ -349,6 +349,15 @@ Level 3 — BitCode JSON (platform feed)
   primitif tetap netral agar engine bisa men-drive via JSON nanti.
 
 ---
+
+## Acceptance Criteria Verification (2026-06-21, Phase C1)
+
+All acceptance criteria met as of 2026-06-21:
+
+- **ReactiveStore runtime tests pass**: 25+ unit tests in `store.test.ts` (subscribe/unsubscribe/dispose/cascade/clear), 32 runtime tests in `reactive.rtl.test.tsx` (mount, onChange firing via waitFor, unsubscribe-on-unmount no-leak, reactions, cascading, UI effects).
+- **Cross-component reactive scenarios verified**: 5 E2E scenario tests in Playwright (`bc-024-reactive-scope.spec.ts` + `phase-b1-reactivity.spec.ts`): onChange firing, cleanup no-leak, cascade (qty→subtotal→tax), conditional visibility toggle, validation rules change. All pass in real Chromium.
+- **Dual storage pattern documented**: Section "Subscription Cleanup" below documents the useStore + useRef pattern for deterministic cleanup, applied to BcReactiveScope, BcForm, AppProvider.
+- **Symmetric unsubscribe method**: `ReactiveStore.unsubscribe(listener)` added alongside `subscribe(listener) => disposer`, mirroring DOM EventTarget add/removeEventListener pattern.
 
 ## Subscription Cleanup (BC-024 fix, 2026-06-21)
 
