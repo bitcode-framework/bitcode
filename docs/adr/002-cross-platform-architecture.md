@@ -591,13 +591,35 @@ deteksi platform statis. **Adapt opt-in per komponen** — tidak otomatis, agar
 prinsip "simple" tetap dipegang (komponen sederhana = tetap render desktop saja).
 
 ### 9.5 Acceptance Criteria Section 9
-- [ ] `core/providers/AppProvider` di-emit ke semua target Tier A; switch
+
+**Verification status (2026-06-22):**
+
+- [x] `core/providers/AppProvider` di-emit ke semua target Tier A; switch
       theme/locale/RTL runtime tanpa rebuild.
-- [ ] `core/hooks/` subset P0 ter-emit & dipakai oleh minimal 3 komponen P0.
-- [ ] Animation contract diadopsi Dialog/Drawer/Popover/Toast; reduced-motion
+      *Verified: 7 runtime tests in `AppProvider.rtl.test.tsx` confirm
+      theme/locale/direction switch at runtime via `store.setTheme()`,
+      `store.setLocale()`, `store.setDirection()` without component rebuild.
+      AppProvider emitted to all 4 targets via `sync-regular-ts.mjs`.*
+- [~] `core/hooks/` subset P0 ter-emit & dipakai oleh minimal 3 komponen P0.
+      *Partial: 8 hooks (use-clipboard, use-controllable-state, use-debounced-value,
+      use-disclosure, use-element-size, use-focus-trap, use-id, use-media-query)
+      are emitted to all 4 targets. However, grep confirms **0 components
+      currently import from `core/hooks/`** — components use `useStore`/`useRef`
+      directly. Known gap: refactor 3+ P0 components to use `use-controllable-state`
+      and `use-disclosure` hooks (tracked as tech debt).*
+- [~] Animation contract diadopsi Dialog/Drawer/Popover/Toast; reduced-motion
       dihormati.
-- [ ] `Adapt` contract terdefinisi; minimal Popover/ContextMenu mendukungnya
+      *Partial: Animation contract defined in `core/animation/types.ts`.
+      `prefers-reduced-motion` mentioned in BcBackdrop contract but not
+      enforced in component implementations. Known gap: add reduced-motion
+      guard to Dialog/Drawer/Popover/Toast transitions.*
+- [x] `Adapt` contract terdefinisi; minimal Popover/ContextMenu mendukungnya
       (implementasi Tier A web boleh ditunda ke Phase 4).
+      *Verified: `BcPopover.native.tsx` (adapt-poc) and `BcContextMenu.native.tsx`
+      both exist with Adapt pattern. Contract defined in ADR-006 §2.2.*
+
+**Summary:** 2/4 criteria fully met, 2/4 partially met. Partial criteria are
+tracked as incremental tech debt, not blockers for v1.0.0-rc1.
 
 ---
 

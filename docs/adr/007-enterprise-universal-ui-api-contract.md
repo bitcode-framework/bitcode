@@ -683,6 +683,28 @@ function handleValidate() {
 - Overlay components share one behavior contract for focus, escape, outside interaction, portal, and stacking.
 - Tokens remain the styling source of truth for web and native outputs.
 
+## Automated Enforcement (2026-06-22)
+
+`scripts/contract-audit.mjs` provides automated enforcement for 4 of the 8
+criteria above. Runs in CI (`ui-ci.yml`) as a warning gate (non-blocking)
+until existing violations are resolved.
+
+**Enforced checks:**
+1. Controlled/uncontrolled pairs — flags `value` without `defaultValue`, `open` without `defaultOpen`, `checked` without `defaultChecked`.
+2. Semantic event payload — flags `onValueChange`/`onOpenChange`/`onCheckedChange`/`onSelectionChange`/`onExpandedChange` handlers with fewer than 2 params (missing `meta`).
+3. `data-part` attribute — flags components using `partClass()` without `data-part` (ADR-009).
+4. React Native import — flags direct `import from 'react-native'` in `.lite.tsx` (ADR-006 auto-mapping).
+
+**Current status (2026-06-22 baseline):** 44 violations across 42 files.
+Most are controlled/uncontrolled pair gaps in non-Core components. Tracked
+as incremental tech debt. CI runs in `--warning` mode (non-blocking) until
+violations drop to 0, at which point the gate becomes blocking.
+
+**Usage:**
+- `npm run audit:contract` — blocking mode (exits 1 on violations).
+- `npm run audit:contract:warn` — warning mode (non-blocking, for baseline).
+- CI runs `audit:contract:warn` in the build job.
+
 ## References
 
 - Ant Design: https://ant.design/
