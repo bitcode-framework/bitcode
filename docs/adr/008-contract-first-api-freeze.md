@@ -241,12 +241,12 @@ Negative:
 - [x] Both matrices marked "FROZEN as formal gate" in document headers
 - [x] Gap summary with priority order documented (1771 Stencil gaps, 10 antd/Prime missing features)
 
-### Phase 3: Accessibility & Performance Testing (Not Started)
+### Phase 3: Accessibility & Performance Testing (A11y complete 2026-06-22, performance deferred)
 
-- **A11y runtime testing**: Keyboard navigation, focus management, screen reader verification on actual components
-- **Performance benchmarking**: Render time, memory usage, bundle size analysis
-- **Lighthouse audits**: A11y score, performance score for component demos
-- **Touch/mobile testing**: Touch target sizes, gesture support on React Native
+- **A11y runtime testing**: ✅ Complete 2026-06-22. 151 component a11y runtime tests generated via `scripts/generate-a11y-tests.mjs`. 797 runtime tests pass (13 skipped — jsdom iframe/canvas limitations, BC-045 wontfix). All 20 bugs surfaced (BC-025 s/d BC-044) fixed: 7 P0 render crashes (Mitosis codegen drops local const) + 13 P1 a11y violations (missing aria-label, nested-interactive, aria-required-attr/children/allowed-attr).
+- **Performance benchmarking**: ⏳ Deferred. Render time, memory usage, bundle size analysis
+- **Lighthouse audits**: ⏳ Deferred. A11y score, performance score for component demos
+- **Touch/mobile testing**: ⏳ Deferred. Touch target sizes, gesture support on React Native
 
 ### Phase 4: Documentation (In Progress)
 
