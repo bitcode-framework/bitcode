@@ -223,7 +223,7 @@ This keeps the renderer a simple compositor without per-component knowledge.
 3. **No build magic** — Pure runtime functions, no code generation
 4. **Metadata-driven friendly** — `BcRenderer` can provide `slotProps` from schema
 5. **Additive styling** — Token-driven classes remain source of truth
-6. **Testable** — Pure functions are easy to unit test (34 tests in `part-props.test.ts`)
+6. **Testable** — Pure functions are easy to unit test (34 tests in `part-props.test.ts`, plus 3 `unsubscribe` method tests in `store.test.ts` added 2026-06-21)
 7. **Portable** — No DOM dependency, works in SSR/React Native
 
 ### Negative
@@ -259,6 +259,7 @@ All criteria met as of 2026-06-18:
 ### Test Files
 
 - `packages/ui/src/core/part-props.test.ts` — 34 unit tests
+- `packages/ui/src/core/reactive/store.test.ts` — 3 `unsubscribe` method tests (added 2026-06-21, BC-024 fix)
 - `packages/ui/src/core/part-props.runtime.test.ts` — 18 runtime behavior tests
 - `packages/ui/src/components/runtime-part-rollout.test.ts` — Verifies all 25 components wired
 
@@ -281,6 +282,31 @@ All 25 Core Integration Surface components use Runtime Part Resolution:
 - [ADR-007: Enterprise Universal UI API Contract](./007-enterprise-universal-ui-api-contract.md) — Defines slotProps extensibility contract (Section 6)
 - [ADR-008: Contract-First API Freeze](./008-contract-first-api-freeze.md) — Enforces contract matrix including slotProps
 - [ADR-010: Web Component Event Bridge](./010-web-component-event-bridge.md) — Complementary mechanism for CustomEvent dispatch
+
+## Implementation Status (BC-002 fix, 2026-06-21)
+
+As of 2026-06-21, `partAttr` wiring has been applied across **30 components**
+(BC-002 fix). Every JSX element with `data-part="X"` now emits:
+
+```tsx
+data-testid={partAttr(props.slotProps, 'X', 'data-testid') as string}
+```
+
+Input/button/label elements with `data-part` also wire:
+
+```tsx
+aria-label={partAttr(props.slotProps, 'X', 'aria-label') as string}
+```
+
+Components wired: BcInput, BcDisclosure, BcDataTable, BcCheckbox,
+BcCombobox, BcDateField, BcFieldDuration, BcFieldDynLink, BcLookupModal,
+BcFieldMorph, BcMultiSelect, BcNumberField, BcSegmented, BcSelect,
+BcFieldTableSelect, BcTimeField, BcToggle, BcAccordion, BcSplitter,
+BcTabs, BcDropdown, BcAlertDialog, BcCommand, BcContextMenu, BcDialog,
+BcDrawer, BcPopover, BcTooltip, BcForm, BcList.
+
+Verification: Playwright E2E test `bc-002-partattr.spec.ts` confirms
+`data-testid` from `slotProps` reaches the DOM in a real browser.
 
 ## References
 

@@ -201,7 +201,7 @@ Negative:
 
 - **Mitosis compilation**: 151/151 components compiled to React, Vue, Stencil, React Native
 - **TypeScript**: Zero type errors across all outputs
-- **Runtime Part Resolution**: All 25 components wired with `partClass`/`partAttr` (verified by `runtime-part-rollout.test.ts`)
+- **Runtime Part Resolution**: All 25 Core Integration Surface components wired with `partClass`. `partAttr` wiring completed 2026-06-21 across 30 components (BC-002 fix) — every `data-part="X"` element now emits `data-testid={partAttr(props.slotProps, 'X', 'data-testid') as string}`; input/button/label parts also wire `aria-label`.
 - **Event Bridge**: All 25 components import and use `dispatchBcEvent`/`BC_EVENTS`
 
 ## Acceptance Criteria Verification
@@ -218,7 +218,7 @@ Negative:
 | Form compatibility | ✅ Complete | `name`, `required`, `disabled`, `readOnly`, `invalid`, `errorMessage` on all form controls |
 | Adapter mapping | ✅ Documented | Contract files serve as renderer-neutral source of truth; React/Vue/RN/Stencil outputs adapt |
 | SSR safety | ✅ Verified | All `window`/`document`/`CustomEvent` accesses guarded with `typeof` checks |
-| Tests | ✅ Complete | 1,538 tests across all categories, 100% passing |
+| Tests | ✅ Complete | 1,558 source tests + 476 runtime tests + 8 Playwright E2E tests = 2,042 total, 100% passing (updated 2026-06-21) |
 
 ### Specific Acceptance Criteria
 
@@ -226,7 +226,7 @@ Negative:
 - [x] **All Core Integration Surface components have a completed Contract Matrix** — 25/25 components verified
 - [x] **Semantic event payloads are standardized and tested** — `BcChangeMeta` shape consistent; `wc-event-bridge.test.ts` validates 14 event types
 - [x] **Controlled/uncontrolled state pairs are standardized and tested** — All stateful components use `defaultX` not `initialX`
-- [x] **P0 complex components define slots/parts/pass-through rules** — `slotProps` with `partClass`/`partAttr`/`partStyle` helpers wired in all 25 components
+- [x] **P0 complex components define slots/parts/pass-through rules** — `slotProps` with `partClass`/`partAttr`/`partStyle` helpers wired in all 25 Core Integration Surface components. `partAttr` wiring completed 2026-06-21 across 30 components (BC-002 fix): `data-testid` and `aria-label` now passthrough-enabled via `partAttr(props.slotProps, partName, attrName)`.
 - [x] **P0 interactive components define A11y Behavior Contracts** — Documented in `.contract.ts` files
 - [x] **Web Component event bridge emits `bc-*` events with semantic `detail` payloads** — 14 events defined in `BC_EVENTS` constant; `dispatchBcEvent()` emits `{ value, meta }` detail
 - [x] **React Native and future Flutter mappings are documented at the contract level** — Contract files are renderer-neutral; Flutter parity via pure function helpers

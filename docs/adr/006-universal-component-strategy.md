@@ -494,6 +494,53 @@ All components emit `data-part` attributes to enable cross-platform CSS selector
 
 ---
 
+## Auto-Mapping of Web Primitives to RN Primitives (2026-06-21 finding)
+
+During the 2026-06-21 session, while fixing `BcViewGantt.lite.tsx` and
+`BcKanbanBoard.lite.tsx` (which were incorrectly importing `react-native`
+primitives directly in their cross-platform `.lite.tsx`), it was confirmed
+that **Mitosis 0.13.1 already auto-maps web HTML elements to React Native
+primitives** in the RN target output. No manual `import { View, Text } from
+'react-native'` is needed in `.lite.tsx` source.
+
+### Mapping table (verified in `output/react-native/src/`)
+
+| Source `.lite.tsx` | RN output | Notes |
+|---|---|---|
+| `<div>` | `<View>` | Container primitive |
+| `<span>`, `<p>`, `<h1>`-`<h6>` | `<Text>` | Text primitive |
+| `<button>` | `<Button>` | `onClick` → `onPress` auto-mapped |
+| `<input>` | `<TextInput>` | `onInput` → `onChangeText` auto-mapped (with `e.target.value` extraction) |
+| `<img>` | `<Image>` | `src` → `source={{ uri }}` auto-mapped |
+| `<svg>`, `<circle>`, `<path>` | `<View>` (incorrect) | SVG elements are NOT auto-mapped to `react-native-svg` — see "Web-only components" section |
+
+### Implications
+
+1. **Single source code for web + RN** is achievable for most components.
+   Developers write standard HTML elements in `.lite.tsx`; Mitosis handles
+   the RN translation.
+
+2. **Do NOT import `react-native` in `.lite.tsx`**. Direct imports of
+   `View`/`Text`/`Pressable`/`TextInput`/`Image` cause the web/vue/stencil
+   targets to fail because they cannot resolve the `react-native` module.
+
+3. **`.native.tsx` overrides remain for Adapt components** that need
+   platform-specific UX (bottom sheet vs modal, etc.). See the Adapt
+   component section above.
+
+4. **SVG-heavy components are still web-only** (BcViewGantt) or need
+   `react-native-svg` adapter. The auto-mapper does not handle SVG elements
+   correctly (maps them to `<View>`).
+
+### Verification
+
+- BcKanbanBoard: 196 replacements (View→div, Text→span, Pressable→button,
+  TextInput→input, Image→img). RN output confirmed all auto-mappings present.
+- BcViewGantt: 28 replacements. Marked web-only (SVG-heavy) so RN output
+  is intentionally deleted post-build by `apply-adapt-overrides.mjs`.
+
+---
+
 ## References
 
 - ADR-002 Section 1 (target tiering), Section 4 (contract layer), Section 9 (cross-tier infrastructure).
