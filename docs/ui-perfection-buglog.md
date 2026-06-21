@@ -21,7 +21,7 @@
 | # | Date | Component | Severity | Phase | Classification | Status | Summary |
 |---|------|-----------|----------|-------|----------------|--------|---------|
 | BC-001 | 2026-06-20 | BcInput | P0 | A1.2 | source+plugin | fixed | handleChange crash (value-first pattern) |
-| BC-002 | 2026-06-20 | BcInput | P1 | A1.2 | source | deferred | slotProps.label attributes not applied (partAttr wiring not yet implemented; design solution exists in ADR-009) |
+| BC-002 | 2026-06-20 | BcInput | P1 | A1.2 | source | fixed | slotProps.label attributes wired via partAttr across 30 components (data-testid + aria-label) |
 | BC-003 | 2026-06-20 | BcInput+all | P0 | A1.2 | mitosis-output | fixed | `if (cond) return;` → `if (cond); return;` |
 | BC-004 | 2026-06-20 | BcSelect | P1 | A1.3 | a11y | fixed | listbox aria-label + combobox aria-controls + listbox id |
 | BC-005 | 2026-06-20 | BcSelect | P1 | A1.3 | source | fixed | clearable prop — clear button now rendered and wired |
@@ -79,7 +79,7 @@
 - **Root cause:** Source `BcInput.lite.tsx` imports `partAttr` but never calls it. Only `partClass(props.slotProps, 'label', base)` is used on the label element. Non-class slotProps entries (data-*, aria-*, etc.) are silently dropped. Same gap exists on every part (root, control, input, description, error, etc.).
 - **Correction (2026-06-21 grilling session):** The original bug log stated "Mitosis can't spread `{...partAttr()}`" and classified this as an architecture change. This was inaccurate. ADR-009 (Runtime Part Resolution) documents that dynamic object spread (`{...props.slotProps?.root}`) is not supported by Mitosis across all targets (Stencil, Vue, Angular, Flutter). The design solution already exists: `partAttr(slotProps, partName, attrName)` is a single-attribute accessor that avoids spread entirely. BcInput simply has not wired `partAttr` calls for each supported attribute on each part. This is a source-level feature gap (missing wiring), not an architecture limitation.
 - **Fix:** Wire `partAttr` calls explicitly per supported attribute per part. Example for label: `data-testid={partAttr(props.slotProps, 'label', 'data-testid')}`, `aria-label={partAttr(props.slotProps, 'label', 'aria-label')}`. The supported attribute categories per ADR-009 are: className (via partClass), data-*, aria-*, style (via partStyle). This is a Phase B audit task across all components, not an architecture change.
-- **Status:** test relaxed (className passthrough only); full fix deferred to Phase B (partAttr wiring audit across all components)
+- **Status:** fixed (2026-06-21). partAttr wiring applied to 30 components (BcInput pilot + 29 via batch audit). Each `data-part="X"` element now wires `data-testid={partAttr(props.slotProps, 'X', 'data-testid') as string}`. Input/button/label parts also wire `aria-label`. Build + 1558 source + 476 runtime tests pass.
 
 ### BC-003 — BcInput (and all components): `if (cond) return;` compiled to `if (cond); return;` — handler always returns unconditionally
 
