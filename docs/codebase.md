@@ -356,18 +356,19 @@ packages/ui/
 │   ├── tailwind.theme.css                      #   Tailwind v4 @theme inline (auto-generated)
 │   └── nativewind.preset.cjs                   #   NativeWind preset for React Native
 ├── src/
-│   ├── core/                                   # Reactive store, registry, context, data-source, types, wc-event-bridge, part-props, renderer, providers, collection contract
+│   ├── core/                                   # Reactive store, registry, context, data-source, types, wc-event-bridge, part-props, renderer, providers, collection contract, haptics
 │   ├── components/                             # 177 Mitosis .lite.tsx components across 13 groups (charts, data, data-display, feedback, forms, input, layout, media, navigation, overlays, primitives, print, social, views)
 │   └── themes/default.css                      # Default theme bundle
 ├── scripts/                                    # Build & tooling helpers
 │   ├── contract-audit.mjs                      # ADR-007/008/009 contract compliance auditor (blocking mode, Props-interface-aware parsing)
+│   ├── audit-touch-targets.mjs                 # Touch target size auditor for .native.tsx files (44pt minimum, brace-depth-aware tag extraction)
 │   ├── generate-component-docs.mjs             # ADR-008 Phase 4 per-component API doc generator (parses .lite.tsx + .contract.ts → markdown)
 │   ├── generate-a11y-tests.mjs                 # A11y runtime test generator (axe-core smoke tests for all components)
 │   ├── generate-tokens.mjs                     # Design token sync (theme.css ↔ tailwind/nativewind presets)
 │   ├── generate-index.mjs                      # Component index generator (src/index.ts + per-target index)
 │   ├── generate-registry.mjs                   # Component registry generator
 │   ├── sync-regular-ts.mjs                     # Mirrors .ts files across all 4 output targets
-│   ├── apply-adapt-overrides.mjs               # Copies hand-tuned native impls into react-native output
+│   ├── apply-adapt-overrides.mjs               # Copies hand-tuned native impls (7 adapt components) into react-native output
 │   ├── reformat-react-output.mjs               # Post-processes React output for hooks compatibility
 │   ├── run-source-tests.mjs                    # Source-level test runner (node:test)
 │   └── dev.mjs                                 # Dev server

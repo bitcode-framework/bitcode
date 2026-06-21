@@ -71,7 +71,7 @@ Core Integration Surface yang wajib diaudit dulu:
 | Imperative Methods | ✅ | Methods typed per contract (focus/blur/validate/reset/submit/open/close/scrollToIndex/exportCsv). |
 | A11y Behavior Contract | ✅ | All P0 interactive components define role, ARIA, keyboard, mobile equivalent in contract files. |
 | Adapter Mapping | ✅ | All P0 contracts include React/Vue/RN/Stencil/Tauri/Flutter adapter mapping interfaces. |
-| Compatibility Tests | ✅ | 2366 tests pass (1558 source + 797 runtime + 11 E2E) including ADR-008 contract surface, semantic event, a11y wiring, ADR-007 migration tests, WC event bridge, Runtime Part Resolution helper tests, Data/View wiring tests, Overlay/Navigation/Layout rollout tests, formal contract freeze tests, Phase A4 data-source uniformity tests, Phase B1 reactivity E2E scenarios, Phase A3 Playwright browser verification, and contract-audit blocking mode (0 violations). |
+| Compatibility Tests | ✅ | 2389 tests pass (1575 source + 797 runtime + 17 touch/mobile) including ADR-008 contract surface, semantic event, a11y wiring, ADR-007 migration tests, WC event bridge, Runtime Part Resolution helper tests, Data/View wiring tests, Overlay/Navigation/Layout rollout tests, formal contract freeze tests, Phase A4 data-source uniformity tests, Phase B1 reactivity E2E scenarios, Phase A3 Playwright browser verification, contract-audit blocking mode (0 violations), touch target audit (0 violations across 9 native files), gesture/haptics contract tests, and mobile overlay verification. |
 
 ## Ringkasan
 
