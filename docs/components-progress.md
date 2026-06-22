@@ -405,6 +405,7 @@ Bukan komponen, tapi prasyarat. Tracker ringkas:
 | Phase 6 — P1 ekspansi | ❌ | Setelah P0 stabil |
 | Phase 7 — P2 polish | ❌ | Opsional, after P1 |
 | Phase 8 — Tier B/C (Tamagui/gluestack/Flutter codegen) | ❌ | Per ADR-002, tetap ditunda |
+| Phase 5a — Flutter Adapter (ADR-011) | ✅ | Pure-Dart reactive engine + 24 FPW/Material widgets + token bridge + 41 tests. See `packages/ui-flutter/`. |
 
 ---
 

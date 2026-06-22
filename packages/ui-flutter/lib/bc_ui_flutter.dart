@@ -1,0 +1,58 @@
+/// BitCode UI Flutter adapter.
+///
+/// Contract-driven Dart widgets ported from @bitcode/ui (ADR-011).
+/// Consumer API is identical across React/Vue/RN/Flutter — only the
+/// implementation language differs.
+///
+/// Simple usage (platform-aware, zero config):
+/// ```dart
+/// void main() => runApp(BcApp(home: MyScreen()));
+/// ```
+///
+/// Raw token access:
+/// ```dart
+/// Container(color: BcTheme.primary.withValues(alpha: 0.5));
+/// ```
+
+library bc_ui_flutter;
+
+// Core types
+export 'src/core/types.dart';
+
+// Reactive engine
+export 'src/core/reactive_store.dart';
+export 'src/core/reactive_store_notifier.dart';
+
+// Theme
+export 'src/theme/bc_theme.dart';
+
+// App
+export 'src/bc_app.dart';
+
+// P0 widgets — adaptive (FPW)
+export 'src/components/bc_input.dart';
+export 'src/components/bc_select.dart';
+export 'src/components/bc_checkbox.dart';
+export 'src/components/bc_toggle.dart';
+export 'src/components/bc_segmented.dart';
+export 'src/components/bc_number_field.dart';
+export 'src/components/bc_date_field.dart';
+export 'src/components/bc_time_field.dart';
+export 'src/components/bc_dialog.dart';
+export 'src/components/bc_alert_dialog.dart';
+export 'src/components/bc_tooltip.dart';
+export 'src/components/bc_dropdown.dart';
+
+// P0 widgets — Material-only
+export 'src/components/bc_combobox.dart';
+export 'src/components/bc_multi_select.dart';
+export 'src/components/bc_form.dart';
+export 'src/components/bc_drawer.dart';
+export 'src/components/bc_popover.dart';
+export 'src/components/bc_context_menu.dart';
+export 'src/components/bc_command.dart';
+export 'src/components/bc_tabs.dart';
+export 'src/components/bc_accordion.dart';
+export 'src/components/bc_splitter.dart';
+export 'src/components/bc_data_table.dart';
+export 'src/components/bc_list.dart';

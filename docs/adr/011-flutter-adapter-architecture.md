@@ -354,18 +354,18 @@ FPW lock-in mitigated: FPW thin wrapper over Flutter native widgets. Kalau FPW d
 
 Phase 5a (current scope):
 
-- [ ] `packages/ui-flutter/` scaffolded with `pubspec.yaml`, barrel export, directory structure
-- [ ] `generate-flutter-tokens.mjs` parses `theme.css` → emits `bc_theme.dart` with 30+ `const Color`
-- [ ] `bc_theme.dart` has `BcTheme` class with const colors + 4 factory methods (materialLight/Dark, cupertinoLight/Dark)
-- [ ] `bc_app.dart` has `BcApp` widget wrapping `PlatformApp` with BcTheme defaults
-- [ ] `types.dart` has `BcEventSource` enum, `BcChangeReason` enum, `BcChangeMeta` class (non-generic)
-- [ ] `reactive_store.dart` (pure Dart) passes unit tests without Flutter binding
-- [ ] `reactive_store_notifier.dart` (Flutter adapter) passes widget tests
-- [ ] 22 P0 widgets implemented (12 FPW adaptive + 10 Material-only)
-- [ ] Consumer API matches `.contract.ts` for all 22 widgets
-- [ ] `flutter test` passes for all widget tests
-- [ ] `dart analyze` clean (zero warnings)
-- [ ] ADR-011 referenced in `docs/adr/README.md` index
+- [x] `packages/ui-flutter/` scaffolded with `pubspec.yaml`, barrel export, directory structure
+- [x] `generate-flutter-tokens.mjs` parses `theme.css` → emits `bc_theme.dart` with 30+ `const Color`
+- [x] `bc_theme.dart` has `BcTheme` class with const colors + 4 factory methods (materialLight/Dark, cupertinoLight/Dark)
+- [x] `bc_app.dart` has `BcApp` widget wrapping `PlatformApp` with BcTheme defaults
+- [x] `types.dart` has `BcEventSource` enum, `BcChangeReason` enum, `BcChangeMeta` class (non-generic)
+- [x] `reactive_store.dart` (pure Dart) passes unit tests without Flutter binding
+- [x] `reactive_store_notifier.dart` (Flutter adapter) passes widget tests
+- [x] 22 P0 widgets implemented (12 FPW adaptive + 10 Material-only)
+- [x] Consumer API matches `.contract.ts` for all 22 widgets
+- [x] `flutter test` passes for all widget tests
+- [x] `dart analyze` clean (zero warnings)
+- [x] ADR-011 referenced in `docs/adr/README.md` index
 
 Phase 5b (deferred):
 
