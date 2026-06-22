@@ -5,11 +5,9 @@
 
 ## Status di Repo
 
-Semua ADR di bawah ini adalah **Proposed**. Tidak ada yang Accepted/Rejected
-secara formal, tapi praktiknya semua sudah jadi acuan kerja
-(`packages/ui/` dibangun mengikuti ADR-002/003).
-
-ADR-001 sebagian **superseded** oleh ADR-002 (lihat catatan kolom).
+ADR-001 hingga ADR-012 berstatus **Accepted** (lihat tabel di bawah untuk
+detail tanggal). ADR-001 sebagian **superseded** oleh ADR-002 (lihat catatan
+kolom).
 
 ## Daftar ADR
 
@@ -25,6 +23,8 @@ ADR-001 sebagian **superseded** oleh ADR-002 (lihat catatan kolom).
 | [008](./008-contract-first-api-freeze.md) | Contract-First API Freeze for `packages/ui` | Accepted *(Phase 2 complete 2026-06-18; partAttr wiring completed 2026-06-21)* | 004, 005, 006, 007 | Freezes feature expansion until Core Integration Surface passes contract matrix, semantic events, adapter mapping, and a11y behavior gates |
 | [009](./009-runtime-part-resolution.md) | Runtime Part Resolution | Accepted | 007, 008 | Solves Mitosis spread limitation via pure function helpers (`partClass`/`partAttr`); enables cross-platform slotProps |
 | [010](./010-web-component-event-bridge.md) | Web Component Event Bridge | Accepted | 007, 008 | Framework-agnostic semantic events via `dispatchBcEvent`; enables Web Component CustomEvent emission |
+| [011](./011-flutter-adapter-architecture.md) | Flutter Adapter Architecture | **Accepted** *(2026-06-22)* | 002, 007, 008 | Tier C Flutter: 75% shared / 25% separate; pre-computed hex const token bridge; 3-layer theme (`BcTheme` + `BcApp`); hybrid reactive store (pure Dart + Flutter adapter); FPW adaptive + hand-roll Material-only; enum-based non-generic `BcChangeMeta` |
+| [012](./012-extract-ui-schema-standalone-package.md) | Extract `@bitcode/ui-schema` as Standalone Package | **Accepted** *(2026-06-22)* | 002, 004, 005, 011 | Portable types + ReactiveStore extracted to zero-dependency package; re-export bridges in `@bitcode/ui` preserve 50+ contract files; unblocks Flutter port (Phase 5a) |
 
 ## Dependency Graph
 
@@ -54,6 +54,14 @@ ADR-001 sebagian **superseded** oleh ADR-002 (lihat catatan kolom).
                                     ▼                              ▼
                                ADR-009                       ADR-010
                        (Runtime Part Resolution)    (Web Component Event Bridge)
+                                                                   │
+                                                                   ▼
+                                                               ADR-011
+                                                   (Flutter Adapter Architecture)
+                                                                   │
+                                                                   ▼
+                                                               ADR-012
+                                          (Extract @bitcode/ui-schema standalone package)
 ```
 
 ## Bagian yang Masih Berlaku dari ADR-001
@@ -74,7 +82,7 @@ Yang **superseded** oleh ADR-006:
 ## Cara Tambah ADR Baru
 
 1. Salin format dari ADR yang ada (Status, Date, Depends on, Context, Decision/Sections, Acceptance Criteria, Consequences, References).
-2. Nomor urut berikutnya: **ADR-009**.
+2. Nomor urut berikutnya: **ADR-013**.
 3. Update tabel di file ini setelah ADR baru selesai.
 4. Jangan ubah ADR yang sudah accepted — bikin ADR baru yang **supersedes** atau **extends**.
 

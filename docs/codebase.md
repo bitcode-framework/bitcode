@@ -21,6 +21,7 @@ bitcode/
 ├── packages/                                   # Shared libraries
 │   ├── components/                             # Stencil Web Components
 │   ├── ui/                                     # Mitosis cross-framework UI library (React/Vue/Stencil; React Native via ADR-006 Phase 0)
+│   ├── ui-schema/                              # @bitcode/ui-schema — standalone UI schema types + ReactiveStore (ADR-012, zero-dep, pure TS)
 │   ├── go-json/                                # go-json — JSON/JSONC programming language engine (Go)
 │   ├── go-json-runtimes/                       # Script runtime engines for go-json (separate go.mod)
 │   └── tauri/                                  # Tauri native shell (desktop + mobile)
@@ -382,6 +383,27 @@ packages/ui/
 
 > Lynx target (formerly ADR-001 §15) was dropped per ADR-006. Mobile is now React
 > Native + NativeWind, sharing the same Mitosis pipeline as React/Vue.
+
+---
+
+## UI Schema (`packages/ui-schema/`)
+Standalone UI schema definitions — domain-agnostic, framework-neutral types for schema-driven UI. Zero dependencies, zero platform globals. Extracted from `@bitcode/ui` per ADR-012 to provide a canonical source for all renderers (React/Vue/RN via Mitosis, Flutter via Dart port).
+```
+packages/ui-schema/
+├── package.json                                # @bitcode/ui-schema (private, zero-dep, file: dependency of @bitcode/ui)
+├── README.md
+└── src/
+    ├── index.ts                                # Root barrel — re-exports all types + ReactiveStore + resolver
+    ├── types.ts                                # Core types: BcChangeMeta, BcEventSource, DataSource, BcKey, BcSelection, field events
+    ├── reactive/
+    │   ├── index.ts                            # Reactive barrel
+    │   ├── types.ts                            # Reaction, Effect, Evaluator, Snapshot, FieldMeta, ValidationRule, ReactiveScopeLike
+    │   └── store.ts                            # ReactiveStore class (headless reactive engine, pure TS)
+    └── schema/
+        ├── index.ts                            # Schema barrel
+        ├── types.ts                            # UiSchema, FieldNode, FieldType, UiAction, BcRendererProps
+        └── resolver.ts                         # FieldResolver, resolveField, resolveFieldType, resolveFields
+```
 
 ---
 
