@@ -155,3 +155,9 @@ export 'src/components/bc_geo.dart';
 export 'src/components/bc_drop_zone.dart';
 export 'src/components/bc_color_area.dart';
 export 'src/components/bc_color_slider.dart';
+
+// M5 data display
+export 'src/components/bc_carousel.dart';
+export 'src/components/bc_orgchart.dart';
+export 'src/components/bc_taggroup.dart';
+export 'src/components/bc_sparkline.dart';

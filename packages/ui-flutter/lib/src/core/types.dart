@@ -540,3 +540,24 @@ class BcSvValue {
   @override
   int get hashCode => Object.hash(saturation, value);
 }
+
+// ---------------------------------------------------------------------------
+// M5 data-display typed wrappers (ADR-011 Phase 5c — M5)
+// ---------------------------------------------------------------------------
+
+/// Rendering style for [BcSparkline].
+enum BcSparklineType {
+  line,
+  bar,
+  area,
+}
+
+/// Visual variant for a tag in [BcTagGroup].
+enum BcTagVariant {
+  defaultVariant,
+  success,
+  warning,
+  destructive,
+  info,
+}
+
