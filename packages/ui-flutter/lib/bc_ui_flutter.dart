@@ -60,6 +60,9 @@ export 'src/components/bc_transfer.dart';
 export 'src/components/bc_cascader.dart';
 export 'src/components/bc_tree_select.dart';
 
+// M1 overlays
+export 'src/components/bc_toast_queue.dart';
+
 // P0 widgets — adaptive (FPW)
 export 'src/components/bc_input.dart';
 export 'src/components/bc_select.dart';
