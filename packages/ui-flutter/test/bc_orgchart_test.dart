@@ -31,6 +31,7 @@ void main() {
     await tester.pumpWidget(harness(
       const BcOrgChart(root: tree, defaultExpanded: ['root', 'vp1']),
     ));
+    await tester.pumpAndSettle();
 
     expect(find.text('CEO'), findsOneWidget);
     expect(find.text('VP Engineering'), findsOneWidget);
