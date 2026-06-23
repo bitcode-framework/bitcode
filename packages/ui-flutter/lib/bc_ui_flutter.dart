@@ -123,6 +123,10 @@ export 'src/components/bc_megamenu.dart';
 export 'src/components/bc_navigation_menu.dart';
 export 'src/components/bc_affix.dart';
 export 'src/components/bc_anchor.dart';
+export 'src/components/bc_backtop.dart';
+export 'src/components/bc_dock.dart';
+export 'src/components/bc_panel_menu.dart';
+export 'src/components/bc_slide_menu.dart';
 
 // M2 forms — upload and capture
 export 'src/components/bc_file.dart';
