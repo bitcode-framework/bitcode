@@ -406,6 +406,7 @@ Bukan komponen, tapi prasyarat. Tracker ringkas:
 | Phase 7 — P2 polish | ❌ | Opsional, after P1 |
 | Phase 8 — Tier B/C (Tamagui/gluestack/Flutter codegen) | ❌ | Per ADR-002, tetap ditunda |
 | Phase 5a — Flutter Adapter (ADR-011) | ✅ | Pure-Dart reactive engine + 24 FPW/Material widgets + token bridge + 41 tests. See `packages/ui-flutter/`. |
+| Phase 5b.1 — UiSchema Types + Stub Generator (ADR-011) | ✅ | UiSchema types port (freezed + json_serializable, 4 source + 8 generated files), FieldResolver, contract→Dart stub generator (32 contracts scanned, 8 P1 stubs generated, 24 P0 protected), 55 Dart schema tests + 80 Node.js generator tests. 96 total Flutter tests. `dart analyze lib/` clean. |
 
 ---
 

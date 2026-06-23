@@ -369,8 +369,9 @@ Phase 5a (current scope):
 
 Phase 5b (deferred):
 
-- [ ] Generator stubs 80% simple widget dari contract
-- [ ] P1 (~60 widget) implemented
+- [x] Generator stubs 80% simple widget dari contract — `generate-flutter-stubs.mjs` parses 32 contracts with flutter hints, generates 8 P1 stubs, protects 24 P0 hand-written, skips 98 without flutter hint
+- [x] UiSchema types ported to Dart (freezed + json_serializable) — `ui_schema_types.dart`, `ui_schema_events.dart`, `ui_schema.dart`, `field_resolver.dart` + generated `.freezed.dart`/`.g.dart` files
+- [ ] P1 (~60 widget) implemented — 8 stubs generated (Phase 5b.1), remaining ~52 pending implementation
 - [ ] P2 (~90 widget) implemented
 
 ---
@@ -392,9 +393,10 @@ Phase 5b (deferred):
 
 ### Phase 5b — Generator + P1
 
-1. Contract → Dart stub generator
-2. P1 (~60 widget) implemented via generator + hand-write complex
-3. ADR-011 acceptance criteria Phase 5b checked
+1. Contract → Dart stub generator — ✅ `generate-flutter-stubs.mjs` (Phase 5b.1)
+2. UiSchema types port (freezed + json_serializable) — ✅ 4 source files + 8 generated (Phase 5b.1)
+3. P1 (~60 widget) implemented via generator + hand-write complex — 🔄 8 stubs generated, remaining pending
+4. ADR-011 acceptance criteria Phase 5b checked — partial (5b.1 complete)
 
 ### Phase 5c — P2 + Sisa
 

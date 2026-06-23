@@ -23,6 +23,14 @@ export 'src/core/types.dart';
 export 'src/core/reactive_store.dart';
 export 'src/core/reactive_store_notifier.dart';
 
+// UiSchema types (ADR-011 Phase 5b.1)
+// BcKey and DataSource are defined in core/types.dart and core/reactive_store.dart;
+// hide them here to avoid ambiguous_export conflicts.
+export 'src/schema/ui_schema_types.dart' hide BcKey, DataSource;
+export 'src/schema/ui_schema_events.dart';
+export 'src/schema/ui_schema.dart';
+export 'src/schema/field_resolver.dart';
+
 // Theme
 export 'src/theme/bc_theme.dart';
 
