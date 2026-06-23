@@ -48,6 +48,7 @@ export 'src/components/bc_date_field.dart';
 export 'src/components/bc_time_field.dart';
 export 'src/components/bc_dialog.dart';
 export 'src/components/bc_alert_dialog.dart';
+export 'src/components/bc_portal.dart';
 export 'src/components/bc_tooltip.dart';
 export 'src/components/bc_dropdown.dart';
 
@@ -65,3 +66,4 @@ export 'src/components/bc_disclosure.dart';
 export 'src/components/bc_splitter.dart';
 export 'src/components/bc_data_table.dart';
 export 'src/components/bc_list.dart';
+export 'src/components/bc_field_duration.dart';
