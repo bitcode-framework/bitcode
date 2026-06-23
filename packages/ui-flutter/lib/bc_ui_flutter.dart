@@ -137,6 +137,11 @@ export 'src/components/bc_hover_card.dart';
 export 'src/components/bc_actionsheet.dart';
 export 'src/components/bc_speed_dial.dart';
 
+// M4 feedback
+export 'src/components/bc_notification.dart';
+export 'src/components/bc_tour.dart';
+export 'src/components/bc_inplace.dart';
+
 // M2 forms — upload and capture
 export 'src/components/bc_file.dart';
 export 'src/components/bc_signature.dart';
