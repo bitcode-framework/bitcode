@@ -456,3 +456,87 @@ class BcGanttLink {
   @override
   int get hashCode => Object.hash(id, from, to, type);
 }
+
+// ---------------------------------------------------------------------------
+// M2 upload/capture typed wrappers (ADR-011 Phase 5c — M2 forms-upload)
+// ---------------------------------------------------------------------------
+
+/// File reference for [BcFile] and [BcDropZone].
+///
+/// Mirrors a browser `File` object's salient fields used by the filtering
+/// and display logic. [path] is set on native (desktop/mobile) platforms.
+class BcFileRef {
+  final String name;
+  final int size;
+  final String? type;
+  final String? path;
+
+  const BcFileRef({
+    required this.name,
+    required this.size,
+    this.type,
+    this.path,
+  });
+
+  @override
+  String toString() =>
+      'BcFileRef(name: $name, size: $size, type: $type, path: $path)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcFileRef &&
+          name == other.name &&
+          size == other.size &&
+          type == other.type &&
+          path == other.path;
+
+  @override
+  int get hashCode => Object.hash(name, size, type, path);
+}
+
+/// Geographic coordinate pair for [BcGeo].
+///
+/// Mirrors TS `{ lat: number; lng: number }`.
+class BcGeoCoord {
+  final double lat;
+  final double lng;
+
+  const BcGeoCoord({required this.lat, required this.lng});
+
+  @override
+  String toString() => 'BcGeoCoord(lat: $lat, lng: $lng)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcGeoCoord && lat == other.lat && lng == other.lng;
+
+  @override
+  int get hashCode => Object.hash(lat, lng);
+}
+
+/// Saturation/value (brightness) pair for [BcColorArea].
+///
+/// Maps the 2D drag area's horizontal axis (saturation, 0–100) and
+/// vertical axis (value, 0–100).
+class BcSvValue {
+  final double saturation;
+  final double value;
+
+  const BcSvValue({required this.saturation, required this.value});
+
+  @override
+  String toString() =>
+      'BcSvValue(saturation: $saturation, value: $value)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcSvValue &&
+          saturation == other.saturation &&
+          value == other.value;
+
+  @override
+  int get hashCode => Object.hash(saturation, value);
+}

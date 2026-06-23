@@ -114,3 +114,12 @@ export 'src/components/bc_field_morph.dart';
 export 'src/components/bc_field_dyn_link.dart';
 export 'src/components/bc_lookup_modal.dart';
 export 'src/components/bc_view_gantt.dart';
+
+// M2 forms — upload and capture
+export 'src/components/bc_file.dart';
+export 'src/components/bc_signature.dart';
+export 'src/components/bc_barcode.dart';
+export 'src/components/bc_geo.dart';
+export 'src/components/bc_drop_zone.dart';
+export 'src/components/bc_color_area.dart';
+export 'src/components/bc_color_slider.dart';
