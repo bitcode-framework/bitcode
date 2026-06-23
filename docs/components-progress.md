@@ -4,7 +4,7 @@
 > berubah status. Untuk *kenapa* dan *arsitektur*, baca [ADR](./adr/README.md).
 > Untuk *bagaimana spec engine*, baca `engine/docs/features/*.md`.
 
-**Last updated:** 2026-06-22 (Phase D documentation complete: contract audit blocking mode 0 violations, 177 per-component API docs generated, 4 framework integration guides written, 0 test failures)
+**Last updated:** 2026-06-23 (ADR-011 Phase 5b.2 complete: 8 P1 Flutter widgets completed, 416 Flutter tests pass, flutter analyze 0 errors/warnings with info hints only, build_runner succeeds, 252/252 validation assertions passed)
 
 ## Phase C3 Sign-Off (2026-06-22 update)
 
@@ -72,6 +72,23 @@ Core Integration Surface yang wajib diaudit dulu:
 | A11y Behavior Contract | ✅ | All P0 interactive components define role, ARIA, keyboard, mobile equivalent in contract files. |
 | Adapter Mapping | ✅ | All P0 contracts include React/Vue/RN/Stencil/Tauri/Flutter adapter mapping interfaces. |
 | Compatibility Tests | ✅ | 2389 tests pass (1575 source + 797 runtime + 17 touch/mobile) including ADR-008 contract surface, semantic event, a11y wiring, ADR-007 migration tests, WC event bridge, Runtime Part Resolution helper tests, Data/View wiring tests, Overlay/Navigation/Layout rollout tests, formal contract freeze tests, Phase A4 data-source uniformity tests, Phase B1 reactivity E2E scenarios, Phase A3 Playwright browser verification, contract-audit blocking mode (0 violations), touch target audit (0 violations across 9 native files), gesture/haptics contract tests, and mobile overlay verification. |
+
+## Flutter Adapter (ADR-011 Phase 5b.2 Sign-Off)
+
+**Phase 5b.2 status:** ✅ Complete for the targeted P1 Flutter batch.
+
+| Widget | Group | Flutter implementation | Test coverage | Status |
+|---|---|---|---|---|
+| BcDisclosure | data-display | `packages/ui-flutter/lib/src/components/bc_disclosure.dart` | `packages/ui-flutter/test/bc_disclosure_test.dart` | ✅ Complete |
+| BcPortal | primitives | `packages/ui-flutter/lib/src/components/bc_portal.dart` | `packages/ui-flutter/test/bc_portal_test.dart` | ✅ Complete |
+| BcFieldDuration | forms | `packages/ui-flutter/lib/src/components/bc_field_duration.dart` | `packages/ui-flutter/test/bc_field_duration_test.dart` | ✅ Complete |
+| BcFieldTableSelect | forms | `packages/ui-flutter/lib/src/components/bc_field_table_select.dart` | `packages/ui-flutter/test/bc_field_table_select_test.dart` | ✅ Complete |
+| BcFieldMorph | forms | `packages/ui-flutter/lib/src/components/bc_field_morph.dart` | `packages/ui-flutter/test/bc_field_morph_test.dart` | ✅ Complete |
+| BcFieldDynLink | forms | `packages/ui-flutter/lib/src/components/bc_field_dyn_link.dart` | `packages/ui-flutter/test/bc_field_dyn_link_test.dart` | ✅ Complete |
+| BcLookupModal | datatable | `packages/ui-flutter/lib/src/components/bc_lookup_modal.dart` | `packages/ui-flutter/test/bc_lookup_modal_test.dart` | ✅ Complete |
+| BcViewGantt | views | `packages/ui-flutter/lib/src/components/bc_view_gantt.dart` | `packages/ui-flutter/test/bc_view_gantt_test.dart` | ✅ Complete |
+
+**Gate evidence:** 416 Flutter tests pass, `flutter analyze` returns 0 errors/warnings (info hints only), `build_runner` succeeds, and the mission validation gate reports 252/252 assertions passed.
 
 ## Ringkasan
 
@@ -407,6 +424,7 @@ Bukan komponen, tapi prasyarat. Tracker ringkas:
 | Phase 8 — Tier B/C (Tamagui/gluestack/Flutter codegen) | ❌ | Per ADR-002, tetap ditunda |
 | Phase 5a — Flutter Adapter (ADR-011) | ✅ | Pure-Dart reactive engine + 24 FPW/Material widgets + token bridge + 41 tests. See `packages/ui-flutter/`. |
 | Phase 5b.1 — UiSchema Types + Stub Generator (ADR-011) | ✅ | UiSchema types port (freezed + json_serializable, 4 source + 8 generated files), FieldResolver, contract→Dart stub generator (32 contracts scanned, 8 P1 stubs generated, 24 P0 protected), 55 Dart schema tests + 80 Node.js generator tests. 96 total Flutter tests. `dart analyze lib/` clean. |
+| Phase 5b.2 — P1 Flutter Widget Completion (ADR-011) | ✅ | 8 targeted P1 Flutter widgets complete: BcDisclosure, BcPortal, BcFieldDuration, BcFieldTableSelect, BcFieldMorph, BcFieldDynLink, BcLookupModal, BcViewGantt. Generator fixes landed for extends clause walking and `Promise<T>` to `Future<T>` mapping. 416 Flutter tests pass, `flutter analyze` returns 0 errors/warnings (info hints only), `build_runner` succeeds, 252/252 validation assertions passed. |
 
 ---
 

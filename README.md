@@ -12,6 +12,7 @@ bitcode/
 ├── packages/
 │   ├── components/      Stencil Web Components (@bitcode/components)
 │   ├── go-json/         go-json — JSON/JSONC programming language engine
+│   ├── ui-flutter/      Flutter adapter for BitCode UI (ADR-011)
 │   └── tauri/           Tauri native shell (desktop + mobile)
 ├── samples/
 │   └── erp/             Sample ERP application (CRM + HRM)
@@ -57,6 +58,10 @@ cd packages/components
 npm install
 npm run build
 ```
+
+### Flutter Adapter Status
+
+`packages/ui-flutter` is the ADR-011 Tier C Flutter adapter. Phase 5b.2 is complete for the targeted batch: 32 Flutter widgets are available (24 P0 + 8 P1), including `BcDisclosure`, `BcPortal`, `BcFieldDuration`, `BcFieldTableSelect`, `BcFieldMorph`, `BcFieldDynLink`, `BcLookupModal`, and `BcViewGantt`. The Flutter gate has 416 tests passing, `flutter analyze` returns 0 errors/warnings (info hints only), and `build_runner` succeeds.
 
 ### Run Desktop App (Tauri)
 
@@ -304,6 +309,7 @@ docker-compose up -d
 | Config | Viper (env + TOML/YAML) |
 | CLI | Cobra |
 | Web Components | Stencil.js (TypeScript) |
+| Flutter Adapter | Flutter / Dart (`packages/ui-flutter`) |
 | Charts | ECharts |
 | Rich Text | Tiptap |
 | Code Editor | CodeMirror |

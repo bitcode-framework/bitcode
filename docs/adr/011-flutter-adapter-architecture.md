@@ -1,6 +1,6 @@
 # ADR-011: Flutter Adapter Architecture
 
-## Status: Accepted (2026-06-22)
+## Status: Accepted (2026-06-22, Phase 5b.2 complete 2026-06-23)
 
 ## Date: 2026-06-22
 
@@ -332,7 +332,7 @@ Non-generic karena: (1) consumer tidak perlu annotate `BcChangeMeta<'input'>`, (
 5. **Contract untouched** — ADR-008 freeze preserved. Flutter mapping string descriptive only.
 6. **Token parity** — `Color.withValues(alpha:)` = Tailwind `hsl(var(--x) / 0.5)`.
 7. **Adaptive where it matters** — iOS user gets CupertinoTextField, not Material TextField.
-8. **Future generator-ready** — Phase 5b generator stub 80% simple widget dari contract.
+8. **Generator delivers P1 widgets** — Phase 5b generator stubs 80% simple widget dari contract; Phase 5b.2 promoted 8 generated stubs to completed widgets.
 
 ### Negative
 
@@ -367,12 +367,15 @@ Phase 5a (current scope):
 - [x] `dart analyze` clean (zero warnings)
 - [x] ADR-011 referenced in `docs/adr/README.md` index
 
-Phase 5b (deferred):
+Phase 5b:
 
-- [x] Generator stubs 80% simple widget dari contract — `generate-flutter-stubs.mjs` parses 32 contracts with flutter hints, generates 8 P1 stubs, protects 24 P0 hand-written, skips 98 without flutter hint
+- [x] Generator stubs 80% simple widget dari contract — `generate-flutter-stubs.mjs` parses 32 contracts with flutter hints, protects 24 P0 hand-written files, and generated the initial 8 P1 stubs in Phase 5b.1
+- [x] Generator fixes landed for Phase 5b.2 — extends clause walking and `Promise<T>` to `Future<T>` mapping
 - [x] UiSchema types ported to Dart (freezed + json_serializable) — `ui_schema_types.dart`, `ui_schema_events.dart`, `ui_schema.dart`, `field_resolver.dart` + generated `.freezed.dart`/`.g.dart` files
-- [ ] P1 (~60 widget) implemented — 8 stubs generated (Phase 5b.1), remaining ~52 pending implementation
-- [ ] P2 (~90 widget) implemented
+- [x] Core type parity updated — `BcChangeReason` extended to 18 values with typed Dart classes/enums
+- [x] Phase 5b.2 targeted P1 Flutter batch completed — `BcDisclosure`, `BcPortal`, `BcFieldDuration`, `BcFieldTableSelect`, `BcFieldMorph`, `BcFieldDynLink`, `BcLookupModal`, `BcViewGantt`
+- [x] Phase 5b.2 integration gate passed — 416 Flutter tests pass, `flutter analyze` returns 0 errors/warnings (info hints only), `build_runner` succeeds, and 252/252 validation assertions passed
+- [ ] Remaining P1/P2 Flutter parity outside Phase 5b.2 scope
 
 ---
 
@@ -395,8 +398,10 @@ Phase 5b (deferred):
 
 1. Contract → Dart stub generator — ✅ `generate-flutter-stubs.mjs` (Phase 5b.1)
 2. UiSchema types port (freezed + json_serializable) — ✅ 4 source files + 8 generated (Phase 5b.1)
-3. P1 (~60 widget) implemented via generator + hand-write complex — 🔄 8 stubs generated, remaining pending
-4. ADR-011 acceptance criteria Phase 5b checked — partial (5b.1 complete)
+3. Generator correctness fixes — ✅ extends clause walking and `Promise<T>` to `Future<T>` mapping (Phase 5b.2)
+4. P1 targeted Flutter batch — ✅ 8 widgets complete: `BcDisclosure`, `BcPortal`, `BcFieldDuration`, `BcFieldTableSelect`, `BcFieldMorph`, `BcFieldDynLink`, `BcLookupModal`, `BcViewGantt` (Phase 5b.2)
+5. Integration gate — ✅ 416 Flutter tests pass, `flutter analyze` returns 0 errors/warnings (info hints only), `build_runner` succeeds, 252/252 validation assertions passed
+6. Remaining P1/P2 Flutter parity — pending outside Phase 5b.2 scope
 
 ### Phase 5c — P2 + Sisa
 
