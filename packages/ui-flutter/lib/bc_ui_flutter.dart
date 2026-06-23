@@ -115,6 +115,12 @@ export 'src/components/bc_field_dyn_link.dart';
 export 'src/components/bc_lookup_modal.dart';
 export 'src/components/bc_view_gantt.dart';
 
+// M3 navigation
+export 'src/components/bc_breadcrumb.dart';
+export 'src/components/bc_pagination.dart';
+export 'src/components/bc_menubar.dart';
+export 'src/components/bc_megamenu.dart';
+
 // M2 forms — upload and capture
 export 'src/components/bc_file.dart';
 export 'src/components/bc_signature.dart';
