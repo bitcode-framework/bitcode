@@ -37,6 +37,13 @@ export 'src/theme/bc_theme.dart';
 // App
 export 'src/bc_app.dart';
 
+// M1 layout primitives
+export 'src/components/bc_slot.dart';
+export 'src/components/bc_stack.dart';
+export 'src/components/bc_xstack.dart';
+export 'src/components/bc_ystack.dart';
+export 'src/components/bc_box.dart';
+
 // P0 widgets — adaptive (FPW)
 export 'src/components/bc_input.dart';
 export 'src/components/bc_select.dart';
