@@ -63,6 +63,12 @@ export 'src/components/bc_tree_select.dart';
 // M1 overlays
 export 'src/components/bc_toast_queue.dart';
 
+// M2 forms — text inputs
+export 'src/components/bc_richtext.dart';
+export 'src/components/bc_code.dart';
+export 'src/components/bc_json.dart';
+export 'src/components/bc_markdown.dart';
+
 // P0 widgets — adaptive (FPW)
 export 'src/components/bc_input.dart';
 export 'src/components/bc_select.dart';
