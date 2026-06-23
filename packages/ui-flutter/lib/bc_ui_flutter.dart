@@ -69,6 +69,12 @@ export 'src/components/bc_code.dart';
 export 'src/components/bc_json.dart';
 export 'src/components/bc_markdown.dart';
 
+// M2 forms — pickers and specialized inputs
+export 'src/components/bc_color_picker.dart';
+export 'src/components/bc_rate.dart';
+export 'src/components/bc_slider.dart';
+export 'src/components/bc_range_slider.dart';
+
 // P0 widgets — adaptive (FPW)
 export 'src/components/bc_input.dart';
 export 'src/components/bc_select.dart';
