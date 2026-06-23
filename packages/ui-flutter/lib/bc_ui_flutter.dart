@@ -132,6 +132,11 @@ export 'src/components/bc_slide_menu.dart';
 export 'src/components/bc_prompt.dart';
 export 'src/components/bc_wizard.dart';
 
+// M4 overlays — reveal
+export 'src/components/bc_hover_card.dart';
+export 'src/components/bc_actionsheet.dart';
+export 'src/components/bc_speed_dial.dart';
+
 // M2 forms — upload and capture
 export 'src/components/bc_file.dart';
 export 'src/components/bc_signature.dart';
