@@ -61,6 +61,7 @@ export 'src/components/bc_context_menu.dart';
 export 'src/components/bc_command.dart';
 export 'src/components/bc_tabs.dart';
 export 'src/components/bc_accordion.dart';
+export 'src/components/bc_disclosure.dart';
 export 'src/components/bc_splitter.dart';
 export 'src/components/bc_data_table.dart';
 export 'src/components/bc_list.dart';
