@@ -74,6 +74,10 @@ export 'src/components/bc_color_picker.dart';
 export 'src/components/bc_rate.dart';
 export 'src/components/bc_slider.dart';
 export 'src/components/bc_range_slider.dart';
+export 'src/components/bc_tags_input.dart';
+export 'src/components/bc_toggle_group.dart';
+export 'src/components/bc_mentions.dart';
+export 'src/components/bc_knob.dart';
 
 // P0 widgets — adaptive (FPW)
 export 'src/components/bc_input.dart';
