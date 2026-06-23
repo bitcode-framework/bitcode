@@ -67,3 +67,4 @@ export 'src/components/bc_splitter.dart';
 export 'src/components/bc_data_table.dart';
 export 'src/components/bc_list.dart';
 export 'src/components/bc_field_duration.dart';
+export 'src/components/bc_field_table_select.dart';
