@@ -47,6 +47,13 @@ export 'src/components/bc_visually_hidden.dart';
 export 'src/components/bc_backdrop.dart';
 export 'src/components/bc_loading_overlay.dart';
 
+// M1 display widgets
+export 'src/components/bc_descriptions.dart';
+export 'src/components/bc_steps.dart';
+export 'src/components/bc_statistic.dart';
+export 'src/components/bc_empty.dart';
+export 'src/components/bc_result.dart';
+
 // P0 widgets — adaptive (FPW)
 export 'src/components/bc_input.dart';
 export 'src/components/bc_select.dart';
