@@ -142,6 +142,11 @@ export 'src/components/bc_notification.dart';
 export 'src/components/bc_tour.dart';
 export 'src/components/bc_inplace.dart';
 
+// M4 layout utility
+export 'src/components/bc_meter_group.dart';
+export 'src/components/bc_aspect_ratio.dart';
+export 'src/components/bc_flex.dart';
+
 // M2 forms — upload and capture
 export 'src/components/bc_file.dart';
 export 'src/components/bc_signature.dart';

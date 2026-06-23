@@ -4,7 +4,7 @@
 > berubah status. Untuk *kenapa* dan *arsitektur*, baca [ADR](./adr/README.md).
 > Untuk *bagaimana spec engine*, baca `engine/docs/features/*.md`.
 
-**Last updated:** 2026-06-24 (ADR-011 Phase 5c M4 feedback: 3 Flutter widgets added — BcNotification, BcTour, BcInplace. 722 Flutter tests pass, flutter analyze 0 errors/warnings on new code, build_runner succeeds)
+**Last updated:** 2026-06-24 (ADR-011 Phase 5c M4 layout utility: 3 Flutter widgets added — BcMeterGroup, BcAspectRatio, BcFlex. 738 Flutter tests pass, flutter analyze 0 errors/warnings on new code, build_runner succeeds)
 
 ## Phase C3 Sign-Off (2026-06-22 update)
 
@@ -90,8 +90,11 @@ Core Integration Surface yang wajib diaudit dulu:
 | BcNotification | feedback | `packages/ui-flutter/lib/src/components/bc_notification.dart` | `packages/ui-flutter/test/bc_notification_test.dart` | ✅ Complete |
 | BcTour | feedback | `packages/ui-flutter/lib/src/components/bc_tour.dart` | `packages/ui-flutter/test/bc_tour_test.dart` | ✅ Complete |
 | BcInplace | data-display | `packages/ui-flutter/lib/src/components/bc_inplace.dart` | `packages/ui-flutter/test/bc_inplace_test.dart` | ✅ Complete |
+| BcMeterGroup | feedback | `packages/ui-flutter/lib/src/components/bc_meter_group.dart` | `packages/ui-flutter/test/bc_meter_group_test.dart` | ✅ Complete |
+| BcAspectRatio | primitives | `packages/ui-flutter/lib/src/components/bc_aspect_ratio.dart` | `packages/ui-flutter/test/bc_aspect_ratio_test.dart` | ✅ Complete |
+| BcFlex | layout | `packages/ui-flutter/lib/src/components/bc_flex.dart` | `packages/ui-flutter/test/bc_flex_test.dart` | ✅ Complete |
 
-**Gate evidence:** 722 Flutter tests pass, `flutter analyze` returns 0 errors/warnings (info hints only, 4 pre-existing deprecation hints in `bc_disclosure_test.dart` from another worker's file), `build_runner` succeeds, and the mission validation gate reports 252/252 assertions passed.
+**Gate evidence:** 738 Flutter tests pass, `flutter analyze` returns 0 errors/warnings (info hints only, 4 pre-existing deprecation hints in `bc_disclosure_test.dart` from another worker's file), `build_runner` succeeds, and the mission validation gate reports 252/252 assertions passed.
 
 ## Ringkasan
 
