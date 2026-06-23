@@ -128,6 +128,10 @@ export 'src/components/bc_dock.dart';
 export 'src/components/bc_panel_menu.dart';
 export 'src/components/bc_slide_menu.dart';
 
+// M4 overlays — modal
+export 'src/components/bc_prompt.dart';
+export 'src/components/bc_wizard.dart';
+
 // M2 forms — upload and capture
 export 'src/components/bc_file.dart';
 export 'src/components/bc_signature.dart';
