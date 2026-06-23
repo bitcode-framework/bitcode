@@ -4,7 +4,7 @@
 > berubah status. Untuk *kenapa* dan *arsitektur*, baca [ADR](./adr/README.md).
 > Untuk *bagaimana spec engine*, baca `engine/docs/features/*.md`.
 
-**Last updated:** 2026-06-23 (ADR-011 Phase 5b.2 complete: 8 P1 Flutter widgets completed, 416 Flutter tests pass, flutter analyze 0 errors/warnings with info hints only, build_runner succeeds, 252/252 validation assertions passed)
+**Last updated:** 2026-06-24 (ADR-011 Phase 5c M4 feedback: 3 Flutter widgets added — BcNotification, BcTour, BcInplace. 722 Flutter tests pass, flutter analyze 0 errors/warnings on new code, build_runner succeeds)
 
 ## Phase C3 Sign-Off (2026-06-22 update)
 
@@ -87,8 +87,11 @@ Core Integration Surface yang wajib diaudit dulu:
 | BcFieldDynLink | forms | `packages/ui-flutter/lib/src/components/bc_field_dyn_link.dart` | `packages/ui-flutter/test/bc_field_dyn_link_test.dart` | ✅ Complete |
 | BcLookupModal | datatable | `packages/ui-flutter/lib/src/components/bc_lookup_modal.dart` | `packages/ui-flutter/test/bc_lookup_modal_test.dart` | ✅ Complete |
 | BcViewGantt | views | `packages/ui-flutter/lib/src/components/bc_view_gantt.dart` | `packages/ui-flutter/test/bc_view_gantt_test.dart` | ✅ Complete |
+| BcNotification | feedback | `packages/ui-flutter/lib/src/components/bc_notification.dart` | `packages/ui-flutter/test/bc_notification_test.dart` | ✅ Complete |
+| BcTour | feedback | `packages/ui-flutter/lib/src/components/bc_tour.dart` | `packages/ui-flutter/test/bc_tour_test.dart` | ✅ Complete |
+| BcInplace | data-display | `packages/ui-flutter/lib/src/components/bc_inplace.dart` | `packages/ui-flutter/test/bc_inplace_test.dart` | ✅ Complete |
 
-**Gate evidence:** 416 Flutter tests pass, `flutter analyze` returns 0 errors/warnings (info hints only), `build_runner` succeeds, and the mission validation gate reports 252/252 assertions passed.
+**Gate evidence:** 722 Flutter tests pass, `flutter analyze` returns 0 errors/warnings (info hints only, 4 pre-existing deprecation hints in `bc_disclosure_test.dart` from another worker's file), `build_runner` succeeds, and the mission validation gate reports 252/252 assertions passed.
 
 ## Ringkasan
 
