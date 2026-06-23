@@ -169,3 +169,13 @@ export 'src/components/bc_view_editor.dart';
 export 'src/components/bc_view_activity.dart';
 export 'src/components/bc_virtual_scroller.dart';
 export 'src/components/bc_tiered_menu.dart';
+
+// M6 media viewers and players
+export 'src/components/bc_viewer_pdf.dart';
+export 'src/components/bc_viewer_image.dart';
+export 'src/components/bc_viewer_document.dart';
+export 'src/components/bc_viewer_video.dart';
+export 'src/components/bc_viewer_audio.dart';
+export 'src/components/bc_viewer_youtube.dart';
+export 'src/components/bc_viewer_instagram.dart';
+export 'src/components/bc_viewer_tiktok.dart';
