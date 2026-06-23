@@ -5,11 +5,11 @@ import 'package:bc_ui_flutter/src/components/bc_select.dart';
 void main() {
   testWidgets('BcSelect renders with selected value', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: BcSelect<String>(
             value: 'apple',
-            options: const [
+            options: [
               BcSelectOption(value: 'apple', label: 'Apple'),
               BcSelectOption(value: 'banana', label: 'Banana'),
             ],
@@ -23,11 +23,11 @@ void main() {
 
   testWidgets('BcSelect shows placeholder when no value', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: BcSelect<String>(
             placeholder: 'Pick a fruit',
-            options: const [
+            options: [
               BcSelectOption(value: 'apple', label: 'Apple'),
             ],
           ),

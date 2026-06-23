@@ -607,11 +607,11 @@ void main() {
 
   group('VAL-CROSS-012: No widget leaks controllers or overlay entries in dispose', () {
     testWidgets('BcDisclosure disposes controllers on unmount', (tester) async {
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(const MaterialApp(
         home: Scaffold(
           body: BcDisclosure(
             title: 'Test',
-            child: const Text('Body'),
+            child: Text('Body'),
           ),
         ),
       ));
@@ -627,11 +627,11 @@ void main() {
     });
 
     testWidgets('BcPortal removes overlay entry on dispose', (tester) async {
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(const MaterialApp(
         home: Scaffold(
           body: BcPortal(
             open: true,
-            child: const Text('Overlay'),
+            child: Text('Overlay'),
           ),
         ),
       ));
@@ -647,7 +647,7 @@ void main() {
     });
 
     testWidgets('BcFieldDuration disposes text controllers on unmount', (tester) async {
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(const MaterialApp(
         home: Scaffold(
           body: BcFieldDuration(name: 'dur', value: 3600),
         ),
@@ -661,13 +661,13 @@ void main() {
     });
 
     testWidgets('BcFieldTableSelect disposes search controller on unmount', (tester) async {
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(const MaterialApp(
         home: Scaffold(
           body: BcFieldTableSelect(
-            columns: const [
+            columns: [
               BcFieldTableSelectColumn(key: 'name', label: 'Name'),
             ],
-            data: const [
+            data: [
               {'id': '1', 'name': 'Alice'},
             ],
             searchable: true,
@@ -702,15 +702,15 @@ void main() {
     });
 
     testWidgets('BcLookupModal disposes controllers on unmount', (tester) async {
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(const MaterialApp(
         home: Scaffold(
           body: BcLookupModal(
             open: true,
             title: 'Pick',
-            columns: const [
+            columns: [
               BcLookupModalColumn(key: 'name', label: 'Name'),
             ],
-            data: const [
+            data: [
               {'id': '1', 'name': 'Alice'},
             ],
             searchable: true,
@@ -727,10 +727,10 @@ void main() {
     });
 
     testWidgets('BcViewGantt disposes scroll controllers on unmount', (tester) async {
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(const MaterialApp(
         home: Scaffold(
           body: BcViewGantt(
-            tasks: const [
+            tasks: [
               BcGanttTask(id: 't1', label: 'Task 1', start: 0, duration: 5),
             ],
           ),

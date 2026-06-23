@@ -17,9 +17,9 @@ void main() {
 
   testWidgets('BcYStack lays out children vertically with the specified gap (VAL-M1-010)', (tester) async {
     await tester.pumpWidget(harness(
-      BcYStack(
+      const BcYStack(
         gap: 8,
-        children: const [
+        children: [
           SizedBox(key: ValueKey('a'), width: 40, height: 40),
           SizedBox(key: ValueKey('b'), width: 40, height: 40),
           SizedBox(key: ValueKey('c'), width: 40, height: 40),
@@ -46,10 +46,10 @@ void main() {
 
   testWidgets('BcYStack crossAxisAlignment controls horizontal positioning (VAL-M1-011)', (tester) async {
     await tester.pumpWidget(harness(
-      BcYStack(
+      const BcYStack(
         gap: 0,
         crossAxisAlignment: BcYStackAlign.center,
-        children: const [
+        children: [
           SizedBox(key: ValueKey('wide'), width: 80, height: 40),
           SizedBox(key: ValueKey('narrow'), width: 20, height: 40),
         ],
@@ -66,10 +66,10 @@ void main() {
         reason: 'center alignment should horizontally center narrow child');
 
     await tester.pumpWidget(harness(
-      BcYStack(
+      const BcYStack(
         gap: 0,
         crossAxisAlignment: BcYStackAlign.end,
-        children: const [
+        children: [
           SizedBox(key: ValueKey('wide'), width: 80, height: 40),
           SizedBox(key: ValueKey('narrow'), width: 20, height: 40),
         ],

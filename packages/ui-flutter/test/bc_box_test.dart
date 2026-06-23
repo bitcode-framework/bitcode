@@ -60,9 +60,9 @@ void main() {
 
   testWidgets('BcBox background color resolves from BcTheme tokens (VAL-M1-014)', (tester) async {
     await tester.pumpWidget(harness(
-      BcBox(
+      const BcBox(
         backgroundColor: BcBoxColorToken.surface,
-        child: const Text('content'),
+        child: Text('content'),
       ),
     ));
     await tester.pumpAndSettle();
@@ -75,9 +75,9 @@ void main() {
         reason: 'background color should be set');
 
     await tester.pumpWidget(harness(
-      BcBox(
+      const BcBox(
         backgroundColor: BcBoxColorToken.primary,
-        child: const Text('content2'),
+        child: Text('content2'),
       ),
     ));
     await tester.pumpAndSettle();

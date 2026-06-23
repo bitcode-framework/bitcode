@@ -5,13 +5,13 @@ import 'package:bc_ui_flutter/src/components/bc_accordion.dart';
 void main() {
   testWidgets('BcAccordion renders all items', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: SingleChildScrollView(
             child: BcAccordion(
               items: [
-                BcAccordionItem(title: 'Section 1', child: const Text('Content 1')),
-                BcAccordionItem(title: 'Section 2', child: const Text('Content 2')),
+                BcAccordionItem(title: 'Section 1', child: Text('Content 1')),
+                BcAccordionItem(title: 'Section 2', child: Text('Content 2')),
               ],
             ),
           ),
@@ -25,12 +25,12 @@ void main() {
 
   testWidgets('BcAccordion expands on tap', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: SingleChildScrollView(
             child: BcAccordion(
               items: [
-                BcAccordionItem(title: 'Expandable', child: const Text('Hidden content')),
+                BcAccordionItem(title: 'Expandable', child: Text('Hidden content')),
               ],
             ),
           ),

@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:bc_ui_flutter/src/components/bc_stack.dart';
 
 void main() {
-  Widget _harness(Widget child) {
+  Widget harness(Widget child) {
     return MaterialApp(
       home: Scaffold(
         body: SizedBox(
@@ -16,11 +16,11 @@ void main() {
   }
 
   testWidgets('BcStack positions children using alignment and stackFit (VAL-M1-004)', (tester) async {
-    await tester.pumpWidget(_harness(
-      BcStack(
+    await tester.pumpWidget(harness(
+      const BcStack(
         alignment: Alignment.topLeft,
         stackFit: StackFit.expand,
-        children: const [
+        children: [
           SizedBox(key: ValueKey('c1'), width: 50, height: 50),
           SizedBox(key: ValueKey('c2'), width: 50, height: 50),
         ],
@@ -41,11 +41,11 @@ void main() {
   });
 
   testWidgets('BcStack alignment change repositions children without rebuild errors (VAL-M1-005)', (tester) async {
-    await tester.pumpWidget(_harness(
-      BcStack(
-        key: const ValueKey('stack'),
+    await tester.pumpWidget(harness(
+      const BcStack(
+        key: ValueKey('stack'),
         alignment: Alignment.topLeft,
-        children: const [
+        children: [
           SizedBox(key: ValueKey('c1'), width: 50, height: 50),
         ],
       ),
@@ -55,11 +55,11 @@ void main() {
     var c1Rect = tester.getRect(find.byKey(const ValueKey('c1')));
     expect(c1Rect.topLeft, equals(const Offset(0, 0)));
 
-    await tester.pumpWidget(_harness(
-      BcStack(
-        key: const ValueKey('stack'),
+    await tester.pumpWidget(harness(
+      const BcStack(
+        key: ValueKey('stack'),
         alignment: Alignment.bottomRight,
-        children: const [
+        children: [
           SizedBox(key: ValueKey('c1'), width: 50, height: 50),
         ],
       ),
@@ -73,7 +73,7 @@ void main() {
   });
 
   testWidgets('BcStack renders empty without assertion (VAL-M1-006)', (tester) async {
-    await tester.pumpWidget(_harness(
+    await tester.pumpWidget(harness(
       const BcStack(),
     ));
     await tester.pump();

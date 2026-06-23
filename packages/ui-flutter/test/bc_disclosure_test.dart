@@ -9,9 +9,9 @@ void main() {
   group('BcDisclosure', () {
     testWidgets('BcDisclosure renders title (VAL-DISC-001)', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: BcDisclosure(title: 'Details', child: const Text('Body')),
+            body: BcDisclosure(title: 'Details', child: Text('Body')),
           ),
         ),
       );
@@ -21,9 +21,9 @@ void main() {
 
     testWidgets('BcDisclosure tap opens content (VAL-DISC-002)', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: BcDisclosure(title: 'T', child: const Text('Secret content')),
+            body: BcDisclosure(title: 'T', child: Text('Secret content')),
           ),
         ),
       );
@@ -38,12 +38,12 @@ void main() {
 
     testWidgets('BcDisclosure tap closes content (VAL-DISC-003)', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: BcDisclosure(
               title: 'T',
               defaultOpen: true,
-              child: const Text('Secret content'),
+              child: Text('Secret content'),
             ),
           ),
         ),
@@ -98,12 +98,12 @@ void main() {
     testWidgets('BcDisclosure defaultOpen starts expanded (VAL-DISC-005)',
         (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: BcDisclosure(
               title: 'T',
               defaultOpen: true,
-              child: const Text('Body'),
+              child: Text('Body'),
             ),
           ),
         ),
@@ -115,9 +115,9 @@ void main() {
     testWidgets('BcDisclosure defaults to collapsed (VAL-DISC-006)',
         (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: BcDisclosure(title: 'T', child: const Text('Body')),
+            body: BcDisclosure(title: 'T', child: Text('Body')),
           ),
         ),
       );
@@ -128,12 +128,12 @@ void main() {
     testWidgets('BcDisclosure disabled blocks toggle (VAL-DISC-007)',
         (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: BcDisclosure(
               title: 'T',
               disabled: true,
-              child: const Text('Body'),
+              child: Text('Body'),
             ),
           ),
         ),
@@ -207,12 +207,12 @@ void main() {
     testWidgets('BcDisclosure renders children when open (VAL-DISC-010)',
         (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: BcDisclosure(
               title: 'T',
               defaultOpen: true,
-              child: const Text('Inner body'),
+              child: Text('Inner body'),
             ),
           ),
         ),
@@ -224,9 +224,9 @@ void main() {
     testWidgets('BcDisclosure keyboard Enter/Space toggles (VAL-DISC-011)',
         (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: BcDisclosure(title: 'T', child: const Text('Body')),
+            body: BcDisclosure(title: 'T', child: Text('Body')),
           ),
         ),
       );

@@ -27,7 +27,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: BcList<String>(
-            items: [],
+            items: const [],
             itemBuilder: (context, item, index) => Text(item),
             emptyState: const Center(child: Text('Empty list')),
           ),

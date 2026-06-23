@@ -17,9 +17,9 @@ void main() {
 
   testWidgets('BcXStack lays out children horizontally with the specified gap (VAL-M1-007)', (tester) async {
     await tester.pumpWidget(harness(
-      BcXStack(
+      const BcXStack(
         gap: 8,
-        children: const [
+        children: [
           SizedBox(key: ValueKey('a'), width: 40, height: 40),
           SizedBox(key: ValueKey('b'), width: 40, height: 40),
           SizedBox(key: ValueKey('c'), width: 40, height: 40),
@@ -46,10 +46,10 @@ void main() {
 
   testWidgets('BcXStack alignment controls cross-axis positioning of children (VAL-M1-008)', (tester) async {
     await tester.pumpWidget(harness(
-      BcXStack(
+      const BcXStack(
         gap: 0,
         crossAxisAlignment: BcXStackAlign.center,
-        children: const [
+        children: [
           SizedBox(key: ValueKey('tall'), width: 40, height: 80),
           SizedBox(key: ValueKey('short'), width: 40, height: 20),
         ],
@@ -66,10 +66,10 @@ void main() {
         reason: 'center alignment should vertically center short child');
 
     await tester.pumpWidget(harness(
-      BcXStack(
+      const BcXStack(
         gap: 0,
         crossAxisAlignment: BcXStackAlign.start,
-        children: const [
+        children: [
           SizedBox(key: ValueKey('tall'), width: 40, height: 80),
           SizedBox(key: ValueKey('short'), width: 40, height: 20),
         ],
@@ -100,10 +100,10 @@ void main() {
     }
 
     await tester.pumpWidget(looseHarness(
-      BcXStack(
+      const BcXStack(
         gap: 0,
         mainAxisSize: BcXStackMainAxisSize.min,
-        children: const [
+        children: [
           SizedBox(key: ValueKey('a'), width: 50, height: 50),
           SizedBox(key: ValueKey('b'), width: 50, height: 50),
         ],
@@ -117,10 +117,10 @@ void main() {
         reason: 'min should not expand beyond children width');
 
     await tester.pumpWidget(harness(
-      BcXStack(
+      const BcXStack(
         gap: 0,
         mainAxisSize: BcXStackMainAxisSize.max,
-        children: const [
+        children: [
           SizedBox(key: ValueKey('a'), width: 50, height: 50),
           SizedBox(key: ValueKey('b'), width: 50, height: 50),
         ],

@@ -24,9 +24,9 @@ void main() {
 
   testWidgets('BcViewGantt renders milestone diamond (VAL-GANTT-002)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(id: 'm1', label: 'Milestone 1', start: 3, duration: 0, type: BcGanttTaskType.milestone),
+          BcGanttTask(id: 'm1', label: 'Milestone 1', start: 3, duration: 0, type: BcGanttTaskType.milestone),
         ],
       ),
     ));
@@ -36,9 +36,9 @@ void main() {
 
   testWidgets('BcViewGantt renders summary bar (VAL-GANTT-003)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(id: 's1', label: 'Phase 1', start: 0, duration: 10, type: BcGanttTaskType.summary),
+          BcGanttTask(id: 's1', label: 'Phase 1', start: 0, duration: 10, type: BcGanttTaskType.summary),
         ],
       ),
     ));
@@ -48,13 +48,13 @@ void main() {
 
   testWidgets('BcViewGantt renders dependency link (VAL-GANTT-004)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(id: 't1', label: 'Task 1', start: 0, duration: 5),
-          const BcGanttTask(id: 't2', label: 'Task 2', start: 6, duration: 4),
+          BcGanttTask(id: 't1', label: 'Task 1', start: 0, duration: 5),
+          BcGanttTask(id: 't2', label: 'Task 2', start: 6, duration: 4),
         ],
         links: <BcGanttLink>[
-          const BcGanttLink(id: 'l1', from: 't1', to: 't2', type: 'FS'),
+          BcGanttLink(id: 'l1', from: 't1', to: 't2', type: 'FS'),
         ],
         showDependencies: true,
       ),
@@ -67,8 +67,8 @@ void main() {
     await tester.pumpWidget(harness(
       BcViewGantt(
         tasks: sampleTasks(),
-        links: <BcGanttLink>[
-          const BcGanttLink(id: 'l1', from: 't1', to: 't2', type: 'FS'),
+        links: const <BcGanttLink>[
+          BcGanttLink(id: 'l1', from: 't1', to: 't2', type: 'FS'),
         ],
         showDependencies: false,
       ),
@@ -103,9 +103,9 @@ void main() {
 
   testWidgets('BcViewGantt renders progress fill (VAL-GANTT-008)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(id: 't1', label: 'Task 1', start: 0, duration: 10, progress: 60),
+          BcGanttTask(id: 't1', label: 'Task 1', start: 0, duration: 10, progress: 60),
         ],
         showProgress: true,
       ),
@@ -116,9 +116,9 @@ void main() {
 
   testWidgets('BcViewGantt hides progress fill by default (VAL-GANTT-009)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(id: 't1', label: 'Task 1', start: 0, duration: 10, progress: 60),
+          BcGanttTask(id: 't1', label: 'Task 1', start: 0, duration: 10, progress: 60),
         ],
         showProgress: false,
       ),
@@ -285,10 +285,10 @@ void main() {
 
   testWidgets('BcViewGantt positions tasks by start offset (VAL-GANTT-020)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(id: 't1', label: 'Early', start: 0, duration: 3),
-          const BcGanttTask(id: 't2', label: 'Late', start: 10, duration: 3),
+          BcGanttTask(id: 't1', label: 'Early', start: 0, duration: 3),
+          BcGanttTask(id: 't2', label: 'Late', start: 10, duration: 3),
         ],
       ),
     ));
@@ -300,10 +300,10 @@ void main() {
 
   testWidgets('BcViewGantt bar width reflects duration (VAL-GANTT-021)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(id: 't1', label: 'Short', start: 0, duration: 2),
-          const BcGanttTask(id: 't2', label: 'Long', start: 0, duration: 10),
+          BcGanttTask(id: 't1', label: 'Short', start: 0, duration: 2),
+          BcGanttTask(id: 't2', label: 'Long', start: 0, duration: 10),
         ],
       ),
     ));
@@ -336,9 +336,9 @@ void main() {
     await tester.pumpWidget(harness(
       BcViewGantt(
         key: ganttKey,
-        tasks: <BcGanttTask>[
-          const BcGanttTask(id: 's1', label: 'Phase', start: 0, duration: 10, type: BcGanttTaskType.summary),
-          const BcGanttTask(id: 'child', label: 'Child', start: 1, duration: 4, parentId: 's1'),
+        tasks: const <BcGanttTask>[
+          BcGanttTask(id: 's1', label: 'Phase', start: 0, duration: 10, type: BcGanttTaskType.summary),
+          BcGanttTask(id: 'child', label: 'Child', start: 1, duration: 4, parentId: 's1'),
         ],
       ),
     ));
@@ -359,9 +359,9 @@ void main() {
     await tester.pumpWidget(harness(
       BcViewGantt(
         key: ganttKey,
-        tasks: <BcGanttTask>[
-          const BcGanttTask(id: 's1', label: 'Phase', start: 0, duration: 10, type: BcGanttTaskType.summary),
-          const BcGanttTask(id: 'child', label: 'Child', start: 1, duration: 4, parentId: 's1'),
+        tasks: const <BcGanttTask>[
+          BcGanttTask(id: 's1', label: 'Phase', start: 0, duration: 10, type: BcGanttTaskType.summary),
+          BcGanttTask(id: 'child', label: 'Child', start: 1, duration: 4, parentId: 's1'),
         ],
       ),
     ));
@@ -460,9 +460,9 @@ void main() {
 
   testWidgets('BcViewGantt custom unitWidth overrides zoom default (VAL-GANTT-030)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(id: 't1', label: 'T', start: 0, duration: 1),
+          BcGanttTask(id: 't1', label: 'T', start: 0, duration: 1),
         ],
         unitWidth: 80,
         zoomLevel: BcGanttZoomLevel.day,
@@ -475,10 +475,10 @@ void main() {
 
   testWidgets('BcViewGantt custom rowHeight applies (VAL-GANTT-031)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(id: 't1', label: 'T1', start: 0, duration: 3),
-          const BcGanttTask(id: 't2', label: 'T2', start: 0, duration: 3),
+          BcGanttTask(id: 't1', label: 'T1', start: 0, duration: 3),
+          BcGanttTask(id: 't2', label: 'T2', start: 0, duration: 3),
         ],
         rowHeight: 48,
       ),
@@ -491,13 +491,13 @@ void main() {
 
   testWidgets('BcViewGantt FS link routes end to start (VAL-GANTT-032)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(id: 't1', label: 'T1', start: 0, duration: 5),
-          const BcGanttTask(id: 't2', label: 'T2', start: 6, duration: 4),
+          BcGanttTask(id: 't1', label: 'T1', start: 0, duration: 5),
+          BcGanttTask(id: 't2', label: 'T2', start: 6, duration: 4),
         ],
         links: <BcGanttLink>[
-          const BcGanttLink(id: 'l1', from: 't1', to: 't2', type: 'FS'),
+          BcGanttLink(id: 'l1', from: 't1', to: 't2', type: 'FS'),
         ],
         showDependencies: true,
       ),
@@ -512,13 +512,13 @@ void main() {
 
   testWidgets('BcViewGantt SS link routes start to start (VAL-GANTT-033)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(id: 't1', label: 'T1', start: 0, duration: 5),
-          const BcGanttTask(id: 't2', label: 'T2', start: 0, duration: 4),
+          BcGanttTask(id: 't1', label: 'T1', start: 0, duration: 5),
+          BcGanttTask(id: 't2', label: 'T2', start: 0, duration: 4),
         ],
         links: <BcGanttLink>[
-          const BcGanttLink(id: 'l1', from: 't1', to: 't2', type: 'SS'),
+          BcGanttLink(id: 'l1', from: 't1', to: 't2', type: 'SS'),
         ],
         showDependencies: true,
       ),
@@ -545,9 +545,9 @@ void main() {
 
   testWidgets('BcViewGantt shows assignees when enabled (VAL-GANTT-035)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(
+          BcGanttTask(
             id: 't1',
             label: 'Task',
             start: 0,
@@ -564,9 +564,9 @@ void main() {
 
   testWidgets('BcViewGantt custom color overrides palette (VAL-GANTT-036)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(id: 't1', label: 'Red Task', start: 0, duration: 5, color: '#FF0000'),
+          BcGanttTask(id: 't1', label: 'Red Task', start: 0, duration: 5, color: '#FF0000'),
         ],
       ),
     ));
@@ -576,9 +576,9 @@ void main() {
 
   testWidgets('BcViewGantt collapsed summary hides children (VAL-GANTT-037)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(
+          BcGanttTask(
             id: 's1',
             label: 'Phase',
             start: 0,
@@ -586,7 +586,7 @@ void main() {
             type: BcGanttTaskType.summary,
             collapsed: true,
           ),
-          const BcGanttTask(id: 'child', label: 'Child', start: 1, duration: 4, parentId: 's1'),
+          BcGanttTask(id: 'child', label: 'Child', start: 1, duration: 4, parentId: 's1'),
         ],
       ),
     ));
@@ -597,9 +597,9 @@ void main() {
 
   testWidgets('BcViewGantt milestone zero duration renders point (VAL-GANTT-038)', (tester) async {
     await tester.pumpWidget(harness(
-      BcViewGantt(
+      const BcViewGantt(
         tasks: <BcGanttTask>[
-          const BcGanttTask(id: 'm1', label: 'Go Live', start: 5, duration: 0, type: BcGanttTaskType.milestone),
+          BcGanttTask(id: 'm1', label: 'Go Live', start: 5, duration: 0, type: BcGanttTaskType.milestone),
         ],
       ),
     ));

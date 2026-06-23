@@ -24,9 +24,9 @@ void main() {
 
   testWidgets('BcInput disabled does not accept input', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
-          body: const BcInput(
+          body: BcInput(
             disabled: true,
             placeholder: 'Locked',
           ),
@@ -40,9 +40,9 @@ void main() {
 
   testWidgets('BcInput shows label and error', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
-          body: const BcInput(
+          body: BcInput(
             label: 'Email',
             errorText: 'Invalid email',
           ),

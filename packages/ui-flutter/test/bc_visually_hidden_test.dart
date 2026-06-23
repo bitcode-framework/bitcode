@@ -46,7 +46,7 @@ void main() {
     const siblingKey = ValueKey('sibling');
 
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: SizedBox(
             width: 400,
@@ -56,7 +56,7 @@ void main() {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   BcVisuallyHidden(
                     key: hiddenKey,
                     child: Text('hidden content'),

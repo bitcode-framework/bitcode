@@ -54,6 +54,12 @@ export 'src/components/bc_statistic.dart';
 export 'src/components/bc_empty.dart';
 export 'src/components/bc_result.dart';
 
+// M1 advanced input widgets
+export 'src/components/bc_otp.dart';
+export 'src/components/bc_transfer.dart';
+export 'src/components/bc_cascader.dart';
+export 'src/components/bc_tree_select.dart';
+
 // P0 widgets — adaptive (FPW)
 export 'src/components/bc_input.dart';
 export 'src/components/bc_select.dart';

@@ -5,7 +5,7 @@ import 'package:bc_ui_flutter/src/components/bc_toggle.dart';
 void main() {
   testWidgets('BcToggle renders with label', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: BcToggle(value: false, label: 'Notifications'),
         ),

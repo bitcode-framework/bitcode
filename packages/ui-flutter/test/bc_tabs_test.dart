@@ -5,13 +5,13 @@ import 'package:bc_ui_flutter/src/components/bc_tabs.dart';
 void main() {
   testWidgets('BcTabs renders all tab labels', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: BcTabs(
             tabs: [
-              BcTabItem(label: 'Tab 1', child: const Text('Content 1')),
-              BcTabItem(label: 'Tab 2', child: const Text('Content 2')),
-              BcTabItem(label: 'Tab 3', child: const Text('Content 3')),
+              BcTabItem(label: 'Tab 1', child: Text('Content 1')),
+              BcTabItem(label: 'Tab 2', child: Text('Content 2')),
+              BcTabItem(label: 'Tab 3', child: Text('Content 3')),
             ],
           ),
         ),
@@ -25,14 +25,14 @@ void main() {
 
   testWidgets('BcTabs switches content on tap', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: SizedBox(
             height: 400,
             child: BcTabs(
               tabs: [
-                BcTabItem(label: 'First', child: const Text('First content')),
-                BcTabItem(label: 'Second', child: const Text('Second content')),
+                BcTabItem(label: 'First', child: Text('First content')),
+                BcTabItem(label: 'Second', child: Text('Second content')),
               ],
             ),
           ),

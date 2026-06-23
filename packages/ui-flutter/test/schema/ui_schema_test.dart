@@ -288,13 +288,13 @@ void main() {
     });
 
     test('set variant', () {
-      final sel = BcSelection.set({1, 2, 3});
+      const sel = BcSelection.set({1, 2, 3});
       expect(sel, isA<BcSelectionSet>());
       expect((sel as BcSelectionSet).keys.length, 3);
     });
 
     test('list variant', () {
-      final sel = BcSelection.list(['a', 'b']);
+      const sel = BcSelection.list(['a', 'b']);
       expect(sel, isA<BcSelectionList>());
       expect((sel as BcSelectionList).keys.length, 2);
     });

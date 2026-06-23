@@ -15,7 +15,7 @@ import 'package:bc_ui_flutter/src/core/types.dart';
 /// keyboard ArrowUp/Down adjusting the focused segment, and the
 /// label/hint/description/placeholder/size/name props.
 void main() {
-  Widget _harness(Widget child) {
+  Widget harness(Widget child) {
     return MaterialApp(home: Scaffold(body: child));
   }
 
@@ -23,7 +23,7 @@ void main() {
     testWidgets(
         'BcFieldDuration renders hours and minutes (VAL-DUR-001)',
         (tester) async {
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         const BcFieldDuration(name: 'dur'),
       ));
       expect(find.byType(TextField), findsNWidgets(2));
@@ -32,7 +32,7 @@ void main() {
     testWidgets(
         'BcFieldDuration showSeconds renders third segment (VAL-DUR-002)',
         (tester) async {
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         const BcFieldDuration(name: 'dur', showSeconds: true),
       ));
       expect(find.byType(TextField), findsNWidgets(3));
@@ -41,7 +41,7 @@ void main() {
     testWidgets(
         'BcFieldDuration default hides seconds (VAL-DUR-003)',
         (tester) async {
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         const BcFieldDuration(name: 'dur', showSeconds: false),
       ));
       expect(find.byType(TextField), findsNWidgets(2));
@@ -50,7 +50,7 @@ void main() {
     testWidgets(
         'BcFieldDuration label renders (VAL-DUR-018)',
         (tester) async {
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         const BcFieldDuration(name: 'dur', label: 'Duration'),
       ));
       expect(find.text('Duration'), findsOneWidget);
@@ -59,7 +59,7 @@ void main() {
     testWidgets(
         'BcFieldDuration hint renders as helper text (VAL-DUR-019)',
         (tester) async {
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         const BcFieldDuration(name: 'dur', hint: 'Enter elapsed time'),
       ));
       expect(find.text('Enter elapsed time'), findsOneWidget);
@@ -68,7 +68,7 @@ void main() {
     testWidgets(
         'BcFieldDuration description renders (VAL-DUR-020)',
         (tester) async {
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         const BcFieldDuration(name: 'dur', description: 'Time spent on task'),
       ));
       expect(find.text('Time spent on task'), findsOneWidget);
@@ -77,7 +77,7 @@ void main() {
     testWidgets(
         'BcFieldDuration required marks field (VAL-DUR-021)',
         (tester) async {
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         const BcFieldDuration(name: 'dur', label: 'Duration', required: true),
       ));
       expect(find.text('*'), findsOneWidget);
@@ -86,7 +86,7 @@ void main() {
     testWidgets(
         'BcFieldDuration placeholder renders when empty (VAL-DUR-023)',
         (tester) async {
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         const BcFieldDuration(name: 'dur', placeholder: '00'),
       ));
       expect(find.text('00'), findsWidgets);
@@ -95,7 +95,7 @@ void main() {
     testWidgets(
         'BcFieldDuration name prop set on field (VAL-DUR-025)',
         (tester) async {
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         const BcFieldDuration(name: 'dur-field'),
       ));
       expect(find.byKey(const ValueKey<String>('bc-field-duration-dur-field')),
@@ -106,7 +106,7 @@ void main() {
         'BcFieldDuration size prop accepted (VAL-DUR-024)',
         (tester) async {
       for (final size in BcComponentSize.values) {
-        await tester.pumpWidget(_harness(
+        await tester.pumpWidget(harness(
           BcFieldDuration(name: 'dur', size: size),
         ));
         expect(find.byType(BcFieldDuration), findsOneWidget);
@@ -120,7 +120,7 @@ void main() {
         'BcFieldDuration up button increments by step (VAL-DUR-004)',
         (tester) async {
       int? capturedValue;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         BcFieldDuration(
           name: 'dur',
           value: 0,
@@ -139,7 +139,7 @@ void main() {
         'BcFieldDuration down button decrements by step (VAL-DUR-005)',
         (tester) async {
       int? capturedValue;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         BcFieldDuration(
           name: 'dur',
           value: 120,
@@ -158,7 +158,7 @@ void main() {
         'BcFieldDuration down clamps to zero (VAL-DUR-006)',
         (tester) async {
       int? capturedValue;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         BcFieldDuration(
           name: 'dur',
           value: 30,
@@ -177,7 +177,7 @@ void main() {
         'BcFieldDuration maxHours caps value (VAL-DUR-007)',
         (tester) async {
       int? capturedValue;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         BcFieldDuration(
           name: 'dur',
           value: 23 * 3600,
@@ -197,7 +197,7 @@ void main() {
         'BcFieldDuration up button fires increment reason (VAL-DUR-013)',
         (tester) async {
       BcChangeReason? capturedReason;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         BcFieldDuration(
           name: 'dur',
           value: 0,
@@ -216,7 +216,7 @@ void main() {
         'BcFieldDuration down button fires decrement reason (VAL-DUR-014)',
         (tester) async {
       BcChangeReason? capturedReason;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         BcFieldDuration(
           name: 'dur',
           value: 120,
@@ -236,7 +236,7 @@ void main() {
     testWidgets(
         'BcFieldDuration clearable shows clear button (VAL-DUR-008)',
         (tester) async {
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         const BcFieldDuration(name: 'dur', value: 60, clearable: true),
       ));
       expect(find.byKey(const ValueKey<String>('bc-field-duration-clear')),
@@ -248,7 +248,7 @@ void main() {
         (tester) async {
       int? capturedValue;
       BcChangeReason? capturedReason;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         BcFieldDuration(
           name: 'dur',
           value: 60,
@@ -272,7 +272,7 @@ void main() {
         'BcFieldDuration disabled prevents input (VAL-DUR-010)',
         (tester) async {
       bool changed = false;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         BcFieldDuration(
           name: 'dur',
           value: 0,
@@ -295,7 +295,7 @@ void main() {
         'BcFieldDuration readonly prevents input but displays value (VAL-DUR-011)',
         (tester) async {
       bool changed = false;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         BcFieldDuration(
           name: 'dur',
           value: 3661,
@@ -323,7 +323,7 @@ void main() {
         (tester) async {
       int? capturedValue;
       BcChangeReason? capturedReason;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         BcFieldDuration(
           name: 'dur',
           value: 0,
@@ -346,7 +346,7 @@ void main() {
         'BcFieldDuration value is total seconds int (VAL-DUR-015)',
         (tester) async {
       int? capturedValue;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         BcFieldDuration(
           name: 'dur',
           value: 5400,
@@ -370,7 +370,7 @@ void main() {
         (tester) async {
       int value = 3661;
       late StateSetter setStateRef;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         StatefulBuilder(
           builder: (context, setState) {
             setStateRef = setState;
@@ -393,7 +393,7 @@ void main() {
     testWidgets(
         'BcFieldDuration defaultValue initializes state (VAL-DUR-017)',
         (tester) async {
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         const BcFieldDuration(name: 'dur', defaultValue: 3600),
       ));
       expect(find.text('1'), findsOneWidget);
@@ -404,7 +404,7 @@ void main() {
         'BcFieldDuration minute overflow rolls to hours (VAL-DUR-022)',
         (tester) async {
       int? capturedValue;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         BcFieldDuration(
           name: 'dur',
           value: 0,
@@ -432,7 +432,7 @@ void main() {
       int? capturedValue;
       BcChangeReason? capturedReason;
       late StateSetter setStateRef;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         StatefulBuilder(
           builder: (context, setState) {
             setStateRef = setState;
@@ -461,7 +461,7 @@ void main() {
         'BcFieldDuration arrow keys adjust focused segment (VAL-DUR-027)',
         (tester) async {
       int? capturedValue;
-      await tester.pumpWidget(_harness(
+      await tester.pumpWidget(harness(
         BcFieldDuration(
           name: 'dur',
           value: 0,

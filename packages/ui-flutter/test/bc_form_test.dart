@@ -10,7 +10,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: BcForm(
-            initialValues: {'name': 'Alice'},
+            initialValues: const {'name': 'Alice'},
             onCreateStore: (store) => captured = store,
             child: Builder(
               builder: (context) {
@@ -34,7 +34,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: BcForm(
-            initialValues: {'qty': 3, 'price': 10},
+            initialValues: const {'qty': 3, 'price': 10},
             reactions: [
               Reaction(
                 when: ['qty', 'price'],

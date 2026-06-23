@@ -1066,7 +1066,7 @@ class _GanttChartPainter extends CustomPainter {
         ..lineTo(toX, toY);
       canvas.drawPath(path, paint);
 
-      final arrowSize = 6.0;
+      const arrowSize = 6.0;
       final arrowPath = Path()
         ..moveTo(toX, toY)
         ..lineTo(toX - arrowSize, toY - arrowSize / 2)
@@ -1161,7 +1161,7 @@ class _TaskBarPainter extends CustomPainter {
           ..color = color
           ..strokeWidth = 2
           ..style = PaintingStyle.stroke;
-        canvas.drawLine(const Offset(0, -2), Offset(0, 2), bracketPaint);
+        canvas.drawLine(const Offset(0, -2), const Offset(0, 2), bracketPaint);
         canvas.drawLine(
             const Offset(0, -2), Offset(size.width, -2), bracketPaint);
         canvas.drawLine(
@@ -1223,7 +1223,7 @@ class _DependencyArrowPainter extends CustomPainter {
       ..lineTo(toX, toY);
     canvas.drawPath(path, paint);
 
-    final arrowSize = 6.0;
+    const arrowSize = 6.0;
     final arrowPath = Path()
       ..moveTo(toX, toY)
       ..lineTo(toX - arrowSize, toY - arrowSize / 2)

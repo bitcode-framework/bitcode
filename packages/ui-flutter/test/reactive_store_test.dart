@@ -4,7 +4,7 @@ import 'package:bc_ui_flutter/src/core/reactive_store.dart';
 void main() {
   group('ReactiveStore — basic get/set', () {
     test('set and get a value', () {
-      final store = ReactiveStore(ReactiveStoreOptions(
+      final store = ReactiveStore(const ReactiveStoreOptions(
         initialValues: {'name': 'Alice'},
       ));
       expect(store.get('name'), 'Alice');
@@ -23,7 +23,7 @@ void main() {
     });
 
     test('set with same value does not notify', () {
-      final store = ReactiveStore(ReactiveStoreOptions(
+      final store = ReactiveStore(const ReactiveStoreOptions(
         initialValues: {'x': 10},
       ));
       var notified = 0;
@@ -134,7 +134,7 @@ void main() {
 
   group('ReactiveStore — subscription', () {
     test('subscribe receives snapshot on change', () {
-      final store = ReactiveStore(ReactiveStoreOptions(
+      final store = ReactiveStore(const ReactiveStoreOptions(
         initialValues: {'a': 1},
       ));
       Map<String, dynamic>? lastSnapshot;
@@ -161,7 +161,7 @@ void main() {
 
   group('ReactiveStore — snapshot', () {
     test('snapshot includes \$self, \$root', () {
-      final store = ReactiveStore(ReactiveStoreOptions(
+      final store = ReactiveStore(const ReactiveStoreOptions(
         initialValues: {'a': 1, 'b': 2},
       ));
       final snap = store.snapshot();
@@ -197,7 +197,7 @@ void main() {
 
   group('ReactiveStore — dispose', () {
     test('dispose clears listeners and values', () {
-      final store = ReactiveStore(ReactiveStoreOptions(
+      final store = ReactiveStore(const ReactiveStoreOptions(
         initialValues: {'x': 1},
       ));
       var count = 0;

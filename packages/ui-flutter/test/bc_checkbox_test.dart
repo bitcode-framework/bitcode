@@ -42,9 +42,9 @@ void main() {
 
   testWidgets('BcCheckbox shows label', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
-          body: const BcCheckbox(value: false, label: 'Accept terms'),
+          body: BcCheckbox(value: false, label: 'Accept terms'),
         ),
       ),
     );

@@ -57,7 +57,7 @@ void main() {
   testWidgets('BcBackdrop opacity controls dim level (VAL-M1-021)',
       (tester) async {
     await tester.pumpWidget(harness(
-      BcBackdrop(
+      const BcBackdrop(
         visible: true,
         opacity: 0.5,
         dismissible: false,
@@ -71,7 +71,7 @@ void main() {
         reason: 'scrim alpha should match opacity 0.5');
 
     await tester.pumpWidget(harness(
-      BcBackdrop(
+      const BcBackdrop(
         visible: true,
         opacity: 0.8,
         dismissible: false,

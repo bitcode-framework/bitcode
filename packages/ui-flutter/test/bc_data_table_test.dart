@@ -49,7 +49,7 @@ void main() {
                 cellBuilder: (_, row) => Text(row['name'] as String),
               ),
             ],
-            rows: [],
+            rows: const [],
             emptyState: const Center(child: Text('No data')),
           ),
         ),
