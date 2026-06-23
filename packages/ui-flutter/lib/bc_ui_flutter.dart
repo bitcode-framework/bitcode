@@ -165,3 +165,7 @@ export 'src/components/bc_chart.dart';
 export 'src/components/bc_kanban_board.dart';
 export 'src/components/bc_view_map.dart';
 export 'src/components/bc_view_report.dart';
+export 'src/components/bc_view_editor.dart';
+export 'src/components/bc_view_activity.dart';
+export 'src/components/bc_virtual_scroller.dart';
+export 'src/components/bc_tiered_menu.dart';
