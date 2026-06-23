@@ -6,6 +6,8 @@
 
 library core_types;
 
+import 'package:flutter/painting.dart' show Color;
+
 /// Source of a user-initiated change.
 ///
 /// Mirrors TS `BcEventSource` but trimmed to Dart-relevant values.
@@ -559,5 +561,348 @@ enum BcTagVariant {
   warning,
   destructive,
   info,
+}
+
+// ---------------------------------------------------------------------------
+// M5 BcChart typed wrappers (ADR-011 Phase 5c — M5 data display)
+// ---------------------------------------------------------------------------
+
+/// Rendering type for [BcChart].
+///
+/// Mirrors the TS `BcChartType` union for the 4 types the validation
+/// contract asserts: bar, line, pie, doughnut.
+enum BcChartType {
+  bar,
+  line,
+  pie,
+  doughnut,
+}
+
+/// Single-series data item for pie/doughnut charts.
+///
+/// Mirrors TS `SingleSeriesItem` ({ name, value }).
+class BcChartItem {
+  final String name;
+  final double value;
+
+  const BcChartItem({required this.name, required this.value});
+
+  @override
+  String toString() => 'BcChartItem(name: $name, value: $value)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcChartItem && name == other.name && value == other.value;
+
+  @override
+  int get hashCode => Object.hash(name, value);
+}
+
+/// Multi-series entry for bar/line charts.
+///
+/// Mirrors TS `MultiSeriesEntry` ({ name, data }).
+class BcChartSeries {
+  final String name;
+  final List<double> data;
+
+  const BcChartSeries({required this.name, required this.data});
+
+  @override
+  String toString() => 'BcChartSeries(name: $name, data: $data)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcChartSeries &&
+          name == other.name &&
+          _listEquals(data, other.data);
+
+  @override
+  int get hashCode => Object.hash(name, Object.hashAll(data));
+
+  static bool _listEquals(List<double> a, List<double> b) {
+    if (identical(a, b)) return true;
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// M5 BcKanbanBoard typed wrappers (ADR-011 Phase 5c — M5 data display)
+// ---------------------------------------------------------------------------
+
+/// Priority level for a [BcKanbanCard].
+enum BcKanbanPriority {
+  low,
+  medium,
+  high,
+  critical,
+}
+
+/// Column descriptor for [BcKanbanBoard].
+///
+/// Mirrors TS `KanbanColumnConfig` ({ id, name, color?, wip_limit? }).
+class BcKanbanColumnConfig {
+  final String id;
+  final String name;
+  final Color? color;
+  final int? wipLimit;
+
+  const BcKanbanColumnConfig({
+    required this.id,
+    required this.name,
+    this.color,
+    this.wipLimit,
+  });
+
+  @override
+  String toString() =>
+      'BcKanbanColumnConfig(id: $id, name: $name, color: $color, wipLimit: $wipLimit)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcKanbanColumnConfig &&
+          id == other.id &&
+          name == other.name &&
+          color == other.color &&
+          wipLimit == other.wipLimit;
+
+  @override
+  int get hashCode => Object.hash(id, name, color, wipLimit);
+}
+
+/// Card in a [BcKanbanBoard].
+///
+/// Mirrors TS `KanbanCard` with the fields relevant to the Flutter widget.
+class BcKanbanCard {
+  final String id;
+  final String title;
+  final String? description;
+  final String column;
+  final int? position;
+  final BcKanbanPriority? priority;
+  final String? dueDate;
+  final List<String>? labels;
+
+  const BcKanbanCard({
+    required this.id,
+    required this.title,
+    required this.column,
+    this.description,
+    this.position,
+    this.priority,
+    this.dueDate,
+    this.labels,
+  });
+
+  @override
+  String toString() =>
+      'BcKanbanCard(id: $id, title: $title, column: $column, '
+      'description: $description, position: $position, priority: $priority, '
+      'dueDate: $dueDate, labels: $labels)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcKanbanCard &&
+          id == other.id &&
+          title == other.title &&
+          column == other.column &&
+          description == other.description &&
+          position == other.position &&
+          priority == other.priority &&
+          dueDate == other.dueDate &&
+          _listEquals(labels, other.labels);
+
+  @override
+  int get hashCode => Object.hash(
+        id,
+        title,
+        column,
+        description,
+        position,
+        priority,
+        dueDate,
+        Object.hashAll(labels ?? const []),
+      );
+
+  static bool _listEquals(List<String>? a, List<String>? b) {
+    if (identical(a, b)) return true;
+    if (a == null || b == null) return a == b;
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+}
+
+/// Event payload emitted when a card is moved or reordered.
+///
+/// Mirrors TS `KanbanCardMoveEvent`
+/// ({ cardId, fromColumn, toColumn, toPosition? }).
+class BcKanbanCardMoveEvent {
+  final String cardId;
+  final String fromColumn;
+  final String toColumn;
+  final int? toPosition;
+
+  const BcKanbanCardMoveEvent({
+    required this.cardId,
+    required this.fromColumn,
+    required this.toColumn,
+    this.toPosition,
+  });
+
+  @override
+  String toString() =>
+      'BcKanbanCardMoveEvent(cardId: $cardId, fromColumn: $fromColumn, '
+      'toColumn: $toColumn, toPosition: $toPosition)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcKanbanCardMoveEvent &&
+          cardId == other.cardId &&
+          fromColumn == other.fromColumn &&
+          toColumn == other.toColumn &&
+          toPosition == other.toPosition;
+
+  @override
+  int get hashCode => Object.hash(cardId, fromColumn, toColumn, toPosition);
+}
+
+// ---------------------------------------------------------------------------
+// M5 BcViewMap typed wrappers (ADR-011 Phase 5c — M5 data display)
+// ---------------------------------------------------------------------------
+
+/// Marker for [BcViewMap].
+///
+/// Carries the geo coordinate and optional label.
+class BcMapMarker {
+  final String id;
+  final double lat;
+  final double lng;
+  final String? label;
+
+  const BcMapMarker({
+    required this.id,
+    required this.lat,
+    required this.lng,
+    this.label,
+  });
+
+  @override
+  String toString() =>
+      'BcMapMarker(id: $id, lat: $lat, lng: $lng, label: $label)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcMapMarker &&
+          id == other.id &&
+          lat == other.lat &&
+          lng == other.lng &&
+          label == other.label;
+
+  @override
+  int get hashCode => Object.hash(id, lat, lng, label);
+}
+
+/// Shape type for a geo region/polyline.
+enum BcGeoShapeType {
+  polygon,
+  polyline,
+}
+
+/// Geo region (polygon) or polyline for [BcViewMap].
+class BcMapRegion {
+  final String id;
+  final BcGeoShapeType type;
+  final List<BcGeoCoord> points;
+  final String? label;
+  final Color? color;
+
+  const BcMapRegion({
+    required this.id,
+    required this.type,
+    required this.points,
+    this.label,
+    this.color,
+  });
+
+  @override
+  String toString() =>
+      'BcMapRegion(id: $id, type: $type, points: $points, label: $label)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcMapRegion &&
+          id == other.id &&
+          type == other.type &&
+          _coordListEquals(points, other.points) &&
+          label == other.label &&
+          color == other.color;
+
+  @override
+  int get hashCode => Object.hash(
+        id,
+        type,
+        Object.hashAll(points),
+        label,
+        color,
+      );
+
+  static bool _coordListEquals(List<BcGeoCoord> a, List<BcGeoCoord> b) {
+    if (identical(a, b)) return true;
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// M5 BcViewReport typed wrappers (ADR-011 Phase 5c — M5 data display)
+// ---------------------------------------------------------------------------
+
+/// Section in a [BcViewReport].
+///
+/// Mirrors TS `BcReportSection` ({ id, title?, content?, visible? }).
+class BcReportSection {
+  final String id;
+  final String? title;
+  final String? content;
+  final bool visible;
+
+  const BcReportSection({
+    required this.id,
+    this.title,
+    this.content,
+    this.visible = true,
+  });
+
+  @override
+  String toString() =>
+      'BcReportSection(id: $id, title: $title, content: $content, visible: $visible)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcReportSection &&
+          id == other.id &&
+          title == other.title &&
+          content == other.content &&
+          visible == other.visible;
+
+  @override
+  int get hashCode => Object.hash(id, title, content, visible);
 }
 

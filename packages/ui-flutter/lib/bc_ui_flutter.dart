@@ -161,3 +161,7 @@ export 'src/components/bc_carousel.dart';
 export 'src/components/bc_orgchart.dart';
 export 'src/components/bc_taggroup.dart';
 export 'src/components/bc_sparkline.dart';
+export 'src/components/bc_chart.dart';
+export 'src/components/bc_kanban_board.dart';
+export 'src/components/bc_view_map.dart';
+export 'src/components/bc_view_report.dart';
