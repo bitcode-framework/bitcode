@@ -43,6 +43,9 @@ export 'src/components/bc_stack.dart';
 export 'src/components/bc_xstack.dart';
 export 'src/components/bc_ystack.dart';
 export 'src/components/bc_box.dart';
+export 'src/components/bc_visually_hidden.dart';
+export 'src/components/bc_backdrop.dart';
+export 'src/components/bc_loading_overlay.dart';
 
 // P0 widgets — adaptive (FPW)
 export 'src/components/bc_input.dart';
