@@ -19,10 +19,10 @@ import '../core/types.dart';
 class BcFieldDynLink extends StatefulWidget {
   final String? name;
   final String? label;
-  final dynamic value;
-  final dynamic defaultValue;
-  final List<dynamic>? models;
-  final void Function(String, String)? dataFetcher;
+  final BcDynLinkValue? value;
+  final BcDynLinkValue? defaultValue;
+  final List<BcDynLinkModel>? models;
+  final Future<List<BcDynLinkRecord>> Function(String, String)? dataFetcher;
   final bool? disabled;
   final bool? required_;
   final bool? readonly;
@@ -32,7 +32,7 @@ class BcFieldDynLink extends StatefulWidget {
   final String? description;
   final String? className;
   final Map<String, dynamic>? slotProps;
-  final BcChangeHandler<dynamic>? onValueChange;
+  final BcChangeHandler<BcDynLinkValue>? onValueChange;
   final void Function(dynamic)? onChange;
 
   const BcFieldDynLink({

@@ -12,13 +12,72 @@
 // ===========================================================================
 
 import 'package:flutter/material.dart';
+import '../core/types.dart';
 
 /// BcViewGantt — contract stub (ADR-011 Phase 5b.1).
 /// Flutter mapping: CustomPainter (ports SVG primitives to Canvas)
 class BcViewGantt extends StatefulWidget {
+  final List<BcGanttTask>? tasks;
+  final List<BcGanttLink>? links;
+  final String? timelineStart;
+  final String? timelineEnd;
+  final BcGanttZoomLevel? zoomLevel;
+  final num? unitWidth;
+  final num? rowHeight;
+  final bool? showCriticalPath;
+  final bool? showTodayLine;
+  final bool? showDependencies;
+  final bool? showProgress;
+  final bool? showAssignees;
+  final bool? allowTaskDrag;
+  final bool? allowTaskResize;
+  final bool? allowDependencyCreate;
+  final String? model;
+  final String? taskNameField;
+  final String? taskStartField;
+  final String? taskEndField;
+  final String? taskDurationField;
+  final String? taskProgressField;
+  final String? taskDependencyField;
+  final String? taskParentField;
+  final void Function(String)? onTaskClick;
+  final void Function(String, num)? onTaskMove;
+  final void Function(String, num)? onTaskResize;
+  final void Function(String, num)? onTaskProgressChange;
+  final void Function(String, String)? onDependencyCreate;
+  final void Function(BcGanttZoomLevel)? onZoomChange;
 
   const BcViewGantt({
     super.key,
+    this.tasks,
+    this.links,
+    this.timelineStart,
+    this.timelineEnd,
+    this.zoomLevel,
+    this.unitWidth,
+    this.rowHeight,
+    this.showCriticalPath,
+    this.showTodayLine,
+    this.showDependencies,
+    this.showProgress,
+    this.showAssignees,
+    this.allowTaskDrag,
+    this.allowTaskResize,
+    this.allowDependencyCreate,
+    this.model,
+    this.taskNameField,
+    this.taskStartField,
+    this.taskEndField,
+    this.taskDurationField,
+    this.taskProgressField,
+    this.taskDependencyField,
+    this.taskParentField,
+    this.onTaskClick,
+    this.onTaskMove,
+    this.onTaskResize,
+    this.onTaskProgressChange,
+    this.onDependencyCreate,
+    this.onZoomChange,
   });
 
   // Contract methods — implement in State (ADR-011 Phase 5b.2):
