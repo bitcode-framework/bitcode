@@ -71,3 +71,4 @@ export 'src/components/bc_field_table_select.dart';
 export 'src/components/bc_field_morph.dart';
 export 'src/components/bc_field_dyn_link.dart';
 export 'src/components/bc_lookup_modal.dart';
+export 'src/components/bc_view_gantt.dart';
