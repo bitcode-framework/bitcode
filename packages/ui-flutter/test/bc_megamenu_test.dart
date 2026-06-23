@@ -55,13 +55,13 @@ void main() {
                 BcMegaMenuLink(label: 'App', value: 'app'),
               ],
             ),
-            const BcMegaMenuColumn(
+            BcMegaMenuColumn(
               title: 'Hardware',
               links: [
                 BcMegaMenuLink(label: 'Mouse', value: 'mouse'),
               ],
             ),
-            const BcMegaMenuColumn(links: []),
+            BcMegaMenuColumn(links: []),
           ],
         ),
       ];
