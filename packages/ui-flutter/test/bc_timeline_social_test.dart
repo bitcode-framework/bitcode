@@ -8,8 +8,8 @@ void main() {
     return MaterialApp(home: Scaffold(body: Center(child: child)));
   }
 
-  const posts = <BcSocialPost>[
-    BcSocialPost(
+  final posts = <BcSocialPost>[
+    const BcSocialPost(
       id: 'p1',
       author: 'Alice',
       handle: '@alice',
@@ -26,7 +26,7 @@ void main() {
             timestamp: '2026-01-02'),
       ],
     ),
-    BcSocialPost(
+    const BcSocialPost(
       id: 'p2',
       author: 'Carol',
       content: 'Second post',
