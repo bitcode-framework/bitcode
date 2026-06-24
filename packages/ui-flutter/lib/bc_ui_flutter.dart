@@ -207,3 +207,5 @@ export 'src/components/bc_favorites.dart';
 
 // Renderer
 export 'src/renderer/bc_field_builder.dart';
+export 'src/renderer/bc_data_source_loader.dart';
+export 'src/renderer/bc_renderer.dart';
