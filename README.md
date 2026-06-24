@@ -61,7 +61,7 @@ npm run build
 
 ### Flutter Adapter Status
 
-`packages/ui-flutter` is the ADR-011 Tier C Flutter adapter. Phase 5b.2 is complete for the targeted batch: 32 Flutter widgets are available (24 P0 + 8 P1), including `BcDisclosure`, `BcPortal`, `BcFieldDuration`, `BcFieldTableSelect`, `BcFieldMorph`, `BcFieldDynLink`, `BcLookupModal`, and `BcViewGantt`. The Flutter gate has 416 tests passing, `flutter analyze` returns 0 errors/warnings (info hints only), and `build_runner` succeeds.
+`packages/ui-flutter` is the ADR-011 Tier C Flutter adapter. The BcRenderer Dart port is complete with schema-driven form, detail, list, section, grid, and custom rendering, plus package-root exports. Validation is green: 1427 full suite tests, 269 renderer scoped tests, 215 renderer assertions, `dart analyze lib/` clean, and `build_runner` in sync.
 
 ### Run Desktop App (Tauri)
 
