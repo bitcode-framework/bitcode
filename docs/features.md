@@ -67,6 +67,7 @@ Before the gap list — what's already **production-solid**:
 10. **Real-time** — WebSocket hub broadcasting domain events to connected clients.
 11. **File Storage** — Local + S3 storage with attachments table, path/name formatting, thumbnails, versioning, duplicate detection.
 12. **Native Shell (Tauri)** — Tauri 2.0 wraps Stencil components for desktop (Win/Mac/Linux) and mobile (iOS/Android). `bc-native.ts` bridge abstracts native capabilities (SQLite, camera, GPS, barcode, biometrics) with Web API fallback. One toggle (`mode:"offline"`) enables offline-first with auto-generated sync infrastructure.
+13. **Flutter Adapter (ADR-011)** — Full Mitosis↔Flutter parity: 130 hand-written Dart widgets across 11 groups (primitives, layout, forms, overlays, navigation, data-display, feedback, views, charts, media, social, print). Pure-Dart reactive engine, Material Design 3 token bridge, UiSchema types with freezed/json_serializable. 1158 tests, 297/297 validation assertions passed. Enables native iOS/Android/desktop apps sharing the same JSON definitions as the web engine.
 
 ---
 

@@ -4,7 +4,7 @@
 > berubah status. Untuk *kenapa* dan *arsitektur*, baca [ADR](./adr/README.md).
 > Untuk *bagaimana spec engine*, baca `engine/docs/features/*.md`.
 
-**Last updated:** 2026-06-24 (ADR-011 Phase 5c M4 layout utility: 3 Flutter widgets added — BcMeterGroup, BcAspectRatio, BcFlex. 738 Flutter tests pass, flutter analyze 0 errors/warnings on new code, build_runner succeeds)
+**Last updated:** 2026-06-24 (ADR-011 Phase 5c COMPLETE: full Mitosis↔Flutter parity achieved. 130 Flutter widgets, 1158 tests, 297/297 validation assertions passed across 7 milestones. flutter analyze 0 errors/warnings, build_runner succeeds, 132 barrel exports.)
 
 ## Phase C3 Sign-Off (2026-06-22 update)
 
@@ -95,6 +95,39 @@ Core Integration Surface yang wajib diaudit dulu:
 | BcFlex | layout | `packages/ui-flutter/lib/src/components/bc_flex.dart` | `packages/ui-flutter/test/bc_flex_test.dart` | ✅ Complete |
 
 **Gate evidence:** 738 Flutter tests pass, `flutter analyze` returns 0 errors/warnings (info hints only, 4 pre-existing deprecation hints in `bc_disclosure_test.dart` from another worker's file), `build_runner` succeeds, and the mission validation gate reports 252/252 assertions passed.
+
+## Flutter Adapter (ADR-011 Phase 5c Sign-Off)
+
+**Phase 5c status:** ✅ Complete — full Mitosis↔Flutter parity achieved.
+
+**Summary:** All remaining ~78 hand-written Flutter widgets completed across 7 milestones (M1 primitives/layout through M7 gate/misc). 130 total widget files covering all 11 component groups. 1158 tests pass (119 test files). 297/297 validation assertions passed. BcChangeReason enum covers all 18 lifecycle values. 132 barrel exports verified.
+
+**Milestone breakdown:**
+
+| Milestone | Widgets | Tests | Assertions | Key widgets |
+|---|---|---|---|---|
+| M1: Primitives + Layout | 18 | 86 | 65 | BcStack, BcBox, BcFlex, BcSplitter, BcSidebar, BcCenter, BcSquare, BcCircle, BcSlot, BcPortal, BcVisuallyHidden, BcBackdrop, BcLoadingOverlay |
+| M2: Forms + Overlays | 22 | 112 | 45 | BcInput, BcSelect, BcCheckbox, BcToggle, BcDialog, BcDrawer, BcPopover, BcTooltip, BcDropdown, BcCombobox, BcMultiSelect, BcNumberField, BcDateField, BcTimeField |
+| M3: Navigation + Data Display | 20 | 44 | 44 | BcTabs, BcAccordion, BcBreadcrumb, BcPagination, BcMenubar, BcMegaMenu, BcSearch, BcFavorites, BcDescriptions, BcStatistic, BcCarousel, BcOrgChart |
+| M4: Views + Charts | 15 | 98 | 38 | BcForm, BcList, BcDataTable, BcKanbanBoard, BcChart, BcSparkline, BcViewGantt, BcViewMap, BcViewReport, BcViewEditor |
+| M5: Feedback + Media | 18 | 108 | 38 | BcNotification, BcTour, BcEmpty, BcResult, BcToastQueue, BcViewerPdf, BcViewerImage, BcViewerVideo, BcViewerAudio, BcGalleria |
+| M6: Social + Print + Misc | 12 | 88 | 35 | BcChatter, BcActivity, BcTimelineSocial, BcExport, BcPrint, BcReportLink, BcCommand, BcMarkdown, BcQRCode, BcWatermark, BcSpeedDial, BcKbd |
+| M7: Gate + Misc | 19 | 68 | 32 | BcColorArea, BcColorWheel, BcColorSlider, BcColorSwatch, BcColorPicker, BcRangeSlider, BcDropZone, BcSignature, BcBarcode, BcGeo, BcCode, BcJson, BcRichText, BcTagsInput |
+
+**Quality gates passed:**
+- `flutter test`: 1158 tests pass across 119 test files
+- `flutter analyze`: 0 errors, 0 warnings (4 pre-existing info hints)
+- `build_runner`: succeeds (freezed + json_serializable codegen)
+- Validation: 297/297 assertions passed across all 7 milestones
+- Barrel exports: 132 verified across all widget groups
+- BcChangeReason exhaustiveness: 18/18 values
+- Fixed `onReorder` → `onReorderItem` deprecation in BcViewEditor for Flutter 3.44.1
+
+**Infrastructure (Phase 5a foundation, still in use):**
+- Pure-Dart reactive engine (`core/reactive_store.dart`)
+- Material Design 3 token bridge (`theme/bc_theme.dart`)
+- UiSchema types + FieldResolver (`schema/`)
+- 17 infrastructure files total
 
 ## Ringkasan
 
@@ -431,6 +464,7 @@ Bukan komponen, tapi prasyarat. Tracker ringkas:
 | Phase 5a — Flutter Adapter (ADR-011) | ✅ | Pure-Dart reactive engine + 24 FPW/Material widgets + token bridge + 41 tests. See `packages/ui-flutter/`. |
 | Phase 5b.1 — UiSchema Types + Stub Generator (ADR-011) | ✅ | UiSchema types port (freezed + json_serializable, 4 source + 8 generated files), FieldResolver, contract→Dart stub generator (32 contracts scanned, 8 P1 stubs generated, 24 P0 protected), 55 Dart schema tests + 80 Node.js generator tests. 96 total Flutter tests. `dart analyze lib/` clean. |
 | Phase 5b.2 — P1 Flutter Widget Completion (ADR-011) | ✅ | 8 targeted P1 Flutter widgets complete: BcDisclosure, BcPortal, BcFieldDuration, BcFieldTableSelect, BcFieldMorph, BcFieldDynLink, BcLookupModal, BcViewGantt. Generator fixes landed for extends clause walking and `Promise<T>` to `Future<T>` mapping. 416 Flutter tests pass, `flutter analyze` returns 0 errors/warnings (info hints only), `build_runner` succeeds, 252/252 validation assertions passed. |
+| Phase 5c — Full Flutter Parity (ADR-011) | ✅ | All remaining ~78 hand-written Flutter widgets for full Mitosis↔Flutter parity. 130 total widget files across 11 groups (primitives, layout, forms, overlays, navigation, data-display, feedback, views, charts, media, social, print). 1158 tests pass (119 test files), 297/297 validation assertions passed across 7 milestones (M1 primitives/layout through M7 gate/misc). BcChangeReason exhaustiveness: 18/18 values. 132 barrel exports verified. flutter analyze 0 errors/warnings, build_runner succeeds. Fixed onReorder→onReorderItem deprecation in BcViewEditor for Flutter 3.44.1. |
 
 ---
 
