@@ -186,3 +186,8 @@ export 'src/components/bc_activity.dart';
 export 'src/components/bc_timeline_social.dart';
 export 'src/components/bc_galleria.dart';
 export 'src/components/bc_image.dart';
+
+// M6 print widgets
+export 'src/components/bc_export.dart';
+export 'src/components/bc_print.dart';
+export 'src/components/bc_report_link.dart';
