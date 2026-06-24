@@ -11,10 +11,10 @@ void main() {
   testWidgets('renders custom errorFallback on load failure (VAL-M6-003)',
       (tester) async {
     await tester.pumpWidget(harness(
-      child: BcViewerImage(
+      child: const BcViewerImage(
         src: 'https://example.com/broken.png',
-        placeholder: const Text('Loading...'),
-        errorFallback: const Text('Failed'),
+        placeholder: Text('Loading...'),
+        errorFallback: Text('Failed'),
       ),
     ));
     await tester.pumpAndSettle();
@@ -53,9 +53,9 @@ void main() {
     imageCache.clear();
     imageCache.clearLiveImages();
     await tester.pumpWidget(harness(
-      child: BcViewerImage(
+      child: const BcViewerImage(
         src: 'https://example.com/image.png',
-        placeholder: const Text('My Loading'),
+        placeholder: Text('My Loading'),
       ),
     ));
 

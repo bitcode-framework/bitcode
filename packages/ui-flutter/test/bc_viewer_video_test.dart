@@ -150,7 +150,7 @@ void main() {
 
   testWidgets('poster renders when not playing (VAL-M6-007)', (tester) async {
     await tester.pumpWidget(harness(
-      child: BcViewerVideo(
+      child: const BcViewerVideo(
         src: 'https://example.com/video.mp4',
         poster: 'https://example.com/poster.jpg',
       ),

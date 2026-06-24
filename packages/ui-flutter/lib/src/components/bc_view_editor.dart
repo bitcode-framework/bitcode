@@ -87,12 +87,11 @@ class _BcViewEditorState extends State<BcViewEditor> {
     }
   }
 
-  void _onReorder(int oldIndex, int newIndex) {
+  void _onReorderItem(int oldIndex, int newIndex) {
     if (widget.disabled) return;
-    final adjusted = newIndex > oldIndex ? newIndex - 1 : newIndex;
     final list = List<BcViewEditorComponent>.from(_components);
     final item = list.removeAt(oldIndex);
-    list.insert(adjusted, item);
+    list.insert(newIndex, item);
     setState(() => _components = list);
     widget.onLayoutChange?.call(
       List<BcViewEditorComponent>.from(list),
@@ -154,7 +153,7 @@ class _BcViewEditorState extends State<BcViewEditor> {
   Widget _buildReorderable() {
     return ReorderableListView(
       buildDefaultDragHandles: false,
-      onReorder: _onReorder,
+      onReorderItem: _onReorderItem,
       children: _components.asMap().entries.map((entry) {
         final index = entry.key;
         final component = entry.value;
