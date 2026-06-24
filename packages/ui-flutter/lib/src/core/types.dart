@@ -6,7 +6,7 @@
 
 library core_types;
 
-import 'package:flutter/painting.dart' show Color;
+import 'package:flutter/painting.dart' show Color, BoxFit;
 
 /// Source of a user-initiated change.
 ///
@@ -867,6 +867,271 @@ class BcMapRegion {
     }
     return true;
   }
+}
+
+// ---------------------------------------------------------------------------
+// M6 BcImage (media — lazy loading image) typed wrappers
+// ---------------------------------------------------------------------------
+
+/// Fit mode for [BcImage].
+enum BcImageFit {
+  cover,
+  contain,
+  fill;
+
+  BoxFit get boxFit {
+    switch (this) {
+      case BcImageFit.cover:
+        return BoxFit.cover;
+      case BcImageFit.contain:
+        return BoxFit.contain;
+      case BcImageFit.fill:
+        return BoxFit.fill;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// M6 BcGalleria typed wrappers (ADR-011 Phase 5c — M6 media/social)
+// ---------------------------------------------------------------------------
+
+/// Image item in a [BcGalleria] gallery.
+///
+/// Mirrors TS `BcGalleriaItem` ({ id, src, alt?, thumbnail?, caption? }).
+class BcGalleriaItem {
+  final String id;
+  final String src;
+  final String? alt;
+  final String? thumbnail;
+  final String? caption;
+
+  const BcGalleriaItem({
+    required this.id,
+    required this.src,
+    this.alt,
+    this.thumbnail,
+    this.caption,
+  });
+
+  @override
+  String toString() =>
+      'BcGalleriaItem(id: $id, src: $src, alt: $alt, thumbnail: $thumbnail, caption: $caption)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcGalleriaItem &&
+          id == other.id &&
+          src == other.src &&
+          alt == other.alt &&
+          thumbnail == other.thumbnail &&
+          caption == other.caption;
+
+  @override
+  int get hashCode => Object.hash(id, src, alt, thumbnail, caption);
+}
+
+// ---------------------------------------------------------------------------
+// M6 BcActivity typed wrappers (ADR-011 Phase 5c — M6 social)
+// ---------------------------------------------------------------------------
+
+/// Visual variant for an activity timeline entry.
+enum BcActivityVariant {
+  defaultVariant,
+  success,
+  warning,
+  destructive,
+  info,
+}
+
+/// Single activity timeline entry.
+///
+/// Mirrors TS `BcActivityEntry` ({ id, actor, action, target?, timestamp, variant? }).
+class BcActivityEntry {
+  final String id;
+  final String actor;
+  final String action;
+  final String? target;
+  final String timestamp;
+  final BcActivityVariant variant;
+
+  const BcActivityEntry({
+    required this.id,
+    required this.actor,
+    required this.action,
+    required this.timestamp,
+    this.target,
+    this.variant = BcActivityVariant.defaultVariant,
+  });
+
+  @override
+  String toString() =>
+      'BcActivityEntry(id: $id, actor: $actor, action: $action, target: $target, timestamp: $timestamp, variant: $variant)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcActivityEntry &&
+          id == other.id &&
+          actor == other.actor &&
+          action == other.action &&
+          target == other.target &&
+          timestamp == other.timestamp &&
+          variant == other.variant;
+
+  @override
+  int get hashCode => Object.hash(id, actor, action, target, timestamp, variant);
+}
+
+// ---------------------------------------------------------------------------
+// M6 BcTimelineSocial typed wrappers (ADR-011 Phase 5c — M6 social)
+// ---------------------------------------------------------------------------
+
+/// Comment under a [BcSocialPost].
+///
+/// Mirrors TS `BcSocialComment` ({ id, author, content, timestamp? }).
+class BcSocialComment {
+  final String id;
+  final String author;
+  final String content;
+  final String? timestamp;
+
+  const BcSocialComment({
+    required this.id,
+    required this.author,
+    required this.content,
+    this.timestamp,
+  });
+
+  @override
+  String toString() =>
+      'BcSocialComment(id: $id, author: $author, content: $content, timestamp: $timestamp)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcSocialComment &&
+          id == other.id &&
+          author == other.author &&
+          content == other.content &&
+          timestamp == other.timestamp;
+
+  @override
+  int get hashCode => Object.hash(id, author, content, timestamp);
+}
+
+/// Social post with optional nested comments for [BcTimelineSocial].
+///
+/// Mirrors TS `BcSocialPost` ({ id, author, handle?, avatar?, content,
+/// timestamp?, likes?, comments?, shares?, commentList? }).
+class BcSocialPost {
+  final String id;
+  final String author;
+  final String? handle;
+  final String? avatar;
+  final String content;
+  final String? timestamp;
+  final int likes;
+  final int comments;
+  final int shares;
+  final List<BcSocialComment> commentList;
+
+  const BcSocialPost({
+    required this.id,
+    required this.author,
+    required this.content,
+    this.handle,
+    this.avatar,
+    this.timestamp,
+    this.likes = 0,
+    this.comments = 0,
+    this.shares = 0,
+    this.commentList = const [],
+  });
+
+  @override
+  String toString() =>
+      'BcSocialPost(id: $id, author: $author, handle: $handle, content: $content, '
+      'timestamp: $timestamp, likes: $likes, comments: $comments, shares: $shares, '
+      'commentList: $commentList)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcSocialPost &&
+          id == other.id &&
+          author == other.author &&
+          handle == other.handle &&
+          avatar == other.avatar &&
+          content == other.content &&
+          timestamp == other.timestamp &&
+          likes == other.likes &&
+          comments == other.comments &&
+          shares == other.shares &&
+          _listEquals(commentList, other.commentList);
+
+  @override
+  int get hashCode => Object.hash(
+        id,
+        author,
+        handle,
+        avatar,
+        content,
+        timestamp,
+        likes,
+        comments,
+        shares,
+        Object.hashAll(commentList),
+      );
+
+  static bool _listEquals(List<BcSocialComment> a, List<BcSocialComment> b) {
+    if (identical(a, b)) return true;
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// M6 BcChatter typed wrappers (ADR-011 Phase 5c — M6 social)
+// ---------------------------------------------------------------------------
+
+/// Chat message for [BcChatter].
+///
+/// Mirrors TS `BcChatterMessage` ({ id, author, avatar?, content, timestamp? }).
+class BcChatterMessage {
+  final String id;
+  final String author;
+  final String? avatar;
+  final String content;
+  final String? timestamp;
+
+  const BcChatterMessage({
+    required this.id,
+    required this.author,
+    required this.content,
+    this.avatar,
+    this.timestamp,
+  });
+
+  @override
+  String toString() =>
+      'BcChatterMessage(id: $id, author: $author, avatar: $avatar, content: $content, timestamp: $timestamp)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcChatterMessage &&
+          id == other.id &&
+          author == other.author &&
+          avatar == other.avatar &&
+          content == other.content &&
+          timestamp == other.timestamp;
+
+  @override
+  int get hashCode => Object.hash(id, author, avatar, content, timestamp);
 }
 
 // ---------------------------------------------------------------------------
