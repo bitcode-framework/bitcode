@@ -1,6 +1,6 @@
 # ADR-011: Flutter Adapter Architecture
 
-## Status: Accepted (2026-06-22, Phase 5b.2 complete 2026-06-23)
+## Status: Accepted (2026-06-22, Phase 5b.2 complete 2026-06-23; BcRenderer hybrid port complete 2026-06-24)
 
 ## Date: 2026-06-22
 
@@ -236,6 +236,38 @@ Mirror arsitektur existing TS: `store.ts` (pure, no DOM) + `wc-event-bridge.ts` 
 
 ---
 
+### Section 4.5 — Hybrid BcRenderer Port: Enhanced BcForm + Standalone Compositor
+
+The Dart `BcRenderer` port uses a **hybrid approach** rather than forcing all schema rendering into either `BcForm` or a separate renderer stack.
+
+**Decision:**
+
+1. `BcForm` remains the form primitive and is enhanced with optional schema-driven `fields`, `actions`, and `layout` inputs.
+2. `BcForm(child: ...)` legacy mode remains source-compatible and unchanged for existing callers.
+3. `BcFieldBuilder` is standalone and maps `FieldNode` to existing Flutter field widgets.
+4. `BcDataSourceLoader` is standalone and loads null, local, fetcher, URL, and model data sources.
+5. `BcRenderer` is the schema compositor. It dispatches `form`, `detail`, `list`, `section`, `grid`, and `custom` kinds, then delegates field and data behavior to the standalone builders/loaders.
+6. Action buttons are platform-aware through Flutter platform widget patterns, while complex data/list rendering stays Flutter-native and testable.
+
+**Rationale:**
+
+| Alternatif | Kenapa ditolak |
+|---|---|
+| Put all renderer behavior inside `BcForm` | BcForm would become a god widget. List, section, grid, custom recursion, and data source loading are not form responsibilities. |
+| Separate renderer stack with a new form implementation | Would duplicate store/action/layout behavior and risk drifting from the established `BcForm` API. |
+| Stub unsupported schema kinds | Violates production-grade requirement and breaks parity with metadata-driven UI. |
+| Hybrid approach | Preserves `BcForm` compatibility, keeps field/data concerns reusable, and gives `BcRenderer` one clear job: schema composition. |
+
+**Implementation result (2026-06-24):**
+
+- `BcFieldBuilder` maps every current `FieldType` to existing Flutter widgets and uses `ReactiveStore` public APIs.
+- `BcDataSourceLoader` supports all current Dart `DataSource` variants with deterministic empty/error behavior and offline-safe test seams.
+- `BcForm` supports schema fields, actions, layout, disabled state, and callbacks while preserving child-only mode.
+- `BcRenderer` supports all six schema kinds with recursive rendering, custom builder support, list loading/error/empty states, and package-root exports.
+- Validation passed: 215 renderer assertions, 269 renderer scoped tests, 1427 full Flutter tests, `dart analyze lib/` clean, and `build_runner` in sync.
+
+---
+
 ### Section 5 — Adaptive Implementation via FPW + Hand-Roll
 
 Widget dengan native Cupertino counterpart (~12 widget) pakai **flutter_platform_widgets** (`Platform.*`):
@@ -375,7 +407,8 @@ Phase 5b:
 - [x] Core type parity updated — `BcChangeReason` extended to 18 values with typed Dart classes/enums
 - [x] Phase 5b.2 targeted P1 Flutter batch completed — `BcDisclosure`, `BcPortal`, `BcFieldDuration`, `BcFieldTableSelect`, `BcFieldMorph`, `BcFieldDynLink`, `BcLookupModal`, `BcViewGantt`
 - [x] Phase 5b.2 integration gate passed — 416 Flutter tests pass, `flutter analyze` returns 0 errors/warnings (info hints only), `build_runner` succeeds, and 252/252 validation assertions passed
-- [ ] Remaining P1/P2 Flutter parity outside Phase 5b.2 scope
+- [x] BcRenderer Dart hybrid port complete — `BcFieldBuilder`, `BcDataSourceLoader`, schema-driven `BcForm`, and `BcRenderer` compositor support form/detail/list/section/grid/custom schemas with 215/215 validation assertions passed
+- [ ] Remaining P1/P2 Flutter parity outside Phase 5b.2 and renderer-port scope
 
 ---
 
@@ -401,7 +434,8 @@ Phase 5b:
 3. Generator correctness fixes — ✅ extends clause walking and `Promise<T>` to `Future<T>` mapping (Phase 5b.2)
 4. P1 targeted Flutter batch — ✅ 8 widgets complete: `BcDisclosure`, `BcPortal`, `BcFieldDuration`, `BcFieldTableSelect`, `BcFieldMorph`, `BcFieldDynLink`, `BcLookupModal`, `BcViewGantt` (Phase 5b.2)
 5. Integration gate — ✅ 416 Flutter tests pass, `flutter analyze` returns 0 errors/warnings (info hints only), `build_runner` succeeds, 252/252 validation assertions passed
-6. Remaining P1/P2 Flutter parity — pending outside Phase 5b.2 scope
+6. BcRenderer hybrid Dart port — ✅ `BcFieldBuilder`, `BcDataSourceLoader`, schema-driven `BcForm`, and `BcRenderer` compositor complete (2026-06-24)
+7. Remaining P1/P2 Flutter parity — pending outside Phase 5b.2 and renderer-port scope
 
 ### Phase 5c — P2 + Sisa
 
