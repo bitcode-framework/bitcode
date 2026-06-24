@@ -191,3 +191,16 @@ export 'src/components/bc_image.dart';
 export 'src/components/bc_export.dart';
 export 'src/components/bc_print.dart';
 export 'src/components/bc_report_link.dart';
+
+// M7 misc widgets
+export 'src/components/bc_watermark.dart';
+export 'src/components/bc_qrcode.dart';
+export 'src/components/bc_kbd.dart';
+export 'src/components/bc_center.dart';
+export 'src/components/bc_circle.dart';
+export 'src/components/bc_square.dart';
+export 'src/components/bc_color_swatch.dart';
+export 'src/components/bc_color_wheel.dart';
+export 'src/components/bc_search.dart';
+export 'src/components/bc_sidebar.dart';
+export 'src/components/bc_favorites.dart';
