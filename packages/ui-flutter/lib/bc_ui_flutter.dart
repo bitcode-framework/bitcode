@@ -204,3 +204,6 @@ export 'src/components/bc_color_wheel.dart';
 export 'src/components/bc_search.dart';
 export 'src/components/bc_sidebar.dart';
 export 'src/components/bc_favorites.dart';
+
+// Renderer
+export 'src/renderer/bc_field_builder.dart';
