@@ -25,32 +25,21 @@ void main() {
 
   testWidgets('controlled page advances when prop updates (VAL-M6-001)',
       (tester) async {
-    int? emittedPage;
-    BcChangeMeta? emittedMeta;
-
     await tester.pumpWidget(harness(
-      child: BcViewerPdf(
+      child: const BcViewerPdf(
         src: 'https://example.com/doc.pdf',
         page: 1,
         pageCount: 5,
-        onPageChange: (p, m) {
-          emittedPage = p;
-          emittedMeta = m;
-        },
       ),
     ));
 
     expect(find.textContaining('1'), findsWidgets);
 
     await tester.pumpWidget(harness(
-      child: BcViewerPdf(
+      child: const BcViewerPdf(
         src: 'https://example.com/doc.pdf',
         page: 3,
         pageCount: 5,
-        onPageChange: (p, m) {
-          emittedPage = p;
-          emittedMeta = m;
-        },
       ),
     ));
     await tester.pumpAndSettle();

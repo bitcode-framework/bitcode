@@ -132,15 +132,10 @@ void main() {
 
   testWidgets('page nav is no-op at first page (VAL-M6-006)',
       (tester) async {
-    int? emittedPage;
-
     await tester.pumpWidget(harness(
-      child: BcViewerDocument(
+      child: const BcViewerDocument(
         src: 'https://example.com/doc.docx',
         pageCount: 5,
-        onPageChange: (p, m) {
-          emittedPage = p;
-        },
       ),
     ));
 
