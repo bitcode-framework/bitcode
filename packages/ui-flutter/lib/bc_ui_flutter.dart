@@ -19,9 +19,19 @@ library bc_ui_flutter;
 // Core types
 export 'src/core/types.dart';
 
+// Chart option contract (ADR-015 — Dart port of the TS chart-option factory).
+// Pure functions/enums, no widget deps — testable in isolation.
+export 'src/core/chart/chart_contract.dart';
+
 // Reactive engine
 export 'src/core/reactive_store.dart';
 export 'src/core/reactive_store_notifier.dart';
+
+// AppProvider consumption surface (ADR-013 Phase 1) — cross-tier parity with
+// @bitcode/ui core/providers + core/hooks/use-app-context.
+export 'src/core/app_config_snapshot.dart';
+export 'src/core/app_config_store.dart';
+export 'src/core/bc_app_config.dart';
 
 // UiSchema types (ADR-011 Phase 5b.1)
 // BcKey and DataSource are defined in core/types.dart and core/reactive_store.dart;

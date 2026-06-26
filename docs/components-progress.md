@@ -428,7 +428,7 @@ Bukan komponen visual. Tracker ini hanya untuk awareness.
 
 | Item | Status | Notes |
 |---|---|---|
-| `core/providers/AppProvider` | ⚠️ | `AppConfigStore` + `BcAppContext` + `attachSystemThemeWatcher` + Mitosis `.lite.tsx`. 9/9 unit test pass. Belum diadopsi komponen P0. |
+| `core/providers/AppProvider` | ⚠️ | `AppConfigStore` + `BcAppContext` + `attachSystemThemeWatcher` + Mitosis `.lite.tsx`. 9/9 unit test pass. **ADR-013 Phase 1 ✅**: consumption surface added — `useAppContext` + `useAppConfigStore` hooks (`core/hooks/use-app-context.ts`, 10/10 tests) exported from hooks + root barrels; Flutter parity `AppConfigStore` + `BcAppConfig` InheritedWidget + `AppConfigSnapshot` + `BcApp` wiring. Belum diadopsi komponen P0 (Phase 2). |
 | `core/hooks/` subset P0 (8 hooks) | ⚠️ | Implementasi headless: `useId`/`useDisclosure`/`resolveControllable`/`DebouncedValue`/`copyToClipboard`/`createMediaQueryWatcher`/`createFocusTrap`/`createElementSizeObserver`. 13/13 unit test pass. Belum dipakai komponen P0. |
 | `core/hooks/` subset P1 (6 hooks) | ❌ | useHover, useFocusVisible, useEventListener, useThrottledCallback, useLocalStorage, useIsomorphicLayoutEffect |
 | `core/animation/` contract | ⚠️ | `AnimationProps` + `ANIMATION_DEFAULT` exported. Implementasi per-tier (CSS transition / RN Animated) belum. |

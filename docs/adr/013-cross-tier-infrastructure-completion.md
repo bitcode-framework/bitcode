@@ -6,6 +6,17 @@
 - **Amends:** ADR-002 (Section 9 — Cross-tier Infrastructure), ADR-006
 - **Related:** ADR-004 (Reactive Engine), ADR-011 (Flutter Adapter)
 
+## Phase Status
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| 1 | AppProvider Consumption Surface (useAppContext + useAppConfigStore hooks, Flutter AppConfigStore + BcAppConfig InheritedWidget parity) | ✅ Complete (2026-06-26) |
+| 2 | Hooks P0 Adoption (BcDialog/Popover/Tooltip/Drawer/Dropdown consume P0 hooks) | ⬜ Pending |
+| 3 | Hooks P1 New (8 industry-standard headless hooks) | ⬜ Pending |
+| 4 | Animation + Adapt contracts (per-tier implementation) | ⬜ Pending |
+| 5a | Flutter env fix + Dart parity baseline | ⬜ Pending |
+| 5b | Flutter parity completion + cross-tier parity table | ⬜ Pending |
+
 ## Context
 
 ADR-002 Section 9 mendefinisikan 5 cross-tier infrastructure yang **wajib** tersedia
