@@ -72,7 +72,7 @@ Adopsi [`flutter_echarts`](https://pub.dev/packages/flutter_echarts) (by entrona
 
 ### 2. Chart Option Contract: single source of truth
 
-`buildChartOption()` yang sudah ada di `packages/ui/src/components/charts/options/factory.ts` (Mitosis) menjadi **single source of truth** untuk ECharts option generation. Flutter menerima option yang sama sebagai JSON string → kirim ke WebView.
+`buildChartOption()` yang sudah ada di `packages/ui/src/contracts/chart-option/factory.ts` (diekstrak dari Mitosis component tree, lihat F1 contract-extraction) menjadi **single source of truth** untuk ECharts option generation. Flutter menerima option yang sama sebagai JSON string → kirim ke WebView.
 
 **Tidak ada duplikasi logika chart** antara Mitosis dan Flutter. Logika (nice scale, color palette, axis config, series mapping) hidup di 1 tempat: `factory.ts`.
 
@@ -302,5 +302,5 @@ Estimasi berbulan-bulan, high maintenance. Tidak ada tooltip/animasi/zoom gratis
 - [Apache ECharts](https://echarts.apache.org/)
 - ADR-003 §1 Chart Taxonomy (`BcChartType` union, 26 types)
 - ADR-011 Flutter Adapter Architecture (M5 data-display, CustomPaint approach — superceded by this ADR)
-- `packages/ui/src/components/charts/options/factory.ts` (single source of truth for ECharts option)
+- `packages/ui/src/contracts/chart-option/factory.ts` (single source of truth for ECharts option)
 - `packages/ui-flutter/lib/src/components/bc_chart.dart` (CustomPaint 912 lines, to be deprecated)

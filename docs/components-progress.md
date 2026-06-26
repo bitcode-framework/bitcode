@@ -404,9 +404,11 @@ discriminator prop `type`.
 - **Lazy-load:** ECharts loaded via dynamic import only on web mount.
   Listed as optional `peerDependency` (`echarts >=5.4`); caller installs.
 - **SSR-safe:** bails out when `typeof window === 'undefined'`.
-- **Pure option factory:** `options/factory.ts` translates `(type, data,
-  flags) -> ECharts option` deterministically; covered by 23 unit tests
-  per type. No DOM/runtime needed.
+- **Pure option factory:** `contracts/chart-option/factory.ts` translates `(type, data,
+  flags) -> ECharts option` deterministically; covered by 24 unit tests
+  per type. No DOM/runtime needed. (Extracted from `components/charts/chart/options/`
+  to `src/contracts/chart-option/` so the contract is shared across UI targets;
+  a re-export barrel preserves the historical `./options` import path.)
 - **Token-driven palette:** `DEFAULT_PALETTE` uses `hsl(var(--bc-*))`
   semantic CSS vars, no hex constants.
 - **Errors via callback:** `onError` instead of console; consistent with
