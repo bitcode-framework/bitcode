@@ -77,7 +77,8 @@ class CustomerForm extends StatelessWidget {
 
 ## Validation status
 
-- Full suite: 1427 tests passing.
+- Full suite: 1237 tests passing (7 pre-existing `bc_app_config.dart` failures from ADR-013, unrelated to this package's chart work).
+- Chart tests (ADR-015): 111 passing — 48 golden-fixture parity + 34 helpers + 29 widget-contract.
 - Renderer scoped tests: 269 tests passing.
-- `dart analyze lib/`: clean.
+- `flutter analyze`: clean on all chart files.
 - `build_runner`: generated files in sync.

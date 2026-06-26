@@ -35,7 +35,7 @@ kolom).
 | [012](./012-extract-ui-schema-standalone-package.md) | Extract `@bitcode/ui-schema` as Standalone Package | **Accepted** *(2026-06-22)* | 002, 004, 005, 011 | Portable types + ReactiveStore extracted to zero-dependency package; re-export bridges in `@bitcode/ui` preserve 50+ contract files; unblocks Flutter port (Phase 5a) |
 | [013](./013-cross-tier-infrastructure-completion.md) | Cross-tier Infrastructure Completion (ADR-002 Section 9 finish line) | **Proposed** *(2026-06-26)* | 002, 006, 007, 011, 012 | Finish AppProvider adoption, P0/P1 hooks rollout, animation & adapt contract implementation across Tier A (web/RN) + Tier C (Flutter); parallel-safe with ADR-014/015 via file-ownership boundary |
 | [014](./014-engine-ui-feature-wiring.md) | Engine UI Feature Wiring (SSR → component-backed render) | **Proposed** *(2026-06-26)* | 005, 007, 010, 011 | Wire 9 ERP UI features (visual builders, chatter, activity, export, pivot, email/notification) into BitCode engine; extends ADR-005 BcRenderer with component-backed SSR render mode; parallel-safe with ADR-013/015 |
-| [015](./015-flutter-echarts-chart-strategy.md) | Flutter ECharts Chart Strategy (deprecate CustomPaint) | **Proposed** *(2026-06-26)* | 002, 011 | Replace 912-line hobby-grade CustomPaint with `flutter_echarts`; parity 26/26 chart types via shared ECharts option contract; deprecate CustomPaint after 1 release |
+| [015](./015-flutter-echarts-chart-strategy.md) | Flutter ECharts Chart Strategy (deprecate CustomPaint) | **Accepted** *(2026-06-26)* | 002, 011 | Replace 912-line hobby-grade CustomPaint with `flutter_echarts`; parity 26/26 chart types via shared ECharts option contract; CustomPaint removed entirely (no deprecation period) |
 
 ## Dependency Graph
 

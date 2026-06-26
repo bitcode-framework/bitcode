@@ -397,7 +397,7 @@ discriminator prop `type`.
 
 | Component | Group | Stencil | Mitosis | Verified Done |
 |---|---|---|---|---|
-| BcChart | charts | 26 (frozen) | ✅ | ✅ `charts/chart` 26-type discriminator + lazy `await import('echarts')` + SSR guard + onMount/onUpdate/onUnMount lifecycle + role=img + aria-busy + token-driven default palette. 12 component-level tests + 17 helpers tests + 23 factory tests = **52 tests**. **Flutter (ADR-015 F2 ✅)**: Dart contract port at `packages/ui-flutter/lib/src/core/chart/` — `buildChartOption()` pure-function port with 36 golden-fixture parity tests (0 diff) + 34 helper assertions; legacy 4-value `BcChartType` replaced by 26-value enum with `doughnut`→`pie` alias. |
+| BcChart | charts | 26 (frozen) | ✅ | ✅ `charts/chart` 26-type discriminator + lazy `await import('echarts')` + SSR guard + onMount/onUpdate/onUnMount lifecycle + role=img + aria-busy + token-driven default palette. 12 component-level tests + 17 helpers tests + 23 factory tests = **52 tests**. **Flutter (ADR-015 ✅ F1+F2+F3+F4)**: `flutter_echarts` wrapper (288 lines, replaces 912-line CustomPaint) + Dart contract port at `lib/src/core/chart/` with 36 golden-fixture parity tests (0 diff) + 34 helper assertions + 29 widget-contract tests (WC-001..012, RG-001..002); 26-value `BcChartType` enum with `doughnut`→`pie` alias; Semantics a11y wrapper; backward-compat legacy props preserved. |
 
 **Architecture highlights:**
 

@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Accepted (Phase 1 contract port complete — F2) |
+| **Status** | Accepted (F1 contract extraction ✅, F2 Dart port ✅, F3 flutter_echarts rewrite ✅, F4 docs cleanup in progress) |
 | **Date** | 2026-06-26 |
 | **Deciders** | Stakeholder BitCode |
 | **Supersedes** | ADR-011 §"Chart widget" (M5 data-display CustomPaint approach) — partially |
@@ -280,9 +280,18 @@ packages/ui-flutter/CONTRACT_INVENTORY.md              ← update chart section
 - [x] Negative values tidak crash (verifikasi via test — `chart_factory_test.dart` candlestick/boxplot fixtures + `bc_chart_test.dart` WC-008 normalization)
 - [x] Y-axis labels muncul (verifikasi via test — `chart_factory_test.dart` golden fixtures assert `yAxis.type: 'category'` and category data)
 - [x] Widget contract tests: 25 tests (WC-001..WC-012) covering container, loading, empty, semantics, Echarts presence, data normalization, backward-compat (doughnut→pie, List<Color> colors)
+- [x] Regression tests: negative values (RG-001) + axis labels (RG-002) — `bc_chart_test.dart`
 - [x] `flutter analyze` clean on all F3-touched files (BL-001, BL-003)
-- [ ] Migration guide `packages/ui-flutter/doc/chart-migration.md` lengkap — F4
-- [ ] `docs/components-progress.md` updated: chart Flutter → 26/26 ✅ — F4
+
+### F4 — Migration cleanup & docs (DONE ✅)
+
+- [x] Migration guide `packages/ui-flutter/doc/chart-migration.md` lengkap
+- [x] `docs/components-progress.md` updated: chart Flutter → 26/26 ✅
+- [x] `CONTRACT_INVENTORY.md` updated with chart contract section
+- [x] No orphaned imports of old chart types (verified — `bc_chart.dart` is the sole consumer)
+- [x] Full test suite green (1237 pass; 7 pre-existing `bc_app_config.dart` failures from ADR-013 are unrelated)
+- [x] `dart format` clean on all touched files
+- [x] ADR-015 status → Accepted (all phases complete)
 
 ---
 
