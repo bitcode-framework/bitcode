@@ -80,7 +80,7 @@ class _BcAppState extends State<BcApp> {
       _store = widget.appConfigStore!;
       _ownsStore = false;
     } else {
-      _store = AppConfigStore(widget.appConfigInit ?? const AppConfigInit());
+      _store = AppConfigStore(init: widget.appConfigInit ?? const AppConfigInit());
       _ownsStore = true;
     }
     _snapshot = _store.getSnapshot();

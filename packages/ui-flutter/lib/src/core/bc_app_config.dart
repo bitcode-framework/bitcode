@@ -28,7 +28,6 @@
 
 library bc_app_config;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import 'app_config_snapshot.dart';
@@ -61,7 +60,7 @@ class BcAppConfigData {
 /// The default data returned by [BcAppConfig.of] when no [BcAppConfig]
 /// ancestor is present (SSR-like / unmounted case). Mirrors the TS
 /// `BcAppContext` default snapshot.
-final BcAppConfigData _kDefaultData = BcAppConfigData(
+const BcAppConfigData _kDefaultData = BcAppConfigData(
   snapshot: AppConfigSnapshot.defaultSnapshot,
   store: null,
 );
@@ -89,7 +88,11 @@ class BcAppConfig extends InheritedWidget {
 
   /// Build from an existing [BcAppConfigData] (e.g. when forwarding data
   /// received from an ancestor without unpacking it).
-  const BcAppConfig.data({
+  ///
+  /// Non-`const` because [AppConfigStore] is a mutable, non-const class:
+  /// `data.store` cannot be a compile-time constant, so the constructor
+  /// cannot be `const`. The primary [BcAppConfig] constructor remains `const`.
+  BcAppConfig.data({
     super.key,
     required BcAppConfigData data,
     required super.child,

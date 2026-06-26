@@ -26,7 +26,7 @@ void main() {
     });
 
     test('constructor accepts init overrides', () {
-      final store = AppConfigStore(const AppConfigInit(
+      final store = AppConfigStore(init: const AppConfigInit(
         theme: AppThemeMode.dark,
         locale: 'id',
         direction: AppDirection.rtl,
@@ -54,7 +54,7 @@ void main() {
     });
 
     test('setTheme(system) keeps prior resolvedTheme; applyResolvedTheme mutates', () {
-      final store = AppConfigStore(const AppConfigInit(theme: AppThemeMode.light));
+      final store = AppConfigStore(init: const AppConfigInit(theme: AppThemeMode.light));
       store.setTheme(AppThemeMode.system);
       // 'system' alone keeps the prior resolved value until the host watcher feeds in.
       expect(store.getSnapshot().resolvedTheme, ResolvedAppTheme.light);
@@ -91,7 +91,7 @@ void main() {
 
   group('AppConfigStore — direction', () {
     test('setLocale updates resolvedDirection through getSnapshot (auto)', () {
-      final store = AppConfigStore(const AppConfigInit(locale: 'en'));
+      final store = AppConfigStore(init: const AppConfigInit(locale: 'en'));
       expect(store.getSnapshot().resolvedDirection, ResolvedAppDirection.ltr);
       store.setLocale('ar');
       expect(store.getSnapshot().resolvedDirection, ResolvedAppDirection.rtl,
@@ -104,7 +104,7 @@ void main() {
 
   group('AppConfigStore — dateLocale', () {
     test('dateLocale falls back to locale when null', () {
-      final store = AppConfigStore(const AppConfigInit(locale: 'id'));
+      final store = AppConfigStore(init: const AppConfigInit(locale: 'id'));
       expect(store.getSnapshot().dateLocale, 'id');
       store.setDateLocale('id-ID');
       expect(store.getSnapshot().dateLocale, 'id-ID');

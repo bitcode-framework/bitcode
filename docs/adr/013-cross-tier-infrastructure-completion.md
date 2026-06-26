@@ -14,7 +14,7 @@
 | 2 | Hooks P0 Adoption (BcDialog/Popover/Tooltip/Drawer/Dropdown consume P0 hooks) | ✅ Complete (2026-06-26) |
 | 3 | Hooks P1 New (8 industry-standard headless hooks) | ✅ Complete (2026-06-26) |
 | 4 | Animation + Adapt runtime (resolveAnimation + resolveAdapt, wired into 5 overlay/navigation components) | ✅ Complete (2026-06-26) |
-| 5a | Flutter env fix + Dart parity baseline | ⬜ Pending |
+| 5a | Flutter env fix + Dart parity baseline | ✅ Complete (2026-06-26) |
 | 5b | Flutter parity completion + cross-tier parity table | ⬜ Pending |
 
 ## Phase 2 Completion Notes (2026-06-26)
@@ -164,6 +164,64 @@ additionally imports `resolveAdapt` from `@/core/adapt` and branches render on
 - Build: `npm run build` clean — 179 components generated for react/vue/reactNative.
 - No `as any` / `@ts-ignore` / `@ts-expect-error` introduced (A050).
 - SSR-safe: both runtimes guard on `typeof window` / `typeof matchMedia`.
+
+## Phase 5a Completion Notes (2026-06-26) — Flutter Environment Fix
+
+**Scope:** Investigate and resolve the `flutter test` VM compiler crash / timeout
+that blocked all Dart-side assertions (A046 risk note). Prior workers reported
+`flutter test`, `dart test`, and `flutter analyze` all exceeding the 240s
+foreground timeout with no usable output.
+
+### Root cause (evidence-based)
+
+The Flutter SDK wrapper (`flutter.bat`) shells out to `where.exe` (in
+`C:\Windows\System32`) and `git.exe` during startup. The tool-isolated shell
+inherited a **10,446-character PATH (230 entries, duplicated ~4×)**. `cmd.exe`
+running `flutter.bat` could not resolve `where.exe` under the bloated PATH,
+producing `'WHERE' is not recognized as an internal or external command` →
+`Error: Unable to find git in your PATH` → non-zero exit. Because every
+`flutter`/`dart` invocation failed at the wrapper layer, prior workers
+perceived this as a "VM compiler crash / timeout".
+
+A secondary, genuine compile-error layer was also present: 6 `error`-level
+analyzer issues in Phase-1-produced Dart files (see Fixes below) that would
+have blocked `flutter test` compilation even once the PATH was fixed.
+
+### Fix
+
+1. **PATH fix (environment, not committed to source):** Run `flutter` with a
+   minimal PATH containing only `flutter\bin`, `System32`, `System32\Wbem`,
+   `System32\WindowsPowerShell\v1.0`, and `Git\cmd`. Documented in
+   `packages/ui-flutter/tool/run-flutter.ps1` so future workers/sessions can
+   reproduce a working `flutter` invocation without re-diagnosing.
+2. **Dart compile fixes (committed):**
+   - `lib/src/bc_app.dart:83` — `AppConfigStore(positional)` → `AppConfigStore(init: …)`
+     (constructor is `{AppConfigInit init = const AppConfigInit()}` — named only).
+   - `lib/src/core/bc_app_config.dart` — `const BcAppConfig.data` constructor
+     referenced `data.store` (type `AppConfigStore?`, a non-const class) in a
+     const context → `invalid_constant` ×2. Made the `.data` constructor
+     non-const (it forwards a potentially-runtime store handle). Also removed an
+     `unnecessary_import` of `package:flutter/foundation.dart` and marked
+     `_kDefaultData`'s `BcAppConfigData` literal `const`.
+   - `test/app_config_store_test.dart` (×4) — `AppConfigStore(const AppConfigInit(…))`
+     → `AppConfigStore(init: const AppConfigInit(…))`.
+
+### Verification (2026-06-26)
+
+- `flutter analyze` (full project): **0 errors** (293 info-level lints remain,
+  all in pre-existing test files outside ADR-013 scope — `deprecated_member_use`
+  for `hasFlag`, `prefer_const_constructors`). Down from 302 issues / 6 errors.
+- `flutter test` (full suite): **1527 tests passed, 0 failed, 0 skipped** in 34s.
+  No VM crash, no timeout. Includes the previously-broken
+  `app_config_store_test.dart` (8 tests pass) and all chart/renderer/schema suites.
+
+### Outcome for Phase 5b (feat-6)
+
+The A046 RISK NOTE waiver is **no longer needed**: `flutter test` now runs the
+full suite cleanly. Phase 5b can add new Dart parity tests and verify them with
+`flutter test` directly — no `dart analyze`-only fallback required. Phase 5b
+should use `packages/ui-flutter/tool/run-flutter.ps1` (or set the minimal PATH
+documented therein) when invoking `flutter` from the worker shell.
 
 ## Context
 
