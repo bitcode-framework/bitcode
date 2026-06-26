@@ -5,9 +5,17 @@
 
 ## Status di Repo
 
-ADR-001 hingga ADR-012 berstatus **Accepted** (lihat tabel di bawah untuk
+ADR-001 hingga ADR-015 berstatus **Accepted** (lihat tabel di bawah untuk
 detail tanggal). ADR-001 sebagian **superseded** oleh ADR-002 (lihat catatan
 kolom).
+
+> **Catatan paralelisasi (ADR-013/014/015):** Ketiga ADR dirancang untuk
+> dapat dikerjakan paralel oleh agent berbeda. Scope boundary per ADR
+> (lihat section "File Ownership" di masing-masing ADR) meminimalkan
+> bentrok. ADR-015 (Chart) dan ADR-014 (Engine UI) **zero file overlap**
+> dengan apapun. ADR-013 (Cross-tier Infra) punya **low overlap** dengan
+> ADR-014 pada beberapa file komponen `.lite.tsx` — resolusi via phase
+> sequencing (ADR-013 core stabilize dulu, lalu ADR-14 mulai konsumsi).
 
 ## Daftar ADR
 
@@ -25,6 +33,9 @@ kolom).
 | [010](./010-web-component-event-bridge.md) | Web Component Event Bridge | Accepted | 007, 008 | Framework-agnostic semantic events via `dispatchBcEvent`; enables Web Component CustomEvent emission |
 | [011](./011-flutter-adapter-architecture.md) | Flutter Adapter Architecture | **Accepted** *(2026-06-22; BcRenderer hybrid port complete 2026-06-24)* | 002, 007, 008 | Tier C Flutter: 75% shared / 25% separate; pre-computed hex const token bridge; 3-layer theme (`BcTheme` + `BcApp`); hybrid reactive store; hybrid BcRenderer port (`BcForm` enhancement + standalone field/data loaders + compositor); FPW adaptive + hand-roll Material-only |
 | [012](./012-extract-ui-schema-standalone-package.md) | Extract `@bitcode/ui-schema` as Standalone Package | **Accepted** *(2026-06-22)* | 002, 004, 005, 011 | Portable types + ReactiveStore extracted to zero-dependency package; re-export bridges in `@bitcode/ui` preserve 50+ contract files; unblocks Flutter port (Phase 5a) |
+| [013](./013-cross-tier-infrastructure-completion.md) | Cross-tier Infrastructure Completion (ADR-002 Section 9 finish line) | **Proposed** *(2026-06-26)* | 002, 006, 007, 011, 012 | Finish AppProvider adoption, P0/P1 hooks rollout, animation & adapt contract implementation across Tier A (web/RN) + Tier C (Flutter); parallel-safe with ADR-014/015 via file-ownership boundary |
+| [014](./014-engine-ui-feature-wiring.md) | Engine UI Feature Wiring (SSR → component-backed render) | **Proposed** *(2026-06-26)* | 005, 007, 010, 011 | Wire 9 ERP UI features (visual builders, chatter, activity, export, pivot, email/notification) into BitCode engine; extends ADR-005 BcRenderer with component-backed SSR render mode; parallel-safe with ADR-013/015 |
+| [015](./015-flutter-echarts-chart-strategy.md) | Flutter ECharts Chart Strategy (deprecate CustomPaint) | **Proposed** *(2026-06-26)* | 002, 011 | Replace 912-line hobby-grade CustomPaint with `flutter_echarts`; parity 26/26 chart types via shared ECharts option contract; deprecate CustomPaint after 1 release |
 
 ## Dependency Graph
 
