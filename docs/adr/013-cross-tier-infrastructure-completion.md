@@ -13,7 +13,7 @@
 | 1 | AppProvider Consumption Surface (useAppContext + useAppConfigStore hooks, Flutter AppConfigStore + BcAppConfig InheritedWidget parity) | ✅ Complete (2026-06-26) |
 | 2 | Hooks P0 Adoption (BcDialog/Popover/Tooltip/Drawer/Dropdown consume P0 hooks) | ✅ Complete (2026-06-26) |
 | 3 | Hooks P1 New (8 industry-standard headless hooks) | ✅ Complete (2026-06-26) |
-| 4 | Animation + Adapt contracts (per-tier implementation) | ⬜ Pending |
+| 4 | Animation + Adapt runtime (resolveAnimation + resolveAdapt, wired into 5 overlay/navigation components) | ✅ Complete (2026-06-26) |
 | 5a | Flutter env fix + Dart parity baseline | ⬜ Pending |
 | 5b | Flutter parity completion + cross-tier parity table | ⬜ Pending |
 
@@ -104,6 +104,67 @@ unchanged — verified no regression.
   Global shimming in tests uses typed casts (`globalThis as { document?: ... }`)
   and `Object.defineProperty` for Node 22's read-only `navigator`.
 
+## Phase 4 Completion Notes (2026-06-26)
+
+**Scope:** Implemented the runtime for `AnimationProps` (CSS-transition driver for
+web Tier A) and `AdaptProps` (breakpoint/platform morph resolver), then wired
+`animation?` + `adapt?` props into the 5 P0 overlay/navigation components.
+Previously these were contract-only `types.ts` files with no runtime behavior.
+
+### Animation runtime (`packages/ui/src/core/animation/runtime.ts`)
+
+| Export | Purpose |
+|--------|---------|
+| `resolveAnimation(props?, options?)` | Merges `AnimationProps` with `ANIMATION_DEFAULT`; collapses to `'none'` when `prefers-reduced-motion` is active or `kind === 'none'`. Returns `ResolvedAnimation`. |
+| `ResolvedAnimation` | `{ kind, duration, easing, cssTransition }` — `cssTransition` is a ready-to-use CSS value (e.g. `opacity 200ms ease-in-out`) or `none`. |
+| `getAnimationClasses(propsOrKind)` | Convenience: returns `{ enter, exit }` Tailwind utility class strings per kind. Empty strings for `'none'`/reduced-motion. |
+| `prefersReducedMotion()` / `detectPrefersReducedMotion()` | SSR-safe detector (returns `false` on server). |
+| `ResolveAnimationOptions` | `{ reducedMotion?: boolean }` — injectable override for tests (avoids DOM stubbing). |
+
+Kind → CSS property mapping: `fade`→`opacity`, `scale`+`slide-*`→`transform`, `none`→`none`.
+
+### Adapt runtime (`packages/ui/src/core/adapt/runtime.ts`)
+
+| Export | Purpose |
+|--------|---------|
+| `resolveAdapt(props?, ctx?)` | Evaluates the `when` condition (breakpoint via `createMediaQueryWatcher` or `platform:` tag) and returns `ResolvedAdapt`. |
+| `ResolvedAdapt` | `{ applies: boolean, target: AdaptTarget | null }`. |
+| `AdaptContext` | `{ platform?: AdaptPlatform; breakpointMatcher?: (q: string) => boolean }` — injectable for tests + SSR-safe (no window access unless matcher provided). |
+
+Defaults: `when: 'md'`, `to: 'sheet'`. Breakpoint conditions use
+`BC_BREAKPOINTS` from `core/hooks/use-media-query`. Platform conditions
+(`platform:mobile` / `platform:rn`) match against `ctx.platform`.
+
+### Component wiring (A039/A040)
+
+| Component | `animation?` | `adapt?` | Notes |
+|-----------|:---:|:---:|-------|
+| BcDialog | ✅ | ✅ | `resolveAnimation` drives content transition class. |
+| BcPopover | ✅ | ✅ | `resolveAdapt` morphs to a sheet on mobile (`applies` → bottom-sheet shell). **A040 proof.** |
+| BcDrawer | ✅ | ✅ | `resolveAnimation` drives panel transition class. |
+| BcTooltip | ✅ | ✅ | `resolveAnimation` drives opacity transition (replaces hardcoded `transition-opacity`). |
+| BcDropdown | ✅ | ✅ | `resolveAnimation` drives menu transition class. |
+
+All 5 components import `resolveAnimation` from `@/core/animation`; BcPopover
+additionally imports `resolveAdapt` from `@/core/adapt` and branches render on
+`state.adaptResult.applies`.
+
+### Barrel / exports
+
+- `core/animation/index.ts` re-exports `resolveAnimation`, `getAnimationClasses`,
+  `prefersReducedMotion`, `detectPrefersReducedMotion`, types.
+- `core/adapt/index.ts` re-exports `resolveAdapt`, `ResolvedAdapt`, `AdaptContext`.
+- `src/index.ts` (auto-generated) now includes `export * from './core/animation'`
+  and `export * from './core/adapt'` (added to `generate-index.mjs` CORE_EXPORTS).
+- `package.json` export map already had `./core/animation` + `./core/adapt` entries.
+
+**Verification (2026-06-26):**
+- Source tests: 1698 pass, 0 fail (1652 baseline + 46 new: 21 animation, 13 adapt,
+  12 component wiring assertions across 5 components).
+- Build: `npm run build` clean — 179 components generated for react/vue/reactNative.
+- No `as any` / `@ts-ignore` / `@ts-expect-error` introduced (A050).
+- SSR-safe: both runtimes guard on `typeof window` / `typeof matchMedia`.
+
 ## Context
 
 ADR-002 Section 9 mendefinisikan 5 cross-tier infrastructure yang **wajib** tersedia
@@ -117,8 +178,8 @@ Status audit per 2026-06-26:
 | AppProvider adoption | Partial | Unit tests pass, belum diadopsi ke semua komponen |
 | Hooks subset P0 (8 hooks) | Partial | Implementasi ada, belum dipakai komponen P0 |
 | Hooks subset P1 (8 hooks) | ✅ Complete | usePrevious, useIntersection, useInterval, useTimeout, useClickOutside, useKeyboard, useScrollLock, useLocalStorage — headless SSR-safe, tests pass |
-| Animation contract | Partial | Props exported, implementasi per-tier belum |
-| Adapt contract | Partial | Props exported, runtime Popover->Sheet belum |
+| Animation contract | ✅ Complete | `resolveAnimation` + `getAnimationClasses` runtime (core/animation), honors prefers-reduced-motion, wired into BcDialog/Popover/Drawer/Tooltip/Dropdown |
+| Adapt contract | ✅ Complete | `resolveAdapt` runtime (core/adapt) with injectable AdaptContext; BcPopover morphs to sheet on mobile |
 
 Saat ini 110/110 komponen enterprise "Done" secara contract+a11y+token+tests,
 tetapi **tidak semua benar-benar memakai cross-tier infrastructure**. Banyak
