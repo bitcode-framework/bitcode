@@ -645,6 +645,21 @@ packages/ui-flutter/
 │       │   ├── types.dart                      # BcEventSource, BcChangeReason (18 values), BcChangeMeta, BcChangeHandler, BcComponentSize, BcComponentVariant; re-exports chart/ chart_types.dart (ADR-015)
 │       │   ├── reactive_store.dart             # Pure-Dart reactive engine: VALUE/UI/VALIDATION/DATA effects, cascade propagation, snapshot with $self/$root, async DATA fetcher, dispose
 │       │   ├── reactive_store_notifier.dart    # Thin Flutter adapter: ChangeNotifier bridging ReactiveStore subscriptions to notifyListeners()
+│       │   ├── app_config_snapshot.dart        # ADR-013 Phase 1 — AppConfigSnapshot + enums (AppThemeMode, ResolvedAppTheme, AppDirection, AppSize, AppMessageQueue) — pure data, parity with TS AppConfigSnapshot
+│       │   ├── app_config_store.dart           # ADR-013 Phase 1 — headless AppConfigStore (getSnapshot/setTheme/setLocale/setDirection/setSize/setDateLocale/setMessageQueue/subscribe/dispose/isDisposed)
+│       │   ├── bc_app_config.dart              # ADR-013 Phase 1 — BcAppConfig InheritedWidget exposing BcAppConfigData (snapshot + store) to descendants; BcAppConfig.of(context) parity with TS useAppContext
+│       │   ├── bc_breakpoints.dart             # ADR-013 Phase 5b — bcBreakpointQueries (sm/md/lg/xl/2xl Tailwind-aliased min-width queries), parity with TS BC_BREAKPOINTS
+│       │   ├── hooks/                          # ADR-013 Phase 5b — Dart P1 hook parity (hooks.dart barrel)
+│       │   │   ├── hooks.dart                  # Barrel — re-exports use_previous, use_interval, use_timeout, use_scroll_lock, use_local_storage
+│       │   │   ├── use_previous.dart           # PreviousValue<T> + usePrevious() — pure Dart port of TS use-previous (ref cache, no DOM)
+│       │   │   ├── use_interval.dart           # BcIntervalController + createInterval() — Timer.periodic parity with TS createInterval (injectable createTimer for FakeAsync tests)
+│       │   │   ├── use_timeout.dart            # BcTimeoutController + createTimeout() — Timer parity with TS createTimeout (start/clear/dispose)
+│       │   │   ├── use_scroll_lock.dart        # BcScrollLock + createScrollLock() — ref-counted lock exposing ValueNotifier<bool> (Flutter has no document.body; host swaps ScrollPhysics)
+│       │   │   └── use_local_storage.dart      # BcLocalStorageStore<T> + createLocalStorage() — injectable BcStorageBackend (default in-memory, parity with TS SSR no-op); JSON round-trip, malformed-as-default
+│       │   ├── animation/                      # ADR-013 Phase 5b — Dart animation runtime parity
+│       │   │   └── animation.dart              # BcAnimationKind enum, BcAnimationEasing, BcAnimationProps, ANIMATION_DEFAULT, BcResolvedAnimation, resolveAnimation() (reduced-motion via injectable flag → host passes MediaQuery.disableAnimationsOf), getAnimationCurves()
+│       │   ├── adapt/                          # ADR-013 Phase 5b — Dart adapt runtime parity
+│       │   │   └── adapt.dart                  # BcAdaptBreakpoint/Platform/Target, BcAdaptCondition, BcAdaptProps, BcAdaptContext, BcResolvedAdapt, BcAdaptResolver, resolveAdapt() (breakpoint via injectable matcher → MediaQuery.size, platform via ctx.platform → Platform.isIOS/Android)
 │       │   └── chart/                          # Dart port of TS chart-option contract (ADR-015 F2) — pure functions, no Flutter deps
 │       │       ├── chart_types.dart            # BcChartType enum (26 variants + BC_CHART_TYPES), BcChartItem, BcChartSeries, BuildOptionContext, ChartData, EChartsOption typedefs
 │       │       ├── chart_helpers.dart          # parseColors(), parseChartData(), isSingleSeries(), isMultiSeries(), buildTitleOption/Tooltip/Legend/Toolbox/DataZoom/GridOption(), DEFAULT_PALETTE (7 token colors)
@@ -726,11 +741,16 @@ packages/ui-flutter/
 │   │   └── chart-options/
 │   │       └── golden-fixtures.json            # ADR-015 F2 — 36 golden JSON fixtures generated from TS chart-option factory
 │   ├── bc_integration_gate_test.dart           # Integration gate for Phase 5b.2 widgets and exports
+│   ├── hooks_parity_test.dart                  # ADR-013 Phase 5b — 38 tests: PreviousValue, BcIntervalController, BcTimeoutController, BcScrollLock, BcLocalStorageStore (FakeAsync-driven timers)
+│   ├── animation_adapt_parity_test.dart        # ADR-013 Phase 5b — 16 tests: resolveAnimation (default merge, kind→css, reduced-motion), resolveAdapt (breakpoint/platform/SSR), bcBreakpointQueries parity
 │   ├── schema/
 │   │   ├── ui_schema_test.dart                 # 55 tests — FetchParams, FetchResult, SortRule, BcSelection (sealed), enums, UiSchema/FieldNode/LayoutNode JSON round-trip, FieldResolver path resolution
 │   │   └── field_resolver_test.dart            # 21 tests — field path resolution, binding evaluation, condition matching
+│   ├── app_config_store_test.dart              # ADR-013 Phase 1/5a — AppConfigStore parity (defaults, setTheme resolves, subscribe, dispose, direction auto-resolve, dateLocale fallback)
+│   ├── hooks_parity_test.dart                  # ADR-013 Phase 5b — 38 tests: PreviousValue, BcIntervalController, BcTimeoutController, BcScrollLock, BcLocalStorageStore (timer paths via FakeAsync)
+│   └── animation_adapt_parity_test.dart        # ADR-013 Phase 5b — 16 tests: resolveAnimation (default merge, kind→css, reduced-motion collapse), resolveAdapt (breakpoint/platform/SSR), breakpoint-query parity
 ```
-**523 Flutter tests** across 25 test files (incl. 107 chart tests: 48 factory golden-fixture parity + 34 helpers + 25 bc_chart widget contract). `flutter analyze` returns 0 errors/warnings on chart files. `build_runner` succeeds.
+**1581 Flutter tests** across 27 test files (incl. 107 chart tests: 48 factory golden-fixture parity + 34 helpers + 25 bc_chart widget contract; + 54 ADR-013 Phase 5b parity tests). `flutter analyze` returns 0 errors (300 info-level lints; invoke via `tool/run-flutter.ps1` on machines with a bloated PATH). `build_runner` succeeds.
 
 **Token bridge** (`packages/ui/scripts/generate-flutter-tokens.mjs`): Parses `theme.css` HSL triplets, converts to hex at build time, emits `bc_theme.dart` with 25 light + 25 dark `const Color`, 4 factory methods (materialLight/Dark, cupertinoLight/Dark), and radius. `--check` mode for CI.
 

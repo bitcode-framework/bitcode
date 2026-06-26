@@ -33,6 +33,20 @@ export 'src/core/app_config_snapshot.dart';
 export 'src/core/app_config_store.dart';
 export 'src/core/bc_app_config.dart';
 
+// Hooks P1 parity (ADR-013 Phase 5b) — Dart ports of the TS P1 headless hooks
+// (packages/ui/src/core/hooks/*). Headless utility classes / factories.
+export 'src/core/hooks/hooks.dart';
+
+// Animation runtime parity (ADR-013 Phase 5b) — Dart port of the TS
+// `core/animation` runtime (resolveAnimation, BcAnimationKind, reduced-motion).
+export 'src/core/animation/animation.dart';
+
+// Adapt runtime parity (ADR-013 Phase 5b) — Dart port of the TS `core/adapt`
+// runtime (resolveAdapt, BcAdaptResolver, BcAdaptContext). Shared breakpoint
+// queries (BC_BREAKPOINTS parity) live in bc_breakpoints.dart.
+export 'src/core/adapt/adapt.dart';
+export 'src/core/bc_breakpoints.dart';
+
 // UiSchema types (ADR-011 Phase 5b.1)
 // BcKey and DataSource are defined in core/types.dart and core/reactive_store.dart;
 // hide them here to avoid ambiguous_export conflicts.

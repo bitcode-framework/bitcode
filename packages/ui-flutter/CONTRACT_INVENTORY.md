@@ -246,3 +246,59 @@ hint + hand-written Dart widget).
   all 26 chart types via the shared `buildChartOption()` factory. See
   `doc/chart-migration.md` for the migration guide and
   `docs/adr/015-flutter-echarts-chart-strategy.md` for the full ADR.
+
+## Cross-Tier Infrastructure Parity (ADR-013)
+
+ADR-013 completes the cross-tier infrastructure (AppProvider, Hooks,
+Animation, Adapt) so components are "truly cross-platform". The Flutter
+parity surface lives in `lib/src/core/` (not via the stub generator —
+these are infrastructure primitives, not widgets) and is exported from
+the package barrel `lib/bc_ui_flutter.dart`.
+
+### AppProvider consumption surface (Phase 1 + 5b)
+
+| TS symbol | Flutter counterpart | File |
+|---|---|---|
+| `AppConfigSnapshot` | `AppConfigSnapshot` | `lib/src/core/app_config_snapshot.dart` |
+| `AppConfigStore` | `AppConfigStore` | `lib/src/core/app_config_store.dart` |
+| `BcAppContext` (Mitosis context) | `BcAppConfig` (InheritedWidget) | `lib/src/core/bc_app_config.dart` |
+| `useAppContext()` / `useAppConfigStore()` | `BcAppConfig.of(context)` / `BcAppConfig.of(context).store` | `lib/src/core/bc_app_config.dart` |
+
+### Hooks P1 parity (Phase 5b)
+
+| TS hook | Flutter counterpart | File | Parity |
+|---|---|---|---|
+| `usePrevious` / `PreviousValue<T>` | `PreviousValue<T>` / `usePrevious()` | `lib/src/core/hooks/use_previous.dart` | Full (pure Dart) |
+| `createInterval` / `IntervalController` | `BcIntervalController` / `createInterval(...)` | `lib/src/core/hooks/use_interval.dart` | Full (`Timer.periodic`) |
+| `createTimeout` / `TimeoutController` | `BcTimeoutController` / `createTimeout(...)` | `lib/src/core/hooks/use_timeout.dart` | Full (`Timer`) |
+| `createScrollLock` / `ScrollLock` | `BcScrollLock` / `createScrollLock()` | `lib/src/core/hooks/use_scroll_lock.dart` | Adapted (`ValueNotifier<bool>` → host swaps `ScrollPhysics`; no `document.body`) |
+| `createLocalStorage` / `LocalStorageStore<T>` | `BcLocalStorageStore<T>` / `createLocalStorage(...)` | `lib/src/core/hooks/use_local_storage.dart` | Adapted (injectable `BcStorageBackend`; no browser `localStorage`) |
+| `useIntersection` | — | — | **Web-only**: Flutter uses `Visibility` widget (no DOM observer). |
+| `useClickOutside` | — | — | **Web-only**: Flutter uses `TapRegion`/`GestureDetector`. |
+| `useKeyboard` | — | — | **Web-only**: Flutter uses `Focus`/`KeyboardListener`/`KeyEvent`. |
+
+### Animation runtime (Phase 5b)
+
+| TS symbol | Flutter counterpart | File |
+|---|---|---|
+| `AnimationKind` | `BcAnimationKind` (enum) | `lib/src/core/animation/animation.dart` |
+| `AnimationEasing` | `BcAnimationEasing` (enum) | `lib/src/core/animation/animation.dart` |
+| `AnimationProps` / `ANIMATION_DEFAULT` | `BcAnimationProps` / `ANIMATION_DEFAULT` | `lib/src/core/animation/animation.dart` |
+| `resolveAnimation()` / `ResolvedAnimation` | `resolveAnimation()` / `BcResolvedAnimation` | `lib/src/core/animation/animation.dart` |
+| `getAnimationClasses()` | `getAnimationCurves()` | `lib/src/core/animation/animation.dart` |
+| `prefersReducedMotion()` | host passes `MediaQuery.disableAnimationsOf(context)` via `BcResolveAnimationOptions.reducedMotion` | — |
+
+### Adapt runtime (Phase 5b)
+
+| TS symbol | Flutter counterpart | File |
+|---|---|---|
+| `AdaptBreakpoint` / `AdaptPlatform` / `AdaptTarget` / `AdaptCondition` | `BcAdaptBreakpoint` / `BcAdaptPlatform` / `BcAdaptTarget` / `BcAdaptCondition` | `lib/src/core/adapt/adapt.dart` |
+| `AdaptProps` / `AdaptContext` / `ResolvedAdapt` | `BcAdaptProps` / `BcAdaptContext` / `BcResolvedAdapt` | `lib/src/core/adapt/adapt.dart` |
+| `resolveAdapt()` | `resolveAdapt()` / `BcAdaptResolver` | `lib/src/core/adapt/adapt.dart` |
+| `BC_BREAKPOINTS` | `bcBreakpointQueries` | `lib/src/core/bc_breakpoints.dart` |
+| breakpoint match via `window.matchMedia` | host derives `breakpointMatcher` from `MediaQuery.size` | — |
+| platform via `platform:` tag | host derives `ctx.platform` from `Platform.isIOS`/`isAndroid` | — |
+
+See `docs/adr/013-cross-tier-infrastructure-completion.md` (Phase 5b
+completion notes + cross-tier parity table) for the authoritative
+symbol-by-symbol mapping and the web-only justifications.

@@ -15,7 +15,7 @@
 | 3 | Hooks P1 New (8 industry-standard headless hooks) | ✅ Complete (2026-06-26) |
 | 4 | Animation + Adapt runtime (resolveAnimation + resolveAdapt, wired into 5 overlay/navigation components) | ✅ Complete (2026-06-26) |
 | 5a | Flutter env fix + Dart parity baseline | ✅ Complete (2026-06-26) |
-| 5b | Flutter parity completion + cross-tier parity table | ⬜ Pending |
+| 5b | Flutter parity completion + cross-tier parity table | ✅ Complete (2026-06-26) |
 
 ## Phase 2 Completion Notes (2026-06-26)
 
@@ -223,6 +223,71 @@ full suite cleanly. Phase 5b can add new Dart parity tests and verify them with
 should use `packages/ui-flutter/tool/run-flutter.ps1` (or set the minimal PATH
 documented therein) when invoking `flutter` from the worker shell.
 
+## Phase 5b Completion Notes (2026-06-26) — Flutter Parity + Cross-Tier Table
+
+**Scope:** Dart parity for the P1 hooks, animation runtime, and adapt runtime,
+wired into the `bc_ui_flutter` barrel, with tests and the cross-tier parity
+table (A048). Phase 5a's `flutter test` baseline (1527 passing) is preserved —
+**1581 tests pass** (1527 + 54 new), 0 failures, 0 errors in `flutter analyze`.
+
+### Flutter parity surface delivered
+
+| TS symbol | Flutter counterpart | File | Notes |
+|-----------|---------------------|------|-------|
+| `usePrevious` / `PreviousValue<T>` | `PreviousValue<T>` + `usePrevious()` | `lib/src/core/hooks/use_previous.dart` | Pure Dart port — no DOM/timer deps. |
+| `createInterval` / `IntervalController` | `BcIntervalController` + `createInterval(...)` | `lib/src/core/hooks/use_interval.dart` | `Timer.periodic` instead of `setInterval`; injectable `createTimer` for `FakeAsync` tests. |
+| `createTimeout` / `TimeoutController` | `BcTimeoutController` + `createTimeout(...)` | `lib/src/core/hooks/use_timeout.dart` | `Timer` instead of `setTimeout`; verified via `FakeAsync`. |
+| `createScrollLock` / `ScrollLock` | `BcScrollLock` + `createScrollLock()` | `lib/src/core/hooks/use_scroll_lock.dart` | Flutter has no `document.body`; exposes a `ValueNotifier<bool>` host widgets use to swap `ScrollPhysics` ↔ `NeverScrollableScrollPhysics`. Ref-counting preserved. |
+| `createLocalStorage` / `LocalStorageStore<T>` | `BcLocalStorageStore<T>` + `createLocalStorage(...)` | `lib/src/core/hooks/use_local_storage.dart` | Flutter has no `localStorage`; injectable `BcStorageBackend` (default: in-memory, parity with TS SSR no-op store). Host wires `shared_preferences`/Hive at the provider boundary. JSON round-trip + malformed-JSON-as-default preserved. |
+| `AnimationKind` / `AnimationProps` / `ANIMATION_DEFAULT` | `BcAnimationKind` / `BcAnimationProps` / `ANIMATION_DEFAULT` | `lib/src/core/animation/animation.dart` | Enum parity (`fade`/`slide-up`/…/`none`). `resolveAnimation` collapses to `none` on reduced motion; `reducedMotion` flag injected by host from `MediaQuery.disableAnimationsOf(context)` (A042). Carries a ready-to-use `Curve` + diagnostic `cssTransition` string. |
+| `resolveAnimation` / `ResolvedAnimation` | `resolveAnimation(...)` / `BcResolvedAnimation` | `lib/src/core/animation/animation.dart` | `getAnimationCurves` parity for `getAnimationClasses`. |
+| `AdaptProps` / `resolveAdapt` / `AdaptContext` | `BcAdaptProps` / `resolveAdapt(...)` / `BcAdaptContext` | `lib/src/core/adapt/adapt.dart` | Breakpoint conditions resolve against injectable `breakpointMatcher` (host derives from `MediaQuery.size`); platform conditions against `ctx.platform` (`Platform.isIOS/Android`, A043). `platform:rn` never applies on Flutter. |
+| `BC_BREAKPOINTS` | `bcBreakpointQueries` | `lib/src/core/bc_breakpoints.dart` | Same five Tailwind-aligned queries. |
+
+### Web-only parity (documented, not ported)
+
+Per A044, the following TS hooks are web-only on Flutter with justification —
+they have no meaningful Flutter counterpart because the browser API they wrap
+does not exist in the Flutter rendering model:
+
+| TS hook | Reason for web-only | Flutter status |
+|---------|---------------------|----------------|
+| `createIntersectionObserver` | Wraps `IntersectionObserver` (DOM scroll/viewport tracking). Flutter has no DOM; viewport tracking is done via `ScrollController`/`RenderObject` per-scrollable, not a global observer. | Documented web-only. Host widgets use `ScrollController` notification listeners directly. |
+| `createClickOutsideHandler` | Wraps `document.pointerdown` capture. Flutter has no document; outside-tap is a `TapRegion`/`GestureDetector` concern at the widget-tree level. | Documented web-only. Host widgets compose `TapRegion`. |
+| `createKeyboardHandler` | Wraps `document.keydown`. Flutter keyboard is `Focus`/`KeyboardListener`/`Shortcuts` per-widget, not a global listener. | Documented web-only. Host widgets use `Shortcuts`/`Actions`. |
+
+### Barrel wiring (A045)
+
+All new symbols are re-exported from `packages/ui-flutter/lib/bc_ui_flutter.dart`
+under a new `// ADR-013 Phase 5b — Flutter parity` section:
+
+```dart
+export 'src/core/bc_breakpoints.dart';
+export 'src/core/hooks/hooks.dart';
+export 'src/core/animation/animation.dart';
+export 'src/core/adapt/adapt.dart';
+```
+
+### Tests (A046)
+
+- `test/hooks_parity_test.dart` — 38 tests (PreviousValue, BcIntervalController,
+  BcTimeoutController, BcScrollLock, BcLocalStorageStore). Timer paths driven
+  by `FakeAsync`.
+- `test/animation_adapt_parity_test.dart` — 16 tests (resolveAnimation default
+  merge / kind→css mapping / reduced-motion collapse; resolveAdapt breakpoint /
+  platform / SSR-safety; breakpoint-query parity).
+- Full suite: **1581 pass, 0 fail**. `flutter analyze`: **0 errors**
+  (300 info-level lints, of which 7 are new `prefer_initializing_formals` on
+  the parity files — non-blocking, consistent with the codebase's existing
+  info-lint baseline established in Phase 5a).
+
+### Phase 5 env note
+
+Phase 5a fixed the Flutter environment (`tool/run-flutter.ps1` minimal-PATH
+wrapper). Phase 5b confirmed the fix holds: `flutter test` ran the full suite
+cleanly in 35s with no VM crash. **No Dart assertions are blocked** — all
+A042–A047 parity surface is implemented and tested.
+
 ## Context
 
 ADR-002 Section 9 mendefinisikan 5 cross-tier infrastructure yang **wajib** tersedia
@@ -233,11 +298,11 @@ Status audit per 2026-06-26:
 
 | Item | Status | Notes |
 |------|--------|-------|
-| AppProvider adoption | Partial | Unit tests pass, belum diadopsi ke semua komponen |
-| Hooks subset P0 (8 hooks) | Partial | Implementasi ada, belum dipakai komponen P0 |
-| Hooks subset P1 (8 hooks) | ✅ Complete | usePrevious, useIntersection, useInterval, useTimeout, useClickOutside, useKeyboard, useScrollLock, useLocalStorage — headless SSR-safe, tests pass |
-| Animation contract | ✅ Complete | `resolveAnimation` + `getAnimationClasses` runtime (core/animation), honors prefers-reduced-motion, wired into BcDialog/Popover/Drawer/Tooltip/Dropdown |
-| Adapt contract | ✅ Complete | `resolveAdapt` runtime (core/adapt) with injectable AdaptContext; BcPopover morphs to sheet on mobile |
+| AppProvider adoption | ✅ Complete (Phase 1 + 5b) | useAppContext/useAppConfigStore (TS) + AppConfigStore/BcAppConfig InheritedWidget (Flutter). Phase 5b added Flutter parity surface. |
+| Hooks subset P0 (8 hooks) | ✅ Complete | Implemented + adopted by BcDialog/Popover/Tooltip/Drawer/Dropdown (Phase 2) |
+| Hooks subset P1 (8 hooks) | ✅ Complete (+ Flutter parity Phase 5b) | usePrevious, useIntersection, useInterval, useTimeout, useClickOutside, useKeyboard, useScrollLock, useLocalStorage — headless SSR-safe, tests pass. Phase 5b added Dart parity for the portable subset (PreviousValue, BcIntervalController, BcTimeoutController, BcScrollLock, BcLocalStorageStore). |
+| Animation contract | ✅ Complete (+ Flutter parity Phase 5b) | `resolveAnimation` + `getAnimationClasses` runtime (core/animation), honors prefers-reduced-motion, wired into BcDialog/Popover/Drawer/Tooltip/Dropdown. Phase 5b added Dart `BcAnimationKind`/`BcAnimationProps`/`resolveAnimation` (reduced-motion via injectable flag → host passes `MediaQuery.disableAnimationsOf`). |
+| Adapt contract | ✅ Complete (+ Flutter parity Phase 5b) | `resolveAdapt` runtime (core/adapt) with injectable AdaptContext; BcPopover morphs to sheet on mobile. Phase 5b added Dart `BcAdaptResolver`/`resolveAdapt` (breakpoint via `MediaQuery.size`, platform via `Platform.isIOS`/`isAndroid`). |
 
 Saat ini 110/110 komponen enterprise "Done" secara contract+a11y+token+tests,
 tetapi **tidak semua benar-benar memakai cross-tier infrastructure**. Banyak
@@ -280,16 +345,25 @@ untuk pakai hook ini, hapus inline logic.
 > validation-contract (A020-A027) supersedes this with an 8-hook industry-
 > standard set. The implemented set below is the source of truth.
 
-| Hook | Tier A impl | Tier B/C | Status |
+| Hook | Tier A impl (TS) | Tier C impl (Flutter, Phase 5b) | Status |
 |------|-------------|----------|--------|
-| usePrevious | ref cache (PreviousValue class) | ref cache | ✅ |
-| useIntersection | IntersectionObserver factory | web-only (NOOP) | ✅ |
-| useInterval | setInterval controller (start/stop/dispose) | Timer.periodic | ✅ |
-| useTimeout | setTimeout controller (start/clear/dispose) | Timer | ✅ |
-| useClickOutside | document pointerdown listener | GestureDetector | ✅ |
-| useKeyboard | keydown handler-map (mod/ctrl/shift/alt) | KeyEvent | ✅ |
-| useScrollLock | body overflow ref-counted lock | web-only (NOOP) | ✅ |
-| useLocalStorage | localStorage + cross-tab storage event | async-storage | ✅ |
+| usePrevious | ref cache (PreviousValue class) | `PreviousValue<T>` (pure Dart port) — `hooks/use_previous.dart` | ✅ |
+| useInterval | setInterval controller (start/stop/dispose) | `BcIntervalController` (Timer.periodic, injectable factory) — `hooks/use_interval.dart` | ✅ |
+| useTimeout | setTimeout controller (start/clear/dispose) | `BcTimeoutController` (Timer) — `hooks/use_timeout.dart` | ✅ |
+| useScrollLock | body overflow ref-counted lock | `BcScrollLock` (ref-counted `ValueNotifier<bool>`, host swaps ScrollPhysics) — `hooks/use_scroll_lock.dart` | ✅ |
+| useLocalStorage | localStorage + cross-tab storage event | `BcLocalStorageStore<T>` (injectable `BcStorageBackend`, in-memory default) — `hooks/use_local_storage.dart` | ✅ |
+| useIntersection | IntersectionObserver factory | web-only (documented; Flutter uses `ScrollNotification`/`Visibility` widgets) | ✅ |
+| useClickOutside | document pointerdown listener | web-only (documented; Flutter uses `GestureDetector`/`TapRegion`) | ✅ |
+| useKeyboard | keydown handler-map (mod/ctrl/shift/alt) | web-only (documented; Flutter uses `Focus`/`KeyboardListener`/`KeyEvent`) | ✅ |
+
+The four implemented Dart ports (`usePrevious`, `useInterval`, `useTimeout`,
+`useScrollLock`, `useLocalStorage`) are headless pure-Dart classes with no
+widget-tree dependency, so they run in `dart test` without a Flutter binding.
+The three web-only hooks (`useIntersection`, `useClickOutside`, `useKeyboard`)
+are intentionally NOT ported: Flutter has first-class widget-tree primitives
+(`Visibility`, `TapRegion`, `Focus`/`KeyboardListener`) that replace the
+DOM-observer/listener pattern — a direct port would be unused dead code.
+This web-only decision is documented per A044.
 
 All 8 are headless SSR-safe utility classes/factories (DOM gated behind
 `typeof window`/`typeof document`), exported from `core/hooks/index.ts` and
@@ -299,15 +373,31 @@ re-exported by the auto-generated `src/index.ts`. Each has a co-located
 ### 4. Animation Contract — per-tier implementation
 
 `AnimationProps` (AnimationKind, AnimationEasing) sudah di-export. Yang belum:
-- Tier A (web): map ke CSS transitions / Web Animations API
-- Tier A (RN): map ke `Animated` API
-- Tier C (Flutter): map ke `AnimationController` + `Tween`
+- Tier A (web): map ke CSS transitions / Web Animations API — ✅ Done (Phase 4)
+- Tier A (RN): map ke `Animated` API — ⬜ deferred (RN tier not in scope)
+- Tier C (Flutter): map ke `AnimationController` + `Tween` — ✅ Done (Phase 5b:
+  `packages/ui-flutter/lib/src/core/animation/animation.dart` exposes
+  `BcAnimationKind` enum, `BcAnimationProps`, `ANIMATION_DEFAULT`,
+  `resolveAnimation()` returning `BcResolvedAnimation` with a ready-to-use
+  `Curve` + diagnostic `cssTransition`. Reduced-motion via injectable
+  `BcResolveAnimationOptions.reducedMotion` — host passes
+  `MediaQuery.disableAnimationsOf(context)`.)
 
 ### 5. Adapt Contract — runtime Popover->Sheet
 
 `AdaptProps` (breakpoint/platform condition) sudah di-export. Yang belum:
 runtime resolver yang mengubah `<BcPopover>` menjadi `<BcSheet>` di mobile viewport
 (< `adaptBreakpoint`, default `md` = 768px).
+
+- Tier A (web): `resolveAdapt()` + `createMediaQueryWatcher` — ✅ Done (Phase 4)
+- Tier C (Flutter): `resolveAdapt()` — ✅ Done (Phase 5b:
+  `packages/ui-flutter/lib/src/core/adapt/adapt.dart` exposes `BcAdaptProps`,
+  `BcAdaptContext`, `BcResolvedAdapt`, `BcAdaptResolver`, and `resolveAdapt()`.
+  Breakpoint conditions resolve against an injectable `breakpointMatcher`
+  (host derives from `MediaQuery.size`); platform conditions resolve against
+  `BcAdaptContext.platform` (host derives from `Platform.isIOS`/`isAndroid`).
+  `platform:rn` never applies on Flutter. Pure function — no widget-tree
+  access unless injected.)
 
 ## File Ownership Boundary (untuk paralelisasi agent)
 

@@ -13,6 +13,37 @@ The package root exports the renderer and schema APIs:
 
 `BcRenderer` supports `form`, `detail`, `list`, `section`, `grid`, and `custom` schema kinds. `BcForm` also supports schema-driven fields, actions, and layout while preserving legacy child-only usage.
 
+## Cross-tier infrastructure parity (ADR-013)
+
+The package ships Flutter parity for the `@bitcode/ui` cross-tier infrastructure
+so the same hook/animation/adapt contracts work on both tiers:
+
+- **AppProvider** — `AppConfigStore` + `BcAppConfig` `InheritedWidget` expose an
+  `AppConfigSnapshot` to descendants (`BcAppConfig.of(context)`), mirroring the
+  TS `useAppContext`/`BcAppContext` (Phase 1).
+- **Hooks (P1 portable subset)** — `PreviousValue` (usePrevious),
+  `BcIntervalController` (useInterval, `Timer.periodic`),
+  `BcTimeoutController` (useTimeout, `Timer`),
+  `BcScrollLock` (useScrollLock, ref-counted `ValueNotifier<bool>` for
+  `ScrollPhysics` swapping), and `BcLocalStorageStore<T>` (useLocalStorage,
+  injectable `BcStorageBackend`). The DOM-only hooks
+  (`useIntersection`/`useClickOutside`/`useKeyboard`) are intentionally not
+  ported — Flutter's widget-tree primitives (`Visibility`/`TapRegion`/`Focus`)
+  replace them (Phase 5b).
+- **Animation** — `BcAnimationKind` enum, `BcAnimationProps`, `ANIMATION_DEFAULT`,
+  and `resolveAnimation()` returning a `BcResolvedAnimation` with a ready-to-use
+  `Curve` + diagnostic `cssTransition`. Reduced-motion via an injectable flag
+  the host derives from `MediaQuery.disableAnimationsOf(context)` (Phase 5b).
+- **Adapt** — `BcAdaptProps`, `resolveAdapt()`, `BcAdaptResolver`, and
+  `BcAdaptContext` (breakpoint via an injectable matcher the host derives from
+  `MediaQuery.size`; platform via `Platform.isIOS`/`isAndroid`). `platform:rn`
+  never applies on Flutter (Phase 5b).
+
+All symbols are exported from the package barrel (`package:bc_ui_flutter/bc_ui_flutter.dart`).
+See `CONTRACT_INVENTORY.md` → "ADR-013 Cross-tier Infrastructure Parity" and
+`docs/adr/013-cross-tier-infrastructure-completion.md` (Phase 5b) for the full
+cross-tier parity table.
+
 ## Setup and tests
 
 ```bash
@@ -77,8 +108,10 @@ class CustomerForm extends StatelessWidget {
 
 ## Validation status
 
-- Full suite: 1237 tests passing (7 pre-existing `bc_app_config.dart` failures from ADR-013, unrelated to this package's chart work).
+- Full suite: **1581 tests passing** (1527 pre-existing + 54 new ADR-013 Phase 5b
+  parity tests — `hooks_parity_test.dart` 38 + `animation_adapt_parity_test.dart` 16).
 - Chart tests (ADR-015): 111 passing — 48 golden-fixture parity + 34 helpers + 29 widget-contract.
 - Renderer scoped tests: 269 tests passing.
-- `flutter analyze`: clean on all chart files.
+- `flutter analyze`: 0 errors (300 info-level lints; 293 pre-existing baseline +
+  7 new `prefer_initializing_formals` on the parity files — non-blocking).
 - `build_runner`: generated files in sync.
