@@ -12,7 +12,7 @@
 |-------|-------------|--------|
 | 1 | AppProvider Consumption Surface (useAppContext + useAppConfigStore hooks, Flutter AppConfigStore + BcAppConfig InheritedWidget parity) | ✅ Complete (2026-06-26) |
 | 2 | Hooks P0 Adoption (BcDialog/Popover/Tooltip/Drawer/Dropdown consume P0 hooks) | ✅ Complete (2026-06-26) |
-| 3 | Hooks P1 New (8 industry-standard headless hooks) | ⬜ Pending |
+| 3 | Hooks P1 New (8 industry-standard headless hooks) | ✅ Complete (2026-06-26) |
 | 4 | Animation + Adapt contracts (per-tier implementation) | ⬜ Pending |
 | 5a | Flutter env fix + Dart parity baseline | ⬜ Pending |
 | 5b | Flutter parity completion + cross-tier parity table | ⬜ Pending |
@@ -52,6 +52,58 @@ preserved.
 - Build: clean, 0 reformat failures.
 - No `as any` / `@ts-ignore` introduced (A050).
 
+## Phase 3 Completion Notes (2026-06-26)
+
+**Scope:** Added the P1 hook set — 8 industry-standard headless SSR-safe hooks
+in `packages/ui/src/core/hooks/`. The original 6-hook plan (useHover,
+useFocusVisible, useEventListener, useOutsideClick, usePrevious, useInterval)
+was superseded by the validation-contract (A020-A027) which specifies 8 hooks
+with broader overlay/utility coverage. Each hook is a headless utility class or
+factory function (no JSX/DOM in the hook itself); browser APIs are gated behind
+`typeof window` / `typeof document` so SSR and React Native imports stay safe.
+
+| Hook | File | API | SSR behavior |
+|------|------|-----|--------------|
+| usePrevious | `use-previous.ts` | `PreviousValue<T>` class + `usePrevious()` sugar | Pure (no DOM) — works everywhere |
+| useIntersection | `use-intersection.ts` | `createIntersectionObserver(opts)` → `{state, observe, unobserve, subscribe, dispose}` | NOOP observer (`isIntersecting:false`, never fires) |
+| useInterval | `use-interval.ts` | `createInterval(cb, delay, opts)` → `{active, start, stop, dispose}` | NOOP controller (no `setInterval`) |
+| useTimeout | `use-timeout.ts` | `createTimeout(cb, delay, opts)` → `{scheduled, start, clear, dispose}` | NOOP controller (no `setTimeout`) |
+| useClickOutside | `use-click-outside.ts` | `createClickOutsideHandler(refs, handler, opts)` → `{setEnabled, dispose}` | NOOP handler (no listeners attached) |
+| useKeyboard | `use-keyboard.ts` | `createKeyboardHandler(handlerMap, opts)` → `{attach, detach, dispose}` | NOOP handler (no listeners, attach is no-op) |
+| useScrollLock | `use-scroll-lock.ts` | `createScrollLock(opts)` → `{locked, lock, unlock, dispose}` | NOOP lock (ref-counted; shared registry per element) |
+| useLocalStorage | `use-local-storage.ts` | `createLocalStorage<T>(key, default)` → `{get, set, subscribe, dispose}` | Returns default, never fires, `set` inert |
+
+**Design patterns (consistent with existing P0 hooks):**
+- Headless: factory returns a controller object; no JSX, no render. The Mitosis
+  component owns the instance in `useStore` and binds it to elements on mount.
+- SSR-safe: each factory checks `typeof window`/`typeof document` (or feature
+  presence like `IntersectionObserver`) and returns a frozen NOOP controller so
+  server-rendered trees import and construct without crashing.
+- Injectable timers: `useInterval`/`useTimeout` accept `setTimer`/`clearTimer`
+  options so tests drive a fake clock (mirrors `DebouncedValue`).
+- Disposal: every controller exposes `dispose()` (idempotent) to detach
+  listeners / cancel timers / clear subscriber sets.
+- Ref-counted scroll lock: `createScrollLock` shares a per-element registry via
+  `WeakMap` so nested overlays compose — only the last `unlock()` restores the
+  original `overflow`.
+- Cross-tab storage sync: `useLocalStorage` listens to the `storage` event so
+  writes in other tabs propagate to subscribers; malformed JSON is treated as
+  absent (returns default, never throws).
+
+**Exports (A028):** All 8 hooks exported from `packages/ui/src/core/hooks/index.ts`
+barrel. `packages/ui/src/index.ts` re-exports via `export * from './core/hooks'`
+(auto-generated barrel picks up new exports automatically).
+
+**Package.json (A030):** `./core/hooks` export map entry already present and
+unchanged — verified no regression.
+
+**Verification (2026-06-26):**
+- Source tests: 1652 pass, 0 fail (1604 baseline + 48 new across 8 hook test
+  files). Each hook test verifies SSR no-op path + core logic + disposal.
+- No `as any` / `@ts-ignore` / `@ts-expect-error` in source or test files (A050).
+  Global shimming in tests uses typed casts (`globalThis as { document?: ... }`)
+  and `Object.defineProperty` for Node 22's read-only `navigator`.
+
 ## Context
 
 ADR-002 Section 9 mendefinisikan 5 cross-tier infrastructure yang **wajib** tersedia
@@ -64,7 +116,7 @@ Status audit per 2026-06-26:
 |------|--------|-------|
 | AppProvider adoption | Partial | Unit tests pass, belum diadopsi ke semua komponen |
 | Hooks subset P0 (8 hooks) | Partial | Implementasi ada, belum dipakai komponen P0 |
-| Hooks subset P1 (6 hooks) | Belum | useHover, useFocusVisible, useEventListener, dll |
+| Hooks subset P1 (8 hooks) | ✅ Complete | usePrevious, useIntersection, useInterval, useTimeout, useClickOutside, useKeyboard, useScrollLock, useLocalStorage — headless SSR-safe, tests pass |
 | Animation contract | Partial | Props exported, implementasi per-tier belum |
 | Adapt contract | Partial | Props exported, runtime Popover->Sheet belum |
 
@@ -102,16 +154,28 @@ Daftar 8 hooks P0 (sudah ada 9 file di `packages/ui/src/core/hooks/`):
 Adoption = komponen P0 (Dialog, Popover, Combobox, Select, Drawer, dll) refactor
 untuk pakai hook ini, hapus inline logic.
 
-### 3. Hooks P1 (6 hooks) — baru
+### 3. Hooks P1 (8 hooks) — baru
 
-| Hook | Tier A impl | Tier B/C |
-|------|-------------|----------|
-| useHover | mouseenter/leave | TapTarget rewrite |
-| useFocusVisible | :focus-visible polyfill | KeyEvent |
-| useEventListener | addEventListener | platform event |
-| useOutsideClick | document click | GestureDetector |
-| usePrevious | ref cache | ref cache |
-| useInterval | setInterval | Timer.periodic |
+> **Note:** The original plan listed 6 P1 hooks (useHover, useFocusVisible,
+> useEventListener, useOutsideClick, usePrevious, useInterval). The
+> validation-contract (A020-A027) supersedes this with an 8-hook industry-
+> standard set. The implemented set below is the source of truth.
+
+| Hook | Tier A impl | Tier B/C | Status |
+|------|-------------|----------|--------|
+| usePrevious | ref cache (PreviousValue class) | ref cache | ✅ |
+| useIntersection | IntersectionObserver factory | web-only (NOOP) | ✅ |
+| useInterval | setInterval controller (start/stop/dispose) | Timer.periodic | ✅ |
+| useTimeout | setTimeout controller (start/clear/dispose) | Timer | ✅ |
+| useClickOutside | document pointerdown listener | GestureDetector | ✅ |
+| useKeyboard | keydown handler-map (mod/ctrl/shift/alt) | KeyEvent | ✅ |
+| useScrollLock | body overflow ref-counted lock | web-only (NOOP) | ✅ |
+| useLocalStorage | localStorage + cross-tab storage event | async-storage | ✅ |
+
+All 8 are headless SSR-safe utility classes/factories (DOM gated behind
+`typeof window`/`typeof document`), exported from `core/hooks/index.ts` and
+re-exported by the auto-generated `src/index.ts`. Each has a co-located
+`*.test.ts` (48 new tests; SSR no-op paths, core logic, disposal verified).
 
 ### 4. Animation Contract — per-tier implementation
 

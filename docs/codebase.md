@@ -358,6 +358,7 @@ packages/ui/
 │   └── nativewind.preset.cjs                   #   NativeWind preset for React Native
 ├── src/
 │   ├── core/                                   # Reactive store, registry, context, data-source, types, wc-event-bridge, part-props, renderer, providers, collection contract, haptics
+│   │   └── hooks/                              # Portable headless SSR-safe hooks (ADR-002 §9.2, ADR-013). P0: useId, useDisclosure, useControllableState, useDebouncedValue, useClipboard, useElementSize, useFocusTrap, useMediaQuery, useAppContext/useAppConfigStore. P1 (ADR-013 §3): usePrevious, useIntersection, useInterval, useTimeout, useClickOutside, useKeyboard, useScrollLock, useLocalStorage — all gated behind typeof window/document, barrel-exported via core/hooks/index.ts.
 │   ├── components/                             # 177 Mitosis .lite.tsx components across 13 groups (charts, data, data-display, feedback, forms, input, layout, media, navigation, overlays, primitives, print, social, views)
 │   └── themes/default.css                      # Default theme bundle
 ├── scripts/                                    # Build & tooling helpers
