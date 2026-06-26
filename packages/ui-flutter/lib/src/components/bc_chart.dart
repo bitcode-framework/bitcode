@@ -159,7 +159,10 @@ class BcChart extends StatelessWidget {
   }
 
   Widget _buildChartArea(List<BcChartItem> effectiveItems, List<BcChartSeries> effectiveSeries) {
-    final hasData = type == BcChartType.pie || type == BcChartType.doughnut
+    // `doughnut` collapsed into `pie` (ADR-015 — 26-type enum has no
+    // doughnut; it is a backward-compatible alias of pie via fromName).
+    final isPieLike = type == BcChartType.pie;
+    final hasData = isPieLike
         ? effectiveItems.isNotEmpty
         : effectiveSeries.isNotEmpty && effectiveSeries.any((s) => s.data.isNotEmpty);
 
@@ -180,8 +183,11 @@ class BcChart extends StatelessWidget {
         return _buildLineChart(effectiveSeries);
       case BcChartType.pie:
         return _buildPieChart(effectiveItems);
-      case BcChartType.doughnut:
-        return _buildDoughnutChart(effectiveItems);
+      default:
+        // The 26-type contract is rendered by the ECharts-backed BcChart
+        // (ADR-015 Phase F3). This legacy CustomPaint implementation only
+        // supports bar/line/pie; other types fall back to a bar chart.
+        return _buildBarChart(effectiveSeries);
     }
   }
 
@@ -219,15 +225,7 @@ class BcChart extends StatelessWidget {
     return _PieChartView(
       items: effectiveItems,
       colors: colors,
-      innerRadiusFactor: 0.0,
-    );
-  }
-
-  Widget _buildDoughnutChart(List<BcChartItem> effectiveItems) {
-    return _PieChartView(
-      items: effectiveItems,
-      colors: colors,
-      innerRadiusFactor: doughnutInnerRadiusFactor,
+      innerRadiusFactor: doughnutInnerRadiusFactor.clamp(0.0, 0.95),
     );
   }
 
@@ -245,10 +243,20 @@ class BcChart extends StatelessWidget {
         }
         break;
       case BcChartType.pie:
-      case BcChartType.doughnut:
         for (var i = 0; i < effectiveItems.length; i++) {
           legendEntries.add((
             label: effectiveItems[i].name,
+            color: colors[i % colors.length],
+          ));
+        }
+        break;
+      default:
+        // Non pie-like types use the series branch above (bar/line).
+        // Other 26-type variants are handled by the ECharts-backed BcChart
+        // (ADR-015 Phase F3); this legacy CustomPaint impl falls back to bar.
+        for (var i = 0; i < effectiveSeries.length; i++) {
+          legendEntries.add((
+            label: effectiveSeries[i].name,
             color: colors[i % colors.length],
           ));
         }
@@ -422,11 +430,11 @@ class _BarChartPainter extends CustomPainter {
     for (final s in series) {
       if (stacked) {
         for (var i = 0; i < s.data.length; i++) {
-          maxVal = math.max(maxVal, s.data[i]);
+          maxVal = math.max(maxVal, s.data[i].toDouble());
         }
       } else {
         for (final v in s.data) {
-          maxVal = math.max(maxVal, v);
+          maxVal = math.max(maxVal, v.toDouble());
         }
       }
     }
@@ -438,7 +446,7 @@ class _BarChartPainter extends CustomPainter {
       for (var c = 0; c < catCount; c++) {
         double stackSum = 0;
         for (final s in series) {
-          if (c < s.data.length) stackSum += s.data[c];
+          if (c < s.data.length) stackSum += s.data[c].toDouble();
         }
         maxVal = math.max(maxVal, stackSum);
       }
@@ -663,7 +671,7 @@ class _LineChartPainter extends CustomPainter {
     double maxVal = 0;
     for (final s in series) {
       for (final v in s.data) {
-        if (v > maxVal) maxVal = v;
+        if (v > maxVal) maxVal = v.toDouble();
       }
     }
     if (maxVal <= 0) maxVal = 1;
@@ -814,7 +822,7 @@ class _PieChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (items.isEmpty) return;
 
-    final total = items.fold<double>(0, (sum, item) => sum + item.value);
+    final total = items.fold<double>(0, (sum, item) => sum + item.value.toDouble());
     if (total <= 0) return;
 
     final cx = size.width / 2;

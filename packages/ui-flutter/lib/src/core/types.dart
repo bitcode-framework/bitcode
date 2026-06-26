@@ -8,6 +8,13 @@ library core_types;
 
 import 'package:flutter/painting.dart' show Color, BoxFit;
 
+// ADR-015: The chart contract (BcChartType, BcChartItem, BcChartSeries,
+// BC_CHART_TYPES) now lives in core/chart/chart_types.dart to mirror the
+// TypeScript chart-option contract (packages/ui/src/contracts/chart-option/).
+// Re-exported here so existing importers of core/types.dart keep resolving
+// unchanged (backward compatibility).
+export 'chart/chart_types.dart';
+
 /// Source of a user-initiated change.
 ///
 /// Mirrors TS `BcEventSource` but trimmed to Dart-relevant values.
@@ -564,72 +571,15 @@ enum BcTagVariant {
 }
 
 // ---------------------------------------------------------------------------
-// M5 BcChart typed wrappers (ADR-011 Phase 5c — M5 data display)
+// M5 BcChart typed wrappers — moved to core/chart/chart_types.dart
+// (ADR-015 Flutter ECharts chart strategy).
+//
+// The chart contract (BcChartType, BcChartItem, BcChartSeries,
+// BC_CHART_TYPES) now lives in core/chart/chart_types.dart to mirror the
+// TypeScript chart-option contract (packages/ui/src/contracts/chart-option/).
+// It is re-exported from the top of this file so existing importers of
+// core/types.dart keep resolving unchanged (backward compatibility).
 // ---------------------------------------------------------------------------
-
-/// Rendering type for [BcChart].
-///
-/// Mirrors the TS `BcChartType` union for the 4 types the validation
-/// contract asserts: bar, line, pie, doughnut.
-enum BcChartType {
-  bar,
-  line,
-  pie,
-  doughnut,
-}
-
-/// Single-series data item for pie/doughnut charts.
-///
-/// Mirrors TS `SingleSeriesItem` ({ name, value }).
-class BcChartItem {
-  final String name;
-  final double value;
-
-  const BcChartItem({required this.name, required this.value});
-
-  @override
-  String toString() => 'BcChartItem(name: $name, value: $value)';
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is BcChartItem && name == other.name && value == other.value;
-
-  @override
-  int get hashCode => Object.hash(name, value);
-}
-
-/// Multi-series entry for bar/line charts.
-///
-/// Mirrors TS `MultiSeriesEntry` ({ name, data }).
-class BcChartSeries {
-  final String name;
-  final List<double> data;
-
-  const BcChartSeries({required this.name, required this.data});
-
-  @override
-  String toString() => 'BcChartSeries(name: $name, data: $data)';
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is BcChartSeries &&
-          name == other.name &&
-          _listEquals(data, other.data);
-
-  @override
-  int get hashCode => Object.hash(name, Object.hashAll(data));
-
-  static bool _listEquals(List<double> a, List<double> b) {
-    if (identical(a, b)) return true;
-    if (a.length != b.length) return false;
-    for (var i = 0; i < a.length; i++) {
-      if (a[i] != b[i]) return false;
-    }
-    return true;
-  }
-}
 
 // ---------------------------------------------------------------------------
 // M5 BcKanbanBoard typed wrappers (ADR-011 Phase 5c — M5 data display)

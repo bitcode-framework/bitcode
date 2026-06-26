@@ -64,15 +64,19 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('doughnut type renders pie with hollow center',
+    testWidgets('doughnut (pie alias) renders pie with hollow center',
         (tester) async {
+      // ADR-015: `doughnut` is a backward-compatible alias of `pie` (the
+      // 26-type enum has no doughnut value). The legacy hollow-center
+      // rendering is preserved via `doughnutInnerRadiusFactor`.
       await tester.pumpWidget(harness(
         const BcChart(
-          type: BcChartType.doughnut,
+          type: BcChartType.pie,
           items: [
             BcChartItem(name: 'A', value: 40),
             BcChartItem(name: 'B', value: 60),
           ],
+          doughnutInnerRadiusFactor: 0.55,
           height: 300,
         ),
       ));
@@ -135,11 +139,11 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('doughnut with zero total renders gracefully',
+    testWidgets('doughnut (pie alias) with zero total renders gracefully',
         (tester) async {
       await tester.pumpWidget(harness(
         const BcChart(
-          type: BcChartType.doughnut,
+          type: BcChartType.pie,
           items: [
             BcChartItem(name: 'A', value: 0),
           ],
