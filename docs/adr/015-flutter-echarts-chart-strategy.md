@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Accepted (F1 contract extraction ✅, F2 Dart port ✅, F3 flutter_echarts rewrite ✅, F4 docs cleanup in progress) |
+| **Status** | Accepted (F1 contract extraction ✅, F2 Dart port ✅, F3 flutter_echarts rewrite ✅, F4 docs cleanup ✅) |
 | **Date** | 2026-06-26 |
 | **Deciders** | Stakeholder BitCode |
 | **Supersedes** | ADR-011 §"Chart widget" (M5 data-display CustomPaint approach) — partially |
