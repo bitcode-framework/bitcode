@@ -380,8 +380,22 @@ packages/ui/
 │   ├── api/                                    # 177 per-component API docs + categorized sitemap README
 │   └── guides/                                 # 4 framework integration guides (React, Vue, RN, Stencil) + index README
 ├── output/                                     # Generated targets (gitignored — produced by mitosis build)
+├── demo-app/                                   # Production Vite + React demo app (all 177 components, 604 sections)
+│   ├── package.json                            #   @bitcode/ui-demo — Vite + React + Tailwind v4
+│   ├── vite.config.ts                          #   Core-import redirect plugin + Mitosis runtime stub alias
+│   ├── src/
+│   │   ├── App.tsx                             #   Main demo shell — sidebar nav + section renderer
+│   │   ├── main.tsx                            #   React entry — AppProvider + App
+│   │   ├── index.css                           #   Tailwind v4 import + demo-specific styles
+│   │   ├── mitosis-browser-stub.ts             #   Browser-safe stub for non-Mitosis .ts files importing @builder.io/mitosis
+│   │   ├── react-native-web-stub.tsx           #   react-native → react-dom shim for web demo
+│   │   ├── bitcode-ui.d.ts                     #   Ambient module declarations
+│   │   ├── demos/                              #   Per-component demo files (one per component group)
+│   │   ├── mocks/                              #   Mock data for demos
+│   │   └── utils/                              #   Demo utilities
+│   └── tsconfig.json                           #   Strict TS config with path aliases
 └── demos/
-    └── react-app/                              # Vite + React playground that consumes all components
+    └── react-app/                              # Legacy Vite + React playground (Playwright e2e)
 ```
 
 > Lynx target (formerly ADR-001 §15) was dropped per ADR-006. Mobile is now React
@@ -749,8 +763,19 @@ packages/ui-flutter/
 │   ├── app_config_store_test.dart              # ADR-013 Phase 1/5a — AppConfigStore parity (defaults, setTheme resolves, subscribe, dispose, direction auto-resolve, dateLocale fallback)
 │   ├── hooks_parity_test.dart                  # ADR-013 Phase 5b — 38 tests: PreviousValue, BcIntervalController, BcTimeoutController, BcScrollLock, BcLocalStorageStore (timer paths via FakeAsync)
 │   └── animation_adapt_parity_test.dart        # ADR-013 Phase 5b — 16 tests: resolveAnimation (default merge, kind→css, reduced-motion collapse), resolveAdapt (breakpoint/platform/SSR), breakpoint-query parity
+├── example/                                    # Demo Flutter app (BcUiDemoApp) — single-page showcase of all 32 widgets
+│   ├── lib/
+│   │   ├── main.dart                           # App entry, theme, drawer + section list, debugPrint for widget events
+│   │   ├── sections/                           # 6 demo section files (fields, overlays, layout, data_display, views, misc)
+│   │   └── shared/                             # Shared demo primitives (section card, heading, demo state)
+│   ├── test/
+│   │   └── widget_test.dart                    # Smoke test — BcUiDemoApp renders, drawer + 6 sections present
+│   ├── web/                                    # Flutter web bootstrap (index.html, manifest.json)
+│   └── pubspec.yaml                            # Path-dep on bc_ui_flutter, flutter_platform_widgets
+└── tool/
+    └── run-flutter.ps1                         # PATH-isolation wrapper for flutter/dart on machines with bloated PATH
 ```
-**1581 Flutter tests** across 27 test files (incl. 107 chart tests: 48 factory golden-fixture parity + 34 helpers + 25 bc_chart widget contract; + 54 ADR-013 Phase 5b parity tests). `flutter analyze` returns 0 errors (300 info-level lints; invoke via `tool/run-flutter.ps1` on machines with a bloated PATH). `build_runner` succeeds.
+**1581 Flutter tests** across 27 test files (incl. 107 chart tests: 48 factory golden-fixture parity + 34 helpers + 25 bc_chart widget contract; + 54 ADR-013 Phase 5b parity tests). `flutter analyze` returns 0 errors (300 info-level lints; invoke via `tool/run-flutter.ps1` on machines with a bloated PATH). `build_runner` succeeds. **Demo app** (`example/`) — `flutter analyze` 0 issues, `flutter build web` succeeds; 6 section files render all 32 widgets in a single-page showcase with Material/Cupertino adaptation via FPW.
 
 **Token bridge** (`packages/ui/scripts/generate-flutter-tokens.mjs`): Parses `theme.css` HSL triplets, converts to hex at build time, emits `bc_theme.dart` with 25 light + 25 dark `const Color`, 4 factory methods (materialLight/Dark, cupertinoLight/Dark), and radius. `--check` mode for CI.
 
