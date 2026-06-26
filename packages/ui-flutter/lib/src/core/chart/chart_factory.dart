@@ -126,16 +126,12 @@ List<Map<String, Object?>> _singleItems(BuildOptionContext ctx) {
     final ms = ctx.data as Map;
     final categories = (ms['categories'] as List).cast<String>();
     final series = (ms['series'] as List);
-    final firstData = series.isNotEmpty
-        ? (series[0] as Map)['data']
-        : null;
+    final firstData = series.isNotEmpty ? (series[0] as Map)['data'] : null;
     final firstNums = firstData is List ? firstData.cast<num>() : null;
     return List<Map<String, Object?>>.generate(categories.length, (i) {
       return <String, Object?>{
         'name': categories[i],
-        'value': (firstNums != null && i < firstNums.length)
-            ? firstNums[i]
-            : 0,
+        'value': (firstNums != null && i < firstNums.length) ? firstNums[i] : 0,
       };
     });
   }
@@ -170,10 +166,7 @@ _CategoriesAndSeries _categoriesAndSeries(
     'stack': stacked ? 'total' : null,
   };
   _stripNulls(m);
-  return _CategoriesAndSeries(
-    ss.map((d) => d['name'] as String).toList(),
-    [m],
-  );
+  return _CategoriesAndSeries(ss.map((d) => d['name'] as String).toList(), [m]);
 }
 
 Map<String, Object?> _buildAxisChart(
@@ -241,12 +234,14 @@ Map<String, Object?> _buildRadar(BuildOptionContext ctx) {
     ..._baseOption(ctx, 'item'),
     'radar': <String, Object?>{
       'indicator': items
-          .map((d) => <String, Object?>{
-                'name': d['name'],
-                // TS: Math.max(d.value, 100) — returns a num; keep int when
-                // the value is int so JSON is byte-identical to the TS output.
-                'max': math.max<num>(d['value'] as num, 100),
-              })
+          .map(
+            (d) => <String, Object?>{
+              'name': d['name'],
+              // TS: Math.max(d.value, 100) — returns a num; keep int when
+              // the value is int so JSON is byte-identical to the TS output.
+              'max': math.max<num>(d['value'] as num, 100),
+            },
+          )
           .toList(),
     },
     'series': [

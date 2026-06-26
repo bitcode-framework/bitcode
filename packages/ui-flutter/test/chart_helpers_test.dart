@@ -16,9 +16,12 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('isSingleSeries', () {
     test('detects [{name, value}] shape', () {
-      expect(isSingleSeries(<Map<String, Object>>[
-        {'name': 'A', 'value': 10},
-      ]), isTrue);
+      expect(
+        isSingleSeries(<Map<String, Object>>[
+          {'name': 'A', 'value': 10},
+        ]),
+        isTrue,
+      );
     });
 
     test('empty array is not single-series', () {
@@ -54,7 +57,10 @@ void main() {
         isMultiSeries(<String, Object>{
           'categories': <String>['Q1'],
           'series': <Map<String, Object>>[
-            {'name': 'A', 'data': <int>[1]},
+            {
+              'name': 'A',
+              'data': <int>[1],
+            },
           ],
         }),
         isTrue,
@@ -215,19 +221,24 @@ void main() {
     test('disabled options are ABSENT from JSON, not null', () {
       // When tooltip/legend/toolbox/dataZoom disabled, the keys must be
       // absent in the JSON string (TS undefined is dropped by JSON.stringify).
-      final titleJson = jsonEncode(buildTitleOption(null) ?? <String, Object?>{});
+      final titleJson = jsonEncode(
+        buildTitleOption(null) ?? <String, Object?>{},
+      );
       expect(titleJson, '{}');
 
-      final tooltipJson =
-          jsonEncode(buildTooltipOption(false, 'item') ?? <String, Object?>{});
+      final tooltipJson = jsonEncode(
+        buildTooltipOption(false, 'item') ?? <String, Object?>{},
+      );
       expect(tooltipJson, '{}');
 
-      final legendJson =
-          jsonEncode(buildLegendOption(false) ?? <String, Object?>{});
+      final legendJson = jsonEncode(
+        buildLegendOption(false) ?? <String, Object?>{},
+      );
       expect(legendJson, '{}');
 
-      final toolboxJson =
-          jsonEncode(buildToolboxOption(false) ?? <String, Object?>{});
+      final toolboxJson = jsonEncode(
+        buildToolboxOption(false) ?? <String, Object?>{},
+      );
       expect(toolboxJson, '{}');
 
       final zoomJson = jsonEncode(
@@ -241,10 +252,32 @@ void main() {
     test('BC_CHART_TYPES contains exactly 26 unified chart variants', () {
       expect(BcChartType.bcChartTypes.length, 26);
       const expected = <String>[
-        'area', 'bar', 'boxplot', 'candlestick', 'custom', 'funnel', 'gauge',
-        'graph', 'heatmap', 'kpi', 'line', 'mixed', 'parallel', 'pictorialbar',
-        'pie', 'pivot', 'polar', 'progress', 'radar', 'sankey', 'scatter',
-        'scorecard', 'sunburst', 'themeriver', 'tree', 'treemap',
+        'area',
+        'bar',
+        'boxplot',
+        'candlestick',
+        'custom',
+        'funnel',
+        'gauge',
+        'graph',
+        'heatmap',
+        'kpi',
+        'line',
+        'mixed',
+        'parallel',
+        'pictorialbar',
+        'pie',
+        'pivot',
+        'polar',
+        'progress',
+        'radar',
+        'sankey',
+        'scatter',
+        'scorecard',
+        'sunburst',
+        'themeriver',
+        'tree',
+        'treemap',
       ];
       final names = BcChartType.bcChartTypes.map((e) => e.name).toList();
       expect(names, expected);

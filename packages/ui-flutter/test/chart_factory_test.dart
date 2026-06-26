@@ -36,8 +36,14 @@ Map<String, Object?> _multiSeriesData() {
   return {
     'categories': ['Q1', 'Q2', 'Q3'],
     'series': [
-      {'name': 'S1', 'data': [10, 20, 30]},
-      {'name': 'S2', 'data': [15, 25, 35]},
+      {
+        'name': 'S1',
+        'data': [10, 20, 30],
+      },
+      {
+        'name': 'S2',
+        'data': [15, 25, 35],
+      },
     ],
   };
 }
@@ -104,10 +110,32 @@ void main() {
 
     test('matches the TS canonical list (order + names)', () {
       final expected = <String>[
-        'area', 'bar', 'boxplot', 'candlestick', 'custom', 'funnel', 'gauge',
-        'graph', 'heatmap', 'kpi', 'line', 'mixed', 'parallel', 'pictorialbar',
-        'pie', 'pivot', 'polar', 'progress', 'radar', 'sankey', 'scatter',
-        'scorecard', 'sunburst', 'themeriver', 'tree', 'treemap',
+        'area',
+        'bar',
+        'boxplot',
+        'candlestick',
+        'custom',
+        'funnel',
+        'gauge',
+        'graph',
+        'heatmap',
+        'kpi',
+        'line',
+        'mixed',
+        'parallel',
+        'pictorialbar',
+        'pie',
+        'pivot',
+        'polar',
+        'progress',
+        'radar',
+        'sankey',
+        'scatter',
+        'scorecard',
+        'sunburst',
+        'themeriver',
+        'tree',
+        'treemap',
       ];
       final actual = BcChartType.bcChartTypes.map((t) => t.name).toList();
       expect(actual, expected);
@@ -265,7 +293,10 @@ void main() {
           BcChartType.custom,
           data: {
             'series': [
-              {'type': 'line', 'data': [1, 2, 3]},
+              {
+                'type': 'line',
+                'data': [1, 2, 3],
+              },
             ],
           },
           chartTitle: 'Chart',
@@ -277,10 +308,7 @@ void main() {
       final parsed = parseChartData(
         '[{"name":"X","value":30},{"name":"Y","value":70}]',
       );
-      expectParity(
-        'parsed_string_data',
-        _ctx(BcChartType.pie, data: parsed),
-      );
+      expectParity('parsed_string_data', _ctx(BcChartType.pie, data: parsed));
     });
   });
 
@@ -306,10 +334,7 @@ void main() {
     test('bar_custom_colors (explicit color array)', () {
       expectParity(
         'bar_custom_colors',
-        _ctx(
-          BcChartType.bar,
-          colors: ['#ff0000', '#00ff00', '#0000ff'],
-        ),
+        _ctx(BcChartType.bar, colors: ['#ff0000', '#00ff00', '#0000ff']),
       );
     });
 
@@ -339,10 +364,9 @@ void main() {
     });
 
     test('custom passthrough omits animation when data is an object', () {
-      final opt = buildChartOption(_ctx(
-        BcChartType.custom,
-        data: {'series': <Map<String, Object?>>[]},
-      ));
+      final opt = buildChartOption(
+        _ctx(BcChartType.custom, data: {'series': <Map<String, Object?>>[]}),
+      );
       expect(opt.containsKey('animation'), isFalse);
     });
 
@@ -363,7 +387,11 @@ void main() {
 
     test('stacked bar series carry stack=total; non-stacked omit stack', () {
       final stacked = buildChartOption(
-        _ctx(BcChartType.bar, data: _multiSeriesData(), options: {'stacked': true}),
+        _ctx(
+          BcChartType.bar,
+          data: _multiSeriesData(),
+          options: {'stacked': true},
+        ),
       );
       final stackedSeries = stacked['series'] as List;
       expect((stackedSeries.first as Map)['stack'], 'total');

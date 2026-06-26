@@ -397,7 +397,7 @@ discriminator prop `type`.
 
 | Component | Group | Stencil | Mitosis | Verified Done |
 |---|---|---|---|---|
-| BcChart | charts | 26 (frozen) | ✅ | ✅ `charts/chart` 26-type discriminator + lazy `await import('echarts')` + SSR guard + onMount/onUpdate/onUnMount lifecycle + role=img + aria-busy + token-driven default palette. 12 component-level tests + 17 helpers tests + 23 factory tests = **52 tests**. |
+| BcChart | charts | 26 (frozen) | ✅ | ✅ `charts/chart` 26-type discriminator + lazy `await import('echarts')` + SSR guard + onMount/onUpdate/onUnMount lifecycle + role=img + aria-busy + token-driven default palette. 12 component-level tests + 17 helpers tests + 23 factory tests = **52 tests**. **Flutter (ADR-015 F2 ✅)**: Dart contract port at `packages/ui-flutter/lib/src/core/chart/` — `buildChartOption()` pure-function port with 36 golden-fixture parity tests (0 diff) + 34 helper assertions; legacy 4-value `BcChartType` replaced by 26-value enum with `doughnut`→`pie` alias. |
 
 **Architecture highlights:**
 

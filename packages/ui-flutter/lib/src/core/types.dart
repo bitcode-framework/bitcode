@@ -19,12 +19,7 @@ export 'chart/chart_types.dart';
 ///
 /// Mirrors TS `BcEventSource` but trimmed to Dart-relevant values.
 /// `touch` is folded into `pointer` (Flutter gesture system unifies them).
-enum BcEventSource {
-  pointer,
-  keyboard,
-  programmatic,
-  external,
-}
+enum BcEventSource { pointer, keyboard, programmatic, external }
 
 /// Reason metadata for change events.
 ///
@@ -81,9 +76,7 @@ class BcChangeMeta {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is BcChangeMeta &&
-          reason == other.reason &&
-          source == other.source;
+      other is BcChangeMeta && reason == other.reason && source == other.source;
 
   @override
   int get hashCode => Object.hash(reason, source);
@@ -131,8 +124,7 @@ class BcFieldTableSelectColumn {
   const BcFieldTableSelectColumn({required this.key, required this.label});
 
   @override
-  String toString() =>
-      'BcFieldTableSelectColumn(key: $key, label: $label)';
+  String toString() => 'BcFieldTableSelectColumn(key: $key, label: $label)';
 
   @override
   bool operator ==(Object other) =>
@@ -202,7 +194,10 @@ class BcFieldMorphType {
   @override
   int get hashCode => Object.hash(value, label, widget, options);
 
-  static bool _listEquals(List<BcFieldMorphOption>? a, List<BcFieldMorphOption>? b) {
+  static bool _listEquals(
+    List<BcFieldMorphOption>? a,
+    List<BcFieldMorphOption>? b,
+  ) {
     if (identical(a, b)) return true;
     if (a == null || b == null) return a == b;
     if (a.length != b.length) return false;
@@ -251,9 +246,7 @@ class BcDynLinkModel {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is BcDynLinkModel &&
-          model == other.model &&
-          label == other.label;
+      other is BcDynLinkModel && model == other.model && label == other.label;
 
   @override
   int get hashCode => Object.hash(model, label);
@@ -326,9 +319,7 @@ class BcLookupModalColumn {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is BcLookupModalColumn &&
-          key == other.key &&
-          label == other.label;
+      other is BcLookupModalColumn && key == other.key && label == other.label;
 
   @override
   int get hashCode => Object.hash(key, label);
@@ -341,21 +332,12 @@ class BcLookupModalColumn {
 /// Rendering shape for a Gantt task bar.
 ///
 /// Mirrors TS `BcGanttTaskType` ('task' | 'milestone' | 'summary').
-enum BcGanttTaskType {
-  task,
-  milestone,
-  summary,
-}
+enum BcGanttTaskType { task, milestone, summary }
 
 /// Zoom level for the Gantt timeline.
 ///
 /// Mirrors TS `BcGanttZoomLevel` ('day' | 'week' | 'month' | 'quarter').
-enum BcGanttZoomLevel {
-  day,
-  week,
-  month,
-  quarter,
-}
+enum BcGanttZoomLevel { day, week, month, quarter }
 
 /// Single Gantt task.
 ///
@@ -387,7 +369,8 @@ class BcGanttTask {
   });
 
   @override
-  String toString() => 'BcGanttTask(id: $id, label: $label, start: $start, '
+  String toString() =>
+      'BcGanttTask(id: $id, label: $label, start: $start, '
       'duration: $duration, progress: $progress, color: $color, '
       'parentId: $parentId, collapsed: $collapsed, type: $type, '
       'assignees: $assignees)';
@@ -409,17 +392,17 @@ class BcGanttTask {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        label,
-        start,
-        duration,
-        progress,
-        color,
-        parentId,
-        collapsed,
-        type,
-        Object.hashAll(assignees ?? const []),
-      );
+    id,
+    label,
+    start,
+    duration,
+    progress,
+    color,
+    parentId,
+    collapsed,
+    type,
+    Object.hashAll(assignees ?? const []),
+  );
 
   static bool _listEquals(List<String>? a, List<String>? b) {
     if (identical(a, b)) return true;
@@ -536,8 +519,7 @@ class BcSvValue {
   const BcSvValue({required this.saturation, required this.value});
 
   @override
-  String toString() =>
-      'BcSvValue(saturation: $saturation, value: $value)';
+  String toString() => 'BcSvValue(saturation: $saturation, value: $value)';
 
   @override
   bool operator ==(Object other) =>
@@ -555,20 +537,10 @@ class BcSvValue {
 // ---------------------------------------------------------------------------
 
 /// Rendering style for [BcSparkline].
-enum BcSparklineType {
-  line,
-  bar,
-  area,
-}
+enum BcSparklineType { line, bar, area }
 
 /// Visual variant for a tag in [BcTagGroup].
-enum BcTagVariant {
-  defaultVariant,
-  success,
-  warning,
-  destructive,
-  info,
-}
+enum BcTagVariant { defaultVariant, success, warning, destructive, info }
 
 // ---------------------------------------------------------------------------
 // M5 BcChart typed wrappers — moved to core/chart/chart_types.dart
@@ -586,12 +558,7 @@ enum BcTagVariant {
 // ---------------------------------------------------------------------------
 
 /// Priority level for a [BcKanbanCard].
-enum BcKanbanPriority {
-  low,
-  medium,
-  high,
-  critical,
-}
+enum BcKanbanPriority { low, medium, high, critical }
 
 /// Column descriptor for [BcKanbanBoard].
 ///
@@ -671,15 +638,15 @@ class BcKanbanCard {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        title,
-        column,
-        description,
-        position,
-        priority,
-        dueDate,
-        Object.hashAll(labels ?? const []),
-      );
+    id,
+    title,
+    column,
+    description,
+    position,
+    priority,
+    dueDate,
+    Object.hashAll(labels ?? const []),
+  );
 
   static bool _listEquals(List<String>? a, List<String>? b) {
     if (identical(a, b)) return true;
@@ -765,10 +732,7 @@ class BcMapMarker {
 }
 
 /// Shape type for a geo region/polyline.
-enum BcGeoShapeType {
-  polygon,
-  polyline,
-}
+enum BcGeoShapeType { polygon, polyline }
 
 /// Geo region (polygon) or polyline for [BcViewMap].
 class BcMapRegion {
@@ -801,13 +765,8 @@ class BcMapRegion {
           color == other.color;
 
   @override
-  int get hashCode => Object.hash(
-        id,
-        type,
-        Object.hashAll(points),
-        label,
-        color,
-      );
+  int get hashCode =>
+      Object.hash(id, type, Object.hashAll(points), label, color);
 
   static bool _coordListEquals(List<BcGeoCoord> a, List<BcGeoCoord> b) {
     if (identical(a, b)) return true;
@@ -886,13 +845,7 @@ class BcGalleriaItem {
 // ---------------------------------------------------------------------------
 
 /// Visual variant for an activity timeline entry.
-enum BcActivityVariant {
-  defaultVariant,
-  success,
-  warning,
-  destructive,
-  info,
-}
+enum BcActivityVariant { defaultVariant, success, warning, destructive, info }
 
 /// Single activity timeline entry.
 ///
@@ -930,7 +883,8 @@ class BcActivityEntry {
           variant == other.variant;
 
   @override
-  int get hashCode => Object.hash(id, actor, action, target, timestamp, variant);
+  int get hashCode =>
+      Object.hash(id, actor, action, target, timestamp, variant);
 }
 
 // ---------------------------------------------------------------------------
@@ -1022,17 +976,17 @@ class BcSocialPost {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        author,
-        handle,
-        avatar,
-        content,
-        timestamp,
-        likes,
-        comments,
-        shares,
-        Object.hashAll(commentList),
-      );
+    id,
+    author,
+    handle,
+    avatar,
+    content,
+    timestamp,
+    likes,
+    comments,
+    shares,
+    Object.hashAll(commentList),
+  );
 
   static bool _listEquals(List<BcSocialComment> a, List<BcSocialComment> b) {
     if (identical(a, b)) return true;
@@ -1120,4 +1074,3 @@ class BcReportSection {
   @override
   int get hashCode => Object.hash(id, title, content, visible);
 }
-

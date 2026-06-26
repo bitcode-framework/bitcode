@@ -15,6 +15,8 @@ dependencies:
   freezed_annotation: ^2.4.4
   json_annotation: ^4.9.0
   http: ^1.2.0
+  # Apache ECharts in a Flutter WebView (ADR-015 — 26/26 chart type parity).
+  flutter_echarts: ^2.5.0
 
 dev_dependencies:
   flutter_test:
@@ -25,3 +27,6 @@ dev_dependencies:
   json_serializable: ^6.7.0
   # DeepCollectionEquality for golden-fixture JSON comparison (chart parity).
   collection: ^1.18.0
+  # WebView platform interface — stubbed by test/helpers/fake_webview_platform.dart
+  # so flutter_echarts can build in widget tests without a real WebView.
+  webview_flutter_platform_interface: ^2.15.0

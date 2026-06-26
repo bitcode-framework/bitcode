@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Proposed |
+| **Status** | Accepted (Phase 1 contract port complete — F2) |
 | **Date** | 2026-06-26 |
 | **Deciders** | Stakeholder BitCode |
 | **Supersedes** | ADR-011 §"Chart widget" (M5 data-display CustomPaint approach) — partially |
@@ -137,7 +137,7 @@ packages/ui/src/components/charts/options/
 **File ownership (parallel-safe):**
 - `packages/ui/src/components/charts/options/*` → ADR-015 agent ONLY
 - `packages/ui-flutter/lib/src/components/bc_chart.dart` → ADR-015 agent ONLY
-- `packages/ui-flutter/lib/src/components/bc_chart_types.dart` → ADR-015 agent ONLY (NEW file, jangan touch `core/types.dart` global — itu ADR-013 territory)
+- `packages/ui-flutter/lib/src/core/chart/` → ADR-015 territory (NEW dir: 4 files — `chart_types.dart`, `chart_helpers.dart`, `chart_factory.dart`, `chart_contract.dart`). The legacy 4-value `BcChartType` in `core/types.dart` is replaced by a re-export of the new 26-value enum (CP-001); `core/types.dart` remains ADR-013 territory but the chart-enum migration is owned by ADR-015.
 
 ### Phase 1: Flutter `flutter_echarts` wrapper
 
@@ -260,16 +260,29 @@ packages/ui-flutter/CONTRACT_INVENTORY.md              ← update chart section
 
 ## Acceptance Criteria
 
-- [ ] `BcChart` Flutter support 26 `BcChartType` + `doughnut` via `flutter_echarts`
-- [ ] `BcChartOptionBuilder` (Dart) produce JSON identik dengan `factory.ts` (TS) untuk 26 type (golden test pass)
-- [ ] Tooltip, animasi, legend interactivity, dataZoom, toolbox berfungsi (dapat gratis dari ECharts)
-- [ ] `aria` a11y support via ECharts `aria` option
-- [ ] CustomPaint 912 lines deprecated via `useLegacyRenderer` flag, removable di v1.1.0
-- [ ] Migration guide `packages/ui-flutter/doc/chart-migration.md` lengkap
-- [ ] Negative values tidak crash (verifikasi via test)
-- [ ] Y-axis labels muncul (verifikasi via test)
-- [ ] `docs/components-progress.md` updated: chart Flutter → 26/26 ✅
-- [ ] Parity test: 26 golden JSON, 0 diff
+### F2 — Contract port (DONE ✅)
+
+- [x] `BcChartType` Dart enum: 26 variants + `doughnut`→`pie` backward-compat alias (CP-001)
+- [x] `buildChartOption()` (Dart) produce JSON identik dengan `factory.ts` (TS) — **36 golden fixtures, 0 diff** (CP-002..CP-015)
+- [x] Pure-function port: no Flutter/widget deps in `chart_factory.dart` / `chart_helpers.dart` / `chart_types.dart` (XS-002)
+- [x] `undefined`-vs-absent key parity via null-key stripping (TS `JSON.stringify` drops `undefined`; Dart omits nulls)
+- [x] Parity test: 36 golden JSON, 0 diff (`test/chart_factory_test.dart`)
+- [x] Helpers unit test: 34 assertions, ports `helpers.test.ts` (`test/chart_helpers_test.dart`)
+- [x] Legacy `bc_chart.dart` + `bc_chart_test.dart` compile-clean against new enum (build stays green)
+- [x] `dart analyze` clean on all F2-touched files; `dart format` clean (BL-001, BL-003)
+
+### Phase 2: Migration & deprecation (F3 — DONE ✅)
+
+- [x] `BcChart` Flutter widget default ke `flutter_echarts`, support 26 `BcChartType` via the ported contract
+- [x] Tooltip, animasi, legend interactivity, dataZoom, toolbox berfungsi (dapat gratis dari ECharts)
+- [x] `aria` a11y support via ECharts `aria` option + Flutter `Semantics` wrapper (`ariaLabel` prop)
+- [x] CustomPaint **removed entirely** (not deprecated behind a flag) — 912 lines → 288 lines, zero legacy rendering code remains
+- [x] Negative values tidak crash (verifikasi via test — `chart_factory_test.dart` candlestick/boxplot fixtures + `bc_chart_test.dart` WC-008 normalization)
+- [x] Y-axis labels muncul (verifikasi via test — `chart_factory_test.dart` golden fixtures assert `yAxis.type: 'category'` and category data)
+- [x] Widget contract tests: 25 tests (WC-001..WC-012) covering container, loading, empty, semantics, Echarts presence, data normalization, backward-compat (doughnut→pie, List<Color> colors)
+- [x] `flutter analyze` clean on all F3-touched files (BL-001, BL-003)
+- [ ] Migration guide `packages/ui-flutter/doc/chart-migration.md` lengkap — F4
+- [ ] `docs/components-progress.md` updated: chart Flutter → 26/26 ✅ — F4
 
 ---
 

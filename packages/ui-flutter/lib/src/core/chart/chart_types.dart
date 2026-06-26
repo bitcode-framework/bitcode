@@ -174,12 +174,15 @@ class BcChartMultiSeriesData {
   final List<String> categories;
   final List<BcChartSeries> series;
 
-  const BcChartMultiSeriesData({required this.categories, required this.series});
+  const BcChartMultiSeriesData({
+    required this.categories,
+    required this.series,
+  });
 
   Map<String, dynamic> toMap() => {
-        'categories': categories,
-        'series': series.map((s) => s.toMap()).toList(),
-      };
+    'categories': categories,
+    'series': series.map((s) => s.toMap()).toList(),
+  };
 
   @override
   String toString() =>

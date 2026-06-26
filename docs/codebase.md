@@ -631,7 +631,7 @@ packages/components/
 Dart port of the BitCode UI layer per ADR-011 Phase 5a/5b. Pure-Dart reactive engine (no Flutter imports) with thin Flutter `ChangeNotifier` adapter, auto-generated theme tokens, UiSchema types port (freezed + json_serializable), contract→Dart stub generator, and 32 cross-platform widgets (24 P0 hand-written + 8 P1 Phase 5b.2 widgets). Uses `flutter_platform_widgets` (FPW) for Material/Cupertino adaptation where a Cupertino counterpart exists; Material-only for widgets without one.
 ```
 packages/ui-flutter/
-├── pubspec.yaml                                # bc_ui_flutter — depends on flutter, flutter_platform_widgets 0xfw, flutter_test, freezed, json_serializable, build_runner (dev)
+├── pubspec.yaml                                # bc_ui_flutter — depends on flutter, flutter_platform_widgets 0xfw, flutter_echarts 2.5 (ADR-015), flutter_test, freezed, json_serializable, build_runner, collection, webview_flutter_platform_interface (dev, test stub)
 ├── analysis_options.yaml                       # flutter_lints, prefer_const, excludes generated *.freezed.dart/*.g.dart
 ├── lib/
 │   ├── bc_ui_flutter.dart                      # Public barrel — exports 24 P0 components + 8 P1 Phase 5b.2 widgets + schema types + core + theme + BcApp
@@ -693,7 +693,8 @@ packages/ui-flutter/
 │           ├── bc_field_table_select.dart      # P1 Phase 5b.2 — table select field
 │           ├── bc_lookup_modal.dart            # P1 Phase 5b.2 — lookup modal
 │           ├── bc_portal.dart                  # P1 Phase 5b.2 — portal overlay host
-│           └── bc_view_gantt.dart              # P1 Phase 5b.2 — Gantt view
+│           ├── bc_view_gantt.dart              # P1 Phase 5b.2 — Gantt view
+│           └── bc_chart.dart                   # ADR-015 — ECharts-backed chart widget (26 types via flutter_echarts WebView, replaces CustomPaint)
 ├── test/
 │   ├── types_test.dart                         # 7 tests — BcChangeMeta, BcEventSource, BcChangeReason, BcComponentSize, BcComponentVariant
 │   ├── reactive_store_test.dart                # 12 tests — get/set, setMany, metadata, VALUE effects, cascade, conditions, snapshot, subscription, dispose
@@ -714,12 +715,20 @@ packages/ui-flutter/
 │   ├── bc_field_dyn_link_test.dart             # Phase 5b.2 tests — dynamic link model and value behavior
 │   ├── bc_lookup_modal_test.dart               # Phase 5b.2 tests — lookup modal search, selection, and close behavior
 │   ├── bc_view_gantt_test.dart                 # Phase 5b.2 tests — Gantt rendering, tasks, scales, and interactions
+│   ├── bc_chart_test.dart                      # ADR-015 F3 — 25 widget-contract tests (WC-001..012): container, loading, empty, semantics, Echarts presence, data normalization, backward-compat; uses fake WebViewPlatform
+│   ├── chart_factory_test.dart                 # ADR-015 F2 — 48 tests: 36 golden-fixture parity (CP-001..017, 0 diff vs TS) + 3 BC_CHART_TYPES enum + 9 structural invariants (CP-015, XS-003)
+│   ├── chart_helpers_test.dart                 # ADR-015 F2 — 34 unit tests for parseColors, parseChartData, buildTitleOption/Tooltip/Legend/Toolbox/DataZoom/Grid
+│   ├── helpers/
+│   │   └── fake_webview_platform.dart          # ADR-015 F3 — no-op WebViewPlatform stub for widget tests that instantiate flutter_echarts Echarts widget
+│   ├── fixtures/
+│   │   └── chart-options/
+│   │       └── golden-fixtures.json            # ADR-015 F2 — 36 golden JSON fixtures generated from TS chart-option factory
 │   ├── bc_integration_gate_test.dart           # Integration gate for Phase 5b.2 widgets and exports
 │   ├── schema/
 │   │   ├── ui_schema_test.dart                 # 55 tests — FetchParams, FetchResult, SortRule, BcSelection (sealed), enums, UiSchema/FieldNode/LayoutNode JSON round-trip, FieldResolver path resolution
 │   │   └── field_resolver_test.dart            # 21 tests — field path resolution, binding evaluation, condition matching
 ```
-**416 Flutter tests** across 22 test files. `flutter analyze` returns 0 errors/warnings (info hints only). `build_runner` succeeds. Mission validation reports 252/252 assertions passed.
+**523 Flutter tests** across 25 test files (incl. 107 chart tests: 48 factory golden-fixture parity + 34 helpers + 25 bc_chart widget contract). `flutter analyze` returns 0 errors/warnings on chart files. `build_runner` succeeds.
 
 **Token bridge** (`packages/ui/scripts/generate-flutter-tokens.mjs`): Parses `theme.css` HSL triplets, converts to hex at build time, emits `bc_theme.dart` with 25 light + 25 dark `const Color`, 4 factory methods (materialLight/Dark, cupertinoLight/Dark), and radius. `--check` mode for CI.
 
