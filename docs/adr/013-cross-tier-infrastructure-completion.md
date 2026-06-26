@@ -11,11 +11,46 @@
 | Phase | Description | Status |
 |-------|-------------|--------|
 | 1 | AppProvider Consumption Surface (useAppContext + useAppConfigStore hooks, Flutter AppConfigStore + BcAppConfig InheritedWidget parity) | ✅ Complete (2026-06-26) |
-| 2 | Hooks P0 Adoption (BcDialog/Popover/Tooltip/Drawer/Dropdown consume P0 hooks) | ⬜ Pending |
+| 2 | Hooks P0 Adoption (BcDialog/Popover/Tooltip/Drawer/Dropdown consume P0 hooks) | ✅ Complete (2026-06-26) |
 | 3 | Hooks P1 New (8 industry-standard headless hooks) | ⬜ Pending |
 | 4 | Animation + Adapt contracts (per-tier implementation) | ⬜ Pending |
 | 5a | Flutter env fix + Dart parity baseline | ⬜ Pending |
 | 5b | Flutter parity completion + cross-tier parity table | ⬜ Pending |
+
+## Phase 2 Completion Notes (2026-06-26)
+
+**Scope:** 5 overlay/navigation components refactored to consume P0 hooks
+(`resolveControllable`, `DisclosureController`/`useDisclosure`, `createFocusTrap`)
+instead of ad-hoc `useStore` boolean patterns. Public API, events, and contracts
+preserved.
+
+| Component | ADR-013 Ref | Hooks Adopted | Notes |
+|-----------|-------------|---------------|-------|
+| BcDialog | A011/A012/A013 | `resolveControllable`, `createFocusTrap` | Controlled+uncontrolled `open`; focus trap activates on modal open, deactivates on close. SSR-safe eager init. |
+| BcPopover | A014 | `resolveControllable`, `useDisclosure` | Controlled+uncontrolled `open`; `DisclosureController` drives open/close/toggle with dedup; `applyOpen` always emits `onOpenChange` + WC event. |
+| BcTooltip | A015 | (excluded) | Pure CSS hover (`group-hover:visible`/`group-hover:opacity-100`), no JS open-state. Exclusion documented via source-text test. Contract keeps `open`/`defaultOpen`/`onOpenChange` for adapter parity. |
+| BcDrawer | A016 | `resolveControllable`, `createFocusTrap` | Controlled+uncontrolled `open`; added `defaultOpen`/`onOpenChange`/`closeOnEscape`; Escape key handler; focus trap on open. |
+| BcDropdown | A017 | `resolveControllable`, `useDisclosure` | Controlled+uncontrolled `open`; added `open`/`defaultOpen`/`onOpenChange`; `applyOpen(next, reason)` with semantic reasons (`trigger`/`select`/`escape`/`programmatic`). |
+
+**Reactivity pattern (proven across BcDialog/BcPopover/BcDrawer/BcDropdown):**
+- `openCell` (`{value}` plain object in `useStore`) backs `resolveControllable`'s
+  read path — stable reference, mutated in place, persists across renders.
+- `reactiveOpen` (useState boolean) triggers Mitosis re-renders on flip.
+- `DisclosureController.onOpenChange` callback syncs both `openCell.value` and
+  `reactiveOpen` (state only, no event emission).
+- `applyOpen(next, reason)` seeds the cell (uncontrolled), drives
+  `disclosure.set(next)`, then **always** emits `props.onOpenChange` + WC event
+  + reason-specific cleanup. Emitting in `applyOpen` (not in the disclosure
+  callback) avoids `DisclosureController` dedup swallowing controlled-mode emits.
+- `createFocusTrap` is initialized **eagerly** in the store (not lazily) to avoid
+  `useState` async-update staleness. SSR-safe (`createFocusTrap()` returns
+  NOOP_TRAP on server). Lifecycle driven via `onUpdate([state.reactiveOpen, props.open, ...])`.
+
+**Verification (2026-06-26):**
+- Source-text tests: 1604 pass, 0 fail (added hook-adoption assertions A011-A018).
+- Runtime tests (overlays + dropdown + command): 147 pass, 0 fail across 15 files.
+- Build: clean, 0 reformat failures.
+- No `as any` / `@ts-ignore` introduced (A050).
 
 ## Context
 
