@@ -138,7 +138,13 @@ class _BcChartWebState extends State<BcChartWeb> {
   Future<void> _initChart() async {
     try {
       await _ensureEchartsLoaded();
-      if (mounted) _renderChart();
+      if (!mounted) return;
+      // Defer render to next frame so HtmlElementView has mounted the DOM
+      // container into the document with real dimensions. Without this,
+      // ECharts measures 0px width on re-visit (CDN cached → instant init).
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _renderChart();
+      });
     } catch (e) {
       if (mounted) setState(() => _error = e);
     }
@@ -153,8 +159,14 @@ class _BcChartWebState extends State<BcChartWeb> {
       final option = _jsParseJson(widget.optionJson);
       if (option == null) throw Exception('Failed to parse chart option JSON');
 
+      // Ensure container style is current before ECharts measures it.
+      _applyContainerStyle();
+
       _chart = _echartsInit(_container!, widget.theme);
       _chart!.setOption(option, true);
+
+      // Force ECharts to use the actual container dimensions after mount.
+      _chart!.resize();
 
       if (mounted) setState(() => _error = null);
     } catch (e) {
