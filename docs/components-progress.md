@@ -428,6 +428,13 @@ parity (iOS Cupertino + Android Material via FPW). Lihat handoff
 | BcNativeModal | adapt-poc | ❌ | ✅ (Adapt) | ✅ `adapt-poc/native-modal` role=dialog + 3 presentation styles (fullscreen/formSheet/pageSheet) + focus trap + Slot. Flutter: controlled-open widget via showGeneralDialog. 12 source tests + 6 Flutter tests. |
 | BcNativeToast | adapt-poc | ❌ | ✅ (Adapt) | ✅ `adapt-poc/native-toast` role=status + aria-live=polite + auto-close timer + actionLabel. Flutter: controlled-open widget with SnackBar-like overlay. 14 source tests + 8 Flutter tests. |
 
+### Klaster C — Media (3 komponen, Adapt) — ✅ COMPLETE
+
+| Component | Group | Stencil | Mitosis | Verified Done |
+|---|---|---|---|---|
+| BcLightbox | media | ❌ | ✅ (Adapt) | ✅ `media/lightbox` full-screen gallery + keyboard nav (Esc/arrows) + touch swipe + role=dialog + focus trap + resolveControllable open/index. 16 source tests + 8 Flutter tests. |
+| BcMap | media | ❌ | ✅ (Adapt) | ✅ `media/map` Leaflet lazy-load + markers + role=application + aria-label. Flutter dependency-free (caller wires google_maps_flutter). 14 source tests + 6 Flutter tests. |
+| BcWebcam | media | ❌ | ✅ (Adapt) | ✅ `media/webcam` getUserMedia + canvas capture + track cleanup on unmount + permission error state. Flutter dependency-free (caller wires camera plugin). 15 source tests + 6 Flutter tests. |
 
 
 26 chart variants Stencil (area, bar, boxplot, candlestick, custom, funnel,

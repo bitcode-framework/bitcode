@@ -243,6 +243,14 @@ export 'src/components/bc_native_actionsheet.dart';
 export 'src/components/bc_native_modal.dart';
 export 'src/components/bc_native_toast.dart';
 
+// M8 stub-completion — Klaster C media (3 Adapt components).
+// ADR-006 platform-idiomatic media components. Web uses native browser APIs
+// (getUserMedia, lazy Leaflet); Flutter is dependency-free (caller wires the
+// platform plugin via a builder prop).
+export 'src/components/bc_lightbox.dart';
+export 'src/components/bc_map.dart';
+export 'src/components/bc_webcam.dart';
+
 // M7 misc widgets
 export 'src/components/bc_watermark.dart';
 export 'src/components/bc_qrcode.dart';
