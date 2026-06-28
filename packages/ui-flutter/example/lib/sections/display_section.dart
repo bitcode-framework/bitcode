@@ -181,6 +181,7 @@ class _StepsDemoState extends State<_StepsDemo> {
         const SizedBox(height: 16),
         BcXStack(
           gap: 8,
+          crossAxisAlignment: BcXStackAlign.center,
           children: [
             ElevatedButton(
               onPressed: _current > 0 ? () => setState(() => _current--) : null,

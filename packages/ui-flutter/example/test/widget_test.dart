@@ -39,4 +39,21 @@ void main() {
     // Confirm the Data section's content is actually present.
     expect(find.text('BcDataTable'), findsOneWidget);
   });
+
+  // Test that Display section renders without crashing.
+  testWidgets('Display section renders without ErrorWidget',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const BcUiDemoApp());
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+
+    final displayTarget = find.text('Display');
+    if (displayTarget.evaluate().isNotEmpty) {
+      await tester.tap(displayTarget.first);
+      await tester.pumpAndSettle(const Duration(seconds: 2));
+    }
+    expect(find.byType(ErrorWidget), findsNothing,
+        reason: 'Display section rendered an ErrorWidget (crash)');
+    // Confirm the Display section's content is actually present.
+    expect(find.text('BcStatistic'), findsOneWidget);
+  });
 }
