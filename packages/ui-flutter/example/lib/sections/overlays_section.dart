@@ -300,6 +300,81 @@ class _OverlaysSectionState extends State<OverlaysSection> {
             ],
           ),
         ),
+        const SizedBox(height: 24),
+        DemoCard(
+          title: 'BcWizard',
+          description: 'Multi-step wizard dialog with Next/Back navigation.',
+          child: ElevatedButton(
+            onPressed: () {
+              BcWizard.show(
+                context: context,
+                steps: const [
+                  BcWizardStep(title: 'Account', description: 'Enter your account details.'),
+                  BcWizardStep(title: 'Profile', description: 'Set up your profile.'),
+                  BcWizardStep(title: 'Confirm', description: 'Review and confirm.'),
+                ],
+              );
+            },
+            child: const Text('Open Wizard'),
+          ),
+        ),
+        const SizedBox(height: 24),
+        DemoCard(
+          title: 'BcPrompt',
+          description: 'Modal prompt dialog with text input and validation.',
+          child: ElevatedButton(
+            onPressed: () {
+              BcPrompt.show(
+                context: context,
+                title: 'Rename Project',
+                description: 'Enter a new name for this project.',
+                defaultValue: 'My Project',
+                placeholder: 'Project name',
+                confirmLabel: 'Save',
+                onConfirm: (value, _) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Saved: $value'),
+                        duration: const Duration(milliseconds: 1000),
+                      ),
+                    );
+                  }
+                },
+              );
+            },
+            child: const Text('Open Prompt'),
+          ),
+        ),
+        const SizedBox(height: 24),
+        DemoCard(
+          title: 'BcSpeedDial',
+          description: 'Floating action button that expands into sub-actions.',
+          child: SizedBox(
+            height: 200,
+            child: Stack(
+              children: [
+                BcSpeedDial(
+                  label: 'Actions',
+                  icon: Icons.add,
+                  actions: const [
+                    BcSpeedDialAction(key: 'new', label: 'New Item', icon: Icons.note_add),
+                    BcSpeedDialAction(key: 'share', label: 'Share', icon: Icons.share),
+                    BcSpeedDialAction(key: 'email', label: 'Email', icon: Icons.email),
+                  ],
+                  onSelect: (action, _) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Selected: ${action.label}'),
+                        duration: const Duration(milliseconds: 800),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
