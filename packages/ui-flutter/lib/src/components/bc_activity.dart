@@ -194,10 +194,13 @@ class _BcActivityState extends State<BcActivity> {
     }
 
     return PlatformWidget(
-      material: (ctx, _) => InkWell(
+      material: (ctx, _) => Material(
+        color: Colors.transparent,
+        child: InkWell(
         onTap: () => _onTap(entry),
         borderRadius: const BorderRadius.all(Radius.circular(BcTheme.radius)),
         child: content,
+        ),
       ),
       cupertino: (ctx, _) => CupertinoButton(
         onPressed: () => _onTap(entry),
