@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | Accepted (2026-06-28; Phase 1-3 + Flutter complete, charts canvas rendering remaining) |
+| **Status** | Accepted (2026-06-29; Phase 1-4 COMPLETE — 28 stub components ported, Flutter demo review complete, 3 pre-existing runtime bugs fixed) |
 | **Depends on** | 001, 002, 006, 007, 011 |
 | **Impact** | Fixes Mitosis compiler ref bug (charts), overlay portal bug, 25+ stub implementations, Flutter layout crashes; introduces `@source` Tailwind consumption contract for library consumers |
 
@@ -66,10 +66,43 @@ setEchartsLoader(() => import('echarts'));
 This works across all bundlers (Vite, Webpack, Rollup), supports CDN
 loading (`setEchartsLoader(async () => window.echarts)`), and is testable.
 
-### Phase 4: Stubs (NOT STARTED)
+### Phase 4: Stubs (COMPLETE)
 
-29 "Coming Soon" stub components remain. These require porting from Stencil
-Web Components to Mitosis `.lite.tsx`. No work done in this ADR.
+28 "Coming Soon" stub components ported full-feature from Stencil to Mitosis
+(`.lite.tsx` Pure / `.web.tsx`+`.native.tsx` Adapt) + Flutter parity (iOS
+Cupertino + Android Material via FPW). Demo app no longer contains any
+"Coming Soon" placeholder for these components.
+
+**Cluster breakdown:**
+
+| Cluster | Components | Type | Source tests | Flutter tests |
+|---------|-----------|------|-------------|---------------|
+| E+D+F | BcAlert, BcChip, BcPrintArea, BcPrintPreview, BcTextField | Pure | 67 | 42 |
+| B (Social) | BcLike, BcShare (Adapt), BcComment, BcFollow | 3 Pure + 1 Adapt | 53 | 29 |
+| G (Native POC) | BcNativeButton/Input/Select/Switch/Slider/Picker/Alert/ActionSheet/Modal/Toast | Adapt | 87 | 59 |
+| C (Media) | BcLightbox, BcMap, BcWebcam | Adapt | 45 | 20 |
+| A (Views) | BcDetailView, BcGridView, BcTreeView, BcKanbanView, BcCalendarView, BcDashboard | 2 Pure + 4 Adapt | 105 | 32 |
+
+**Key design decisions:**
+
+1. **BcAlert scope-distinct from BcNotification** — persistent (no auto-dismiss,
+   no action button), 4 severity, `role=alert/status`.
+2. **5 BcNative\* overlap components** (Input/Select/Switch/Slider/Toast use
+   Flutter typedef aliases to existing platform-aware widgets — zero duplication,
+   ADR-009 Simple. Button is a full `PlatformElevatedButton` wrapper since no
+   `BcButton.dart` existed.
+3. **5 BcNative\* unique components** (Picker/Alert/ActionSheet/Modal/Toast) use
+   full FPW implementations (`showCupertinoModalPopup`/`showDialog`/`showModalBottomSheet`).
+4. **BcShare/BcMap/BcWebcam Flutter** delegate platform APIs to the caller
+   (dependency-free adapter pattern — avoids forcing `share_plus`/`google_maps_flutter`/
+   camera plugin as hard deps).
+5. **Mitosis build compatibility fixes** — IIFE input-element pattern → Show
+   conditionals; standalone function before component → useStore method.
+
+**Also resolved during Phase 4:** 3 pre-existing runtime test failures from
+ADR-013 Phase 4 animation rollout — `getAnimationClasses` not imported in
+BcDialog/BcDropdown (12+ failures), BcTabs API mismatch (9 failures), and
+BcSplitter `dragging` state not initialized (1 failure).
 
 ## Context
 
