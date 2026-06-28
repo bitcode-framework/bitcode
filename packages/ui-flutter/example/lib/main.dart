@@ -22,6 +22,7 @@ import 'sections/data_section.dart';
 import 'sections/layout_section.dart';
 import 'sections/display_section.dart';
 import 'sections/navigation_section.dart';
+import 'sections/primitives_section.dart';
 
 void main() {
   // Redirect Flutter errors to console for debugging
@@ -123,6 +124,12 @@ class _DemoShellState extends State<DemoShell> {
       selectedIcon: Icons.dashboard,
       label: 'Layout',
       builder: (_) => const LayoutSection(),
+    ),
+    _NavItem(
+      icon: Icons.bubble_chart_outlined,
+      selectedIcon: Icons.bubble_chart,
+      label: 'Primitives',
+      builder: (_) => const PrimitivesSection(),
     ),
   ];
 

@@ -1,4 +1,4 @@
-// This is a basic Flutter widget test.
+﻿// This is a basic Flutter widget test.
 //
 // To perform an interaction with a widget in your test, use the WidgetTester
 // utility in the flutter_test package. For example, you can send tap and scroll
@@ -21,8 +21,8 @@ void main() {
 
   // Regression test for ADR-016 Demo Bug 1: data_section.dart used ListView
   // as its root widget, but main.dart wraps every section in a
-  // SingleChildScrollView — ListView inside SingleChildScrollView crashes with
-  // "Vertical viewport was given unbounded height". Fix: ListView → Column.
+  // SingleChildScrollView â€” ListView inside SingleChildScrollView crashes with
+  // "Vertical viewport was given unbounded height". Fix: ListView â†’ Column.
   // This test taps the Data sidebar item and confirms no ErrorWidget appears.
   testWidgets('Data section renders without ErrorWidget (ADR-016 Demo Bug 1)',
       (WidgetTester tester) async {
@@ -55,5 +55,21 @@ void main() {
         reason: 'Display section rendered an ErrorWidget (crash)');
     // Confirm the Display section's content is actually present.
     expect(find.text('BcStatistic'), findsOneWidget);
+  });
+
+  // Regression test: Primitives section renders without crashing.
+  testWidgets('Primitives section renders without ErrorWidget',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const BcUiDemoApp());
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+
+    final target = find.text('Primitives');
+    if (target.evaluate().isNotEmpty) {
+      await tester.tap(target.first);
+      await tester.pumpAndSettle(const Duration(seconds: 2));
+    }
+    expect(find.byType(ErrorWidget), findsNothing,
+        reason: 'Primitives section rendered an ErrorWidget (crash)');
+    expect(find.text('BcCircle'), findsOneWidget);
   });
 }
