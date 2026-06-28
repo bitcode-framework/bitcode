@@ -27,6 +27,7 @@ import 'sections/feedback_section.dart';
 import 'sections/media_section.dart';
 import 'sections/charts_section.dart';
 import 'sections/social_section.dart';
+import 'sections/misc_section.dart';
 
 void main() {
   // Redirect Flutter errors to console for debugging
@@ -158,6 +159,12 @@ class _DemoShellState extends State<DemoShell> {
       selectedIcon: Icons.people,
       label: 'Social',
       builder: (_) => const SocialSection(),
+    ),
+    _NavItem(
+      icon: Icons.extension_outlined,
+      selectedIcon: Icons.extension,
+      label: 'Misc',
+      builder: (_) => const MiscSection(),
     ),
   ];
 
