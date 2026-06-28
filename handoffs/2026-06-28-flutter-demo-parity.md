@@ -368,3 +368,33 @@ Static analysis: 0 issues
 - BcSidebar, BcImage (already in Media) could get a dedicated showcase.
 
 This handoff is now historical record. The parity goal (match React demo's 14 groups) is achieved.
+
+---
+
+## UPDATE — Complete component coverage (session 3, 2026-06-29)
+
+**All remaining library components now demoed.** Final state:
+
+```
+Sidebar: 15 sections (added Views section)
+Widget tests: 12 pass, 0 fail
+Static analysis: 0 issues
+Total components demoed: 127+ across 15 sections
+```
+
+**What was done (this session):**
+1. **Fixed BcChart crash** — copied library's `fake_webview_platform.dart` into example test helpers, installed via `setUpAll`. Charts test now pumps full ChartsSection (all 3 BcChart variants + BcSparkline). Added `webview_flutter_platform_interface` as dev_dependency.
+2. **New Views section** — 10 components: BcKanbanBoard, BcViewGantt, BcViewMap, BcViewReport, BcViewActivity, BcViewEditor, BcOrgChart, BcTieredMenu, BcVirtualScroller, BcCarousel.
+3. **Navigation +7** — BcMegaMenu, BcNavigationMenu, BcPanelMenu, BcAnchor, BcDock, BcSlideMenu, BcSidebar.
+4. **Overlays +3** — BcWizard, BcPrompt, BcSpeedDial.
+5. **Forms +1** — BcRangeSlider.
+6. **Input Extended +3** — BcFieldMorph, BcFieldTableSelect, BcLookupModal.
+7. **Layout +2** — BcFlex, BcMeterGroup.
+8. **Misc +3** — BcColorArea, BcColorSlider, BcFavorites.
+
+**Updated limitations:**
+1. **BcChart (ECharts)** — now fully testable via fake WebView platform. All 3 chart variants render in headless tests.
+2. **BcViewEditor** — rendered with `disabled: true` in demo (uses ReorderableListView which needs a non-nested scroll viewport; static layout shows the component without drag-reorder).
+3. **Media viewers** still use empty src in tests (graceful failed-state).
+
+Every component exported by `bc_ui_flutter.dart` is now demonstrated. The demo is feature-complete.
