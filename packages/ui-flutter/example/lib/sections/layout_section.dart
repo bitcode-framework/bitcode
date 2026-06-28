@@ -163,6 +163,45 @@ class LayoutSection extends StatelessWidget {
             ],
           ),
         ),
+
+        // -- BcFlex --
+        DemoCard(
+          title: 'BcFlex',
+          description: 'Flexible layout container (row/column) with gap, align, justify, wrap.',
+          child: BcBox(
+            padding: 16,
+            border: true,
+            borderRadius: BcTheme.radius,
+            backgroundColor: BcBoxColorToken.muted,
+            child: BcFlex(
+              direction: BcFlexDirection.row,
+              gap: 2,
+              align: BcFlexAlign.center,
+              justify: BcFlexJustify.center,
+              children: [
+                _colorChip(BcTheme.primary, 'A'),
+                _colorChip(BcTheme.secondary, 'B'),
+                _colorChip(BcTheme.success, 'C'),
+              ],
+            ),
+          ),
+        ),
+
+        // -- BcMeterGroup --
+        DemoCard(
+          title: 'BcMeterGroup',
+          description: 'Group of independent progress meters with variant colors.',
+          child: BcMeterGroup(
+            max: 100,
+            ariaLabel: 'Storage usage',
+            segments: const [
+              BcMeterSegment(label: 'Images', value: 45, variant: BcMeterVariant.defaultVariant),
+              BcMeterSegment(label: 'Videos', value: 30, variant: BcMeterVariant.info),
+              BcMeterSegment(label: 'Docs', value: 15, variant: BcMeterVariant.success),
+              BcMeterSegment(label: 'Other', value: 8, variant: BcMeterVariant.warning),
+            ],
+          ),
+        ),
       ],
     );
   }

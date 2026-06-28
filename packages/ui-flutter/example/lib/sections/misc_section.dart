@@ -166,6 +166,30 @@ class _MiscSectionState extends State<MiscSection> {
             defaultLng: 106.8456,
           ),
         ),
+
+        // -- BcColorArea --
+        DemoCard(
+          title: 'BcColorArea',
+          description: '2D saturation/value drag area. Drag to pick SV given a hue.',
+          child: const BcColorArea(hue: 210, width: 200, height: 200),
+        ),
+
+        // -- BcColorSlider --
+        DemoCard(
+          title: 'BcColorSlider',
+          description: '1D hue spectrum slider. Drag to pick a hue (0-360).',
+          child: const BcColorSlider(label: 'Hue', value: 180),
+        ),
+
+        // -- BcFavorites --
+        DemoCard(
+          title: 'BcFavorites',
+          description: 'Star/heart toggle button for favoriting.',
+          child: BcFavorites(
+            defaultValue: false,
+            onValueChange: (v, _) {},
+          ),
+        ),
       ],
     );
   }

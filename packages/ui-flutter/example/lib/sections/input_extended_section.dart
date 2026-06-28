@@ -233,6 +233,62 @@ class _InputExtendedSectionState extends State<InputExtendedSection> {
             defaultExpanded: const ['eng'],
           ),
         ),
+
+        // -- BcFieldMorph --
+        DemoCard(
+          title: 'BcFieldMorph',
+          description: 'Morphing field that can switch between input/number/date/select types.',
+          child: BcFieldMorph(
+            label: 'Flexible Field',
+            types: const [
+              BcFieldMorphType(value: 'text', label: 'Text', widget: 'text'),
+              BcFieldMorphType(value: 'number', label: 'Number', widget: 'number'),
+              BcFieldMorphType(value: 'date', label: 'Date', widget: 'date'),
+            ],
+            placeholder: 'Type or switch field type...',
+          ),
+        ),
+
+        // -- BcFieldTableSelect --
+        DemoCard(
+          title: 'BcFieldTableSelect',
+          description: 'Selectable data table field (single or multi-row selection).',
+          child: SizedBox(
+            height: 200,
+            child: BcFieldTableSelect(
+              label: 'Pick a member',
+              titleField: 'name',
+              columns: const [
+                BcFieldTableSelectColumn(key: 'name', label: 'Name'),
+                BcFieldTableSelectColumn(key: 'role', label: 'Role'),
+              ],
+              data: const [
+                {'name': 'Alice', 'role': 'Admin'},
+                {'name': 'Bob', 'role': 'Editor'},
+                {'name': 'Charlie', 'role': 'Viewer'},
+              ],
+            ),
+          ),
+        ),
+
+        // -- BcLookupModal --
+        DemoCard(
+          title: 'BcLookupModal',
+          description: 'Lookup modal with searchable data table (opens on trigger).',
+          child: BcLookupModal(
+            title: 'Find Contact',
+            searchable: true,
+            searchFields: const ['name', 'email'],
+            columns: const [
+              BcLookupModalColumn(key: 'name', label: 'Name'),
+              BcLookupModalColumn(key: 'email', label: 'Email'),
+            ],
+            data: const [
+              {'name': 'Alice', 'email': 'alice@example.com'},
+              {'name': 'Bob', 'email': 'bob@example.com'},
+            ],
+          ),
+        ),
       ],
     );
   }

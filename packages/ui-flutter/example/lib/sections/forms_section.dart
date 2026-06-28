@@ -239,6 +239,20 @@ class _FormsSectionState extends State<FormsSection> {
             onValueChange: (v, _) => setState(() => _durationSeconds = v),
           ),
         ),
+        const SizedBox(height: 24),
+        DemoCard(
+          title: 'BcRangeSlider',
+          description: 'Dual-thumb min/max range slider with non-crossing thumbs.',
+          child: BcRangeSlider(
+            label: 'Price Range',
+            min: 0,
+            max: 1000,
+            step: 50,
+            showValues: true,
+            unit: '\$',
+            defaultValue: const BcRangeValue(min: 100, max: 500),
+          ),
+        ),
       ],
     );
   }
