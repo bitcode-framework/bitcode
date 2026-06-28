@@ -236,17 +236,6 @@ class _OverlaysSectionState extends State<OverlaysSection> {
           description: 'Card that reveals on hover with placement control.',
           child: BcHoverCard(
             placement: BcHoverCardPlacement.bottom,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: BcTheme.primary,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: const Text(
-                'Hover me',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
             content: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -257,6 +246,17 @@ class _OverlaysSectionState extends State<OverlaysSection> {
                 'This card appears on hover and stays while the pointer '
                 'remains over the trigger or the card.',
                 style: TextStyle(fontSize: 13),
+              ),
+            ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: BcTheme.primary,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Text(
+                'Hover me',
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ),
