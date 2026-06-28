@@ -15,6 +15,7 @@ library bc_chart;
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_echarts/flutter_echarts.dart';
 
@@ -154,6 +155,13 @@ class BcChart extends StatelessWidget {
     final optionJson = _buildOptionJson();
     final isEmpty = _isEmptyData();
 
+    // flutter_echarts uses webview_flutter, which has no web platform impl.
+    // On Flutter Web, render a clean placeholder instead of crashing with
+    // "WebViewPlatform.instance != null" assertion.
+    if (kIsWeb) {
+      return _buildWebPlaceholder();
+    }
+
     return Semantics(
       container: true,
       label: ariaLabel ?? chartTitle ?? 'Chart',
@@ -177,6 +185,67 @@ class BcChart extends StatelessWidget {
                 theme: (theme == null || theme!.isEmpty) ? null : theme,
                 captureAllGestures: true,
               ),
+      ),
+    );
+  }
+
+  /// Placeholder rendered on Flutter Web where webview_flutter (and thus
+  /// ECharts) is unsupported. Shows the chart title and type so the demo
+  /// is still navigable without crashing.
+  Widget _buildWebPlaceholder() {
+    return Semantics(
+      container: true,
+      label: ariaLabel ?? chartTitle ?? 'Chart',
+      child: Container(
+        key: const Key('bc_chart_web_placeholder'),
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: BcTheme.background,
+          border: Border.all(color: BcTheme.border),
+          borderRadius: BorderRadius.circular(BcTheme.radius),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.show_chart, size: 40, color: BcTheme.mutedForeground),
+                const SizedBox(height: 8),
+                if (chartTitle != null && chartTitle!.isNotEmpty)
+                  Text(
+                    chartTitle!,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: BcTheme.foreground,
+                    ),
+                  ),
+                const SizedBox(height: 4),
+                Text(
+                  'BcChart (${type.name})',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: BcTheme.mutedForeground,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'ECharts renders on mobile/desktop only.\n'
+                  'Run on Android/iOS to see the chart.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: BcTheme.mutedForeground,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
