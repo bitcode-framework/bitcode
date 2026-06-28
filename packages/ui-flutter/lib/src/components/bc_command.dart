@@ -144,13 +144,16 @@ class _CommandOverlayState extends State<_CommandOverlay> {
                       itemCount: filtered.length,
                       itemBuilder: (context, index) {
                         final cmd = filtered[index];
-                        return ListTile(
-                          leading: cmd.icon != null ? Icon(cmd.icon) : null,
-                          title: Text(cmd.label),
-                          onTap: () {
-                            widget.onClose();
-                            cmd.onExecute?.call();
-                          },
+                        return Material(
+                          color: Colors.transparent,
+                          child: ListTile(
+                            leading: cmd.icon != null ? Icon(cmd.icon) : null,
+                            title: Text(cmd.label),
+                            onTap: () {
+                              widget.onClose();
+                              cmd.onExecute?.call();
+                            },
+                          ),
                         );
                       },
                     ),

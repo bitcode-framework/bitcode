@@ -40,11 +40,14 @@ class BcList<T> extends StatelessWidget {
         final itemIndex = header != null ? index - 1 : index;
         final item = items[itemIndex];
 
-        return ListTile(
-          leading: leadingBuilder?.call(context, item),
-          title: itemBuilder(context, item, itemIndex),
-          trailing: trailingBuilder?.call(context, item),
-          onTap: onTap != null ? () => onTap!(item) : null,
+        return Material(
+          color: Colors.transparent,
+          child: ListTile(
+            leading: leadingBuilder?.call(context, item),
+            title: itemBuilder(context, item, itemIndex),
+            trailing: trailingBuilder?.call(context, item),
+            onTap: onTap != null ? () => onTap!(item) : null,
+          ),
         );
       },
     );

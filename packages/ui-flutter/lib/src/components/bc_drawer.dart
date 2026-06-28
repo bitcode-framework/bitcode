@@ -26,11 +26,14 @@ class BcDrawer extends StatelessWidget {
         children: [
           if (header != null) header!,
           for (int i = 0; i < items.length; i++)
-            ListTile(
-              leading: items[i].icon != null ? Icon(items[i].icon) : null,
-              title: Text(items[i].label),
-              selected: i == selectedIndex,
-              onTap: () => onSelected?.call(i),
+            Material(
+              color: Colors.transparent,
+              child: ListTile(
+                leading: items[i].icon != null ? Icon(items[i].icon) : null,
+                title: Text(items[i].label),
+                selected: i == selectedIndex,
+                onTap: () => onSelected?.call(i),
+              ),
             ),
         ],
       ),

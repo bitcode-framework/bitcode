@@ -117,9 +117,12 @@ class _BcComboboxState<T> extends State<BcCombobox<T>> {
                 itemCount: options.length,
                 itemBuilder: (context, index) {
                   final option = options.elementAt(index);
-                  return ListTile(
-                    title: Text(option.label),
-                    onTap: () => onSelected(option),
+                  return Material(
+                    color: Colors.transparent,
+                    child: ListTile(
+                      title: Text(option.label),
+                      onTap: () => onSelected(option),
+                    ),
                   );
                 },
               ),

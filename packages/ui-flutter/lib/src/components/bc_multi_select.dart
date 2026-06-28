@@ -110,13 +110,16 @@ class _BcMultiSelectState<T> extends State<BcMultiSelect<T>> {
                   itemCount: widget.options.length,
                   itemBuilder: (context, index) {
                     final opt = widget.options[index];
-                    return CheckboxListTile(
-                      value: _selected.contains(opt.value),
-                      title: Text(opt.label),
-                      onChanged: (v) {
-                        setState(() {});
-                        _toggle(opt.value);
-                      },
+                    return Material(
+                      color: Colors.transparent,
+                      child: CheckboxListTile(
+                        value: _selected.contains(opt.value),
+                        title: Text(opt.label),
+                        onChanged: (v) {
+                          setState(() {});
+                          _toggle(opt.value);
+                        },
+                      ),
                     );
                   },
                 ),
