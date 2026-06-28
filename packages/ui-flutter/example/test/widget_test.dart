@@ -13,6 +13,7 @@ import 'package:bc_ui_flutter_example/sections/misc_section.dart';
 import 'package:bc_ui_flutter_example/sections/input_extended_section.dart';
 import 'package:bc_ui_flutter_example/sections/print_section.dart';
 import 'package:bc_ui_flutter_example/sections/charts_section.dart';
+import 'package:bc_ui_flutter_example/sections/views_section.dart';
 import 'helpers/fake_webview_platform.dart';
 
 void main() {
@@ -175,5 +176,17 @@ void main() {
     expect(find.byType(ErrorWidget), findsNothing,
         reason: 'Print section rendered an ErrorWidget (crash)');
     expect(find.text('BcExport'), findsOneWidget);
+  });
+
+  // Regression test: Views section renders without crashing.
+  testWidgets('Views section renders without ErrorWidget',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(
+      home: Scaffold(body: SingleChildScrollView(child: ViewsSection())),
+    ));
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+    expect(find.byType(ErrorWidget), findsNothing,
+        reason: 'Views section rendered an ErrorWidget (crash)');
+    expect(find.text('BcKanbanBoard'), findsOneWidget);
   });
 }
