@@ -12,6 +12,7 @@ import 'package:bc_ui_flutter/bc_ui_flutter.dart';
 import 'package:bc_ui_flutter_example/sections/social_section.dart';
 import 'package:bc_ui_flutter_example/sections/misc_section.dart';
 import 'package:bc_ui_flutter_example/sections/input_extended_section.dart';
+import 'package:bc_ui_flutter_example/sections/print_section.dart';
 
 void main() {
   testWidgets('Demo app renders with sidebar and content', (WidgetTester tester) async {
@@ -168,5 +169,17 @@ void main() {
     expect(find.byType(ErrorWidget), findsNothing,
         reason: 'Input Extended section rendered an ErrorWidget (crash)');
     expect(find.text('BcRichText'), findsOneWidget);
+  });
+
+  // Regression test: Print section renders without crashing.
+  testWidgets('Print section renders without ErrorWidget',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(
+      home: Scaffold(body: SingleChildScrollView(child: PrintSection())),
+    ));
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+    expect(find.byType(ErrorWidget), findsNothing,
+        reason: 'Print section rendered an ErrorWidget (crash)');
+    expect(find.text('BcExport'), findsOneWidget);
   });
 }

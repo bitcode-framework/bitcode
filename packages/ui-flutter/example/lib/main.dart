@@ -29,6 +29,7 @@ import 'sections/charts_section.dart';
 import 'sections/social_section.dart';
 import 'sections/misc_section.dart';
 import 'sections/input_extended_section.dart';
+import 'sections/print_section.dart';
 
 void main() {
   // Redirect Flutter errors to console for debugging
@@ -172,6 +173,12 @@ class _DemoShellState extends State<DemoShell> {
       selectedIcon: Icons.edit_attributes,
       label: 'Input Extended',
       builder: (_) => const InputExtendedSection(),
+    ),
+    _NavItem(
+      icon: Icons.print_outlined,
+      selectedIcon: Icons.print,
+      label: 'Print',
+      builder: (_) => const PrintSection(),
     ),
   ];
 
