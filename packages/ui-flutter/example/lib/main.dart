@@ -23,6 +23,7 @@ import 'sections/layout_section.dart';
 import 'sections/display_section.dart';
 import 'sections/navigation_section.dart';
 import 'sections/primitives_section.dart';
+import 'sections/feedback_section.dart';
 
 void main() {
   // Redirect Flutter errors to console for debugging
@@ -130,6 +131,12 @@ class _DemoShellState extends State<DemoShell> {
       selectedIcon: Icons.bubble_chart,
       label: 'Primitives',
       builder: (_) => const PrimitivesSection(),
+    ),
+    _NavItem(
+      icon: Icons.feedback_outlined,
+      selectedIcon: Icons.feedback,
+      label: 'Feedback',
+      builder: (_) => const FeedbackSection(),
     ),
   ];
 

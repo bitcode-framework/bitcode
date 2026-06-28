@@ -72,4 +72,20 @@ void main() {
         reason: 'Primitives section rendered an ErrorWidget (crash)');
     expect(find.text('BcCircle'), findsOneWidget);
   });
+
+  // Regression test: Feedback section renders without crashing.
+  testWidgets('Feedback section renders without ErrorWidget',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const BcUiDemoApp());
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+
+    final target = find.text('Feedback');
+    if (target.evaluate().isNotEmpty) {
+      await tester.tap(target.first);
+      await tester.pumpAndSettle(const Duration(seconds: 2));
+    }
+    expect(find.byType(ErrorWidget), findsNothing,
+        reason: 'Feedback section rendered an ErrorWidget (crash)');
+    expect(find.text('BcNotification'), findsOneWidget);
+  });
 }
