@@ -8,6 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bc_ui_flutter_example/main.dart';
+import 'package:bc_ui_flutter/bc_ui_flutter.dart';
 
 void main() {
   testWidgets('Demo app renders with sidebar and content', (WidgetTester tester) async {
@@ -103,5 +104,31 @@ void main() {
     expect(find.byType(ErrorWidget), findsNothing,
         reason: 'Media section rendered an ErrorWidget (crash)');
     expect(find.text('BcImage'), findsOneWidget);
+  });
+
+  // Regression test: Charts section renders without crashing.
+  // NOTE: BcChart uses flutter_echarts (webview_flutter) which requires a
+  // platform implementation not available in headless tests. We test only
+  // BcSparkline (CustomPaint-based, no webview) here. The full ChartsSection
+  // (with BcChart) is exercised manually via `flutter run`.
+  testWidgets('BcSparkline renders without ErrorWidget',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: BcSparkline(
+            data: [4, 8, 6, 12, 9, 15, 11, 18],
+            width: 160,
+            height: 32,
+            type: BcSparklineType.line,
+            showDot: true,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(ErrorWidget), findsNothing,
+        reason: 'BcSparkline rendered an ErrorWidget (crash)');
+    expect(find.byType(BcSparkline), findsOneWidget);
   });
 }

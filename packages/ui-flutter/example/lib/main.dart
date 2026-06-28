@@ -25,6 +25,7 @@ import 'sections/navigation_section.dart';
 import 'sections/primitives_section.dart';
 import 'sections/feedback_section.dart';
 import 'sections/media_section.dart';
+import 'sections/charts_section.dart';
 
 void main() {
   // Redirect Flutter errors to console for debugging
@@ -144,6 +145,12 @@ class _DemoShellState extends State<DemoShell> {
       selectedIcon: Icons.perm_media,
       label: 'Media',
       builder: (_) => const MediaSection(),
+    ),
+    _NavItem(
+      icon: Icons.show_chart_outlined,
+      selectedIcon: Icons.show_chart,
+      label: 'Charts',
+      builder: (_) => const ChartsSection(),
     ),
   ];
 
