@@ -1,4 +1,6 @@
-// Forms demo — BcInput, BcSelect, BcCheckbox, BcToggle, BcSegmented, BcSlider.
+// Forms demo — BcInput, BcSelect, BcCheckbox, BcToggle, BcSegmented, BcSlider,
+// BcNumberField, BcDateField, BcCombobox, BcMultiSelect, BcTagsInput,
+// BcToggleGroup, BcFieldDuration.
 library forms_section;
 
 import 'package:flutter/material.dart';
@@ -20,6 +22,13 @@ class _FormsSectionState extends State<FormsSection> {
   bool _isToggled = true;
   String _segment = 'Daily';
   double _sliderValue = 50;
+  num _numberValue = 5;
+  DateTime? _selectedDate;
+  String _comboValue = '';
+  List<String> _multiValue = ['Engineering'];
+  List<String> _tags = ['flutter', 'dart'];
+  String _toggleGroupSingle = 'left';
+  num _durationSeconds = 3661;
 
   @override
   Widget build(BuildContext context) {
@@ -128,6 +137,106 @@ class _FormsSectionState extends State<FormsSection> {
             showValue: true,
             unit: '%',
             onChange: (v, _) => setState(() => _sliderValue = v),
+          ),
+        ),
+        const SizedBox(height: 24),
+        DemoCard(
+          title: 'BcNumberField',
+          description: 'Numeric input with min/max and stepper.',
+          child: BcNumberField(
+            label: 'Quantity',
+            value: _numberValue,
+            min: 0,
+            max: 99,
+            step: 1,
+            onValueChange: (v, _) => setState(() => _numberValue = v),
+          ),
+        ),
+        const SizedBox(height: 24),
+        DemoCard(
+          title: 'BcDateField',
+          description: 'Adaptive date picker (Material calendar / Cupertino wheel).',
+          child: BcDateField(
+            label: 'Birth Date',
+            value: _selectedDate,
+            placeholder: 'Select a date',
+            firstDate: DateTime(1900),
+            lastDate: DateTime(2100),
+            onValueChange: (v, _) => setState(() => _selectedDate = v),
+          ),
+        ),
+        const SizedBox(height: 24),
+        DemoCard(
+          title: 'BcCombobox',
+          description: 'Autocomplete combobox (Material-only). Type to filter options.',
+          child: BcCombobox<String>(
+            label: 'Country',
+            placeholder: 'Start typing a country...',
+            value: _comboValue,
+            options: const [
+              BcComboboxOption(value: 'id', label: 'Indonesia'),
+              BcComboboxOption(value: 'us', label: 'United States'),
+              BcComboboxOption(value: 'uk', label: 'United Kingdom'),
+              BcComboboxOption(value: 'jp', label: 'Japan'),
+              BcComboboxOption(value: 'sg', label: 'Singapore'),
+              BcComboboxOption(value: 'au', label: 'Australia'),
+            ],
+            onValueChange: (v, _) => setState(() => _comboValue = v),
+          ),
+        ),
+        const SizedBox(height: 24),
+        DemoCard(
+          title: 'BcMultiSelect',
+          description: 'Multi-select with chip display (Material-only).',
+          child: BcMultiSelect<String>(
+            label: 'Departments',
+            value: _multiValue,
+            options: const [
+              BcMultiSelectOption(value: 'Engineering', label: 'Engineering'),
+              BcMultiSelectOption(value: 'Design', label: 'Design'),
+              BcMultiSelectOption(value: 'Marketing', label: 'Marketing'),
+              BcMultiSelectOption(value: 'Sales', label: 'Sales'),
+              BcMultiSelectOption(value: 'Operations', label: 'Operations'),
+            ],
+            onValueChange: (v, _) => setState(() => _multiValue = v),
+          ),
+        ),
+        const SizedBox(height: 24),
+        DemoCard(
+          title: 'BcTagsInput',
+          description: 'Add/remove tags by typing comma or pressing Enter.',
+          child: BcTagsInput(
+            label: 'Skills',
+            placeholder: 'Type a skill and press Enter',
+            value: _tags,
+            maxTags: 8,
+            onChange: (v, _) => setState(() => _tags = v),
+          ),
+        ),
+        const SizedBox(height: 24),
+        DemoCard(
+          title: 'BcToggleGroup',
+          description: 'Button group toggle (single or multiple selection).',
+          child: BcToggleGroup(
+            value: _toggleGroupSingle,
+            options: const [
+              BcToggleGroupOption(label: 'Left', value: 'left'),
+              BcToggleGroupOption(label: 'Center', value: 'center'),
+              BcToggleGroupOption(label: 'Right', value: 'right'),
+              BcToggleGroupOption(label: 'Justify', value: 'justify'),
+            ],
+            onChange: (v, _) => setState(() => _toggleGroupSingle = v as String),
+          ),
+        ),
+        const SizedBox(height: 24),
+        DemoCard(
+          title: 'BcFieldDuration',
+          description: 'HH:MM:SS duration input with stepper overflow.',
+          child: BcFieldDuration(
+            label: 'Elapsed Time',
+            value: _durationSeconds,
+            showSeconds: true,
+            onValueChange: (v, _) => setState(() => _durationSeconds = v),
           ),
         ),
       ],
