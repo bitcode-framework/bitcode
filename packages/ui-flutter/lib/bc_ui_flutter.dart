@@ -216,6 +216,14 @@ export 'src/components/bc_export.dart';
 export 'src/components/bc_print.dart';
 export 'src/components/bc_report_link.dart';
 
+// M8 stub-completion (ADR-016 Phase 4) — Klaster E+D+F ports.
+// Pure-tier Flutter widgets mirroring the TS contracts.
+export 'src/components/bc_alert.dart';
+export 'src/components/bc_chip.dart';
+export 'src/components/bc_print_area.dart';
+export 'src/components/bc_print_preview.dart';
+export 'src/components/bc_text_field.dart';
+
 // M7 misc widgets
 export 'src/components/bc_watermark.dart';
 export 'src/components/bc_qrcode.dart';

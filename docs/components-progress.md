@@ -387,7 +387,24 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 
 ---
 
-## Charts — `BcChart` Unified (Batch 6 ✅)
+## ADR-016 Phase 4 — Stub Completion (29 components)
+
+29 komponen yang tadinya "Coming Soon" di demo React di-port full-feature
+ke Mitosis (`.lite.tsx` Pure / `.web.tsx`+`.native.tsx` Adapt) + Flutter
+parity (iOS Cupertino + Android Material via FPW). Lihat handoff
+`handoffs/2026-06-29-ui-stub-completion-and-flutter-review.md`.
+
+### Klaster E+D+F (5 komponen, Pure) — ✅ COMPLETE
+
+| Component | Group | Stencil | Mitosis | Verified Done |
+|---|---|---|---|---|
+| BcAlert | feedback | ❌ | ✅ | ✅ `feedback/alert` 4 severity (info/success/warning/error) + role=alert/status + aria-live + dismissible + hideIcon. Scope-distinct from BcNotification (no auto-dismiss, no action button). 12 source tests + 9 Flutter tests. |
+| BcChip | data | ❌ | ✅ | ✅ `data/chip` 6 variants + avatar (URL or initials) + controlled/uncontrolled removed + resolveControllable + dispatchBcEvent. 12 source tests + 9 Flutter tests. |
+| BcPrintArea | print | ❌ | ✅ | ✅ `print/print-area` auto-inject @media print isolation (idempotent) + role=region + aria-label + onReady. 10 source tests + 4 Flutter tests. |
+| BcPrintPreview | print | ❌ | ✅ | ✅ `print/print-preview` iframe preview + trigger button (window.print fallback) + hideToolbar + onError + onUpdate rewrites content. 12 source tests + 6 Flutter tests. |
+| BcTextField | forms | ❌ | ✅ | ✅ `forms/text-field` multiline auto-grow (computeRows clamp) + maxLength enforcement + showCount + prefix/suffix slot + resolveControllable + onEnter (single-line only). 16 source tests + 14 Flutter tests. |
+
+
 
 26 chart variants Stencil (area, bar, boxplot, candlestick, custom, funnel,
 gauge, graph, heatmap, kpi, line, mixed, parallel, pictorialbar, pie, pivot,
