@@ -46,22 +46,25 @@ Tailwind build.
 | BcFieldDuration layout | **Auto-fixed** | Spinner sizing classes now generated. |
 | Flutter ListTile ink warning | **Fixed** | Wrapped all `ListTile`/`CheckboxListTile` in `Material(color: Colors.transparent, ...)` across 5 library components. Root cause fix: all consumers benefit. | `e1d1317` |
 
-### Charts Canvas Rendering (REMAINING)
+### Charts Canvas Rendering (COMPLETE)
 
-**Status**: Charts `ensureInstance()` now runs correctly (containerRef
-resolves, echarts module loads, `init()` is called). However, echarts does
-not create a canvas element inside the container, resulting in 0 visible
-charts.
+**Status**: Charts now render (15 canvases, 47 echarts instances, 0 errors).
 
-**Root cause identified**: Echarts v6 + Vite optional peer dep bundling
-issue. `import('echarts')` in Vite production build resolves to
-`{ default: <namespace> }`, but `mod.default.init` is also `undefined`.
+**Root cause**: Echarts v6 + Vite optional peer dep bundling. Dynamic
+`import('echarts')` in Vite production build resolves to
+`{ default: <namespace> }` but `mod.default.init` is also `undefined`.
 Static `import * as echarts` fails at Rollup build time:
 `"init" is not exported by "__vite-optional-peer-dep:echarts:@bitcode/ui"`.
 
-This is NOT a Mitosis or ADR-016 bug. It is a Vite/Rollup echarts v6
-interop issue. Fix options documented in
-`handoffs/2026-06-28-adr016-phase2-charts-remaining.md`.
+**Fix**: Dependency injection loader pattern (ADR-016 Decision 5).
+BcChart no longer hardcodes `import('echarts')`. Instead, it calls
+`loadEcharts()` from `@/core/echarts-loader`. The consumer registers the
+loader ONCE at app startup:
+```ts
+setEchartsLoader(() => import('echarts'));
+```
+This works across all bundlers (Vite, Webpack, Rollup), supports CDN
+loading (`setEchartsLoader(async () => window.echarts)`), and is testable.
 
 ### Phase 4: Stubs (NOT STARTED)
 
@@ -466,3 +469,44 @@ recipe** for any component whose implementation has diverged:
 5. Demo updated to showcase the contract API (not the legacy one).
 
 Any future contract-divergent component should follow this exact recipe.
+
+#### Decision 5: ECharts loader — dependency injection (not hardcode import)
+
+**Problem**: Vite treats echarts as an optional peer dep and wraps dynamic
+`import('echarts')` in a proxy that loses named exports (`init`,
+`setOption`). This breaks all chart components at runtime. Neither static
+import nor dynamic import works reliably across bundlers.
+
+**Decision**: BcChart uses a dependency-injection loader pattern instead of
+hardcoding the echarts import. A new module `src/core/echarts-loader.ts`
+provides:
+- `setEchartsLoader(loader)` — consumer registers the loader ONCE at startup.
+- `loadEcharts()` — BcChart calls this to get the namespace.
+
+**Resolution chain** in `loadEcharts()`:
+1. Consumer-registered loader (recommended) — works with any bundler.
+2. `window.echarts` (CDN script tag) — no bundler involvement.
+3. SSR bail-out (returns null when `window` undefined).
+4. Last-resort dynamic import (may fail under Vite prod build).
+
+**CJS/ESM interop**: `unwrapNamespace()` handles both direct namespace
+(`mod.init`) and nested default (`mod.default.init`).
+
+**Consumer setup** (one line in app entry):
+```ts
+import { setEchartsLoader } from '@bitcode/ui';
+setEchartsLoader(() => import('echarts'));
+```
+
+**Rationale**: This is the pattern used by production chart libraries
+(react-flow, recharts adapters) to decouple from bundler peer-dep quirks.
+It is:
+- **Simple**: one line of consumer setup.
+- **Powerful**: supports CDN, testing (mock loader), and RN adapters.
+- **Platform-aware**: Flutter uses `flutter_echarts` (ADR-015), not affected.
+- **Future-proof**: echarts version changes don't break the chart component.
+
+**Gotcha**: The consumer MUST import `setEchartsLoader` from the same module
+path that BcChart uses to import `loadEcharts`. Otherwise the registered
+state lives in a different module instance and charts silently fail. In the
+demo app, both import from `@/core/echarts-loader` (via Vite alias).
