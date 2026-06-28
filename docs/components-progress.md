@@ -436,6 +436,17 @@ parity (iOS Cupertino + Android Material via FPW). Lihat handoff
 | BcMap | media | ❌ | ✅ (Adapt) | ✅ `media/map` Leaflet lazy-load + markers + role=application + aria-label. Flutter dependency-free (caller wires google_maps_flutter). 14 source tests + 6 Flutter tests. |
 | BcWebcam | media | ❌ | ✅ (Adapt) | ✅ `media/webcam` getUserMedia + canvas capture + track cleanup on unmount + permission error state. Flutter dependency-free (caller wires camera plugin). 15 source tests + 6 Flutter tests. |
 
+### Klaster A — ERP Views (6 komponen) — ✅ COMPLETE
+
+| Component | Group | Stencil | Mitosis | Verified Done |
+|---|---|---|---|---|
+| BcDetailView | views | ❌ | ✅ (Pure) | ✅ `views/detail` master-detail renderer with field grid (dl/dt/dd) + tabs + action buttons + formatValue (boolean/date/currency) + role=region + onAction/bc-action dispatch. 14 source tests + 6 Flutter tests. |
+| BcGridView | views | ❌ | ✅ (Adapt) | ✅ `views/grid` spreadsheet-like grid with role=grid/row/gridcell + arrow-key cell nav + click-to-edit cells (web) / display-only rows (native) + onCellChange with row/col meta. 18 source tests + 4 Flutter tests. |
+| BcTreeView | views | ❌ | ✅ (Adapt) | ✅ `views/tree-view` hierarchical tree with role=tree/treeitem + aria-expanded/selected + arrow-key nav + flattenTree helper + controlled/uncontrolled expand/select. 19 source tests + 5 Flutter tests. |
+| BcKanbanView | views | ❌ | ✅ (Adapt) | ✅ `views/kanban-view` HTML5 DnD board (web) + long-press select + tap column to move (native) + onCardMove with from/to meta + priority token borders. 18 source tests + 5 Flutter tests. |
+| BcCalendarView | views | ❌ | ✅ (Adapt) | ✅ `views/calendar-view` month/week/day views with event overlay + prev/next/today nav + role=application + onDateSelect/onEventClick/onViewChange. 20 source tests + 6 Flutter tests. |
+| BcDashboard | views | ❌ | ✅ (Pure) | ✅ `views/dashboard` CSS grid of widget cards + configurable columns/gap + renderWidget delegate + default placeholder + onWidgetClick/bc-action dispatch + loading/empty states. 16 source tests + 6 Flutter tests. |
+
 
 26 chart variants Stencil (area, bar, boxplot, candlestick, custom, funnel,
 gauge, graph, heatmap, kpi, line, mixed, parallel, pictorialbar, pie, pivot,

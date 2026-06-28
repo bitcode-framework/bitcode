@@ -251,6 +251,16 @@ export 'src/components/bc_lightbox.dart';
 export 'src/components/bc_map.dart';
 export 'src/components/bc_webcam.dart';
 
+// M8 stub-completion — Klaster A views (6 components).
+// 2 Pure (BcDetailView, BcDashboard) + 4 Adapt (BcGridView, BcTreeView,
+// BcKanbanView, BcCalendarView). ERP-critical view components.
+export 'src/components/bc_detail_view.dart';
+export 'src/components/bc_dashboard.dart';
+export 'src/components/bc_grid_view.dart';
+export 'src/components/bc_tree_view.dart';
+export 'src/components/bc_kanban_view.dart';
+export 'src/components/bc_calendar_view.dart';
+
 // M7 misc widgets
 export 'src/components/bc_watermark.dart';
 export 'src/components/bc_qrcode.dart';
