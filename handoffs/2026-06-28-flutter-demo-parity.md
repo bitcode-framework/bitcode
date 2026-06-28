@@ -398,3 +398,24 @@ Total components demoed: 127+ across 15 sections
 3. **Media viewers** still use empty src in tests (graceful failed-state).
 
 Every component exported by `bc_ui_flutter.dart` is now demonstrated. The demo is feature-complete.
+
+---
+
+## UPDATE — Real ECharts on Flutter Web (session 4, 2026-06-29)
+
+**BcChart now renders real charts on Flutter Web** (not a placeholder).
+
+**Root cause:** `flutter_echarts` uses `webview_flutter`, which has no web platform impl. Running on Chrome crashed with `WebViewPlatform.instance != null` assertion.
+
+**Solution:** Adopted the `echarts_flutter_plus` pattern (github.com/noeljolly09) directly into the library — no new third-party dependency. Created 3 files:
+
+1. `bc_chart_web_impl.dart` — Web-only renderer using `HtmlElementView` + `dart:js_interop`. Lazy-loads ECharts 5.5.0 from CDN, creates a DOM div via `package:web`, registers it via `ui_web.platformViewRegistry`, calls `echarts.init()` + `setOption()`.
+2. `bc_chart_web_stub.dart` — Non-web stub (no-op placeholder so conditional import resolves on mobile/desktop).
+3. `bc_chart.dart` — Updated to use conditional import: `import 'stub' if (dart.library.html) 'impl'`. Mobile/desktop still use `flutter_echarts` (WebView); web uses the new HtmlElementView renderer.
+
+**Added dependencies:** `web: ^1.1.1`, `flutter_web_plugins` (both SDK-safe, only imported on web).
+
+**Verified:**
+- 12 widget tests pass (fake WebView platform for tests, real renderer for web).
+- `flutter analyze` — 0 issues.
+- `flutter build web` — success (main.dart.js 3.3MB compiled).

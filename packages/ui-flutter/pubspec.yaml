@@ -10,11 +10,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
   flutter_platform_widgets: ^7.0.0
   cupertino_icons: ^1.0.8
   freezed_annotation: ^2.4.4
   json_annotation: ^4.9.0
   http: ^1.2.0
+  # package:web — DOM/JS interop for BcChart web renderer (HtmlElementView + ECharts CDN).
+  # Only imported on web via conditional import; safe on mobile/desktop.
+  web: ^1.1.1
   # Apache ECharts in a Flutter WebView (ADR-015 — 26/26 chart type parity).
   flutter_echarts: ^2.5.0
 
