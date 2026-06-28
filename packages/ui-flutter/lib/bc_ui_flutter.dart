@@ -229,6 +229,20 @@ export 'src/components/bc_follow.dart';
 export 'src/components/bc_comment.dart';
 export 'src/components/bc_share.dart';
 
+// M8 stub-completion — Klaster G Adapt POC (10 native components).
+// ADR-006 platform-idiomatic components. 5 typedefs alias existing adaptive
+// widgets; 5 full FPW widgets provide native overlay/dialog idioms.
+export 'src/components/bc_native_button.dart';
+export 'src/components/bc_native_input.dart';
+export 'src/components/bc_native_select.dart';
+export 'src/components/bc_native_switch.dart';
+export 'src/components/bc_native_slider.dart';
+export 'src/components/bc_native_picker.dart';
+export 'src/components/bc_native_alert.dart';
+export 'src/components/bc_native_actionsheet.dart';
+export 'src/components/bc_native_modal.dart';
+export 'src/components/bc_native_toast.dart';
+
 // M7 misc widgets
 export 'src/components/bc_watermark.dart';
 export 'src/components/bc_qrcode.dart';

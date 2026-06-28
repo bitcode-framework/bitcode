@@ -413,6 +413,21 @@ parity (iOS Cupertino + Android Material via FPW). Lihat handoff
 | BcComment | social | ❌ | ✅ | ✅ `social/comment` role=article + avatar (URL/initials) + replyable form (Enter submits/Shift+Enter newline) + trimmed submit guard + whitespace-pre-wrap body. 12 source tests + 9 Flutter tests. |
 | BcShare | social | ❌ | ✅ (Adapt) | ✅ `social/share` Web Share API with copy-link fallback dialog (web) + Share.share module (RN) + onShare outcomes (shared/dismissed/error/unavailable) + AbortError as dismissed + Flutter delegates to caller (dependency-free). 17 source tests + 5 Flutter tests. |
 
+### Klaster G — Adapt POC Native (10 komponen) — ✅ COMPLETE
+
+| Component | Group | Stencil | Mitosis | Verified Done |
+|---|---|---|---|---|
+| BcNativeButton | adapt-poc | ❌ | ✅ (Adapt) | ✅ `adapt-poc/native-button` 5 variants + haptic (RN) + loading + block + 44px touch target. Platform-aware via Pressable (RN) + PlatformElevatedButton (Flutter). 12 source tests + 8 Flutter tests. |
+| BcNativeInput | adapt-poc | ❌ | ✅ (Adapt) | ✅ `adapt-poc/native-input` controlled/uncontrolled value + secureTextEntry + 7 keyboardType + label. Flutter: typedef alias to BcInput (zero duplication). 12 source tests + 3 Flutter tests. |
+| BcNativeSelect | adapt-poc | ❌ | ✅ (Adapt) | ✅ `adapt-poc/native-select` options + placeholder + controlled value. iOS CupertinoPicker wheel / Android Material dropdown. Flutter: typedef alias to BcSelect. 11 source tests + 3 Flutter tests. |
+| BcNativeSwitch | adapt-poc | ❌ | ✅ (Adapt) | ✅ `adapt-poc/native-switch` role=switch + aria-checked + controlled/uncontrolled + toggle reasons. Flutter: typedef alias to BcToggle. 12 source tests + 7 Flutter tests. |
+| BcNativeSlider | adapt-poc | ❌ | ✅ (Adapt) | ✅ `adapt-poc/native-slider` role=slider + aria-valuemin/max/now + drag/commit reasons. Flutter: typedef alias to BcSlider. 13 source tests + 5 Flutter tests. |
+| BcNativePicker | adapt-poc | ❌ | ✅ (Adapt) | ✅ `adapt-poc/native-picker` controlled open+value + title + iOS CupertinoPicker wheel / Android Material dialog. Flutter: show() static via showCupertinoModalPopup/showDialog. 14 source tests + 8 Flutter tests. |
+| BcNativeAlert | adapt-poc | ❌ | ✅ (Adapt) | ✅ `adapt-poc/native-alert` role=alertdialog + confirm/cancel + focus trap. Flutter: show() via showPlatformDialog (CupertinoAlertDialog/AlertDialog). 12 source tests + 4 Flutter tests. |
+| BcNativeActionSheet | adapt-poc | ❌ | ✅ (Adapt) | ✅ `adapt-poc/native-actionsheet` role=dialog + items + destructive + disabled. Flutter: show() via showCupertinoModalPopup (CupertinoActionSheet) / showModalBottomSheet. 13 source tests + 8 Flutter tests. |
+| BcNativeModal | adapt-poc | ❌ | ✅ (Adapt) | ✅ `adapt-poc/native-modal` role=dialog + 3 presentation styles (fullscreen/formSheet/pageSheet) + focus trap + Slot. Flutter: controlled-open widget via showGeneralDialog. 12 source tests + 6 Flutter tests. |
+| BcNativeToast | adapt-poc | ❌ | ✅ (Adapt) | ✅ `adapt-poc/native-toast` role=status + aria-live=polite + auto-close timer + actionLabel. Flutter: controlled-open widget with SnackBar-like overlay. 14 source tests + 8 Flutter tests. |
+
 
 
 26 chart variants Stencil (area, bar, boxplot, candlestick, custom, funnel,
