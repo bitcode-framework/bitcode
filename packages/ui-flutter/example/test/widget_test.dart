@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bc_ui_flutter_example/main.dart';
 import 'package:bc_ui_flutter/bc_ui_flutter.dart';
+import 'package:bc_ui_flutter_example/sections/social_section.dart';
 
 void main() {
   testWidgets('Demo app renders with sidebar and content', (WidgetTester tester) async {
@@ -130,5 +131,16 @@ void main() {
     expect(find.byType(ErrorWidget), findsNothing,
         reason: 'BcSparkline rendered an ErrorWidget (crash)');
     expect(find.byType(BcSparkline), findsOneWidget);
+  });
+
+  // Regression test: Social section renders without crashing.
+  // Pumps the SocialSection widget directly to avoid sidebar tap flakiness.
+  testWidgets('Social section renders without ErrorWidget',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(home: Scaffold(body: SingleChildScrollView(child: SocialSection()))));
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+    expect(find.byType(ErrorWidget), findsNothing,
+        reason: 'Social section rendered an ErrorWidget (crash)');
+    expect(find.text('BcChatter'), findsOneWidget);
   });
 }

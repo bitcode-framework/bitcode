@@ -26,6 +26,7 @@ import 'sections/primitives_section.dart';
 import 'sections/feedback_section.dart';
 import 'sections/media_section.dart';
 import 'sections/charts_section.dart';
+import 'sections/social_section.dart';
 
 void main() {
   // Redirect Flutter errors to console for debugging
@@ -151,6 +152,12 @@ class _DemoShellState extends State<DemoShell> {
       selectedIcon: Icons.show_chart,
       label: 'Charts',
       builder: (_) => const ChartsSection(),
+    ),
+    _NavItem(
+      icon: Icons.people_outline,
+      selectedIcon: Icons.people,
+      label: 'Social',
+      builder: (_) => const SocialSection(),
     ),
   ];
 
