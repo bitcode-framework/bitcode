@@ -11,6 +11,7 @@ import 'package:bc_ui_flutter_example/main.dart';
 import 'package:bc_ui_flutter/bc_ui_flutter.dart';
 import 'package:bc_ui_flutter_example/sections/social_section.dart';
 import 'package:bc_ui_flutter_example/sections/misc_section.dart';
+import 'package:bc_ui_flutter_example/sections/input_extended_section.dart';
 
 void main() {
   testWidgets('Demo app renders with sidebar and content', (WidgetTester tester) async {
@@ -155,5 +156,17 @@ void main() {
     expect(find.byType(ErrorWidget), findsNothing,
         reason: 'Misc section rendered an ErrorWidget (crash)');
     expect(find.text('BcWatermark'), findsOneWidget);
+  });
+
+  // Regression test: Input Extended section renders without crashing.
+  testWidgets('Input Extended section renders without ErrorWidget',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(
+      home: Scaffold(body: SingleChildScrollView(child: InputExtendedSection())),
+    ));
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+    expect(find.byType(ErrorWidget), findsNothing,
+        reason: 'Input Extended section rendered an ErrorWidget (crash)');
+    expect(find.text('BcRichText'), findsOneWidget);
   });
 }

@@ -28,6 +28,7 @@ import 'sections/media_section.dart';
 import 'sections/charts_section.dart';
 import 'sections/social_section.dart';
 import 'sections/misc_section.dart';
+import 'sections/input_extended_section.dart';
 
 void main() {
   // Redirect Flutter errors to console for debugging
@@ -165,6 +166,12 @@ class _DemoShellState extends State<DemoShell> {
       selectedIcon: Icons.extension,
       label: 'Misc',
       builder: (_) => const MiscSection(),
+    ),
+    _NavItem(
+      icon: Icons.edit_attributes_outlined,
+      selectedIcon: Icons.edit_attributes,
+      label: 'Input Extended',
+      builder: (_) => const InputExtendedSection(),
     ),
   ];
 
