@@ -88,4 +88,20 @@ void main() {
         reason: 'Feedback section rendered an ErrorWidget (crash)');
     expect(find.text('BcNotification'), findsOneWidget);
   });
+
+  // Regression test: Media section renders without crashing.
+  testWidgets('Media section renders without ErrorWidget',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const BcUiDemoApp());
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+
+    final target = find.text('Media');
+    if (target.evaluate().isNotEmpty) {
+      await tester.tap(target.first);
+      await tester.pumpAndSettle(const Duration(seconds: 2));
+    }
+    expect(find.byType(ErrorWidget), findsNothing,
+        reason: 'Media section rendered an ErrorWidget (crash)');
+    expect(find.text('BcImage'), findsOneWidget);
+  });
 }
