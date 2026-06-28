@@ -404,6 +404,15 @@ parity (iOS Cupertino + Android Material via FPW). Lihat handoff
 | BcPrintPreview | print | ❌ | ✅ | ✅ `print/print-preview` iframe preview + trigger button (window.print fallback) + hideToolbar + onError + onUpdate rewrites content. 12 source tests + 6 Flutter tests. |
 | BcTextField | forms | ❌ | ✅ | ✅ `forms/text-field` multiline auto-grow (computeRows clamp) + maxLength enforcement + showCount + prefix/suffix slot + resolveControllable + onEnter (single-line only). 16 source tests + 14 Flutter tests. |
 
+### Klaster B — Social (4 komponen) — ✅ COMPLETE
+
+| Component | Group | Stencil | Mitosis | Verified Done |
+|---|---|---|---|---|
+| BcLike | social | ❌ | ✅ | ✅ `social/like` like/unlike toggle + count + aria-pressed + resolveControllable + dispatchBcEvent. 11 source tests + 8 Flutter tests. |
+| BcFollow | social | ❌ | ✅ | ✅ `social/follow` follow/unfollow toggle + count + custom labels + aria-pressed + resolveControllable + secondary/primary tokens. 12 source tests + 7 Flutter tests. |
+| BcComment | social | ❌ | ✅ | ✅ `social/comment` role=article + avatar (URL/initials) + replyable form (Enter submits/Shift+Enter newline) + trimmed submit guard + whitespace-pre-wrap body. 12 source tests + 9 Flutter tests. |
+| BcShare | social | ❌ | ✅ (Adapt) | ✅ `social/share` Web Share API with copy-link fallback dialog (web) + Share.share module (RN) + onShare outcomes (shared/dismissed/error/unavailable) + AbortError as dismissed + Flutter delegates to caller (dependency-free). 17 source tests + 5 Flutter tests. |
+
 
 
 26 chart variants Stencil (area, bar, boxplot, candlestick, custom, funnel,

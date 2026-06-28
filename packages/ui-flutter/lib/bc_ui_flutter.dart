@@ -223,6 +223,11 @@ export 'src/components/bc_chip.dart';
 export 'src/components/bc_print_area.dart';
 export 'src/components/bc_print_preview.dart';
 export 'src/components/bc_text_field.dart';
+// M8 stub-completion (ADR-016 Phase 4) — Klaster B social ports.
+export 'src/components/bc_like.dart';
+export 'src/components/bc_follow.dart';
+export 'src/components/bc_comment.dart';
+export 'src/components/bc_share.dart';
 
 // M7 misc widgets
 export 'src/components/bc_watermark.dart';
