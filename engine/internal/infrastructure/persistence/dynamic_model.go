@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/bitcode-framework/bitcode/internal/compiler/parser"
 	"gorm.io/gorm"
@@ -80,6 +81,14 @@ func MigrateModel(db *gorm.DB, model *parser.ModelDefinition, resolver TableName
 				db.Exec(alterSQL)
 			}
 		}
+	}
+
+	// Schema sync: add missing columns for fields defined in the model JSON
+	// but not yet present in the database table. This handles the case where
+	// a model JSON is updated with new fields after the table was initially
+	// created (CREATE TABLE IF NOT EXISTS does not add missing columns).
+	if db.Migrator().HasTable(tableName) {
+		syncMissingColumns(db, model, tableName, dialect)
 	}
 
 	for _, idx := range model.Indexes {
@@ -804,4 +813,94 @@ func mergeModelValidators(parent []parser.ModelValidator, child []parser.ModelVa
 		return parent
 	}
 	return append(parent, child...)
+}
+
+// syncMissingColumns checks each field defined in the model JSON against the
+// existing database table and adds any missing columns via ALTER TABLE ADD
+// COLUMN. This bridges the gap when model definitions are updated with new
+// fields after the table was initially created.
+func syncMissingColumns(db *gorm.DB, model *parser.ModelDefinition, tableName string, dialect DBDialect) {
+	// Build a set of existing column names from the DB
+	existingCols := make(map[string]bool)
+	switch dialect {
+	case DialectPostgres, DialectMySQL:
+		rows, err := db.Raw("SELECT column_name FROM information_schema.columns WHERE table_name = ?", tableName).Rows()
+		if err != nil {
+			return
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var col string
+			rows.Scan(&col)
+			existingCols[col] = true
+		}
+	default: // SQLite
+		rows, err := db.Raw("SELECT name FROM pragma_table_info(?)", tableName).Rows()
+		if err != nil {
+			return
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var col string
+			rows.Scan(&col)
+			existingCols[col] = true
+		}
+	}
+
+	// Check each model field; skip relation-only types that don't create columns
+	for fieldName, field := range model.Fields {
+		if isRelationOnlyField(field.Type) {
+			continue
+		}
+		if existingCols[fieldName] {
+			continue
+		}
+		colDef := fieldToColumnDef(field, dialect)
+		alterSQL := fmt.Sprintf("ALTER TABLE %s ADD COLUMN %s %s", tableName, fieldName, colDef)
+		if err := db.Exec(alterSQL).Error; err != nil {
+			log.Printf("[DB] WARN: failed to add column %s to %s: %v", fieldName, tableName, err)
+		} else {
+			log.Printf("[DB] added missing column %s to %s", fieldName, tableName)
+		}
+	}
+}
+
+// isRelationOnlyField returns true for field types that don't create a column
+// in the model's own table (they create junction tables or virtual relations).
+func isRelationOnlyField(fieldType parser.FieldType) bool {
+	switch fieldType {
+	case parser.FieldOne2Many, parser.FieldMany2Many,
+		parser.FieldMorphOne, parser.FieldMorphMany,
+		parser.FieldMorphToMany, parser.FieldMorphByMany:
+		return true
+	}
+	return false
+}
+
+// fieldToColumnDef converts a field definition to its SQL column type string
+// (without the column name, which is prepended by the caller).
+func fieldToColumnDef(field parser.FieldDefinition, dialect DBDialect) string {
+	switch field.Type {
+	case parser.FieldBoolean:
+		return "INTEGER DEFAULT 0"
+	case parser.FieldInteger, parser.FieldFloat, parser.FieldDecimal:
+		if dialect == DialectPostgres {
+			return "DOUBLE PRECISION"
+		}
+		return "REAL"
+	case parser.FieldDate, parser.FieldDatetime:
+		return "DATETIME"
+	case parser.FieldJSON, parser.FieldText:
+		return "TEXT"
+	case parser.FieldMany2One:
+		return "TEXT"
+	case parser.FieldMorphTo:
+		return "TEXT" // morph_type column; morph_id handled separately
+	default:
+		max := field.Max
+		if max > 0 {
+			return fmt.Sprintf("VARCHAR(%d)", max)
+		}
+		return "TEXT"
+	}
 }

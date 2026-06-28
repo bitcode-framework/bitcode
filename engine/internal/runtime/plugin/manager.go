@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/bitcode-framework/bitcode/internal/runtime/bridge"
+	"github.com/bitcode-framework/bitcode/plugins"
 )
 
 type RuntimeConfig struct {
@@ -100,7 +101,7 @@ func (m *Manager) StartNodePool() error {
 
 	log.Printf("[PLUGIN] detected %s engine: %s", engine, command)
 
-	args := []string{"plugins/node/runtime.js"}
+	args := []string{resolvePluginPath("plugins/node/runtime.js")}
 
 	workerPool := NewProcessPool(command, args, cfg.WorkerPool)
 	if err := workerPool.Start(); err != nil {
@@ -524,7 +525,7 @@ func (m *Manager) StartPythonPool() error {
 
 	log.Printf("[PLUGIN] detected Python %s: %s", version, command)
 
-	args := []string{"plugins/python/runtime.py"}
+	args := []string{resolvePluginPath("plugins/python/runtime.py")}
 
 	workerPool := NewProcessPoolWithPrefix(command, args, cfg.WorkerPool, "plugin:python")
 	if err := workerPool.Start(); err != nil {
@@ -686,4 +687,34 @@ func isVersionAtLeast(version string, minMajor, minMinor, minPatch int) bool {
 		return minor > minMinor
 	}
 	return patch >= minPatch
+}
+
+// resolvePluginPath finds the plugin runtime file. When serving from a
+// project directory (e.g. samples/erp/), the CWD-based relative path
+// "plugins/node/runtime.js" resolves to the wrong location. Resolution order:
+// 1. CWD (backward compat — plugins/ next to bitcode.yaml)
+// 2. Embedded runtime (extracted to temp dir on first call)
+func resolvePluginPath(relPath string) string {
+	// 1. CWD-relative (backward compat — dev mode with engine source)
+	if _, err := os.Stat(relPath); err == nil {
+		return relPath
+	}
+
+	// 2. Embedded runtime (production — extracted to temp dir)
+	embeddedDir := plugins.RuntimeDir()
+	// Strip "plugins/" prefix from relPath since embedded files are extracted
+	// directly under the temp dir (node/runtime.js, not plugins/node/runtime.js)
+	stripped := strings.TrimPrefix(relPath, "plugins/")
+	embeddedPath := filepath.Join(embeddedDir, filepath.FromSlash(stripped))
+	if fileExists(embeddedPath) {
+		return embeddedPath
+	}
+
+	// 3. Fallback: return original (will produce a clear error if missing)
+	return relPath
+}
+
+func fileExists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
 }
