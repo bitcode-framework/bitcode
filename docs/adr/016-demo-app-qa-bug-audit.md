@@ -368,20 +368,34 @@ or refine the original fix options:
 **Original plan**: Fix the Mitosis compiler to emit `ref={setXxx}` (callback
 ref) when compiling `ref={state.xxx}`.
 
-**Decision**: Do NOT patch the compiler. Instead, migrate `BcChart` from
-`useStore({ containerRef: null })` to `useRef<HTMLDivElement>(null)`.
+**Decision**: Do NOT patch the compiler. Instead, migrate DOM refs and
+mutable handles (timers, echarts instances) from `useStore({ xxxRef })` to
+`useRef<T>(null)`.
+
+**Scope**: All 6 affected components migrated:
+- `BcChart` (`containerRef`, `instanceRef`)
+- `BcAffix` (`placeholderRef`)
+- `BcSignature` (`canvasRef`)
+- `BcHoverCard` (`openTimerRef`, `closeTimerRef`)
+- `BcViewEditor` (`textareaRef`)
+- `BcFieldDynLink` (`debounceTimerRef`)
+
+**Guardrail**: A permanent lint rule (`scripts/lint-no-usestore-refs.mjs`,
+wired into `prebuild`) rejects any new `useStore({ xxxRef/xxxTimer })`
+pattern. This makes the migration future-proof — no new component can
+reintroduce the bug.
 
 **Rationale**: Mitosis already compiles `useRef` correctly to React `useRef`
 with auto-`.current` access (verified in `BcSplitter`). Using `useRef` is the
 semantically correct Mitosis idiom for DOM refs and mutable values that should
 not trigger re-renders. The `reformat-react-output.mjs` callback-ref visitor
 (commit `464e46f`) remains as a safety net for any future `useStore`-based
-refs, but new code should use `useRef`.
+refs that slip past the lint rule, but new code should use `useRef`.
 
-**Consequence**: Any component using `useStore({ xxxRef: null })` for DOM
-refs should be migrated to `useRef`. The `useState`-based ref pattern is
-broken for `useEffect`/`onMount` access because the state value is always
-`null` on first render and the effect closure captures the stale value.
+**Consequence**: The `useState`-based ref pattern (`useStore({ xxxRef: null })`)
+is now a **build error**. Any component using it must be migrated to `useRef`.
+The lint rule catches the pattern at the `useStore` property-name level
+(anything ending in `Ref` or `Timer`).
 
 #### Decision 2: Overlay portals — post-build Babel AST, not source-level
 
