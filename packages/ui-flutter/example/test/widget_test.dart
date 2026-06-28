@@ -8,13 +8,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bc_ui_flutter_example/main.dart';
-import 'package:bc_ui_flutter/bc_ui_flutter.dart';
 import 'package:bc_ui_flutter_example/sections/social_section.dart';
 import 'package:bc_ui_flutter_example/sections/misc_section.dart';
 import 'package:bc_ui_flutter_example/sections/input_extended_section.dart';
 import 'package:bc_ui_flutter_example/sections/print_section.dart';
+import 'package:bc_ui_flutter_example/sections/charts_section.dart';
+import 'helpers/fake_webview_platform.dart';
 
 void main() {
+  // Install the fake WebView platform once so BcChart (flutter_echarts) can
+  // build its widget tree in tests without a real WebView platform impl.
+  setUpAll(installFakeWebViewPlatform);
+
   testWidgets('Demo app renders with sidebar and content', (WidgetTester tester) async {
     await tester.pumpWidget(const BcUiDemoApp());
     await tester.pumpAndSettle(const Duration(seconds: 3));
@@ -111,29 +116,18 @@ void main() {
   });
 
   // Regression test: Charts section renders without crashing.
-  // NOTE: BcChart uses flutter_echarts (webview_flutter) which requires a
-  // platform implementation not available in headless tests. We test only
-  // BcSparkline (CustomPaint-based, no webview) here. The full ChartsSection
-  // (with BcChart) is exercised manually via `flutter run`.
-  testWidgets('BcSparkline renders without ErrorWidget',
+  // The fake WebView platform (installed in setUpAll) lets BcChart
+  // (flutter_echarts) build its WebView tree without a platform impl.
+  testWidgets('Charts section renders without ErrorWidget',
       (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const MaterialApp(
-        home: Scaffold(
-          body: BcSparkline(
-            data: [4, 8, 6, 12, 9, 15, 11, 18],
-            width: 160,
-            height: 32,
-            type: BcSparklineType.line,
-            showDot: true,
-          ),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
+    await tester.pumpWidget(const MaterialApp(
+      home: Scaffold(body: SingleChildScrollView(child: ChartsSection())),
+    ));
+    await tester.pumpAndSettle(const Duration(seconds: 2));
     expect(find.byType(ErrorWidget), findsNothing,
-        reason: 'BcSparkline rendered an ErrorWidget (crash)');
-    expect(find.byType(BcSparkline), findsOneWidget);
+        reason: 'Charts section rendered an ErrorWidget (crash)');
+    expect(find.text('BcChart - Bar'), findsOneWidget);
+    expect(find.text('BcSparkline'), findsOneWidget);
   });
 
   // Regression test: Social section renders without crashing.

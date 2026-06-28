@@ -20,6 +20,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  # WebView platform interface — stubbed by test/helpers/fake_webview_platform.dart
+  # so flutter_echarts (BcChart) can build in widget tests without a real WebView.
+  webview_flutter_platform_interface: ^2.15.0
 
 flutter:
   uses-material-design: true
