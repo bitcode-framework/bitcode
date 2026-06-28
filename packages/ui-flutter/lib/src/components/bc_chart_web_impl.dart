@@ -139,14 +139,23 @@ class _BcChartWebState extends State<BcChartWeb> {
     try {
       await _ensureEchartsLoaded();
       if (!mounted) return;
-      // Defer render to next frame so HtmlElementView has mounted the DOM
-      // container into the document with real dimensions. Without this,
-      // ECharts measures 0px width on re-visit (CDN cached → instant init).
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _renderChart();
-      });
+      // Wait for the container to be mounted in the DOM by HtmlElementView
+      // and have real dimensions. On re-visit (CDN cached), this is the
+      // critical delay that prevents ECharts from measuring 0px width.
+      await _waitForContainerReady();
+      if (mounted) _renderChart();
     } catch (e) {
       if (mounted) setState(() => _error = e);
+    }
+  }
+
+  /// Polls until the container element is in the DOM with non-zero width.
+  /// HtmlElementView inserts elements asynchronously after build; without
+  /// this wait, ECharts inits against a 0-width container on re-visit.
+  Future<void> _waitForContainerReady() async {
+    for (int i = 0; i < 50; i++) {
+      if (_container!.offsetWidth! > 0 && _container!.offsetHeight! > 0) return;
+      await Future.delayed(const Duration(milliseconds: 20));
     }
   }
 
