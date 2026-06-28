@@ -14,9 +14,10 @@ class DataSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final people = Person.sample;
 
-    return ListView(
-      padding: const EdgeInsets.all(24),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const SizedBox(height: 24),
         const SectionHeader(
           title: 'Data Display',
           subtitle: 'BcDataTable, BcDescriptions, and BcStatistic widgets.',
