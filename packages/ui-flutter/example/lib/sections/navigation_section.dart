@@ -204,6 +204,194 @@ class _NavigationSectionState extends State<NavigationSection> {
             ),
           ),
         ),
+
+        // -- BcMegaMenu --
+        DemoCard(
+          title: 'BcMegaMenu',
+          description: 'Mega menu with multi-column link panels.',
+          child: BcMegaMenu(
+            items: const [
+              BcMegaMenuItem(
+                label: 'Products',
+                columns: [
+                  BcMegaMenuColumn(
+                    title: 'ERP',
+                    links: [
+                      BcMegaMenuLink(label: 'Sales', value: 'sales'),
+                      BcMegaMenuLink(label: 'Inventory', value: 'inventory'),
+                      BcMegaMenuLink(label: 'Accounting', value: 'accounting'),
+                    ],
+                  ),
+                  BcMegaMenuColumn(
+                    title: 'CRM',
+                    links: [
+                      BcMegaMenuLink(label: 'Leads', value: 'leads'),
+                      BcMegaMenuLink(label: 'Pipeline', value: 'pipeline'),
+                    ],
+                  ),
+                ],
+              ),
+              BcMegaMenuItem(
+                label: 'Resources',
+                columns: [
+                  BcMegaMenuColumn(
+                    links: [
+                      BcMegaMenuLink(label: 'Docs', value: 'docs'),
+                      BcMegaMenuLink(label: 'API', value: 'api'),
+                      BcMegaMenuLink(label: 'Blog', value: 'blog'),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        // -- BcNavigationMenu --
+        DemoCard(
+          title: 'BcNavigationMenu',
+          description: 'Root items with content panels (horizontal tabs).',
+          child: BcNavigationMenu(
+            defaultValue: 'overview',
+            items: [
+              const BcNavigationMenuItem(value: 'overview', label: 'Overview'),
+              BcNavigationMenuItem(
+                value: 'details',
+                label: 'Details',
+                panel: const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text('Details panel content.'),
+                ),
+              ),
+              BcNavigationMenuItem(
+                value: 'settings',
+                label: 'Settings',
+                panel: const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text('Settings panel content.'),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // -- BcPanelMenu --
+        DemoCard(
+          title: 'BcPanelMenu',
+          description: 'Panel menu with expandable/collapsible groups.',
+          child: BcPanelMenu(
+            items: const [
+              BcPanelMenuItem(key: 'dashboard', label: 'Dashboard', icon: Icons.dashboard_outlined),
+              BcPanelMenuItem(
+                key: 'projects',
+                label: 'Projects',
+                icon: Icons.folder_outlined,
+                children: [
+                  BcPanelMenuItem(key: 'active', label: 'Active'),
+                  BcPanelMenuItem(key: 'archived', label: 'Archived'),
+                ],
+              ),
+              BcPanelMenuItem(
+                key: 'reports',
+                label: 'Reports',
+                icon: Icons.assessment_outlined,
+                children: [
+                  BcPanelMenuItem(key: 'sales', label: 'Sales Report'),
+                  BcPanelMenuItem(key: 'inventory', label: 'Inventory Report'),
+                ],
+              ),
+            ],
+            defaultExpandedKeys: const ['projects'],
+          ),
+        ),
+
+        // -- BcAnchor --
+        DemoCard(
+          title: 'BcAnchor',
+          description: 'Anchor navigation that scrolls to target sections.',
+          child: SizedBox(
+            height: 200,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 140,
+                  child: BcAnchor(
+                    anchors: const [
+                      BcAnchorLink(label: 'Section A', target: 'a'),
+                      BcAnchorLink(label: 'Section B', target: 'b'),
+                      BcAnchorLink(label: 'Section C', target: 'c'),
+                    ],
+                  ),
+                ),
+                const VerticalDivider(width: 1),
+                const Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ListTile(key: ValueKey('a'), title: Text('Section A')),
+                        ListTile(key: ValueKey('b'), title: Text('Section B')),
+                        ListTile(key: ValueKey('c'), title: Text('Section C')),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // -- BcDock --
+        DemoCard(
+          title: 'BcDock',
+          description: 'Dockable panel with dock/detach toggle.',
+          child: BcDock(
+            defaultDocked: true,
+            child: BcBox(
+              padding: 16,
+              border: true,
+              borderRadius: BcTheme.radius,
+              backgroundColor: BcBoxColorToken.card,
+              child: const Text('Dockable panel content. Tap the dock icon to toggle.'),
+            ),
+          ),
+        ),
+
+        // -- BcSlideMenu --
+        DemoCard(
+          title: 'BcSlideMenu',
+          description: 'Slide-out drawer menu with scrim overlay.',
+          child: BcSlideMenu(
+            items: const [
+              BcSlideMenuItem(key: 'home', label: 'Home', icon: Icons.home_outlined),
+              BcSlideMenuItem(key: 'search', label: 'Search', icon: Icons.search_outlined),
+              BcSlideMenuItem(key: 'notifications', label: 'Notifications', icon: Icons.notifications_outlined),
+              BcSlideMenuItem(key: 'settings', label: 'Settings', icon: Icons.settings_outlined),
+            ],
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              child: const Text('Main content. Tap the menu icon to open the slide-out drawer.'),
+            ),
+          ),
+        ),
+
+        // -- BcSidebar --
+        DemoCard(
+          title: 'BcSidebar',
+          description: 'Collapsible navigation sidebar with menu items.',
+          child: SizedBox(
+            height: 240,
+            child: BcSidebar(
+              title: 'Navigation',
+              items: const [
+                BcSidebarItem(value: 'home', label: 'Home', icon: Icons.home_outlined),
+                BcSidebarItem(value: 'projects', label: 'Projects', icon: Icons.folder_outlined),
+                BcSidebarItem(value: 'reports', label: 'Reports', icon: Icons.assessment_outlined),
+                BcSidebarItem(value: 'settings', label: 'Settings', icon: Icons.settings_outlined),
+              ],
+              selectedValue: 'home',
+            ),
+          ),
+        ),
       ],
     );
   }
