@@ -120,9 +120,11 @@ class _BcChartWebState extends State<BcChartWeb> {
   }
 
   void _applyContainerStyle() {
+    final w = widget.width.isInfinite || widget.width.isNaN ? '100%' : '${widget.width.toInt()}px';
+    final h = widget.height.isInfinite || widget.height.isNaN ? '100%' : '${widget.height.toInt()}px';
     _container?.setAttribute(
       'style',
-      'width:${widget.width.toInt()}px;height:${widget.height.toInt()}px;position:relative;overflow:hidden;',
+      'width:$w;height:$h;position:relative;overflow:hidden;',
     );
   }
 
@@ -180,10 +182,12 @@ class _BcChartWebState extends State<BcChartWeb> {
 
   @override
   Widget build(BuildContext context) {
+    final w = widget.width.isInfinite || widget.width.isNaN ? null : widget.width;
+    final h = widget.height.isInfinite || widget.height.isNaN ? null : widget.height;
     if (_error != null) {
       return SizedBox(
-        width: widget.width,
-        height: widget.height,
+        width: w,
+        height: h,
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(12),
@@ -197,8 +201,8 @@ class _BcChartWebState extends State<BcChartWeb> {
       );
     }
     return SizedBox(
-      width: widget.width,
-      height: widget.height,
+      width: w,
+      height: h,
       child: HtmlElementView(viewType: _viewType),
     );
   }
