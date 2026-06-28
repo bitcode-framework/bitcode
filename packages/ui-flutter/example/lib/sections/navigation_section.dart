@@ -190,8 +190,11 @@ class _NavigationSectionState extends State<NavigationSection> {
                           ),
                         );
                       }
-                      return ListTile(
-                        title: Text('Scroll item #$index'),
+                      return Material(
+                        color: Colors.transparent,
+                        child: ListTile(
+                          title: Text('Scroll item #$index'),
+                        ),
                       );
                     },
                   ),
@@ -328,9 +331,9 @@ class _NavigationSectionState extends State<NavigationSection> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        ListTile(key: ValueKey('a'), title: Text('Section A')),
-                        ListTile(key: ValueKey('b'), title: Text('Section B')),
-                        ListTile(key: ValueKey('c'), title: Text('Section C')),
+                        Material(color: Colors.transparent, child: ListTile(key: ValueKey('a'), title: Text('Section A'))),
+                        Material(color: Colors.transparent, child: ListTile(key: ValueKey('b'), title: Text('Section B'))),
+                        Material(color: Colors.transparent, child: ListTile(key: ValueKey('c'), title: Text('Section C'))),
                       ],
                     ),
                   ),
