@@ -186,88 +186,95 @@ class _BcLightboxState extends State<BcLightbox> {
     return Semantics(
       label: bcI18n.t('bc.lightbox.dialogAriaLabel'),
       container: true,
-      child: Container(
-        key: const Key('bc-lightbox-root'),
-        color: Colors.black.withValues(alpha: 0.8),
-        child: Stack(
-          children: [
-            GestureDetector(
-              onTap: () => _setOpen(false, BcChangeReason.overlayClick, BcEventSource.pointer),
-              child: PageView.builder(
-                key: const Key('bc-lightbox-pageview'),
-                controller: controller,
-                itemCount: widget.items.length,
-                onPageChanged: (i) =>
-                    _setIndex(i, BcChangeReason.programmatic, BcEventSource.pointer),
-                itemBuilder: (context, i) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: _buildItem(widget.items[i]),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Container(
+            key: const Key('bc-lightbox-root'),
+            color: Colors.black.withValues(alpha: 0.8),
+            child: Stack(
+              children: [
+                GestureDetector(
+                  onTap: () => _setOpen(false, BcChangeReason.overlayClick, BcEventSource.pointer),
+                  child: SizedBox(
+                    height: constraints.maxHeight,
+                    child: PageView.builder(
+                      key: const Key('bc-lightbox-pageview'),
+                      controller: controller,
+                      itemCount: widget.items.length,
+                      onPageChanged: (i) =>
+                          _setIndex(i, BcChangeReason.programmatic, BcEventSource.pointer),
+                      itemBuilder: (context, i) {
+                        return Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: _buildItem(widget.items[i]),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
+                  ),
+                ),
+                if (widget.items.length > 1)
+                  Positioned(
+                    left: 8,
+                    top: 0,
+                    bottom: 0,
+                    child: Center(
+                      child: SizedBox(
+                        width: 44,
+                        height: 44,
+                        child: IconButton(
+                          key: const Key('bc-lightbox-prev'),
+                          icon: const Icon(Icons.chevron_left, color: BcTheme.mutedForeground),
+                          onPressed: () {
+                            final max = widget.items.length - 1;
+                            final cur = _currentIndex;
+                            _setIndex(cur <= 0 ? max : cur - 1, BcChangeReason.programmatic, BcEventSource.keyboard);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                if (widget.items.length > 1)
+                  Positioned(
+                    right: 8,
+                    top: 0,
+                    bottom: 0,
+                    child: Center(
+                      child: SizedBox(
+                        width: 44,
+                        height: 44,
+                        child: IconButton(
+                          key: const Key('bc-lightbox-next'),
+                          icon: const Icon(Icons.chevron_right, color: BcTheme.mutedForeground),
+                          onPressed: () {
+                            final max = widget.items.length - 1;
+                            final cur = _currentIndex;
+                            _setIndex(cur >= max ? 0 : cur + 1, BcChangeReason.programmatic, BcEventSource.keyboard);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                if (widget.closable)
+                  Positioned(
+                    top: 16,
+                    right: 16,
+                    child: SizedBox(
+                      width: 44,
+                      height: 44,
+                      child: IconButton(
+                        key: const Key('bc-lightbox-close'),
+                        icon: const Icon(Icons.close, color: BcTheme.mutedForeground),
+                        onPressed: () =>
+                            _setOpen(false, BcChangeReason.escape, BcEventSource.pointer),
+                      ),
+                    ),
+                  ),
+              ],
             ),
-            if (widget.items.length > 1)
-              Positioned(
-                left: 8,
-                top: 0,
-                bottom: 0,
-                child: Center(
-                  child: SizedBox(
-                    width: 44,
-                    height: 44,
-                    child: IconButton(
-                      key: const Key('bc-lightbox-prev'),
-                      icon: const Icon(Icons.chevron_left, color: BcTheme.mutedForeground),
-                      onPressed: () {
-                        final max = widget.items.length - 1;
-                        final cur = _currentIndex;
-                        _setIndex(cur <= 0 ? max : cur - 1, BcChangeReason.programmatic, BcEventSource.keyboard);
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            if (widget.items.length > 1)
-              Positioned(
-                right: 8,
-                top: 0,
-                bottom: 0,
-                child: Center(
-                  child: SizedBox(
-                    width: 44,
-                    height: 44,
-                    child: IconButton(
-                      key: const Key('bc-lightbox-next'),
-                      icon: const Icon(Icons.chevron_right, color: BcTheme.mutedForeground),
-                      onPressed: () {
-                        final max = widget.items.length - 1;
-                        final cur = _currentIndex;
-                        _setIndex(cur >= max ? 0 : cur + 1, BcChangeReason.programmatic, BcEventSource.keyboard);
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            if (widget.closable)
-              Positioned(
-                top: 16,
-                right: 16,
-                child: SizedBox(
-                  width: 44,
-                  height: 44,
-                  child: IconButton(
-                    key: const Key('bc-lightbox-close'),
-                    icon: const Icon(Icons.close, color: BcTheme.mutedForeground),
-                    onPressed: () =>
-                        _setOpen(false, BcChangeReason.escape, BcEventSource.pointer),
-                  ),
-                ),
-              ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

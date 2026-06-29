@@ -139,33 +139,39 @@ class BcNativeActionSheet {
                   : item.disabled
                       ? BcTheme.mutedForeground
                       : BcTheme.foreground;
-              return ListTile(
-                key: ValueKey<String>(
-                    'bc-native-actionsheet-item-${item.value}'),
-                title: Text(
-                  item.label,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: labelColor),
+              return Material(
+                color: Colors.transparent,
+                child: ListTile(
+                  key: ValueKey<String>(
+                      'bc-native-actionsheet-item-${item.value}'),
+                  title: Text(
+                    item.label,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: labelColor),
+                  ),
+                  enabled: !item.disabled,
+                  onTap: item.disabled
+                      ? null
+                      : () => Navigator.pop(ctx, item.value),
                 ),
-                enabled: !item.disabled,
-                onTap: item.disabled
-                    ? null
-                    : () => Navigator.pop(ctx, item.value),
               );
             }),
             const Divider(height: 8, thickness: 8, color: BcTheme.muted),
-            ListTile(
-              key: const Key('bc-native-actionsheet-cancel'),
-              title: Text(
-                cancelLabel,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: BcTheme.foreground,
+            Material(
+              color: Colors.transparent,
+              child: ListTile(
+                key: const Key('bc-native-actionsheet-cancel'),
+                title: Text(
+                  cancelLabel,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: BcTheme.foreground,
+                  ),
                 ),
+                onTap: () => Navigator.pop(ctx, null),
               ),
-              onTap: () => Navigator.pop(ctx, null),
             ),
           ],
         ),

@@ -169,14 +169,17 @@ class BcNativePicker {
             itemBuilder: (innerCtx, i) {
               final opt = options[i];
               final isSelected = opt.value == value;
-              return ListTile(
-                key: ValueKey<String>(
-                    'bc-native-picker-option-${opt.value}'),
-                title: Text(opt.label),
-                trailing: isSelected
-                    ? const Icon(Icons.check, color: BcTheme.primary)
-                    : null,
-                onTap: () => Navigator.pop(innerCtx, opt.value),
+              return Material(
+                color: Colors.transparent,
+                child: ListTile(
+                  key: ValueKey<String>(
+                      'bc-native-picker-option-${opt.value}'),
+                  title: Text(opt.label),
+                  trailing: isSelected
+                      ? const Icon(Icons.check, color: BcTheme.primary)
+                      : null,
+                  onTap: () => Navigator.pop(innerCtx, opt.value),
+                ),
               );
             },
           ),
