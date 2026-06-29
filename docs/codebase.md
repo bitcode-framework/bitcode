@@ -361,7 +361,7 @@ packages/ui/
 │   │   ├── hooks/                              # Portable headless SSR-safe hooks (ADR-002 §9.2, ADR-013). P0: useId, useDisclosure, useControllableState, useDebouncedValue, useClipboard, useElementSize, useFocusTrap, useMediaQuery, useAppContext/useAppConfigStore. P1 (ADR-013 §3): usePrevious, useIntersection, useInterval, useTimeout, useClickOutside, useKeyboard, useScrollLock, useLocalStorage — all gated behind typeof window/document, barrel-exported via core/hooks/index.ts.
 │   │   ├── animation/                          # Animation runtime (ADR-002 §9.3, ADR-013 §4). types.ts = AnimationProps/AnimationKind/AnimationEasing/ANIMATION_DEFAULT contract slot. runtime.ts = resolveAnimation() merges props with default + collapses to 'none' on prefers-reduced-motion (SSR-safe), returns ResolvedAnimation {kind,duration,easing,cssTransition}. getAnimationClasses() returns enter/exit Tailwind utility strings. prefersReducedMotion()/detectPrefersReducedMotion() exported detector. Barrel core/animation/index.ts.
 │   │   └── adapt/                              # Adapt runtime (ADR-002 §9.4, ADR-013 §4). types.ts = AdaptProps/AdaptCondition/AdaptTarget contract slot. runtime.ts = resolveAdapt(props?, ctx?) evaluates when-condition (breakpoint via createMediaQueryWatcher OR platform: tag) and returns ResolvedAdapt {applies,target}. AdaptContext injectable for test-friendly/SSR-safe platform+breakpoint detection. Barrel core/adapt/index.ts.
-│   ├── components/                             # 177 Mitosis .lite.tsx components across 13 groups (charts, data, data-display, feedback, forms, input, layout, media, navigation, overlays, primitives, print, social, views)
+│   ├── components/                             # 189 Mitosis components across 14 groups (charts, data, data-display, feedback, forms, input, layout, media, navigation, overlays, primitives, print, social, views, adapt-poc). 177 .lite.tsx Pure + 12 .web.tsx/.native.tsx Adapt (ADR-006).
 │   └── themes/default.css                      # Default theme bundle
 ├── scripts/                                    # Build & tooling helpers
 │   ├── contract-audit.mjs                      # ADR-007/008/009 contract compliance auditor (blocking mode, Props-interface-aware parsing)
@@ -644,13 +644,13 @@ packages/components/
 ---
 
 ## Flutter Adapter (`packages/ui-flutter/`)
-Dart port of the BitCode UI layer per ADR-011 Phase 5a/5b. Pure-Dart reactive engine (no Flutter imports) with thin Flutter `ChangeNotifier` adapter, auto-generated theme tokens, UiSchema types port (freezed + json_serializable), contract→Dart stub generator, and 32 cross-platform widgets (24 P0 hand-written + 8 P1 Phase 5b.2 widgets). Uses `flutter_platform_widgets` (FPW) for Material/Cupertino adaptation where a Cupertino counterpart exists; Material-only for widgets without one.
+Dart port of the BitCode UI layer per ADR-011 Phase 5a/5b/5c + ADR-016 Phase 4. Pure-Dart reactive engine (no Flutter imports) with thin Flutter `ChangeNotifier` adapter, auto-generated theme tokens, UiSchema types port (freezed + json_serializable), contract→Dart stub generator, and 160+ cross-platform widgets (130 Phase 5c + 28 ADR-016 Phase 4 stub-completion + BcChart). Uses `flutter_platform_widgets` (FPW) for Material/Cupertino adaptation where a Cupertino counterpart exists; Material-only for widgets without one.
 ```
 packages/ui-flutter/
 ├── pubspec.yaml                                # bc_ui_flutter — depends on flutter, flutter_platform_widgets 0xfw, flutter_echarts 2.5 (ADR-015), flutter_test, freezed, json_serializable, build_runner, collection, webview_flutter_platform_interface (dev, test stub)
 ├── analysis_options.yaml                       # flutter_lints, prefer_const, excludes generated *.freezed.dart/*.g.dart
 ├── lib/
-│   ├── bc_ui_flutter.dart                      # Public barrel — exports 24 P0 components + 8 P1 Phase 5b.2 widgets + schema types + core + theme + BcApp
+│   ├── bc_ui_flutter.dart                      # Public barrel — exports 160+ components (24 P0 + 8 P1 Phase 5b.2 + ~98 Phase 5c M1-M7 + 28 ADR-016 Phase 4 + BcChart) + schema types + core + theme + BcApp
 │   └── src/
 │       ├── bc_app.dart                         # PlatformApp wrapper with BcTheme defaults + variant override
 │       ├── theme/
@@ -726,6 +726,35 @@ packages/ui-flutter/
 │           ├── bc_portal.dart                  # P1 Phase 5b.2 — portal overlay host
 │           ├── bc_view_gantt.dart              # P1 Phase 5b.2 — Gantt view
 │           └── bc_chart.dart                   # ADR-015 — ECharts-backed chart widget (26 types via flutter_echarts WebView, replaces CustomPaint)
+│           # ADR-016 Phase 4 stub-completion (28 new components):
+│           ├── bc_alert.dart                   # Inline alert banner (4 severity, persistent, dismissible)
+│           ├── bc_chip.dart                    # Compact tag/chip (6 variants, avatar, removable)
+│           ├── bc_print_area.dart              # Printable region marker (semantic landmark)
+│           ├── bc_print_preview.dart           # Preview pane + print trigger (iframe on web)
+│           ├── bc_text_field.dart              # Rich text input (multiline auto-grow, counter, prefix/suffix)
+│           ├── bc_like.dart                    # Like/unlike toggle + count
+│           ├── bc_follow.dart                  # Follow/unfollow toggle + count
+│           ├── bc_comment.dart                 # Threaded comment with reply form
+│           ├── bc_share.dart                   # Share intent (dependency-free delegation on Flutter)
+│           ├── bc_native_button.dart           # Platform-idiomatic button (PlatformElevatedButton)
+│           ├── bc_native_input.dart            # Typedef → BcInput (already platform-aware)
+│           ├── bc_native_select.dart           # Typedef → BcSelect
+│           ├── bc_native_switch.dart           # Typedef → BcToggle
+│           ├── bc_native_slider.dart           # Typedef → BcSlider
+│           ├── bc_native_picker.dart           # FPW picker (CupertinoPicker wheel / Material dialog)
+│           ├── bc_native_alert.dart            # FPW alert (CupertinoAlertDialog / Material AlertDialog)
+│           ├── bc_native_actionsheet.dart      # FPW action sheet (CupertinoActionSheet / bottom sheet)
+│           ├── bc_native_modal.dart            # FPW modal (fullscreen/formSheet/pageSheet)
+│           ├── bc_native_toast.dart            # FPW toast (overlay / SnackBar)
+│           ├── bc_lightbox.dart                # Full-screen gallery (PageView swipe nav)
+│           ├── bc_map.dart                     # Map (dependency-free, caller wires google_maps_flutter)
+│           ├── bc_webcam.dart                  # Camera capture (dependency-free, caller wires camera plugin)
+│           ├── bc_detail_view.dart             # Master-detail renderer (fields + tabs)
+│           ├── bc_grid_view.dart               # Spreadsheet grid (header + rows + onRowSelect)
+│           ├── bc_tree_view.dart               # Hierarchical tree (expand/collapse + onSelect)
+│           ├── bc_kanban_view.dart             # Kanban board (columns + cards + onCardMove)
+│           ├── bc_calendar_view.dart           # Calendar (month/week/day + events + onDateSelect)
+│           └── bc_dashboard.dart               # Widget grid (configurable columns + renderWidget)
 ├── test/
 │   ├── types_test.dart                         # 7 tests — BcChangeMeta, BcEventSource, BcChangeReason, BcComponentSize, BcComponentVariant
 │   ├── reactive_store_test.dart                # 12 tests — get/set, setMany, metadata, VALUE effects, cascade, conditions, snapshot, subscription, dispose

@@ -154,7 +154,8 @@ class _BcChartWebState extends State<BcChartWeb> {
   /// this wait, ECharts inits against a 0-width container on re-visit.
   Future<void> _waitForContainerReady() async {
     for (int i = 0; i < 50; i++) {
-      if (_container!.offsetWidth! > 0 && _container!.offsetHeight! > 0) return;
+      final el = _container as web.HTMLElement;
+      if (el.offsetWidth > 0 && el.offsetHeight > 0) return;
       await Future.delayed(const Duration(milliseconds: 20));
     }
   }
