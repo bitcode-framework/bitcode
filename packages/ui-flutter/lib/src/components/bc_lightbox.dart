@@ -127,16 +127,17 @@ class _BcLightboxState extends State<BcLightbox> {
   }
 
   Widget _buildItem(BcLightboxItem item) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
         if (item.type == BcLightboxMediaType.image)
           Image.network(
             item.src,
             fit: BoxFit.contain,
             errorBuilder: (_, __, ___) => Container(
               key: const Key('bc-lightbox-media-placeholder'),
-              height: 240,
+              constraints: const BoxConstraints(maxHeight: 300),
               color: BcTheme.muted,
               alignment: Alignment.center,
               child: Text(
@@ -159,6 +160,7 @@ class _BcLightboxState extends State<BcLightbox> {
             ),
           ),
       ],
+      ),
     );
   }
 
