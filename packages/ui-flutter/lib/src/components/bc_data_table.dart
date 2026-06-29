@@ -82,14 +82,8 @@ class _BcDataTableState<T> extends State<BcDataTable<T>> {
           showCheckboxColumn: widget.showCheckboxColumn,
           onSelectAll: widget.showCheckboxColumn ? (_) => _toggleAll() : null,
           columns: [
-            if (widget.showCheckboxColumn)
-              DataColumn(
-                label: Checkbox(
-                  value: _selected.length == widget.rows.length &&
-                      widget.rows.isNotEmpty,
-                  onChanged: (_) => _toggleAll(),
-                ),
-              ),
+            // No manual checkbox column — Material DataTable renders it
+            // automatically when showCheckboxColumn=true + onSelectChanged.
             ...widget.columns.map((col) => DataColumn(
                   label: Text(col.label),
                   numeric: col.numeric,
@@ -110,11 +104,8 @@ class _BcDataTableState<T> extends State<BcDataTable<T>> {
                   ? (_) => _toggleRow(index)
                   : null,
               cells: [
-                if (widget.showCheckboxColumn)
-                  DataCell(Checkbox(
-                    value: _selected.contains(index),
-                    onChanged: (_) => _toggleRow(index),
-                  )),
+                // No manual checkbox cell — Material DataTable renders it
+                // automatically when showCheckboxColumn=true.
                 ...widget.columns.map((col) => DataCell(
                       col.cellBuilder(context, row),
                       onTap: widget.onRowTap != null
