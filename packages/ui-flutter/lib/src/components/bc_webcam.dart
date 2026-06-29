@@ -2,6 +2,7 @@ library bc_webcam;
 
 import 'package:flutter/material.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -28,7 +29,7 @@ enum BcWebcamOpenChangeReason {
 /// delegation strategy used by [BcShare].
 class BcWebcam extends StatelessWidget {
   final BcWebcamFacingMode facingMode;
-  final String captureLabel;
+  final String? captureLabel;
   final Widget Function(BuildContext context)? cameraBuilder;
   final void Function(Object error)? onError;
   final void Function(String dataURL, BcChangeMeta meta)? onCapture;
@@ -36,7 +37,7 @@ class BcWebcam extends StatelessWidget {
   const BcWebcam({
     super.key,
     this.facingMode = BcWebcamFacingMode.user,
-    this.captureLabel = 'Capture',
+    this.captureLabel,
     this.cameraBuilder,
     this.onError,
     this.onCapture,
@@ -58,7 +59,7 @@ class BcWebcam extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: 'camera capture',
+      label: bcI18n.t('bc.webcam.ariaLabel'),
       container: true,
       child: Container(
         key: const Key('bc-webcam-root'),
@@ -103,7 +104,8 @@ class BcWebcam extends StatelessWidget {
                 textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 elevation: 0,
               ),
-              child: Text(captureLabel),
+              child: Text(
+                  captureLabel ?? bcI18n.t('bc.webcam.defaultCaptureLabel')),
             ),
           ],
         ),

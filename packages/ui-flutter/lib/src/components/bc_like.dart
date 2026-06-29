@@ -2,6 +2,7 @@ library bc_like;
 
 import 'package:flutter/material.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -62,7 +63,7 @@ class _BcLikeState extends State<BcLike> {
     final liked = _isLiked;
     return MergeSemantics(
       child: Semantics(
-        label: widget.ariaLabel ?? 'Like',
+        label: widget.ariaLabel ?? bcI18n.t('bc.like.defaultAriaLabel'),
         button: true,
         toggled: liked,
         enabled: !widget.disabled,

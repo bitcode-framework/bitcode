@@ -122,6 +122,44 @@ class MediaSection extends StatelessWidget {
             ),
           ),
         ),
+
+        // -- BcLightbox --
+        DemoCard(
+          title: 'BcLightbox',
+          description: 'Full-screen image gallery with swipe navigation (default-open for demo).',
+          child: BcLightbox(
+            defaultOpen: true,
+            items: const [
+              BcLightboxItem.image('https://picsum.photos/seed/bc1/800/600', alt: 'Sample 1'),
+              BcLightboxItem.image('https://picsum.photos/seed/bc2/800/600', alt: 'Sample 2'),
+              BcLightboxItem.image('https://picsum.photos/seed/bc3/800/600', alt: 'Sample 3'),
+            ],
+          ),
+        ),
+
+        // -- BcMap --
+        DemoCard(
+          title: 'BcMap',
+          description: 'Interactive map (dependency-free, caller wires the map plugin).',
+          child: BcMap(
+            height: 200,
+            center: const BcMapLatLng(lat: -6.2088, lng: 106.8456),
+            zoom: 12,
+            markers: const [
+              BcMapMarker(id: 'hq', lat: -6.2088, lng: 106.8456, label: 'HQ'),
+              BcMapMarker(id: 'branch', lat: -6.2200, lng: 106.8600, label: 'Branch'),
+            ],
+          ),
+        ),
+
+        // -- BcWebcam --
+        DemoCard(
+          title: 'BcWebcam',
+          description: 'Camera capture (dependency-free, caller wires the camera plugin).',
+          child: BcWebcam(
+            captureLabel: 'Take Photo',
+          ),
+        ),
       ],
     );
   }

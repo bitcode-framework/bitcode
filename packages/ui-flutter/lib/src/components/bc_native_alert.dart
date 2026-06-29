@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -24,10 +25,12 @@ class BcNativeAlert {
     required BuildContext context,
     String? title,
     String? message,
-    String confirmLabel = 'OK',
+    String? confirmLabel,
     String? cancelLabel,
     bool destructive = false,
   }) {
+    final effectiveConfirmLabel =
+        confirmLabel ?? bcI18n.t('bc.nativeAlert.defaultConfirmLabel');
     final confirmColor =
         destructive ? BcTheme.destructive : BcTheme.primary;
 
@@ -50,7 +53,7 @@ class BcNativeAlert {
               key: const Key('bc-native-alert-confirm'),
               onPressed: () => Navigator.pop(ctx, true),
               style: TextButton.styleFrom(foregroundColor: confirmColor),
-              child: Text(confirmLabel),
+              child: Text(effectiveConfirmLabel),
             ),
           ],
         ),
@@ -71,7 +74,7 @@ class BcNativeAlert {
               key: const Key('bc-native-alert-confirm-cupertino'),
               isDestructiveAction: destructive,
               onPressed: () => Navigator.pop(ctx, true),
-              child: Text(confirmLabel),
+              child: Text(effectiveConfirmLabel),
             ),
           ],
         ),
@@ -86,7 +89,7 @@ class BcNativeAlert {
     required BuildContext context,
     String? title,
     String? message,
-    String confirmLabel = 'OK',
+    String? confirmLabel,
     String? cancelLabel,
     bool destructive = false,
     BcChangeHandler<void>? onConfirm,

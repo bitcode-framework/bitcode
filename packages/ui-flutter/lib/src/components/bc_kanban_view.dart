@@ -3,6 +3,7 @@ library bc_kanban_view;
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -117,7 +118,7 @@ class _BcKanbanViewState extends State<BcKanbanView> {
   Widget build(BuildContext context) {
     return Semantics(
       container: true,
-      label: 'kanban board',
+      label: bcI18n.t('bc.kanbanView.ariaLabel'),
       child: SingleChildScrollView(
         key: const Key('bc-kanban-view'),
         scrollDirection: Axis.horizontal,

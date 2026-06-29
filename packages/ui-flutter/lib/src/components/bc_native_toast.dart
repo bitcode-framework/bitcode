@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -221,7 +222,7 @@ class _BcNativeToastState extends State<BcNativeToast> {
                     key: const Key('bc-native-toast-close'),
                     icon: const Icon(Icons.close, size: 18),
                     color: BcTheme.background.withValues(alpha: 0.7),
-                    tooltip: 'Dismiss',
+                    tooltip: bcI18n.t('bc.nativeToast.dismissAriaLabel'),
                     onPressed: _handleManualClose,
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(

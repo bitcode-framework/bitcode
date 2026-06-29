@@ -21,6 +21,8 @@
 /// is the host's job (it calls `applyResolvedTheme` / `setTheme` back).
 library app_config_store;
 
+import 'bc_i18n.dart';
+
 import 'app_config_snapshot.dart';
 
 /// Listener signature. Receives the new immutable snapshot.
@@ -115,6 +117,8 @@ class AppConfigStore {
     if (_disposed) return;
     if (_locale == locale) return;
     _locale = locale;
+    // Sync the global i18n instance so component strings update reactively.
+    bcI18n.setLocale(locale);
     _notify();
   }
 

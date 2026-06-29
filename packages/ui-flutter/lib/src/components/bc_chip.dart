@@ -2,6 +2,7 @@ library bc_chip;
 
 import 'package:flutter/material.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -215,7 +216,7 @@ class _BcChipState extends State<BcChip> {
         padding: EdgeInsets.zero,
         constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
         onPressed: widget.disabled ? null : _handleRemove,
-        tooltip: 'Remove ${widget.label}',
+        tooltip: bcI18n.t('bc.chip.removeIconTitle'),
       ),
     );
   }

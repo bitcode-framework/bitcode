@@ -144,6 +144,36 @@ class PrintSection extends StatelessWidget {
             },
           ),
         ),
+
+        // -- BcPrintArea --
+        DemoCard(
+          title: 'BcPrintArea',
+          description: 'Semantic region marker that isolates content for @media print.',
+          child: BcPrintArea(
+            child: BcYStack(
+              gap: 8,
+              children: const [
+                Text('Invoice #2026-001', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('Customer: Acme Corp'),
+                Text('Total: \$1,250.00'),
+              ],
+            ),
+          ),
+        ),
+
+        // -- BcPrintPreview --
+        DemoCard(
+          title: 'BcPrintPreview',
+          description: 'Print preview pane with trigger button (iframe on web).',
+          child: SizedBox(
+            height: 240,
+            child: BcPrintPreview(
+              content: '<h1>Sample Report</h1><p>This is printable content.</p>',
+              title: 'Report Preview',
+              triggerLabel: 'Print Report',
+            ),
+          ),
+        ),
       ],
     );
   }

@@ -3,6 +3,7 @@ library bc_native_picker;
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../core/bc_i18n.dart';
 import '../theme/bc_theme.dart';
 
 /// Option shape for [BcNativePicker] (ADR-006).
@@ -132,9 +133,9 @@ class BcNativePicker {
                   );
                   Navigator.pop(ctx, options[i].value);
                 },
-                child: const Text(
-                  'Done',
-                  style: TextStyle(color: BcTheme.primary),
+                child: Text(
+                  bcI18n.t('bc.nativePicker.doneButton'),
+                  style: const TextStyle(color: BcTheme.primary),
                 ),
               ),
             ),
@@ -184,7 +185,7 @@ class BcNativePicker {
           TextButton(
             key: const Key('bc-native-picker-cancel'),
             onPressed: () => Navigator.pop(ctx, null),
-            child: const Text('Cancel'),
+            child: Text(bcI18n.t('bc.nativePicker.cancelButton')),
           ),
         ],
       ),

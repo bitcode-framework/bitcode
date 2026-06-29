@@ -2,6 +2,7 @@ library bc_lightbox;
 
 import 'package:flutter/material.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -183,7 +184,7 @@ class _BcLightboxState extends State<BcLightbox> {
     final controller = PageController(initialPage: _currentIndex);
 
     return Semantics(
-      label: 'image gallery',
+      label: bcI18n.t('bc.lightbox.dialogAriaLabel'),
       container: true,
       child: Container(
         key: const Key('bc-lightbox-root'),

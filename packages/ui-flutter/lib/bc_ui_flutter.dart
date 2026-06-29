@@ -32,6 +32,7 @@ export 'src/core/reactive_store_notifier.dart';
 export 'src/core/app_config_snapshot.dart';
 export 'src/core/app_config_store.dart';
 export 'src/core/bc_app_config.dart';
+export 'src/core/bc_i18n.dart';
 
 // Hooks P1 parity (ADR-013 Phase 5b) — Dart ports of the TS P1 headless hooks
 // (packages/ui/src/core/hooks/*). Headless utility classes / factories.

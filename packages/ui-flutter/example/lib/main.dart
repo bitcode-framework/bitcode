@@ -31,6 +31,7 @@ import 'sections/misc_section.dart';
 import 'sections/input_extended_section.dart';
 import 'sections/print_section.dart';
 import 'sections/views_section.dart';
+import 'sections/native_section.dart';
 
 void main() {
   // Redirect Flutter errors to console for debugging
@@ -186,6 +187,12 @@ class _DemoShellState extends State<DemoShell> {
       selectedIcon: Icons.view_module,
       label: 'Views',
       builder: (_) => const ViewsSection(),
+    ),
+    _NavItem(
+      icon: Icons.phone_iphone_outlined,
+      selectedIcon: Icons.phone_iphone,
+      label: 'Native',
+      builder: (_) => const NativeSection(),
     ),
   ];
 

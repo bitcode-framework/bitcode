@@ -3,6 +3,7 @@ library bc_dashboard;
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -65,7 +66,7 @@ class BcDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       container: true,
-      label: 'dashboard',
+      label: bcI18n.t('bc.dashboard.ariaLabel'),
       child: Container(
         key: const Key('bc-dashboard'),
         child: loading

@@ -3,6 +3,7 @@ library bc_tree_view;
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -102,7 +103,7 @@ class _BcTreeViewState extends State<BcTreeView> {
   Widget build(BuildContext context) {
     return Semantics(
       container: true,
-      label: 'tree view',
+      label: bcI18n.t('bc.treeView.ariaLabel'),
       child: Container(
         key: const Key('bc-tree-view'),
         child: Column(

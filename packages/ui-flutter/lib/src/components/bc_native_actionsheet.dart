@@ -3,6 +3,7 @@ library bc_native_actionsheet;
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -51,16 +52,18 @@ class BcNativeActionSheet {
     required BuildContext context,
     required List<BcNativeActionSheetItem> items,
     String? title,
-    String cancelLabel = 'Cancel',
+    String? cancelLabel,
   }) {
     final platform = Theme.of(context).platform;
     final isIOS = platform == TargetPlatform.iOS ||
         platform == TargetPlatform.macOS;
 
     if (isIOS) {
-      return _showCupertino(context, items, title, cancelLabel);
+      return _showCupertino(
+          context, items, title, cancelLabel ?? bcI18n.t('bc.nativeActionSheet.defaultCancelLabel'));
     }
-    return _showMaterial(context, items, title, cancelLabel);
+    return _showMaterial(
+        context, items, title, cancelLabel ?? bcI18n.t('bc.nativeActionSheet.defaultCancelLabel'));
   }
 
   static Future<String?> _showCupertino(
@@ -177,7 +180,7 @@ class BcNativeActionSheet {
     required BuildContext context,
     required List<BcNativeActionSheetItem> items,
     String? title,
-    String cancelLabel = 'Cancel',
+    String? cancelLabel,
     void Function(BcNativeActionSheetItem, BcChangeMeta)? onSelect,
     BcChangeHandler<void>? onCancel,
   }) async {

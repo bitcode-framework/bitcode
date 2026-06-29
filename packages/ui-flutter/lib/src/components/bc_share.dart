@@ -2,6 +2,7 @@ library bc_share;
 
 import 'package:flutter/material.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -27,7 +28,7 @@ class BcShare extends StatelessWidget {
   final String? title;
   final String? text;
   final String? url;
-  final String label;
+  final String? label;
   final bool disabled;
   final BcChangeHandler<BcShareResult>? onShare;
   final void Function(Object error)? onError;
@@ -46,7 +47,7 @@ class BcShare extends StatelessWidget {
     this.title,
     this.text,
     this.url,
-    this.label = 'Share',
+    this.label,
     this.disabled = false,
     this.onShare,
     this.onError,
@@ -66,9 +67,10 @@ class BcShare extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final effectiveLabel = label ?? bcI18n.t('bc.share.defaultLabel');
     return MergeSemantics(
       child: Semantics(
-        label: 'Share',
+        label: effectiveLabel,
         button: true,
         enabled: !disabled,
         child: Opacity(
@@ -77,7 +79,7 @@ class BcShare extends StatelessWidget {
             key: const Key('bc-share-trigger'),
             onPressed: disabled ? null : _handlePress,
             icon: const Icon(Icons.share, size: 16),
-            label: Text(label),
+            label: Text(effectiveLabel),
             style: ElevatedButton.styleFrom(
               backgroundColor: BcTheme.secondary,
               foregroundColor: BcTheme.secondaryForeground,

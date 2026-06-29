@@ -2,6 +2,8 @@ library bc_print_area;
 
 import 'package:flutter/material.dart';
 
+import '../core/bc_i18n.dart';
+
 /// Marks a printable region of the page (ADR-007 contract parity).
 ///
 /// In the Flutter adapter, `@media print` isolation is a web-only concern
@@ -46,7 +48,7 @@ class _BcPrintAreaState extends State<BcPrintArea> {
   Widget build(BuildContext context) {
     return Semantics(
       container: true,
-      label: widget.ariaLabel ?? 'Printable region',
+      label: widget.ariaLabel ?? bcI18n.t('bc.printArea.ariaLabel'),
       child: Container(
         key: const Key('bc-print-area-root'),
         child: widget.child,

@@ -2,6 +2,7 @@ library bc_grid_view;
 
 import 'package:flutter/material.dart';
 
+import '../core/bc_i18n.dart';
 import '../theme/bc_theme.dart';
 
 /// Column definition for the spreadsheet-like grid.
@@ -69,7 +70,7 @@ class BcGridView extends StatelessWidget {
 
     return Semantics(
       container: true,
-      label: 'grid view',
+      label: bcI18n.t('bc.gridView.ariaLabel'),
       child: Container(
         key: const Key('bc-grid-view'),
         decoration: BoxDecoration(

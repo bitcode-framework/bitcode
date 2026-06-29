@@ -2,6 +2,7 @@ library bc_detail_view;
 
 import 'package:flutter/material.dart';
 
+import '../core/bc_i18n.dart';
 import '../theme/bc_theme.dart';
 
 /// A single field row in the descriptions-style grid.
@@ -112,7 +113,7 @@ class BcDetailView extends StatelessWidget {
 
     return Semantics(
       container: true,
-      label: title ?? 'detail view',
+      label: title ?? bcI18n.t('bc.detailView.ariaLabel'),
       child: Container(
         key: const Key('bc-detail-view'),
         decoration: BoxDecoration(

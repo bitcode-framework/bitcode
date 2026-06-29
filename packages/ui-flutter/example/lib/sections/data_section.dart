@@ -179,6 +179,27 @@ class DataSection extends StatelessWidget {
             ],
           ),
         ),
+        const SizedBox(height: 24),
+
+        // -- BcChip --
+        DemoCard(
+          title: 'BcChip',
+          description: 'Compact tag chips with 6 variants, avatar, and removable.',
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              BcChip(label: 'Default'),
+              BcChip(label: 'Primary', variant: BcChipVariant.primary),
+              BcChip(label: 'Success', variant: BcChipVariant.success),
+              BcChip(label: 'Warning', variant: BcChipVariant.warning),
+              BcChip(label: 'Destructive', variant: BcChipVariant.destructive),
+              BcChip(label: 'Info', variant: BcChipVariant.info),
+              BcChip(label: 'Avatar', avatar: 'AB'),
+              BcChip(label: 'Removable', removable: true),
+            ],
+          ),
+        ),
       ],
     );
   }

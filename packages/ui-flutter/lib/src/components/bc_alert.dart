@@ -3,6 +3,7 @@ library bc_alert;
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -193,7 +194,7 @@ class _BcAlertState extends State<BcAlert> {
               key: const Key('bc-alert-close'),
               icon: const Icon(Icons.close, size: 18),
               color: BcTheme.mutedForeground,
-              tooltip: 'Dismiss alert',
+              tooltip: bcI18n.t('bc.alert.dismiss'),
               onPressed: _handleDismiss,
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 32, minHeight: 32),

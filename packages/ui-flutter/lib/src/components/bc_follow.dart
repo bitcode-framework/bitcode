@@ -2,6 +2,7 @@ library bc_follow;
 
 import 'package:flutter/material.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -14,8 +15,8 @@ class BcFollow extends StatefulWidget {
   final bool defaultFollowing;
   final int? count;
   final bool disabled;
-  final String followLabel;
-  final String followingLabel;
+  final String? followLabel;
+  final String? followingLabel;
   final BcChangeHandler<bool>? onFollowingChange;
 
   const BcFollow({
@@ -24,8 +25,8 @@ class BcFollow extends StatefulWidget {
     this.defaultFollowing = false,
     this.count,
     this.disabled = false,
-    this.followLabel = 'Follow',
-    this.followingLabel = 'Following',
+    this.followLabel,
+    this.followingLabel,
     this.onFollowingChange,
   });
 
@@ -62,11 +63,17 @@ class _BcFollowState extends State<BcFollow> {
   @override
   Widget build(BuildContext context) {
     final following = _isFollowing;
+    final effectiveFollowLabel =
+        widget.followLabel ?? bcI18n.t('bc.follow.defaultFollowLabel');
+    final effectiveFollowingLabel =
+        widget.followingLabel ?? bcI18n.t('bc.follow.defaultFollowingLabel');
+    final effectiveLabel =
+        following ? effectiveFollowingLabel : effectiveFollowLabel;
     final bg = following ? BcTheme.secondary : BcTheme.primary;
     final fg = following ? BcTheme.secondaryForeground : BcTheme.primaryForeground;
     return MergeSemantics(
       child: Semantics(
-        label: following ? widget.followingLabel : widget.followLabel,
+        label: effectiveLabel,
         button: true,
         toggled: following,
         enabled: !widget.disabled,
@@ -89,7 +96,7 @@ class _BcFollowState extends State<BcFollow> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      following ? widget.followingLabel : widget.followLabel,
+                      effectiveLabel,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,

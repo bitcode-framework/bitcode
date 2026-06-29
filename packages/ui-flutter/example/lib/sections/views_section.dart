@@ -255,6 +255,119 @@ class ViewsSection extends StatelessWidget {
             ],
           ),
         ),
+
+        // -- BcDetailView --
+        DemoCard(
+          title: 'BcDetailView',
+          description: 'Master-detail renderer with fields and tabs.',
+          child: BcDetailView(
+            title: 'Customer Detail',
+            fields: const [
+              BcDetailViewField(label: 'Name', value: 'Acme Corp'),
+              BcDetailViewField(label: 'Email', value: 'contact@acme.com'),
+              BcDetailViewField(label: 'Phone', value: '+1 555-0100'),
+            ],
+          ),
+        ),
+
+        // -- BcGridView --
+        DemoCard(
+          title: 'BcGridView',
+          description: 'Spreadsheet-style grid with columns and rows.',
+          child: SizedBox(
+            height: 200,
+            child: SingleChildScrollView(
+              child: BcGridView(
+                columns: const [
+                  BcGridViewColumn(key: 'id', label: 'ID'),
+                  BcGridViewColumn(key: 'name', label: 'Name'),
+                  BcGridViewColumn(key: 'status', label: 'Status'),
+                ],
+                rows: const [
+                  {'id': '001', 'name': 'Alice', 'status': 'Active'},
+                  {'id': '002', 'name': 'Bob', 'status': 'Pending'},
+                  {'id': '003', 'name': 'Charlie', 'status': 'Active'},
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        // -- BcTreeView --
+        DemoCard(
+          title: 'BcTreeView',
+          description: 'Hierarchical tree with expand/collapse.',
+          child: SizedBox(
+            height: 200,
+            child: SingleChildScrollView(
+              child: BcTreeView(
+                defaultExpandedKeys: const {'1', '1b'},
+                data: const [
+                  BcTreeViewNode(id: '1', label: 'Root', children: [
+                    BcTreeViewNode(id: '1a', label: 'Child A'),
+                    BcTreeViewNode(id: '1b', label: 'Child B', children: [
+                      BcTreeViewNode(id: '1b1', label: 'Grandchild'),
+                    ]),
+                  ]),
+                  BcTreeViewNode(id: '2', label: 'Root 2'),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        // -- BcKanbanView --
+        DemoCard(
+          title: 'BcKanbanView',
+          description: 'Kanban board with columns and drag-drop cards.',
+          child: SizedBox(
+            height: 280,
+            child: BcKanbanView(
+              columns: const [
+                BcKanbanViewColumn(id: 'todo', title: 'To Do'),
+                BcKanbanViewColumn(id: 'doing', title: 'In Progress'),
+                BcKanbanViewColumn(id: 'done', title: 'Done'),
+              ],
+              cards: const [
+                BcKanbanViewCard(id: '1', title: 'Setup CI', columnId: 'todo'),
+                BcKanbanViewCard(id: '2', title: 'Fix bug', columnId: 'doing'),
+              ],
+            ),
+          ),
+        ),
+
+        // -- BcCalendarView --
+        DemoCard(
+          title: 'BcCalendarView',
+          description: 'Calendar with month/week/day views and events.',
+          child: SizedBox(
+            height: 320,
+            child: BcCalendarView(
+              events: [
+                BcCalendarViewEvent(
+                  id: '1',
+                  title: 'Team Meeting',
+                  start: DateTime(2026, 6, 29, 10, 0),
+                  end: DateTime(2026, 6, 29, 11, 0),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // -- BcDashboard --
+        DemoCard(
+          title: 'BcDashboard',
+          description: 'Widget grid with configurable columns.',
+          child: BcDashboard(
+            columns: 3,
+            widgets: const [
+              BcDashboardWidget(id: '1', title: 'Revenue', kind: BcDashboardWidgetKind.stat),
+              BcDashboardWidget(id: '2', title: 'Users', kind: BcDashboardWidgetKind.stat),
+              BcDashboardWidget(id: '3', title: 'Orders', kind: BcDashboardWidgetKind.stat),
+            ],
+          ),
+        ),
       ],
     );
   }

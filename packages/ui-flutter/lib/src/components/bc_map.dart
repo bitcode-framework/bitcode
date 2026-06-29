@@ -2,6 +2,7 @@ library bc_map;
 
 import 'package:flutter/material.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -57,7 +58,7 @@ class BcMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: 'interactive map',
+      label: bcI18n.t('bc.map.ariaLabel'),
       container: true,
       child: SizedBox(
         key: const Key('bc-map-root'),

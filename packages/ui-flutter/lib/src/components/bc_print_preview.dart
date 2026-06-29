@@ -2,6 +2,7 @@ library bc_print_preview;
 
 import 'package:flutter/material.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -16,8 +17,8 @@ enum BcPrintTriggerReason { triggerButton, programmatic }
 /// platform print API of their choice, e.g. `printing` package).
 class BcPrintPreview extends StatelessWidget {
   final String? content;
-  final String title;
-  final String triggerLabel;
+  final String? title;
+  final String? triggerLabel;
   final bool disabled;
   final bool hideToolbar;
   final double height;
@@ -27,8 +28,8 @@ class BcPrintPreview extends StatelessWidget {
   const BcPrintPreview({
     super.key,
     this.content,
-    this.title = 'Print Preview',
-    this.triggerLabel = 'Print',
+    this.title,
+    this.triggerLabel,
     this.disabled = false,
     this.hideToolbar = false,
     this.height = 600,
@@ -50,7 +51,7 @@ class BcPrintPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: 'Print preview',
+      label: bcI18n.t('bc.printPreview.ariaLabel'),
       child: Container(
         key: const Key('bc-print-preview-root'),
         clipBehavior: Clip.antiAlias,
@@ -79,6 +80,9 @@ class BcPrintPreview extends StatelessWidget {
   }
 
   Widget _buildToolbar() {
+    final effectiveTitle = title ?? bcI18n.t('bc.printPreview.title');
+    final effectiveTriggerLabel =
+        triggerLabel ?? bcI18n.t('bc.printPreview.triggerLabel');
     return Container(
       key: const Key('bc-print-preview-toolbar'),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -90,7 +94,7 @@ class BcPrintPreview extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              title,
+              effectiveTitle,
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -102,7 +106,7 @@ class BcPrintPreview extends StatelessWidget {
             key: const Key('bc-print-preview-trigger'),
             onPressed: disabled ? null : _handleTrigger,
             icon: const Icon(Icons.print, size: 16),
-            label: Text(triggerLabel),
+            label: Text(effectiveTriggerLabel),
             style: ElevatedButton.styleFrom(
               backgroundColor: BcTheme.primary,
               foregroundColor: BcTheme.primaryForeground,

@@ -3,6 +3,7 @@ library bc_calendar_view;
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -130,7 +131,7 @@ class _BcCalendarViewState extends State<BcCalendarView> {
   Widget build(BuildContext context) {
     return Semantics(
       container: true,
-      label: 'calendar',
+      label: bcI18n.t('bc.calendarView.ariaLabel'),
       child: Column(
         key: const Key('bc-calendar-view'),
         crossAxisAlignment: CrossAxisAlignment.start,

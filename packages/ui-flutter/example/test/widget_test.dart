@@ -16,6 +16,7 @@ import 'package:bc_ui_flutter_example/sections/charts_section.dart';
 import 'package:bc_ui_flutter_example/sections/views_section.dart';
 import 'package:bc_ui_flutter_example/sections/layout_section.dart';
 import 'package:bc_ui_flutter_example/sections/navigation_section.dart';
+import 'package:bc_ui_flutter_example/sections/native_section.dart';
 import 'helpers/fake_webview_platform.dart';
 
 void main() {
@@ -216,6 +217,18 @@ void main() {
     expect(find.textContaining('Bc'), findsWidgets);
   });
 
+  // ADR-016 TASK 2: Native section renders without crashing.
+  testWidgets('Native section renders without ErrorWidget (ADR-016 i18n)',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(
+      home: Scaffold(body: SingleChildScrollView(child: NativeSection())),
+    ));
+    await tester.pumpAndSettle(const Duration(seconds: 2));
+    expect(find.byType(ErrorWidget), findsNothing,
+        reason: 'Native section rendered an ErrorWidget (crash)');
+    expect(find.textContaining('Bc'), findsWidgets);
+  });
+
   // ADR-016 TASK 2: sweep — tap every sidebar section, assert no crash.
   // Comprehensive regression guard covering all 15 sections. Framework-level
   // layout warnings (e.g. "ListTile background invisible") from third-party
@@ -229,7 +242,7 @@ void main() {
     const sectionLabels = <String>[
       'Forms', 'Overlays', 'Data', 'Display', 'Navigation', 'Layout',
       'Primitives', 'Feedback', 'Media', 'Charts', 'Social', 'Misc',
-      'Input Extended', 'Print', 'Views',
+      'Input Extended', 'Print', 'Views', 'Native',
     ];
 
     for (final label in sectionLabels) {

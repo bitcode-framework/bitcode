@@ -35,6 +35,10 @@ class _SocialSectionState extends State<SocialSection> {
       timestamp: '10:35',
     ),
   ];
+  bool _liked = false;
+  int _likeCount = 42;
+  bool _following = false;
+  int _followCount = 128;
 
   @override
   Widget build(BuildContext context) {
@@ -207,6 +211,74 @@ class _SocialSectionState extends State<SocialSection> {
                 alt: 'BitCode website QR',
               ),
             ],
+          ),
+        ),
+
+        // -- BcLike --
+        DemoCard(
+          title: 'BcLike',
+          description: 'Like/unlike toggle with count.',
+          child: BcXStack(
+            gap: 16,
+            crossAxisAlignment: BcXStackAlign.center,
+            children: [
+              BcLike(
+                liked: _liked,
+                count: _likeCount,
+                onLikedChange: (v, _) => setState(() {
+                  _liked = v;
+                  _likeCount += v ? 1 : -1;
+                }),
+              ),
+              Text(_liked ? 'Liked!' : 'Not liked'),
+            ],
+          ),
+        ),
+
+        // -- BcFollow --
+        DemoCard(
+          title: 'BcFollow',
+          description: 'Follow/unfollow toggle with count.',
+          child: BcFollow(
+            following: _following,
+            count: _followCount,
+            onFollowingChange: (v, _) => setState(() {
+              _following = v;
+              _followCount += v ? 1 : -1;
+            }),
+          ),
+        ),
+
+        // -- BcComment --
+        DemoCard(
+          title: 'BcComment',
+          description: 'Threaded comment with inline reply form.',
+          child: BcComment(
+            author: 'Jane Doe',
+            body: 'This is a great demo! The new components look amazing.',
+            timestamp: '2h ago',
+            replyable: true,
+            onReply: (text, _) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Reply: $text')),
+              );
+            },
+          ),
+        ),
+
+        // -- BcShare --
+        DemoCard(
+          title: 'BcShare',
+          description: 'Share button with Web Share API and fallback dialog.',
+          child: BcShare(
+            title: 'Check this out!',
+            text: 'BitCode UI — cross-platform components.',
+            url: 'https://bitcode.io',
+            onShare: (result, _) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Share: $result')),
+              );
+            },
           ),
         ),
       ],

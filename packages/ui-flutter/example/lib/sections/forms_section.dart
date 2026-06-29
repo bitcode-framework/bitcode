@@ -253,6 +253,40 @@ class _FormsSectionState extends State<FormsSection> {
             defaultValue: const BcRangeValue(min: 100, max: 500),
           ),
         ),
+        const SizedBox(height: 24),
+
+        // -- BcTextField --
+        DemoCard(
+          title: 'BcTextField',
+          description: 'Rich text input with auto-grow, counter, and prefix/suffix.',
+          child: BcYStack(
+            gap: 12,
+            children: [
+              BcTextField(
+                name: 'username',
+                label: 'Username',
+                placeholder: 'Enter username',
+                description: 'Must be 3-20 characters.',
+              ),
+              BcTextField(
+                name: 'bio',
+                label: 'Bio',
+                placeholder: 'Tell us about yourself',
+                multiline: true,
+                autoGrow: true,
+                showCount: true,
+                maxLength: 200,
+              ),
+              BcTextField(
+                name: 'price',
+                label: 'Price',
+                prefixText: '\$',
+                suffixText: 'USD',
+                clearable: true,
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

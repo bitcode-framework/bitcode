@@ -3,6 +3,7 @@ library bc_text_field;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -303,7 +304,7 @@ class _BcTextFieldState extends State<BcTextField> {
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
                   onPressed: _handleClear,
-                  tooltip: 'Clear',
+                  tooltip: bcI18n.t('bc.textField.clearAriaLabel'),
                   color: BcTheme.mutedForeground,
                 ),
             ],

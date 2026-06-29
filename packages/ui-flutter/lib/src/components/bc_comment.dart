@@ -2,6 +2,7 @@ library bc_comment;
 
 import 'package:flutter/material.dart';
 
+import '../core/bc_i18n.dart';
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -19,7 +20,7 @@ class BcComment extends StatefulWidget {
   final String body;
   final String? timestamp;
   final bool replyable;
-  final String replyPlaceholder;
+  final String? replyPlaceholder;
   final bool disabled;
   final BcChangeHandler<String>? onReply;
   final Widget? child;
@@ -31,7 +32,7 @@ class BcComment extends StatefulWidget {
     this.avatar,
     this.timestamp,
     this.replyable = false,
-    this.replyPlaceholder = 'Write a reply...',
+    this.replyPlaceholder,
     this.disabled = false,
     this.onReply,
     this.child,
@@ -196,7 +197,7 @@ class _BcCommentState extends State<BcComment> {
                           foregroundColor: BcTheme.mutedForeground,
                           textStyle: const TextStyle(fontSize: 12),
                         ),
-                        child: const Text('Reply'),
+                        child: Text(bcI18n.t('bc.comment.replyButton')),
                       )
                     else
                       Padding(
@@ -211,7 +212,8 @@ class _BcCommentState extends State<BcComment> {
                               minLines: 2,
                               maxLines: 5,
                               decoration: InputDecoration(
-                                hintText: widget.replyPlaceholder,
+                                hintText: widget.replyPlaceholder ??
+                                    bcI18n.t('bc.comment.defaultReplyPlaceholder'),
                                 isDense: true,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(BcTheme.radius),
@@ -234,7 +236,7 @@ class _BcCommentState extends State<BcComment> {
                                     padding: const EdgeInsets.symmetric(horizontal: 12),
                                     textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                                   ),
-                                  child: const Text('Reply'),
+                                  child: Text(bcI18n.t('bc.comment.replyButton')),
                                 ),
                                 const SizedBox(width: 8),
                                 TextButton(
@@ -244,7 +246,7 @@ class _BcCommentState extends State<BcComment> {
                                     minimumSize: const Size(0, 32),
                                     foregroundColor: BcTheme.foreground,
                                   ),
-                                  child: const Text('Cancel'),
+                                  child: Text(bcI18n.t('bc.comment.cancelButton')),
                                 ),
                               ],
                             ),

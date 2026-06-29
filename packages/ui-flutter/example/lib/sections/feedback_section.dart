@@ -219,6 +219,39 @@ class _FeedbackSectionState extends State<FeedbackSection> {
             onChange: (v, _) => setState(() => _inplaceValue = v),
           ),
         ),
+
+        // -- BcAlert --
+        DemoCard(
+          title: 'BcAlert',
+          description: 'Inline alert banner with 4 severity variants and dismissible control.',
+          child: BcYStack(
+            gap: 8,
+            children: [
+              BcAlert(
+                severity: BcAlertSeverity.info,
+                title: 'Information',
+                description: 'This is an informational alert.',
+              ),
+              BcAlert(
+                severity: BcAlertSeverity.success,
+                title: 'Success',
+                description: 'Operation completed successfully.',
+              ),
+              BcAlert(
+                severity: BcAlertSeverity.warning,
+                title: 'Warning',
+                description: 'Please review this warning.',
+                dismissible: true,
+              ),
+              BcAlert(
+                severity: BcAlertSeverity.error,
+                title: 'Error',
+                description: 'Something went wrong.',
+                dismissible: true,
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
