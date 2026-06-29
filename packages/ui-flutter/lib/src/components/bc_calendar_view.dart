@@ -135,10 +135,11 @@ class _BcCalendarViewState extends State<BcCalendarView> {
       child: Column(
         key: const Key('bc-calendar-view'),
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           _buildHeader(),
           const SizedBox(height: 16),
-          _buildBody(),
+          Flexible(child: SingleChildScrollView(child: _buildBody())),
         ],
       ),
     );
