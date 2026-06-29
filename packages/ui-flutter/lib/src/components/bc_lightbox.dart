@@ -196,7 +196,9 @@ class _BcLightboxState extends State<BcLightbox> {
                 GestureDetector(
                   onTap: () => _setOpen(false, BcChangeReason.overlayClick, BcEventSource.pointer),
                   child: SizedBox(
-                    height: constraints.maxHeight,
+                    height: constraints.maxHeight.isFinite
+                        ? constraints.maxHeight
+                        : 400,
                     child: PageView.builder(
                       key: const Key('bc-lightbox-pageview'),
                       controller: controller,
