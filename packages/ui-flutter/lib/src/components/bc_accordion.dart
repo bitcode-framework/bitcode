@@ -47,20 +47,23 @@ class _BcAccordionState extends State<BcAccordion> {
     return Column(
       children: [
         for (int i = 0; i < widget.items.length; i++)
-          ExpansionTile(
-            title: Text(widget.items[i].title),
-            subtitle: widget.items[i].subtitle != null
-                ? Text(widget.items[i].subtitle!)
-                : null,
-            leading: widget.items[i].icon != null ? Icon(widget.items[i].icon) : null,
-            initiallyExpanded: _expanded.contains(i),
-            onExpansionChanged: (_) => _toggle(i),
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: widget.items[i].child,
-              ),
-            ],
+          Material(
+            color: Colors.transparent,
+            child: ExpansionTile(
+              title: Text(widget.items[i].title),
+              subtitle: widget.items[i].subtitle != null
+                  ? Text(widget.items[i].subtitle!)
+                  : null,
+              leading: widget.items[i].icon != null ? Icon(widget.items[i].icon) : null,
+              initiallyExpanded: _expanded.contains(i),
+              onExpansionChanged: (_) => _toggle(i),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: widget.items[i].child,
+                ),
+              ],
+            ),
           ),
       ],
     );
