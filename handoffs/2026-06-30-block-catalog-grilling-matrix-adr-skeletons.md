@@ -2,7 +2,7 @@
 
 ## Apa yang sudah dikerjakan
 
-Sesi grilling-with-docs untuk merancang **Block Catalog Architecture** (website + ERP blocks di atas `packages/ui` dan `packages/ui-flutter`). ~58 pertanyaan grill dijawab dengan keputusan tegas. Matrix formal dibuat, ADR skeleton dibuat, CONTEXT.md + components-progress.md + ADR README diupdate.
+Sesi grilling-with-docs untuk merancang **Block Catalog Architecture** (website + ERP blocks di atas `packages/ui` dan `packages/ui-flutter`). ~58 pertanyaan grill dijawab dengan keputusan tegas. Matrix formal dibuat, ADR skeleton dibuat, CONTEXT.md + components-progress.md + ADR README diupdate. Sesi lanjutan 2026-06-30 melakukan review evidence-first, membuat `REVIEW-FINDINGS.md`, dan mendraft full body ADR-017/018.
 
 ## Keputusan inti (non-negotiable)
 
@@ -72,9 +72,10 @@ Sesi grilling-with-docs untuk merancang **Block Catalog Architecture** (website 
 - `sprints/package-ui-elementor/block-catalog-candidate-matrix.json` — machine-readable matrix (44 candidates, 12 raw groups, 5 foundational work). Source of truth.
 - `sprints/package-ui-elementor/block-catalog-parity-matrix.md` — generated/readable report.
 - `docs/components-progress.md` — tambah section "Block Catalog (Draft 0.1)" dengan counts + foundational work + categories + key findings.
-- `docs/adr/017-block-catalog-architecture.md` — skeleton Proposed (Context + Decision Summary draft + AC draft + Status Notes).
-- `docs/adr/018-block-catalog-data-action-reactivity.md` — skeleton Proposed (Context + Decision Summary draft + AC draft + Status Notes).
-- `docs/adr/README.md` — tambah row ADR-017 + ADR-017 Proposed + update next-ADR number note.
+- `docs/adr/017-block-catalog-architecture.md` — full body Proposed (catalog surface, categories/channels/capabilities, render strategies, Ready gate, RuntimeContext, plugin model, Flutter parity, validation, consequences, phases, AC).
+- `docs/adr/018-block-catalog-data-action-reactivity.md` — full body Proposed (ActionSource, ActionResult/ActionError, lifecycle, effects, Portable Expression AST, function registry, RuntimeContext, runAction, security, phases, AC).
+- `docs/adr/README.md` — row ADR-017/018 updated to full body status and next ADR number corrected to ADR-019.
+- `sprints/package-ui-elementor/REVIEW-FINDINGS.md` — review findings for count drift, Flutter parity gaps, web export gaps, BcMarkdown gap, and ADR-014 overlap.
 
 ## Status counts final (matrix 0.1, 44 candidates)
 
@@ -88,7 +89,7 @@ Sesi grilling-with-docs untuk merancang **Block Catalog Architecture** (website 
 
 ## Konteks penting / gotcha
 
-- ADR-017 dan ADR-018 masih **skeleton**, bukan full body. Decision Summary + AC sudah draft, tapi Section/Consequences/Implementation Phases belum.
+- ADR-017 dan ADR-018 sudah didraft full body pada 2026-06-30, tetapi status tetap **Proposed** dan harus direview human/architect sebelum implementasi foundational work.
 - Matrix 0.1 sudah reclassify (action-trigger blocks naik status; record-picker jadi contract-gap; plugin.embed-social jadi duplicate-alias; workflow.diagram split viewer/editor).
 - `workflow.diagram-editor` = component-gap (dedicated authoring component, drag/edges/properties/persistence/undo-redo). `workflow.diagram-viewer` = schema-preset-only (BcChartGraph + BcSteps preset read-only).
 - Flutter parity gap yang belum resolve: `BcAvatar`, `BcBadge`, `BcProgress`, `BcKpi` belum jelas ada di `packages/ui-flutter`. Matrix sudah flag, tapi belum dicek aktual.
@@ -100,14 +101,13 @@ Sesi grilling-with-docs untuk merancang **Block Catalog Architecture** (website 
 
 ## Next steps (konkret)
 
-1. **Draft full body ADR-017**: Sections (Catalog Surface, Channel/Capability tags, Render Strategies, Ready Gate, RuntimeContext, Plugin Model, Flutter-first parity discipline, Validation), Consequences, Implementation Phases, Acceptance Criteria final, References. Pakai format ADR-016.
-2. **Draft full body ADR-018**: Sections (ActionSource mirror DataSource, ActionResult normalized, ActionLifecycle events, ActionEffect typed, Portable Expression AST, Built-in function registry, RuntimeContext wiring), Consequences, Implementation Phases, AC final, References.
-3. **Verify Flutter parity gaps aktual**: cek `packages/ui-flutter/lib/src/components/` untuk `bc_avatar.dart`, `bc_badge.dart`, `bc_progress.dart`, `bc_kpi.dart`. Kalau tidak ada, tentukan: tambah Flutter widget, atau standardize preset ke `bc_box`/`bc_statistic`/`bc_taggroup`.
-4. **Fix export gaps**: tambah `BcShare` dan `BcGridView` ke `packages/ui/src/index.ts` root export (jika memang intended Ready dependency). Koordinasi dengan agent lain jika ada yang kerja di file itu.
-5. **Verify `BcMarkdown` web export** dan cleanup matrix mapping.
-6. **Final consistency check**: JSON parse, status counts, markdown report sinkron, ADR README sinkron, components-progress sinkron.
-7. **Commit** dengan format `docs(adr): add ADR-017/018 block catalog skeletons + candidate matrix` (atau pecah per file kalau perlu).
-8. **Sesudah ADR full body**: buat implementation plan appendix (batch sampai semua Ready) di `docs/plans/`.
+1. Review human/architect untuk full body ADR-017 dan ADR-018 sebelum implementasi.
+2. Resolve review findings: count drift fixed in docs, but Flutter parity gaps remain (`bc_avatar`, `bc_badge`, `bc_progress`, `bc_kpi` missing), web export gaps remain (`BcShare`, `BcGridView`), and web `BcMarkdown` remains missing.
+3. Decide per missing Flutter widget: add widget with tests/export, or remap presets to existing Flutter widgets (`bc_box`, `bc_statistic`, `bc_taggroup`) before Ready promotion.
+4. Fix export gaps only with coordination because `packages/ui/src/index.ts` is generated/shared.
+5. If ADRs are approved, implement foundational work in order: block-catalog types, ActionSource/ActionRunner, Portable Expression AST, BcBlockRenderer, validation tooling.
+6. Create implementation plan appendix (batch sampai semua Ready) in `docs/plans/` after ADR approval.
+7. Commit current review + ADR drafting changes with a docs-scoped message after verification.
 
 ## Prinsip yang harus diingat (dari user)
 

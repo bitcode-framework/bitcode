@@ -4,11 +4,11 @@
 > berubah status. Untuk *kenapa* dan *arsitektur*, baca [ADR](./adr/README.md).
 > Untuk *bagaimana spec engine*, baca `engine/docs/features/*.md`.
 
-**Last updated:** 2026-06-30 (Block Catalog candidate matrix drafted. 44 candidates mapped against existing `packages/ui` and `packages/ui-flutter`. Status: 8 schema-preset-only, 21 existing-component-needs-binding, 10 component-gap, 2 contract-gap, 1 adapter-gap, 1 duplicate-alias, 1 excluded. 5 foundational work items required before any Ready entry. ADR-017 and ADR-018 skeletons Proposed; full bodies pending.)
+**Last updated:** 2026-06-30 (Block Catalog candidate matrix drafted and reviewed. 44 candidates mapped against existing `packages/ui` and `packages/ui-flutter`. Status: 8 schema-preset-only, 21 existing-component-needs-binding, 10 component-gap, 2 contract-gap, 1 adapter-gap, 1 duplicate-alias, 1 excluded. 5 foundational work items required before any Ready entry. ADR-017 and ADR-018 full bodies drafted as Proposed.)
 
 ## Block Catalog (Draft 0.1)
 
-The Block Catalog is a metadata layer that classifies reusable page blocks by capability category, usage channel, and behavioral capabilities. It is matrix-first: `sprints/package-ui-elementor/block-catalog-candidate-matrix.json` is the source of truth, and `sprints/package-ui-elementor/block-catalog-parity-matrix.md` is the readable report. No ADR drafted yet.
+The Block Catalog is a metadata layer that classifies reusable page blocks by capability category, usage channel, and behavioral capabilities. It is matrix-first: `sprints/package-ui-elementor/block-catalog-candidate-matrix.json` is the source of truth, and `sprints/package-ui-elementor/block-catalog-parity-matrix.md` is the readable report. ADR-017 and ADR-018 now contain Proposed full bodies for the catalog architecture and data/action/reactivity contract.
 
 **Candidate counts by status (2026-06-30):**
 
@@ -21,7 +21,7 @@ The Block Catalog is a metadata layer that classifies reusable page blocks by ca
 | `adapter-gap` | 1 |
 | `duplicate-alias` | 1 |
 | `excluded` | 1 |
-| **Total** | **43** |
+| **Total** | **44** |
 
 **Required foundational work before any Ready entry:**
 
