@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bc_ui_flutter/bc_ui_flutter.dart';
 import '../demo_widgets.dart';
 
-/// Display widgets: BcStatistic, BcDescriptions, BcSteps, BcResult, BcEmpty.
+/// Display widgets: BcAvatar, BcBadge, BcStatistic, BcDescriptions, BcSteps, BcResult, BcEmpty.
 class DisplaySection extends StatelessWidget {
   const DisplaySection({super.key});
 
@@ -13,9 +13,43 @@ class DisplaySection extends StatelessWidget {
       children: [
         const SectionHeader(
           title: 'Display',
-          subtitle: 'Statistics, descriptions, steps, result states, and empty placeholders.',
+          subtitle: 'Avatars, badges, statistics, descriptions, steps, result states, and empty placeholders.',
         ),
 
+
+        // -- BcAvatar --
+        DemoCard(
+          title: 'BcAvatar',
+          description: 'Circular avatar with image fallback to initials.',
+          child: BcXStack(
+            gap: 16,
+            crossAxisAlignment: BcXStackAlign.center,
+            children: [
+              const BcAvatar(alt: 'Alice Anderson'),
+              const BcAvatar(alt: 'Bob', fallback: 'BB'),
+              const BcAvatar(size: BcComponentSize.sm, alt: 'Carol'),
+              const BcAvatar(size: BcComponentSize.lg, alt: 'Dave'),
+              const BcAvatar(),
+            ],
+          ),
+        ),
+
+        // -- BcBadge --
+        DemoCard(
+          title: 'BcBadge',
+          description: 'Compact pill badge with variant token colors.',
+          child: BcXStack(
+            gap: 8,
+            crossAxisAlignment: BcXStackAlign.center,
+            children: [
+              const BcBadge(label: 'Default'),
+              const BcBadge(label: 'Primary', variant: BcComponentVariant.primary),
+              const BcBadge(label: 'Secondary', variant: BcComponentVariant.secondary),
+              const BcBadge(label: 'Destructive', variant: BcComponentVariant.destructive),
+              const BcBadge(label: 'Outline', variant: BcComponentVariant.outline),
+            ],
+          ),
+        ),
         // ── BcStatistic ──
         DemoCard(
           title: 'BcStatistic',

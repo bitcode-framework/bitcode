@@ -275,6 +275,12 @@ export 'src/components/bc_search.dart';
 export 'src/components/bc_sidebar.dart';
 export 'src/components/bc_favorites.dart';
 
+// Block Catalog parity (ADR-017) - canonical Flutter widgets for Ready gates.
+export 'src/components/bc_avatar.dart';
+export 'src/components/bc_badge.dart';
+export 'src/components/bc_progress.dart';
+export 'src/components/bc_kpi.dart';
+
 // Renderer
 export 'src/renderer/bc_field_builder.dart';
 export 'src/renderer/bc_data_source_loader.dart';

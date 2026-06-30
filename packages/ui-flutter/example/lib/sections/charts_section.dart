@@ -1,4 +1,4 @@
-﻿// Charts demo - BcChart (bar, line, pie), BcSparkline (line, bar).
+// Charts demo - BcChart (bar, line, pie), BcSparkline (line, bar), BcProgress, BcKpi.
 library charts_section;
 
 import 'package:flutter/material.dart';
@@ -16,7 +16,7 @@ class ChartsSection extends StatelessWidget {
       children: [
         const SectionHeader(
           title: 'Charts',
-          subtitle: 'ECharts-backed data visualization (ADR-015) and sparklines.',
+          subtitle: 'ECharts-backed visualization (ADR-015), sparklines, progress, and KPI cards.',
         ),
 
         // -- BcChart (Bar) --
@@ -103,6 +103,53 @@ class ChartsSection extends StatelessWidget {
                   width: 160,
                   height: 32,
                   type: BcSparklineType.bar,
+                ),
+              ),
+            ],
+          ),
+        ),
+        // -- BcProgress --
+        DemoCard(
+          title: 'BcProgress',
+          description: 'Deterministic progress bar with variants and label.',
+          child: BcYStack(
+            gap: 16,
+            children: [
+              const BcProgress(value: 40, max: 100, showLabel: true, label: 'Uploading'),
+              const BcProgress(value: 75, max: 100, variant: BcProgressVariant.success),
+              const BcProgress(value: 90, max: 100, variant: BcProgressVariant.warning, striped: true),
+              const BcProgress(value: 30, max: 100, variant: BcProgressVariant.destructive, size: BcComponentSize.sm),
+              const BcProgress(value: 60, max: 100, variant: BcProgressVariant.defaultVariant, size: BcComponentSize.lg),
+            ],
+          ),
+        ),
+
+        // -- BcKpi --
+        DemoCard(
+          title: 'BcKpi',
+          description: 'Key performance indicator card with trend and icon.',
+          child: BcXStack(
+            gap: 16,
+            crossAxisAlignment: BcXStackAlign.start,
+            children: [
+              Expanded(
+                child: const BcKpi(
+                  title: 'Revenue',
+                  value: 123456,
+                  subtitle: 'vs last month',
+                  trend: BcStatisticTrend.up,
+                  trendValue: '+5.4%',
+                  icon: Icons.trending_up,
+                ),
+              ),
+              Expanded(
+                child: const BcKpi(
+                  title: 'Churn',
+                  value: '2.1%',
+                  trend: BcStatisticTrend.down,
+                  trendValue: '-0.3%',
+                  icon: Icons.trending_down,
+                  color: BcTheme.destructive,
                 ),
               ),
             ],
