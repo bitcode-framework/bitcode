@@ -1,0 +1,227 @@
+// ============================================================================
+// @bitcode/ui-schema — Block Catalog Candidate Metadata: BUILDER category
+//
+// Canonical Candidate metadata seed (ADR-017). All entries are
+// `readiness: 'candidate'`. NO Ready promotion. Gaps and blockedBy are
+// explicit and honest. a11y/test evidence is NOT faked.
+//
+// Builder surfaces are runtime-separate from Ready block runtime (ADR-017 §3):
+// a simple schema/component render must NOT import builder packages.
+//
+// Source: block-catalog-candidate-matrix.json (frozen baseline v0.1.0).
+// Platform availability from platform-audit.ts snapshot.
+//
+// Pure data. No framework imports.
+// ============================================================================
+
+import type { CandidateCatalogEntry } from '../types.ts';
+import { componentPlatforms } from '../platform-audit.ts';
+
+function rc(key: string): { key: string; platforms: Array<'web' | 'flutter'> } {
+  return { key, platforms: componentPlatforms(key) };
+}
+
+// ---------------------------------------------------------------------------
+// builder.query-builder — component-gap, keep
+// ---------------------------------------------------------------------------
+
+const builderQueryBuilder: CandidateCatalogEntry = {
+  id: 'builder.query-builder',
+  version: '0.1.0',
+  schemaVersion: '0.1.0',
+  labelKey: 'block.builder.query-builder.title',
+  fallbackLabel: 'Query Builder',
+  category: 'builder',
+  subcategory: 'query',
+  channels: ['internal', 'saas'],
+  capabilities: ['builder', 'data-source', 'security'],
+  renderStrategy: 'component',
+  componentKey: 'BcQueryBuilder',
+  requiredComponents: [rc('BcDataTable'), rc('BcForm'), rc('BcTree'), rc('BcCode')],
+  requiredFunctions: [],
+  requiredAdapters: [
+    { name: 'data', kind: 'data', platforms: ['web', 'flutter'] },
+  ],
+  adaptivePolicy: { breakpoints: true, platformMorph: ['material'] },
+  securityPolicy: { richTextSanitize: 'n/a', externalLinks: 'deny' },
+  cachePolicy: { strategy: 'none' },
+  offlinePolicy: { support: 'unsupported' },
+  migration: { toVersion: '0.1.0' },
+  readiness: 'candidate',
+  sourceReferences: ['chatgpt:Query Builder', 'chatgpt:Filter Builder', 'chatgpt:Rule Builder'],
+  decision: 'keep',
+  matrixStatus: 'component-gap',
+  gaps: [
+    'No dedicated builder surface exists.',
+    'Portable Expression AST editor, validation, and undo/versioning policy not yet implemented.',
+    'a11y evidence not yet produced.',
+    'test coverage not yet produced.',
+  ],
+  priorityBatch: 'builder-surface',
+  blockedBy: [
+    'component-gap:BcQueryBuilder',
+    'P2-expression-evaluator-impl',
+    'builder-authoring-contract',
+    'P4-block-renderer-validator',
+    'a11y-evidence-missing',
+    'test-coverage-missing',
+  ],
+};
+
+// ---------------------------------------------------------------------------
+// builder.expression-builder — component-gap, keep (foundation)
+// ---------------------------------------------------------------------------
+
+const builderExpressionBuilder: CandidateCatalogEntry = {
+  id: 'builder.expression-builder',
+  version: '0.1.0',
+  schemaVersion: '0.1.0',
+  labelKey: 'block.builder.expression-builder.title',
+  fallbackLabel: 'Expression Builder',
+  category: 'builder',
+  subcategory: 'expression',
+  channels: ['internal', 'saas'],
+  capabilities: ['builder', 'reactive', 'security'],
+  renderStrategy: 'component',
+  componentKey: 'BcExpressionBuilder',
+  requiredComponents: [rc('BcCode'), rc('BcJson'), rc('BcTree'), rc('BcForm')],
+  requiredFunctions: [],
+  requiredAdapters: [],
+  adaptivePolicy: { breakpoints: true, platformMorph: ['material'] },
+  securityPolicy: { richTextSanitize: 'n/a', externalLinks: 'deny' },
+  cachePolicy: { strategy: 'none' },
+  offlinePolicy: { support: 'unsupported' },
+  migration: { toVersion: '0.1.0' },
+  readiness: 'candidate',
+  sourceReferences: ['chatgpt:Expression Builder'],
+  decision: 'keep',
+  matrixStatus: 'component-gap',
+  gaps: [
+    'No dedicated visual expression builder component exists.',
+    'Requires Portable Expression AST types/evaluator before implementation.',
+    'a11y evidence not yet produced.',
+    'test coverage not yet produced.',
+  ],
+  priorityBatch: 'foundation',
+  blockedBy: [
+    'component-gap:BcExpressionBuilder',
+    'P2-expression-evaluator-impl',
+    'builder-authoring-contract',
+    'P4-block-renderer-validator',
+    'a11y-evidence-missing',
+    'test-coverage-missing',
+  ],
+};
+
+// ---------------------------------------------------------------------------
+// builder.page-builder — component-gap, keep
+// ---------------------------------------------------------------------------
+
+const builderPageBuilder: CandidateCatalogEntry = {
+  id: 'builder.page-builder',
+  version: '0.1.0',
+  schemaVersion: '0.1.0',
+  labelKey: 'block.builder.page-builder.title',
+  fallbackLabel: 'Page Builder',
+  category: 'builder',
+  subcategory: 'page',
+  channels: ['internal', 'saas'],
+  capabilities: ['builder', 'security'],
+  renderStrategy: 'component',
+  componentKey: 'BcPageBuilder',
+  requiredComponents: [rc('BcViewEditor')],
+  requiredFunctions: [],
+  requiredAdapters: [],
+  adaptivePolicy: { breakpoints: true, platformMorph: ['material'] },
+  securityPolicy: { richTextSanitize: 'n/a', externalLinks: 'deny' },
+  cachePolicy: { strategy: 'none' },
+  offlinePolicy: { support: 'unsupported' },
+  migration: { toVersion: '0.1.0' },
+  readiness: 'candidate',
+  sourceReferences: [
+    'chatgpt:Page Builder',
+    'chatgpt:Dashboard Builder',
+    'elementor:Template',
+    'easyerp:Builder',
+  ],
+  decision: 'keep',
+  matrixStatus: 'component-gap',
+  gaps: [
+    'No Application Builder surface exists separate from Ready Block runtime.',
+    'Visual builder endpoint/model/persistence wiring remains ADR-014 scope.',
+    'Flutter BcRenderer exists as renderer infrastructure; Ready validation must check renderer export separately.',
+    'a11y evidence not yet produced.',
+    'test coverage not yet produced.',
+  ],
+  priorityBatch: 'builder-surface',
+  blockedBy: [
+    'component-gap:BcPageBuilder',
+    'builder-authoring-contract',
+    'renderer-infrastructure-export-check',
+    'P4-block-renderer-validator',
+    'ADR-014-builder-persistence-wiring',
+    'a11y-evidence-missing',
+    'test-coverage-missing',
+  ],
+};
+
+// ---------------------------------------------------------------------------
+// builder.report-builder — component-gap, keep
+// ---------------------------------------------------------------------------
+
+const builderReportBuilder: CandidateCatalogEntry = {
+  id: 'builder.report-builder',
+  version: '0.1.0',
+  schemaVersion: '0.1.0',
+  labelKey: 'block.builder.report-builder.title',
+  fallbackLabel: 'Report Builder',
+  category: 'builder',
+  subcategory: 'report',
+  channels: ['internal', 'saas'],
+  capabilities: ['builder', 'data-source', 'security'],
+  renderStrategy: 'component',
+  componentKey: 'BcReportBuilder',
+  requiredComponents: [
+    rc('BcViewReport'),
+    rc('BcDashboard'),
+    rc('BcChart'),
+    rc('BcDataTable'),
+    rc('BcExport'),
+  ],
+  requiredFunctions: [],
+  requiredAdapters: [
+    { name: 'data', kind: 'data', platforms: ['web', 'flutter'] },
+  ],
+  adaptivePolicy: { breakpoints: true, platformMorph: ['material'] },
+  securityPolicy: { richTextSanitize: 'n/a', externalLinks: 'deny' },
+  cachePolicy: { strategy: 'none' },
+  offlinePolicy: { support: 'unsupported' },
+  migration: { toVersion: '0.1.0' },
+  readiness: 'candidate',
+  sourceReferences: ['chatgpt:Report Builder', 'chatgpt:Dashboard Builder'],
+  decision: 'keep',
+  matrixStatus: 'component-gap',
+  gaps: [
+    'No dedicated report/dashboard builder components exist.',
+    'Persistence/versioning contract not yet authored.',
+    'Export/report engine wiring and persistence remain ADR-014 scope.',
+    'a11y evidence not yet produced.',
+    'test coverage not yet produced.',
+  ],
+  priorityBatch: 'builder-surface',
+  blockedBy: [
+    'component-gap:BcReportBuilder',
+    'builder-authoring-contract',
+    'P4-block-renderer-validator',
+    'ADR-014-report-export-wiring',
+    'a11y-evidence-missing',
+    'test-coverage-missing',
+  ],
+};
+
+export const builderCandidates: CandidateCatalogEntry[] = [
+  builderQueryBuilder,
+  builderExpressionBuilder,
+  builderPageBuilder,
+  builderReportBuilder,
+];
