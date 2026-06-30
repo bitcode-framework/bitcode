@@ -174,3 +174,13 @@ export type {
   ConditionalCandidate,
   PilotCandidate,
 } from './pilot-candidates.ts';
+
+// ---------------------------------------------------------------------------
+// Ready promotions — the first production-Ready catalog entries.
+// Distinct from ALL_CANDIDATE_ENTRIES (which stays 44 candidates).
+// ---------------------------------------------------------------------------
+export {
+  READY_CATALOG_ENTRIES,
+  READY_COUNT,
+  getReadyEntryById,
+} from './ready-promotions.ts';

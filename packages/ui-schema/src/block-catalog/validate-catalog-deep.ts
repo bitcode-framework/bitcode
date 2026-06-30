@@ -271,7 +271,15 @@ function deepWalk(
   const obj = schema as Record<string, unknown>;
 
   // --- UiSchema kind check ---
-  if (typeof obj.type === 'string' && fieldPath.startsWith('schemaPreset')) {
+  // Only check `type` for objects that ARE UiSchema nodes: the root
+  // schemaPreset itself, or elements inside any `sections[]` array.
+  // FieldNode objects (inside `fields[]`) and column_def entries carry
+  // their own `type` discriminators (FieldType, not UiSchemaKind) and
+  // must NOT be flagged here.
+  if (
+    typeof obj.type === 'string' &&
+    (fieldPath === 'schemaPreset' || /\.sections\[\d+\]$/.test(fieldPath))
+  ) {
     if (!VALID_SCHEMA_KINDS.has(obj.type as UiSchemaKind)) {
       ctx.diagnostics.push(
         diag(

@@ -25,6 +25,7 @@ import {
   getCandidateById,
 } from './categories/index.ts';
 import { isComponentOnBothPlatforms } from './platform-audit.ts';
+import { READY_CATALOG_ENTRIES } from './ready-promotions.ts';
 
 /**
  * A pilot candidate analysis record. `remainingBlockers` is ALWAYS non-empty
@@ -197,5 +198,5 @@ export const PILOT_SUMMARY = {
   pilotCount: PILOT_CANDIDATES.length,
   conditionalCount: CONDITIONAL_CANDIDATES.length,
   totalCandidates: ALL_CANDIDATE_ENTRIES.length,
-  readyCount: 0, // explicitly zero — no promotion in this scope
+  readyCount: READY_CATALOG_ENTRIES.length,
 };

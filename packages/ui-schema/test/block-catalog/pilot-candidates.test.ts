@@ -7,6 +7,7 @@ import {
   CONDITIONAL_CANDIDATES,
   PILOT_CANDIDATES,
   PILOT_SUMMARY,
+  READY_CATALOG_ENTRIES,
   validatePilotConsistency,
 } from '../../src/block-catalog/index.ts';
 import { getCandidateById } from '../../src/block-catalog/categories/index.ts';
@@ -15,8 +16,9 @@ test('pilot-candidates: pilot list is non-empty', () => {
   assert.ok(PILOT_CANDIDATES.length > 0, 'expected at least one pilot');
 });
 
-test('pilot-candidates: readyCount is 0 (no promotion in this scope)', () => {
-  assert.equal(PILOT_SUMMARY.readyCount, 0);
+test('pilot-candidates: readyCount matches READY_CATALOG_ENTRIES length', () => {
+  assert.equal(PILOT_SUMMARY.readyCount, READY_CATALOG_ENTRIES.length);
+  assert.ok(PILOT_SUMMARY.readyCount > 0, 'at least one entry is now Ready');
 });
 
 test('pilot-candidates: internal consistency check passes', () => {
