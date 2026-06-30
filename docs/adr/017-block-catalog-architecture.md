@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | Proposed (2026-06-30; full body drafted against matrix draft 0.1) |
+| **Status** | Proposed (2026-06-30; full body drafted against matrix 0.1 accepted baseline; minor review edits applied before final acceptance) |
 | **Depends on** | 002, 003, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 016 |
 | **Amends** | 003 (adds metadata catalog layer, does not change source taxonomy), 005 (extends schema surface with block-level composition) |
 | **Impact** | Adds Block Catalog types to `@bitcode/ui-schema`, Ready/Candidate registries, per-category preset catalogs in `packages/ui`, render strategies, RuntimeContext requirements, validation gates, and plugin/extension model |
@@ -13,9 +13,9 @@
 
 BitCode now has a broad standalone UI stack: `packages/ui` root export currently reports 187 web component exports, `packages/ui-flutter` has a mature Dart widget surface, ADR-002 defines the 4-layer `DataSource`, ADR-004 defines `ReactiveStore`, ADR-005 defines `BcRenderer`, ADR-007/008 define the universal component contract, ADR-011 defines Flutter as a first-class Tier C track, and ADR-013 completes cross-tier providers, hooks, animation, and adapt infrastructure.
 
-That component inventory is not enough for a page builder or application builder. A builder needs curated, reusable page-level units such as hero, record list, checkout, chatter, workflow state, and dashboard KPI grid. Those units must be portable across web, desktop, and Flutter, must not depend on BitCode engine internals, and must fail loudly when a host lacks a required component, function, adapter, permission capability, or platform implementation.
+That component inventory is background context only, subject to Ready validation, and is not enough for a page builder or application builder. A builder needs curated, reusable page-level units such as hero, record list, checkout, chatter, workflow state, and dashboard KPI grid. Those units must be portable across web, desktop, and Flutter, must not depend on BitCode engine internals, and must fail loudly when a host lacks a required component, function, adapter, permission capability, or platform implementation.
 
-The source of truth for this ADR is `sprints/package-ui-elementor/block-catalog-candidate-matrix.json` draft 0.1. It maps Elementor, Website/CMS, EasyERP, portal, commerce, workflow, analytics, and builder references into 44 curated candidates. Current status distribution is: 8 `schema-preset-only`, 21 `existing-component-needs-binding`, 10 `component-gap`, 2 `contract-gap`, 1 `adapter-gap`, 1 `duplicate-alias`, and 1 `excluded`.
+The source of truth for this ADR is `sprints/package-ui-elementor/block-catalog-candidate-matrix.json` version 0.1, labeled as the accepted baseline for ADR-017 and ADR-018. It maps Elementor, Website/CMS, EasyERP, portal, commerce, workflow, analytics, and builder references into 44 curated candidates. Current status distribution is: 8 `schema-preset-only`, 21 `existing-component-needs-binding`, 10 `component-gap`, 2 `contract-gap`, 1 `adapter-gap`, 1 `duplicate-alias`, and 1 `excluded`. Later matrix changes require a version bump or documented change record before they can affect Ready Catalog acceptance.
 
 Evidence from the 2026-06-30 review matters for readiness discipline:
 
@@ -190,7 +190,7 @@ A candidate can become Ready only when all gates pass:
 | Security/privacy gate | No secrets in schema; URL, rich text, file, payment, permission, and provider policies pass. Sanitization defaults on. |
 | Adaptive gate | Block declares or inherits adaptive policy. Complex blocks explicitly cover breakpoints, platform morphing, reduced motion, loading, empty, and error states. |
 | Performance gate | Data-heavy blocks declare pagination, virtualization, debounce, abort, and bounded Flutter scrolling where applicable. |
-| A11y gate | Block-level accessibility contract is documented and tested. |
+| A11y gate | Block-level accessibility contract is documented and tested, with evidence linked from catalog metadata or a generated readiness report. |
 | Test gate | Schema validation, web render, Flutter widget render, action mock, and a11y tests pass. |
 | Demo gate | A demo exists in `packages/ui/demo-app` and `packages/ui-flutter/example`; engine integration demo exists only when engine-bound. |
 
@@ -280,7 +280,7 @@ Build-time validators run in package CI and catalog generation:
 - Required function and adapter manifest checks.
 - Security policy checks for URL, rich text, file, payment, and provider capabilities.
 - i18n key plus English fallback checks.
-- A11y and adaptive policy presence checks.
+- A11y and adaptive policy presence checks, including a linkable a11y contract/test artifact in catalog metadata or a generated readiness report.
 - No-stub checks for Ready entries.
 
 #### Runtime validation
@@ -393,7 +393,7 @@ Phases follow the matrix `priorityBatch` values. Each phase can promote only ent
 - [ ] Required components/functions/adapters declared.
 - [ ] Security/privacy policy declared and validated.
 - [ ] i18n key and English fallback declared.
-- [ ] A11y contract declared and tested.
+- [ ] A11y contract declared, tested, and linked through catalog metadata, generated readiness report, or demo test reference.
 - [ ] Adaptive policy declared or inherited.
 - [ ] Performance policy declared for data-heavy blocks.
 - [ ] Schema/action/expression contracts are serializable.

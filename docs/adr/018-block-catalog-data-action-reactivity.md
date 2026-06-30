@@ -82,6 +82,7 @@ Rules:
 
 - Ready Catalog JSON cannot include function bodies.
 - A Ready block may require a named handler only through `requiredAdapters` or `requiredFunctions`, with an explicit manifest and fallback policy.
+- `handler` cannot satisfy universal Ready portability unless every required platform declares a conforming handler manifest and fallback policy.
 - Missing handler registration is a runtime validation error.
 
 #### `url`
@@ -268,6 +269,7 @@ Small required operator set:
 Rules:
 
 - Evaluation scope is explicit and named: `values`, `meta`, `data`, `services`, `permissions`, and function arguments.
+- The scope must be permission-filtered before expression evaluation; unauthorized fields, services, and permission facts must not be exposed to the evaluator.
 - Path resolution must be deterministic and must not access global objects.
 - Expressions are pure. Side effects belong to `ActionEffect` or `DataSource` refresh, not expression evaluation.
 - Evaluation errors are typed and point to the expression node or path.
@@ -338,7 +340,8 @@ Rules:
 
 - Context is explicit and per-instance. No mutable singleton registry may be required.
 - `ActionRunner` reads only from provided context and adapter registries.
-- Permission checks happen before adapter invocation when an action declares permission requirements.
+- Permission and context validation happen before sensitive payload expression evaluation and before adapter invocation when an action declares permission requirements.
+- Expression scopes must expose only authorized values, data, services, and permission facts.
 - Adapters own auth and secrets.
 - Host services must be registered by name and never inferred from global variables.
 
@@ -357,9 +360,9 @@ interface ReactiveStore {
 Execution order:
 
 1. Validate action source and required context.
-2. Evaluate any Portable Expression AST payloads.
-3. Emit `bc-action-start` / Dart start notifier.
-4. Check permission adapter if required.
+2. Validate permission requirements and construct a permission-filtered expression scope.
+3. Evaluate any Portable Expression AST payloads against the filtered scope.
+4. Emit `bc-action-start` / Dart start notifier.
 5. Invoke the selected action adapter or local effect runner.
 6. Normalize result.
 7. Apply validation errors to store meta when present.
@@ -399,7 +402,7 @@ Rules:
 - Permission/authz adapter must gate permission-aware actions.
 - Validation errors must not echo sensitive server details.
 - Logs and lifecycle events must redact sensitive payload fields.
-- Offline action queues must declare idempotency and conflict policy.
+- Offline action queues must declare queue persistence, retry/backoff, idempotency key behavior, replay policy, conflict normalization, permission revalidation on replay, and visible failure/recovery states.
 
 ## Consequences
 
@@ -465,21 +468,22 @@ Rules:
 ### Phase 6: Security, offline, and performance hardening
 
 - Add URL allowlist, sanitization, file policy, payment adapter, redaction, and permission validation tests.
-- Add offline queue policy for action-capable blocks that declare offline support.
+- Add offline queue policy for action-capable blocks that declare offline support, including durable persistence, retry/backoff, idempotency keys, replay rules, conflict normalization, permission revalidation on replay, and visible failure/recovery states.
 - Add performance tests for debounced actions, aborts, and repeated submissions.
 
 ## Acceptance Criteria
 
 - [ ] `ActionSource`, `ActionAdapter`, `ActionResult`, `ActionError`, `ActionEffect`, lifecycle payload, Portable Expression AST, and function manifest types are exported from `@bitcode/ui-schema`.
 - [ ] Dart equivalents exist and are exported from `packages/ui-flutter`.
-- [ ] Ready Catalog JSON supports only serializable action variants unless a named host handler is declared through a manifest.
+- [ ] Ready Catalog JSON supports only serializable action variants unless a named host handler is declared through conforming manifests and fallback policies for every required platform.
 - [ ] `ReactiveStore.runAction(action, payload, ctx)` exists in TypeScript and Dart.
 - [ ] Action lifecycle emits start, success, error, validation-error, and settled with parity payloads on web and Dart.
 - [ ] Effects run in deterministic order and are covered by tests.
-- [ ] Portable Expression AST evaluators exist in TypeScript and Dart with shared golden fixtures.
+- [ ] Portable Expression AST evaluators exist in TypeScript and Dart with shared golden fixtures, and permission-filtered scopes are validated before sensitive payload expression evaluation.
 - [ ] Built-in function registry validates name, version, platform support, purity, determinism, and fallback.
 - [ ] Missing functions/adapters fail loudly with typed diagnostics.
 - [ ] Security/privacy validators reject secrets in schema, unsafe URLs, unsanitized rich text opt-out without policy, unsafe file actions, and payment actions without a payment adapter.
+- [ ] Offline-capable action blocks prove durable queue persistence, retry/backoff, idempotency key behavior, replay rules, conflict normalization, permission revalidation on replay, and visible failure/recovery states.
 - [ ] At least one schema-strategy block and one component-strategy block use `ActionSource` successfully in web and Flutter demos.
 
 ## Related ADRs

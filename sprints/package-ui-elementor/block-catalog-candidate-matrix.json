@@ -1,6 +1,8 @@
 {
   "schemaVersion": "0.1.0",
-  "status": "draft",
+  "status": "accepted-baseline",
+  "baselineFor": ["ADR-017", "ADR-018"],
+  "changePolicy": "Later matrix changes require a schemaVersion bump or documented change record before they can affect Ready Catalog acceptance.",
   "generatedFrom": [
     "sprints/package-ui-elementor/chatgpt-ui-elementor.md",
     "sprints/package-ui-elementor/perplexity-ui-elementor.md",
