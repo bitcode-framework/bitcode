@@ -602,7 +602,7 @@ Candidate matrix + parity report: `sprints/package-ui-elementor/block-catalog-ca
 | Gate | Status | Notes |
 |---|---|---|
 | BlockCatalogEntry types in `@bitcode/ui-schema` | In Progress (P1 done) | P1 landed: canonical types, enums, policies, capability normalization, minimal shape validator, 2 Candidate fixtures. No Ready promotion. Next: P2 Portable Expression AST. Amends ADR-003 (metadata layer, no source taxonomy change). |
-| `BcBlockRenderer` thin layer over `BcRenderer` | Pending | Scheduled in `docs/plans/block-catalog-implementation.md` foundation batch. |
+| `BcBlockRenderer` thin layer over `BcRenderer` | Foundation landed (P4) | 2026-07-01 (Agent H): portable engine in `@bitcode/ui-schema/block-renderer/` emits RENDER PLANS only (never framework output); web binding in `packages/ui/core/block-renderer/` translates plans into BcRenderer/registry output; Dart contract mirror in `packages/ui-flutter/`. Registry stores metadata only. Action bindings deferred (not executed at render). 29 engine tests + 5 web registry tests pass. **No entries promoted to Ready** — this is the renderer foundation only; full Flutter widget + per-category catalog sources are follow-ups. |
 | ActionSource / ActionResult / ActionEffect / ActionLifecycle | Pending | Locks cross-platform mutation contract. Required by Ready entries that use `action-trigger` / `action-source`. |
 | Portable Expression AST + built-in function registry | Pending | Locks cross-platform reaction descriptor. Required by Ready entries that use `reactive`. |
 | Catalog validators (build-time + runtime) | Pending | Build-time is CI-blocking; runtime throws typed `BlockCapabilityError`. |

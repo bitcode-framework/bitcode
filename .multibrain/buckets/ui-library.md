@@ -6,6 +6,18 @@
 
 ---
 
+## 2026-07-01 — BcBlockRenderer portable engine + web binding (P4, ADR-017 S3, Agent H)
+
+- **Status:** done
+- **Files touched:** packages/ui-schema/src/block-renderer/ (5 files), packages/ui-schema/test/block-renderer/renderer.test.ts (29 tests), packages/ui-schema/src/index.ts (export), packages/ui/src/core/block-renderer/ (4 files + test), packages/ui/scripts/generate-index.mjs, packages/ui/src/index.ts (regenerated), packages/ui-flutter/lib/src/block_renderer/ (4 files), packages/ui-flutter/lib/bc_ui_flutter.dart
+- **Evidence:** ui-schema tsc 0 errors, npm test 283 pass/0 fail; packages/ui audit:contract 0 violations, npm test 2131 pass/0 fail; flutter dart analyze 0 issues.
+- **Commits:** root 3628e4b (engine + Dart mirror), packages/ui submodule 58ffd5b (web binding), root 32cc976 (pointer bump).
+- **Gotcha:** G (ActionRunner) not yet ported to Dart — Dart contract mirror types action-bearing surfaces as Object? with deferred TODO. F (expressions) is ported to Dart; renderer engine uses F's buildPermissionFilteredScope verbatim. Coordination: Agent L owns block-catalog/ (categories/policies/pilot); Agent H owns block-renderer/ exclusively. index.ts is shared — both agents' exports preserved verbatim.
+
+Landed P4 BcBlockRenderer foundation as a render-plan two-tier engine per the 10 review amendments. Portable engine emits RenderPlan union (Schema/Component/Hidden/Diagnostic) — NEVER framework output. Registry stores ComponentMetadata ONLY. Actions deferred (runner NOT invoked at render). Web binding translates plans via BcRenderer + WebBlockComponentRegistry. No entries promoted to Ready.
+
+---
+
 ## 2026-07-01 — Block Catalog Ready-promotion gate audit (Agent M)
 
 **Status:** done (no promotion; groundwork + blocker report)

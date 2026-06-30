@@ -360,6 +360,7 @@ packages/ui/
 │   ├── core/                                   # Reactive store, registry, context, data-source, types, wc-event-bridge, part-props, renderer, providers, collection contract, haptics, animation runtime, adapt runtime
 │   │   ├── hooks/                              # Portable headless SSR-safe hooks (ADR-002 §9.2, ADR-013). P0: useId, useDisclosure, useControllableState, useDebouncedValue, useClipboard, useElementSize, useFocusTrap, useMediaQuery, useAppContext/useAppConfigStore. P1 (ADR-013 §3): usePrevious, useIntersection, useInterval, useTimeout, useClickOutside, useKeyboard, useScrollLock, useLocalStorage — all gated behind typeof window/document, barrel-exported via core/hooks/index.ts.
 │   │   ├── animation/                          # Animation runtime (ADR-002 §9.3, ADR-013 §4). types.ts = AnimationProps/AnimationKind/AnimationEasing/ANIMATION_DEFAULT contract slot. runtime.ts = resolveAnimation() merges props with default + collapses to 'none' on prefers-reduced-motion (SSR-safe), returns ResolvedAnimation {kind,duration,easing,cssTransition}. getAnimationClasses() returns enter/exit Tailwind utility strings. prefersReducedMotion()/detectPrefersReducedMotion() exported detector. Barrel core/animation/index.ts.
+│   │   ├── block-renderer/                     # Block Catalog renderer web binding (ADR-017 section 3, Agent H). web-registry.ts = WebBlockComponentRegistry (componentKey -> Mitosis component + metadata, the ONLY place holding framework components). BcBlockRenderer.lite.tsx = thin Adapt-tier component translating portable render plans into BcRenderer/registry output. index.ts = barrel re-exporting web + portable surface.
 │   │   └── adapt/                              # Adapt runtime (ADR-002 §9.4, ADR-013 §4). types.ts = AdaptProps/AdaptCondition/AdaptTarget contract slot. runtime.ts = resolveAdapt(props?, ctx?) evaluates when-condition (breakpoint via createMediaQueryWatcher OR platform: tag) and returns ResolvedAdapt {applies,target}. AdaptContext injectable for test-friendly/SSR-safe platform+breakpoint detection. Barrel core/adapt/index.ts.
 │   ├── components/                             # 189 Mitosis components across 14 groups (charts, data, data-display, feedback, forms, input, layout, media, navigation, overlays, primitives, print, social, views, adapt-poc). 177 .lite.tsx Pure + 12 .web.tsx/.native.tsx Adapt (ADR-006).
 │   └── themes/default.css                      # Default theme bundle
@@ -433,6 +434,12 @@ packages/ui-schema/
         ├── index.ts                            # Schema barrel
         ├── types.ts                            # UiSchema, FieldNode, FieldType, UiAction, BcRendererProps
         └── resolver.ts                         # FieldResolver, resolveField, resolveFieldType, resolveFields
+    └── block-renderer/                         # Block Renderer portable engine (ADR-017 section 3, Agent H). Emits RENDER PLANS only.
+        ├── index.ts                            # Block-renderer barrel (BlockRenderer, registry contract, types, validator)
+        ├── types.ts                            # BlockNode, BlockBindings, RenderPlan union (Schema/Component/Hidden/Diagnostic), ResolvedBlockTree, ActionHandlerPlan (deferred), diagnostic codes
+        ├── registry-contract.ts                # BlockComponentRegistry interface (METADATA ONLY), InMemoryBlockComponentRegistry
+        ├── validate-runtime.ts                 # Runtime host validation (required components/functions/adapters) -> BLOCK_RENDER_* diagnostics
+        └── renderer.ts                         # BlockRenderer engine: catalog resolution, readiness gate, F evaluator bindings, permission-filtered scope, strategy switch -> render plan, deferred action binding
 ```
 
 ---
