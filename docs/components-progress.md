@@ -601,7 +601,7 @@ Candidate matrix + parity report: `sprints/package-ui-elementor/block-catalog-ca
 
 | Gate | Status | Notes |
 |---|---|---|
-| BlockCatalogEntry types in `@bitcode/ui-schema` | Pending | Required for Ready promotion. Amends ADR-003 (metadata layer, no source taxonomy change). |
+| BlockCatalogEntry types in `@bitcode/ui-schema` | In Progress (P1 done) | P1 landed: canonical types, enums, policies, capability normalization, minimal shape validator, 2 Candidate fixtures. No Ready promotion. Next: P2 Portable Expression AST. Amends ADR-003 (metadata layer, no source taxonomy change). |
 | `BcBlockRenderer` thin layer over `BcRenderer` | Pending | Scheduled in `docs/plans/block-catalog-implementation.md` foundation batch. |
 | ActionSource / ActionResult / ActionEffect / ActionLifecycle | Pending | Locks cross-platform mutation contract. Required by Ready entries that use `action-trigger` / `action-source`. |
 | Portable Expression AST + built-in function registry | Pending | Locks cross-platform reaction descriptor. Required by Ready entries that use `reactive`. |
