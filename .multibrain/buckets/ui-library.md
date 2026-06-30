@@ -6,6 +6,14 @@
 
 ---
 
+## 2026-07-01 — Block Catalog Ready-promotion gate audit (Agent M)
+
+**Status:** done (no promotion; groundwork + blocker report)
+**Files touched:** `sprints/package-ui-elementor/ready-promotion-audit.md`, `packages/ui-schema/test/block-catalog/ready-gate.test.ts`
+**Evidence:** `npx tsc --noEmit` EXIT 0; ready-gate test 8/8 pass; `rg readiness.*'ready'` in catalog source = 0 claims.
+
+Verdict: NO Ready promotion this session. P3 ActionRunner is untracked + 2 failing tests (A4 malformed-result, E14 resolveFirst); P4 `BcBlockRenderer`/`catalog:validate` CLI do not exist. P1 shape validator emits `BLOCK_READY_GATE_INCOMPLETE` for any Ready entry. Smallest safe Ready slice identified: `content.hero` + `content.plain-text` (static-only capabilities, not blocked by P3 action runtime). Web+Flutter source/export gates verified PASS for both with exact file:line evidence. Added future-proof gate test (contract: "every Ready entry passes strict shape validation"; NOT "Ready==0 forever"). Rejected-candidate inventory + unblock map in audit artifact. Do NOT create `packages/ui/src/block-catalog/` registry until Agent H/J define ownership.
+
 ---
 
 ## 2026-07-01 - Portable Expression AST foundation (P2, ADR-018 S5-S6)
