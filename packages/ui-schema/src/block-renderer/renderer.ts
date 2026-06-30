@@ -33,12 +33,11 @@ import type { ActionSource } from '../actions/source.ts';
 import type { ActionResult } from '../actions/result.ts';
 import type { ActionRuntimeContext } from '../actions/runtime-context.ts';
 import type { ActionRunner } from '../actions/runner.ts';
-import type { BlockCatalogEntry, BlockPlatform } from '../block-catalog/types.ts';
+import type { BlockCatalogEntry } from '../block-catalog/types.ts';
 import type { BlockCatalogDiagnostic } from '../block-catalog/validate.ts';
 import type {
   BlockBindings,
   BlockNode,
-  ComponentMetadata,
   RenderOptions,
   ResolvedBindings,
   ResolvedBlockTree,

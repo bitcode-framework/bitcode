@@ -3,8 +3,8 @@
 > Per-project lightweight cross-session memory for AI agents.
 > Active whenever this file exists. Read this FIRST at session start.
 
-**Last session:** 2026-07-01 (Agent I deep Block Catalog validator)
-**Last bucket touched:** ui-library (Agent I deep validator in ui-schema)
+**Last session:** 2026-07-01 (Agent cleanup and verification sweep)
+**Last bucket touched:** ui-library (ui-schema strict tsc cleanup after Agent I)
 
 ---
 

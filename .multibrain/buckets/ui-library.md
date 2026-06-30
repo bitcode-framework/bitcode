@@ -6,6 +6,14 @@
 
 ---
 
+## 2026-07-01 — Agent cleanup and verification sweep
+
+**Status:** done
+**Files touched:** `packages/ui-schema/src/actions/validate.ts`, `packages/ui-schema/src/block-catalog/{validate,validate-catalog-deep}.ts`, `packages/ui-schema/src/block-catalog/policies/performance-policy.ts`, `packages/ui-schema/src/block-renderer/{renderer,validate-runtime}.ts`, `.multibrain/session.md`, `.multibrain/buckets/ui-library.md`
+**Evidence:** `npx tsc --noEmit` PASS; `node scripts/run-tests.mjs` 299 pass / 0 fail; `node scripts/run-source-tests.mjs` 2131 pass / 0 fail; `node scripts/contract-audit.mjs` PASS 0 violations; `npm run build` in demo-app still blocked only by pre-existing demo/ui export/type gaps after ui-schema unused-import errors were cleared.
+
+Cleared strict TypeScript unused-import diagnostics left across Agent G/H/I/L files. Agent I output is committed at `6c1ebaf8` and independently green; no Ready promotion was made.
+
 ## 2026-07-01 — Deep Block Catalog validator (Agent I)
 
 **Status:** done

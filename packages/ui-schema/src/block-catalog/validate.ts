@@ -20,7 +20,6 @@
 
 import type {
   BlockCatalogEntry,
-  BlockCapability,
   BlockCategory,
   BlockChannel,
   BlockReadiness,

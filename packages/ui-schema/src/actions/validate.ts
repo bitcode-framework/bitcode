@@ -12,7 +12,7 @@
 // Pure functions: never throw; return typed diagnostics.
 // ============================================================================
 
-import type { ActionSource, ActionSourceType } from './source.ts';
+import type { ActionSource } from './source.ts';
 import { ACTION_SOURCE_TYPES, isActionSourceType } from './source.ts';
 import type { UrlActionSource, ModelActionSource, HandlerActionSource } from './source.ts';
 import type { ActionRuntimeContext } from './runtime-context.ts';

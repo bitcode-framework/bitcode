@@ -26,7 +26,6 @@ import type { ResolvedPolicyConfig, PolicyResult } from './types.ts';
 import {
   POLICY_DIAGNOSTIC_CODES,
   gateSeverity,
-  hasAnyCapability,
   hasCapability,
   policyDiagnostic,
   resultFromDiagnostics,

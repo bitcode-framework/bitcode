@@ -29,10 +29,7 @@
 import type { ActionSource } from '../actions/source.ts';
 import type { FunctionRegistry } from '../expressions/function-registry.ts';
 import { validateActionSource } from '../actions/validate.ts';
-import {
-  EXPRESSION_NODE_KINDS,
-  PORTABLE_EXPRESSION_SCHEMA_VERSION,
-} from '../expressions/ast.ts';
+import { EXPRESSION_NODE_KINDS } from '../expressions/ast.ts';
 import type { ExpressionError } from '../expressions/errors.ts';
 import { validateExpression } from '../expressions/validate.ts';
 import type { CatalogDiagnostic, CatalogValidationResult } from './catalog-diagnostic.ts';
@@ -76,7 +73,6 @@ export interface CatalogValidationOptions {
 import type {
   CallNode,
   IfNode,
-  LiteralNode,
   OpNode,
   PathNode,
   PortableExpression,
@@ -218,8 +214,7 @@ function mapP1Diagnostics(diagnostics: BlockCatalogDiagnostic[]): CatalogDiagnos
 // schemaPreset deep walk
 // ---------------------------------------------------------------------------
 
-import type { UiSchema, UiSchemaKind } from '../schema/types.ts';
-import type { DataSource } from '../types.ts';
+import type { UiSchemaKind } from '../schema/types.ts';
 
 const VALID_SCHEMA_KINDS: ReadonlySet<UiSchemaKind> = new Set<UiSchemaKind>([
   'form',

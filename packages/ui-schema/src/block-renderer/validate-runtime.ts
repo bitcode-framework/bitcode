@@ -13,7 +13,6 @@
 import type { BlockCatalogDiagnostic } from '../block-catalog/validate.ts';
 import type { BlockCatalogEntry, RequiredComponent, RequiredFunction } from '../block-catalog/types.ts';
 import type { BlockComponentRegistry } from './registry-contract.ts';
-import type { ActionRuntimeContext } from '../actions/runtime-context.ts';
 import type { BlockPlatform } from '../block-catalog/types.ts';
 import { BLOCK_RENDER_DIAGNOSTIC_CODES } from './types.ts';
 
