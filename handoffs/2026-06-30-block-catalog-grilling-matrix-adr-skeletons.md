@@ -92,22 +92,23 @@ Sesi grilling-with-docs untuk merancang **Block Catalog Architecture** (website 
 - ADR-017 dan ADR-018 sudah didraft full body pada 2026-06-30, tetapi status tetap **Proposed** dan harus direview human/architect sebelum implementasi foundational work.
 - Matrix 0.1 sudah reclassify (action-trigger blocks naik status; record-picker jadi contract-gap; plugin.embed-social jadi duplicate-alias; workflow.diagram split viewer/editor).
 - `workflow.diagram-editor` = component-gap (dedicated authoring component, drag/edges/properties/persistence/undo-redo). `workflow.diagram-viewer` = schema-preset-only (BcChartGraph + BcSteps preset read-only).
-- Flutter parity gap yang belum resolve: `BcAvatar`, `BcBadge`, `BcProgress`, `BcKpi` belum jelas ada di `packages/ui-flutter`. Matrix sudah flag, tapi belum dicek aktual.
-- Export gap: `BcShare` dan `BcGridView` source ada tapi belum root-export di `packages/ui/src/index.ts`. Matrix sudah flag.
-- `BcMarkdown` web root export belum jelas; matrix mapping perlu verify.
+- Flutter parity decision: add canonical Flutter `BcAvatar`, `BcBadge`, `BcProgress`, and `BcKpi` with source, tests, and barrel exports before Ready; do not remap to generic primitives just to pass parity.
+- Export gap decision: `BcShare` and `BcGridView` source exists, so treat missing root export/registry as export bug, not component-gap. Dependents stay non-Ready until public exports are fixed.
+- `BcMarkdown` decision: implement canonical web `BcMarkdown` with tests and public export; do not permanently remap markdown-backed rich text to `BcRichText` only.
 - `BcRenderer` di Flutter ada sebagai renderer infrastructure (`packages/ui-flutter/lib/src/renderer/bc_renderer.dart`), bukan component file. Ready validation harus cek renderer export terpisah.
-- ADR-017/018 depend on ADR-013 (cross-tier infra) + ADR-014 (engine UI wiring, masih Proposed). Pastikan tidak konflik file ownership.
+- ADR-017/018 depend on ADR-013 (cross-tier infra) + ADR-014 (engine UI wiring, masih Proposed). Boundary resolved: Block Catalog owns catalog/preset/generic contracts; ADR-014 owns endpoint, model, permission, realtime, persistence, and engine wiring for overlap features.
+- Provider adapter decision: core ships generic adapter contracts plus mock/local adapters for tests only; provider SDK integrations stay in plugin packages.
 - Matrix JSON validated: parse OK, no missing mapped components (setelah BcShare/BcGridView dihapus dari webComponents mapping dan dipindah ke gaps).
 
 ## Next steps (konkret)
 
-1. Review human/architect untuk full body ADR-017 dan ADR-018 sebelum implementasi.
-2. Resolve review findings: count drift fixed in docs, but Flutter parity gaps remain (`bc_avatar`, `bc_badge`, `bc_progress`, `bc_kpi` missing), web export gaps remain (`BcShare`, `BcGridView`), and web `BcMarkdown` remains missing.
-3. Decide per missing Flutter widget: add widget with tests/export, or remap presets to existing Flutter widgets (`bc_box`, `bc_statistic`, `bc_taggroup`) before Ready promotion.
-4. Fix export gaps only with coordination because `packages/ui/src/index.ts` is generated/shared.
+1. Review human/architect untuk full body ADR-017 dan ADR-018 sebelum Accepted.
+2. Implement resolved gap fixes in a separate code phase: canonical Flutter widgets (`BcAvatar`, `BcBadge`, `BcProgress`, `BcKpi`), canonical web `BcMarkdown`, and public export/registry fixes for `BcShare`/`BcGridView`.
+3. Keep overlap rows non-Ready until ADR-014 surface exists for endpoint/model/permission/realtime/persistence/engine wiring.
+4. Keep provider-specific SDK integrations out of core; implement only generic adapter contracts and mock/local test adapters in core.
 5. If ADRs are approved, implement foundational work in order: block-catalog types, ActionSource/ActionRunner, Portable Expression AST, BcBlockRenderer, validation tooling.
 6. Create implementation plan appendix (batch sampai semua Ready) in `docs/plans/` after ADR approval.
-7. Commit current review + ADR drafting changes with a docs-scoped message after verification.
+7. Commit current decision-resolution docs/matrix changes with a scoped message after verification.
 
 ## Prinsip yang harus diingat (dari user)
 

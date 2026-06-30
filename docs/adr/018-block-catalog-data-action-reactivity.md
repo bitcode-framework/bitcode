@@ -39,7 +39,7 @@ The candidate matrix requires 5 foundational work items before any block can be 
 
 - Block catalog entry schema and render strategy, owned by ADR-017.
 - BitCode engine endpoint implementation and feature wiring, owned by ADR-014.
-- Provider SDK implementations such as Stripe, PayPal, Google, Facebook, or SoundCloud.
+- Provider SDK implementations such as Stripe, PayPal, Google, Facebook, or SoundCloud. Core may define adapter contracts and mock/local adapters for tests only.
 - Full visual builder components. This ADR defines expression/action contracts those builders may edit.
 
 ## Decision
@@ -395,7 +395,7 @@ Rules:
 - URL actions require allowlists and method restrictions.
 - Rich text sanitization defaults on. Opt-out must be explicit, policy-gated, and auditable.
 - File actions require type, size, extension, and scanning policy metadata.
-- Payment actions require a payment adapter and must never place provider secret keys in schema.
+- Payment actions require a payment adapter and must never place provider secret keys in schema. Core ships only the generic contract and mock/local adapter for tests; provider SDKs belong in plugin packages.
 - Permission/authz adapter must gate permission-aware actions.
 - Validation errors must not echo sensitive server details.
 - Logs and lifecycle events must redact sensitive payload fields.

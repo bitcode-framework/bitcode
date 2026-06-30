@@ -159,7 +159,7 @@
       "mapsTo": ["BcRichText", "BcMarkdown"],
       "webComponents": ["BcRichText"],
       "flutterComponents": ["bc_richtext", "bc_markdown"],
-      "gaps": ["Need sanitize policy in BlockCatalog security metadata."],
+      "gaps": ["Need sanitize policy in BlockCatalog security metadata.", "Decision resolved: implement canonical web BcMarkdown source/export before Ready instead of remapping to BcRichText-only or leaving markdown as Candidate."],
       "priorityBatch": "content-website"
     },
     {
@@ -249,7 +249,7 @@
       "mapsTo": ["BcCard", "BcCarousel", "BcRate", "BcAvatar"],
       "webComponents": ["BcCard", "BcCarousel", "BcRate", "BcAvatar"],
       "flutterComponents": ["bc_carousel", "bc_rate"],
-      "gaps": ["Need testimonial schema shape and avatar fallback policy."],
+      "gaps": ["Need testimonial schema shape and avatar fallback policy.", "Decision resolved: add canonical Flutter BcAvatar before Ready; do not remap avatar usage to generic primitives."],
       "priorityBatch": "content-website"
     },
     {
@@ -267,7 +267,7 @@
       "mapsTo": ["BcCard", "BcAvatar", "BcDescriptions", "BcFollow"],
       "webComponents": ["BcCard", "BcAvatar", "BcDescriptions", "BcFollow"],
       "flutterComponents": ["bc_descriptions", "bc_follow"],
-      "gaps": ["Need Avatar Flutter parity check because BcAvatar is not currently exported from ui-flutter."],
+      "gaps": ["Decision resolved: add canonical Flutter BcAvatar with source, tests, and barrel export before Ready; do not remap to generic primitives."],
       "priorityBatch": "content-website"
     },
     {
@@ -321,7 +321,7 @@
       "mapsTo": ["BcShare", "BcLike", "BcFollow", "BcButton"],
       "webComponents": ["BcLike", "BcFollow", "BcButton"],
       "flutterComponents": ["bc_share", "bc_like", "bc_follow", "bc_native_button"],
-      "gaps": ["Need external URL safety policy and provider icon strategy.", "BcShare source exists but is not exported from packages/ui root index; fix export/registry before Ready."],
+      "gaps": ["Need external URL safety policy and provider icon strategy.", "Decision resolved: treat BcShare as an export/registry bug, not a component-gap; source exists and must be added to the approved public entrypoint before Ready."],
       "priorityBatch": "content-website"
     },
     {
@@ -339,7 +339,7 @@
       "mapsTo": ["BcDataTable", "BcList", "BcGridView", "BcVirtualScroller"],
       "webComponents": ["BcDataTable", "BcList", "BcVirtualScroller"],
       "flutterComponents": ["bc_data_table", "bc_list", "bc_grid_view", "bc_virtual_scroller"],
-      "gaps": ["Need BlockCatalog datasource conventions, performance budget, and mock demo data.", "BcGridView source exists but is not exported from packages/ui root index; fix export/registry before Ready."],
+      "gaps": ["Need BlockCatalog datasource conventions, performance budget, and mock demo data.", "Decision resolved: treat BcGridView as an export/registry bug, not a component-gap; source exists and must be added to the approved public entrypoint before Ready."],
       "priorityBatch": "erp-data-interaction"
     },
     {
@@ -375,7 +375,7 @@
       "mapsTo": ["BcCard", "BcDescriptions", "BcStatistic", "BcAvatar"],
       "webComponents": ["BcCard", "BcDescriptions", "BcStatistic", "BcAvatar"],
       "flutterComponents": ["bc_descriptions", "bc_statistic"],
-      "gaps": ["Need account summary preset and avatar Flutter parity check."],
+      "gaps": ["Need account summary preset.", "Decision resolved: add canonical Flutter BcAvatar with source, tests, and barrel export before Ready; do not remap avatar usage to generic primitives."],
       "priorityBatch": "erp-data-interaction"
     },
     {
@@ -411,7 +411,7 @@
       "mapsTo": ["BcMap", "BcViewMap", "BcGeo"],
       "webComponents": ["BcViewMap", "BcGeo"],
       "flutterComponents": ["bc_map", "bc_view_map", "bc_geo"],
-      "gaps": ["Need generic map provider adapter; do not create Google-specific core block."],
+      "gaps": ["Decision resolved: core Ready Catalog ships only generic map adapter contract plus mock/local adapter for tests; Google-specific providers belong in plugin/adapter packages."],
       "priorityBatch": "content-website"
     },
     {
@@ -429,7 +429,7 @@
       "mapsTo": ["BcActivity", "BcTimelineSocial", "BcViewActivity", "BcTimeline"],
       "webComponents": ["BcActivity", "BcTimelineSocial", "BcViewActivity", "BcTimeline"],
       "flutterComponents": ["bc_activity", "bc_timeline_social", "bc_view_activity"],
-      "gaps": ["Need generic activity item contract and datasource examples."],
+      "gaps": ["Need generic activity item contract and datasource examples.", "Decision resolved: catalog owns preset and generic data/action contract only; endpoint, model, permission, and engine wiring remain ADR-014 scope."],
       "priorityBatch": "erp-workflow"
     },
     {
@@ -447,7 +447,7 @@
       "mapsTo": ["BcDataTable"],
       "webComponents": ["BcDataTable"],
       "flutterComponents": ["bc_data_table"],
-      "gaps": ["Need BcPivot or pivot mode contract in BcDataTable, plus aggregation adapter."],
+      "gaps": ["Need BcPivot or pivot mode contract in BcDataTable, plus aggregation adapter.", "Decision resolved: catalog owns generic pivot block classification/contract only; engine aggregation endpoints and feature wiring remain ADR-014 scope."],
       "priorityBatch": "analytics"
     },
     {
@@ -483,7 +483,7 @@
       "mapsTo": ["BcWizard", "BcForm", "BcSteps"],
       "webComponents": ["BcWizard", "BcForm", "BcSteps"],
       "flutterComponents": ["bc_wizard", "bc_form", "bc_steps"],
-      "gaps": ["Need wizard schema convention and action lifecycle integration."],
+      "gaps": ["Need wizard schema convention and action lifecycle integration.", "Decision resolved: catalog owns wizard preset/action contract only; engine feature wiring remains ADR-014 scope where engine-backed."],
       "priorityBatch": "erp-data-interaction"
     },
     {
@@ -537,7 +537,7 @@
       "mapsTo": ["BcNotification", "BcToastQueue", "BcDropdown"],
       "webComponents": ["BcNotification", "BcToastQueue", "BcDropdown"],
       "flutterComponents": ["bc_notification", "bc_toast_queue", "bc_dropdown"],
-      "gaps": ["Compose from existing notification/toast/dropdown primitives; missing realtime/action capability is solved by ActionSource and DataSource realtime policy, not a dedicated new component."],
+      "gaps": ["Compose from existing notification/toast/dropdown primitives; missing realtime/action capability is solved by ActionSource and DataSource realtime policy, not a dedicated new component.", "Decision resolved: catalog owns notification preset and generic contract only; endpoint, model, permission, realtime engine wiring, and delivery semantics remain ADR-014 scope."],
       "priorityBatch": "erp-data-interaction"
     },
     {
@@ -573,7 +573,7 @@
       "mapsTo": ["BcBadge", "BcSteps", "BcProgress", "BcTagGroup"],
       "webComponents": ["BcBadge", "BcSteps", "BcProgress", "BcTagGroup"],
       "flutterComponents": ["bc_steps", "bc_taggroup"],
-      "gaps": ["Need confirm BcBadge/BcProgress Flutter parity or add BcStateBadge/BcStatusBar if contract differs."],
+      "gaps": ["Decision resolved: add canonical Flutter BcBadge and BcProgress with source, tests, and barrel exports before Ready; only add BcStateBadge/BcStatusBar later if workflow semantics require a distinct component contract."],
       "priorityBatch": "erp-workflow"
     },
     {
@@ -627,7 +627,7 @@
       "mapsTo": ["BcChatter", "BcComment", "BcMentions", "BcActivity"],
       "webComponents": ["BcChatter", "BcComment", "BcMentions", "BcActivity"],
       "flutterComponents": ["bc_chatter", "bc_comment", "bc_mentions", "bc_activity"],
-      "gaps": ["Need generic comment/message datasource and action adapter examples; Facebook-specific refs become provider/plugin aliases."],
+      "gaps": ["Need generic comment/message datasource and action adapter examples; Facebook-specific refs become provider/plugin aliases.", "Decision resolved: catalog owns chatter preset and generic data/action contract only; endpoint, model, permission, realtime engine wiring, and persistence remain ADR-014 scope."],
       "priorityBatch": "erp-workflow"
     },
     {
@@ -681,7 +681,7 @@
       "mapsTo": ["BcViewEditor", "BcRenderer", "BcDashboard"],
       "webComponents": ["BcViewEditor", "BcRenderer", "BcDashboard"],
       "flutterComponents": ["bc_view_editor", "bc_dashboard"],
-      "gaps": ["Need Application Builder surface separate from Ready Block runtime.", "Flutter BcRenderer exists as renderer infrastructure, not a component file; Ready validation must check renderer export separately."],
+      "gaps": ["Need Application Builder surface separate from Ready Block runtime.", "Decision resolved: visual builder endpoint/model/persistence wiring remains ADR-014 scope; Block Catalog provides the catalog/runtime contract consumed by builder surfaces.", "Flutter BcRenderer exists as renderer infrastructure, not a component file; Ready validation must check renderer export separately."],
       "priorityBatch": "builder-surface"
     },
     {
@@ -699,7 +699,7 @@
       "mapsTo": ["BcViewReport", "BcDashboard", "BcChart", "BcDataTable", "BcExport"],
       "webComponents": ["BcViewReport", "BcDashboard", "BcChart", "BcDataTable", "BcExport"],
       "flutterComponents": ["bc_view_report", "bc_dashboard", "bc_chart", "bc_data_table", "bc_export"],
-      "gaps": ["Need dedicated report/dashboard builder components and persistence/versioning contract."],
+      "gaps": ["Need dedicated report/dashboard builder components and persistence/versioning contract.", "Decision resolved: export/report engine wiring and persistence remain ADR-014 scope; catalog owns generic builder block classification and runtime contract."],
       "priorityBatch": "builder-surface"
     },
     {
@@ -717,7 +717,7 @@
       "mapsTo": ["BcKpi", "BcStatistic", "BcDashboard"],
       "webComponents": ["BcKpi", "BcStatistic", "BcDashboard"],
       "flutterComponents": ["bc_statistic", "bc_dashboard"],
-      "gaps": ["Need verify BcKpi Flutter parity or standardize on BcStatistic for Flutter-ready preset."],
+      "gaps": ["Decision resolved: add canonical Flutter BcKpi with source, tests, and barrel export before Ready; it may wrap/reuse BcStatistic internally, but the public widget key must exist for catalog validation."],
       "priorityBatch": "analytics"
     },
     {
@@ -735,7 +735,7 @@
       "mapsTo": ["BcChart", "BcSparkline", "BcProgress"],
       "webComponents": ["BcChart", "BcSparkline", "BcProgress"],
       "flutterComponents": ["bc_chart", "bc_sparkline"],
-      "gaps": ["Use ADR-015 shared ECharts option contract; avoid new chart prop dialects."],
+      "gaps": ["Use ADR-015 shared ECharts option contract; avoid new chart prop dialects.", "Decision resolved: add canonical Flutter BcProgress with source, tests, and barrel export before Ready; do not drop progress mapping from analytics presets."],
       "priorityBatch": "analytics"
     },
     {
@@ -753,7 +753,7 @@
       "mapsTo": ["BcDataTable", "BcGridView", "BcCard", "BcImage", "BcRate"],
       "webComponents": ["BcDataTable", "BcCard", "BcImage", "BcRate"],
       "flutterComponents": ["bc_data_table", "bc_grid_view", "bc_image", "bc_rate"],
-      "gaps": ["Reuse data.record-list commerce schema variant; needs commerce item contract and add-to-cart ActionSource.", "BcGridView source exists but is not exported from packages/ui root index; fix export/registry before Ready."],
+      "gaps": ["Reuse data.record-list commerce schema variant; needs commerce item contract and add-to-cart ActionSource.", "Decision resolved: treat BcGridView as an export/registry bug, not a component-gap; source exists and must be added to the approved public entrypoint before Ready."],
       "priorityBatch": "commerce"
     },
     {
@@ -789,7 +789,7 @@
       "mapsTo": ["BcDataTable", "BcForm", "BcWizard", "BcButton"],
       "webComponents": ["BcDataTable", "BcForm", "BcWizard", "BcButton"],
       "flutterComponents": ["bc_data_table", "bc_form", "bc_wizard", "bc_native_button"],
-      "gaps": ["Need generic commerce cart/checkout components and payment ActionAdapter; no provider-specific keys in schema."],
+      "gaps": ["Need generic commerce cart/checkout components and payment ActionAdapter; no provider-specific keys in schema.", "Decision resolved: core ships only payment adapter contract plus mock/local adapter for tests; provider-specific SDKs belong in plugin packages."],
       "priorityBatch": "commerce"
     },
     {
@@ -807,7 +807,7 @@
       "mapsTo": ["BcButton", "BcDialog"],
       "webComponents": ["BcButton", "BcDialog"],
       "flutterComponents": ["bc_native_button", "bc_dialog"],
-      "gaps": ["Need generic payment adapter; third-party provider buttons are plugin candidates, not core components."],
+      "gaps": ["Decision resolved: core ships only generic payment adapter contract plus mock/local adapter for tests; third-party provider buttons are plugin candidates, not core components."],
       "priorityBatch": "commerce"
     },
     {
@@ -879,7 +879,7 @@
       "mapsTo": ["BcViewerYoutube", "BcViewerInstagram", "BcViewerTiktok", "BcComment", "BcChatter"],
       "webComponents": ["BcViewerYoutube", "BcViewerInstagram", "BcViewerTiktok", "BcComment", "BcChatter"],
       "flutterComponents": ["bc_viewer_youtube", "bc_viewer_instagram", "bc_viewer_tiktok", "bc_comment", "bc_chatter"],
-      "gaps": ["Provider-specific embeds are plugin/provider catalog, not core Ready blocks. Map to generic components; do not create a Ready entry."],
+      "gaps": ["Decision resolved: provider-specific embeds are plugin/provider catalog entries, not core Ready blocks. Core ships adapter contract plus mock/local adapter only; map to generic components and do not create a Ready entry."],
       "priorityBatch": "plugin-extensibility"
     },
     {

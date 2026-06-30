@@ -19,10 +19,10 @@ The source of truth for this ADR is `sprints/package-ui-elementor/block-catalog-
 
 Evidence from the 2026-06-30 review matters for readiness discipline:
 
-- `BcShare` and `BcGridView` source files exist in `packages/ui`, but are not exported from `packages/ui/src/index.ts`.
-- `BcMarkdown` exists and is exported on Flutter, but has no `packages/ui` web source or root export.
-- `bc_avatar.dart`, `bc_badge.dart`, `bc_progress.dart`, and `bc_kpi.dart` are absent from Flutter source and root exports.
-- ADR-014 already owns engine feature wiring for chatter, activity, export, wizard, pivot, notification center, and visual builders. This ADR defines catalog architecture only. It must not claim ADR-014 endpoint or engine wiring ownership.
+- `BcShare` and `BcGridView` source files exist in `packages/ui`, but are not exported from `packages/ui/src/index.ts`; this is treated as an export/registry bug, not a component gap.
+- `BcMarkdown` exists and is exported on Flutter, but has no `packages/ui` web source or root export; the resolved direction is to implement canonical web `BcMarkdown`.
+- `bc_avatar.dart`, `bc_badge.dart`, `bc_progress.dart`, and `bc_kpi.dart` are absent from Flutter source and root exports; the resolved direction is to add canonical Flutter widgets instead of remapping to generic primitives.
+- ADR-014 already owns engine feature wiring for chatter, activity, export, wizard, pivot, notification center, and visual builders. This ADR defines catalog architecture only. It must not claim ADR-014 endpoint, model, permission, realtime, persistence, or engine wiring ownership.
 
 Therefore, the Block Catalog must be matrix-first and validation-first. A candidate can be listed without being Ready. A Ready entry is a stronger claim: it is loadable, tested, secure, accessible, adaptive, and fully implemented on web and Flutter.
 
@@ -196,9 +196,9 @@ A candidate can become Ready only when all gates pass:
 
 Current known gaps from matrix review mean several candidates must remain non-Ready until fixed:
 
-- `content.social-links`, `data.record-list`, and `commerce.product-grid` are blocked by web root export gaps for `BcShare` or `BcGridView`.
-- `content.rich-text` must not require web `BcMarkdown` until a web implementation/export exists, or must standardize on `BcRichText` for web.
-- Rows depending on `BcAvatar`, `BcBadge`, `BcProgress`, or `BcKpi` must either add Flutter widgets or remap to existing Flutter-ready widgets before Ready.
+- `content.social-links`, `data.record-list`, and `commerce.product-grid` are blocked by web root export gaps for `BcShare` or `BcGridView`. Source exists, so the fix is public export/registry generation, not a new component.
+- `content.rich-text` requires canonical web `BcMarkdown` source, tests, and public export before markdown-backed rich text can be Ready.
+- Rows depending on `BcAvatar`, `BcBadge`, `BcProgress`, or `BcKpi` require canonical Flutter widgets with source, tests, and barrel exports before Ready. `BcKpi` may wrap `BcStatistic` internally, but the public widget key must exist.
 
 ### Section 5: RuntimeContext
 
@@ -242,7 +242,7 @@ Examples:
 - Google Maps becomes a map provider adapter over generic `data.map-view`.
 - Facebook, SoundCloud, Instagram, TikTok, and similar embeds become provider adapters over generic media/comment/chatter/embed primitives.
 
-Core Ready Catalog may include generic equivalents, but it must not contain provider secrets, provider-specific API keys, or schema fields that imply a single commercial vendor.
+Core Ready Catalog may include generic equivalents, adapter contracts, and mock/local adapters for tests, but it must not contain provider SDK implementations, provider secrets, provider-specific API keys, or schema fields that imply a single commercial vendor.
 
 A plugin catalog entry must declare:
 
@@ -345,7 +345,7 @@ Phases follow the matrix `priorityBatch` values. Each phase can promote only ent
 
 - Promote audit log, approval actions, state indicator, diagram viewer, and chatter according to matrix status.
 - Keep workflow diagram editor as component-gap until dedicated authoring component exists.
-- Defer ADR-014 engine endpoint wiring to ADR-014.
+- Defer ADR-014 endpoint, model, permission, realtime, persistence, and engine feature wiring to ADR-014 for chatter, activity, export, wizard, pivot, notification center, and visual builders.
 
 ### Phase 4: Builder surface
 
@@ -355,7 +355,7 @@ Phases follow the matrix `priorityBatch` values. Each phase can promote only ent
 
 ### Phase 5: Analytics
 
-- Promote KPI grid and chart blocks after Flutter parity for `BcKpi`/`BcProgress` is resolved or mappings are standardized on existing Flutter widgets.
+- Promote KPI grid and chart blocks after canonical Flutter `BcKpi` and `BcProgress` widgets exist with tests and barrel exports.
 - Reuse ADR-015 shared ECharts option contract for chart variants.
 - Enforce large-data and dashboard performance budgets.
 
@@ -368,7 +368,7 @@ Phases follow the matrix `priorityBatch` values. Each phase can promote only ent
 ### Phase 7: Content and navigation/CMS
 
 - Promote hero, CTA, rich text, media, gallery, FAQ, testimonial, team member, pricing table, countdown, social links, menu, and search/TOC/sitemap according to resolved gaps.
-- Add or remap missing Flutter/web components before Ready.
+- Add resolved missing Flutter/web components before Ready: canonical Flutter `BcAvatar`, `BcBadge`, `BcProgress`, `BcKpi`; canonical web `BcMarkdown`; public exports/registry for `BcShare` and `BcGridView`.
 - Enforce URL allowlists, rich text sanitization, external-link a11y, and responsive/adaptive policies.
 
 ## Acceptance Criteria
