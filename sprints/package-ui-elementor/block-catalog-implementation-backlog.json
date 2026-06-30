@@ -1,0 +1,541 @@
+{
+  "schemaVersion": "0.1.0",
+  "status": "draft-backlog-before-ready-validation",
+  "statusNote": "M has not yet validated the first Ready promotion path. This backlog enumerates remaining gaps BEFORE that validation; it is not a post-Ready retrospective. No Ready status is changed by this file (M owns Ready promotion).",
+  "baselineFor": [
+    "block-catalog-implementation.md",
+    "block-catalog-action-expression-implementation-notes.md",
+    "ADR-017",
+    "ADR-018"
+  ],
+  "generatedFrom": [
+    "block-catalog-candidate-matrix.json@0.1.0",
+    "block-catalog-implementation.md",
+    "block-catalog-action-expression-implementation-notes.md",
+    "block-catalog-parity-matrix.md",
+    "REVIEW-FINDINGS.md",
+    "repo audit 2026-07-01 (web index.ts, flutter bc_ui_flutter.dart, ui-schema + ui-flutter source trees)"
+  ],
+  "evidenceShas": {
+    "ui-schema-head": "a8a28a80a0fc008629dad5309ee68ba442355883",
+    "p1-block-catalog-types": "merged in ui-schema history (block-catalog/* tracked, clean worktree at audit)",
+    "p2-expressions-ts": "71885aa feat(ui-schema): add portable expression AST foundation (ADR-018 P2)",
+    "p2-expressions-dart": "8660b1e feat(ui-flutter): Dart mirror of portable expression AST (ADR-018 P2)",
+    "p3-actions-ts": "a8a28a8 feat(ui-schema): add ActionSource and ActionRunner foundation (ADR-018 P3)",
+    "p3-actions-dart": null,
+    "p4-renderer-validator": null,
+    "note": "ui-schema/src/actions/runner.ts has a newer external modification pending in the worktree at audit time; not yet committed. Backlog does not depend on its final form."
+  },
+  "principles": [
+    "ui-schema is the canonical portable runtime. Web (packages/ui/src/core/) must NOT re-implement the evaluator or ActionRunner; it provides lifecycle bridges, adapter wiring, and thin re-exports only.",
+    "Backlog evidence is commit-based, not file-based. No item depends on untracked or in-flight files.",
+    "ADR-014 owns engine endpoint/model/permission/realtime/persistence wiring. This backlog covers generic catalog/runtime contracts and standalone UI package implementation only; it never claims engine feature wiring as a Ready dependency.",
+    "No Ready status is changed by this backlog. M owns Ready promotion.",
+    "Stale-blocker items are flagged RESOLVED with audit evidence, not re-listed as work.",
+    "Component-source items are consolidated per component, not per candidate."
+  ],
+  "priorityBuckets": {
+    "P0": "Foundation blockers of the Ready promotion path: P4 renderer, web+flutter component registries, validator CLI + readiness report, web lifecycle bridge + adapter wiring, Dart actions parity (Flutter Ready is mandatory per ADR-017 S7), stale-doc cleanup.",
+    "P1": "High-value catalog coverage: ERP data/interaction entries + presets, workflow non-editor entries, analytics entries, component builds required to unblock high-value candidates (import-wizard, state-badge if semantically distinct), demo sections, validator-policy gates active.",
+    "P2": "Parity/polish: content/navigation entries, commerce entries (incl. cart-checkout + payment contract), builder surfaces, plugin/provider contract, remaining component-source builds (countdown, pivot, diagram editor), per-block a11y/perf/offline evidence."
+  },
+  "items": [
+    {
+      "id": "P0-RENDERER-WEB",
+      "title": "Web BcBlockRenderer (thin orchestration over BcRenderer + component registry)",
+      "gapCategory": "foundation-runtime",
+      "priority": "P0",
+      "batch": "P4",
+      "owningPackage": "packages/ui/src/block-catalog/",
+      "dependsOn": ["P0-REGISTRY-WEB", "P0-BRIDGE-WEB-LIFECYCLE", "ADR-017 S3", "ADR-018 S8"],
+      "blocks": ["every Ready block — no block can be Ready until renderer exists"],
+      "missingWork": [
+        "BcBlockRenderer implementation: resolve entry by id+version, reject non-Ready unless Candidate tooling mode, validate RuntimeContext against requiredComponents/Functions/Adapters/permission/i18n.",
+        "schema strategy: materialize serializable UiSchema, delegate to BcRenderer.",
+        "component strategy: resolve componentKey from web registry.",
+        "Typed diagnostics (BLOCK_ENTRY_NOT_FOUND, BLOCK_ENTRY_NOT_READY, BLOCK_COMPONENT_MISSING, BLOCK_COMPONENT_NOT_EXPORTED, BLOCK_FUNCTION_MISSING, BLOCK_ADAPTER_MISSING, BLOCK_PERMISSION_SCOPE_INVALID, BLOCK_I18N_MISSING, BLOCK_SCHEMA_INVALID, BLOCK_RENDER_STRATEGY_INVALID, BLOCK_PLATFORM_UNSUPPORTED).",
+        "Unit tests: missing component/adapter/function/permission/i18n diagnostics; schema delegation; component resolution."
+      ],
+      "verification": "cd packages/ui; npm run test -- src/block-catalog; npm run build",
+      "status": "open"
+    },
+    {
+      "id": "P0-RENDERER-FLUTTER",
+      "title": "Flutter BcBlockRenderer equivalent (thin orchestration over Flutter BcRenderer + registry)",
+      "gapCategory": "foundation-runtime",
+      "priority": "P0",
+      "batch": "P4",
+      "owningPackage": "packages/ui-flutter/lib/src/block_catalog/",
+      "dependsOn": ["P0-REGISTRY-FLUTTER", "P0-ACTIONS-DART-PARITY", "ADR-017 S3", "ADR-017 S7"],
+      "blocks": ["every Ready block on Flutter — ADR-017 S7 makes Flutter Ready mandatory"],
+      "missingWork": [
+        "Dart BcBlockRenderer equivalent mirroring web behavior and diagnostic codes.",
+        "Renderer infrastructure export validated separately from component-file check (BcRenderer is infrastructure, not a component file).",
+        "Widget tests mirroring web renderer diagnostics."
+      ],
+      "verification": "cd packages/ui-flutter; flutter analyze; flutter test test/block_catalog",
+      "status": "open"
+    },
+    {
+      "id": "P0-REGISTRY-WEB",
+      "title": "Web platform component registry (manual registration, fail-loud duplicates)",
+      "gapCategory": "foundation-runtime",
+      "priority": "P0",
+      "batch": "P4",
+      "owningPackage": "packages/ui/src/block-catalog/",
+      "dependsOn": ["ADR-017 S3", "ADR-017 S8"],
+      "blocks": ["P0-RENDERER-WEB", "component-strategy Ready blocks"],
+      "missingWork": [
+        "Registry API keyed by canonical component keys (BcGridView, not file paths).",
+        "Validates source + public export from packages/ui/src/index.ts or approved entrypoint.",
+        "Manual registration support for app/plugin components.",
+        "Fail-loud on duplicate keys unless test/demo replacement explicitly allowed.",
+        "No eager import of builder surfaces into simple runtime bundles."
+      ],
+      "verification": "cd packages/ui; npm run test -- src/block-catalog/registry; npm run registry",
+      "status": "open"
+    },
+    {
+      "id": "P0-REGISTRY-FLUTTER",
+      "title": "Flutter platform component registry (mirror of web registry contract)",
+      "gapCategory": "foundation-runtime",
+      "priority": "P0",
+      "batch": "P4",
+      "owningPackage": "packages/ui-flutter/lib/src/block_catalog/",
+      "dependsOn": ["ADR-017 S3", "ADR-017 S7"],
+      "blocks": ["P0-RENDERER-FLUTTER", "component-strategy Ready blocks on Flutter"],
+      "missingWork": [
+        "Dart registry mirroring web registry contract; keys validated against bc_ui_flutter.dart exports.",
+        "Manual registration + fail-loud duplicate semantics."
+      ],
+      "verification": "cd packages/ui-flutter; flutter test test/block_catalog/registry_test.dart",
+      "status": "open"
+    },
+    {
+      "id": "P0-VALIDATOR-CLI",
+      "title": "Catalog validator CLI + readiness report generator (catalog:validate, catalog:report)",
+      "gapCategory": "foundation-runtime",
+      "priority": "P0",
+      "batch": "P4",
+      "owningPackage": "packages/ui/scripts/",
+      "dependsOn": ["P0-VALIDATOR-POLICY", "ADR-017 S8", "block-catalog-implementation.md S7"],
+      "blocks": ["every Ready promotion — validator must pass before any Ready entry"],
+      "missingWork": [
+        "scripts/validate-block-catalog.mjs: inputs = candidate matrix JSON, per-category catalog sources, generated Ready index, web + flutter source/export trees, function + adapter manifests, i18n catalog, test/readiness metadata.",
+        "Outputs exit 0 on full pass, non-zero on any Ready gate fail; JSON diagnostics (code, severity, entryId, fieldPath, message, suggestedFix, sourceFile) + human summary.",
+        "scripts/generate-block-catalog-report.mjs: readiness report; --check mode asserts no drift.",
+        "npm scripts catalog:validate, catalog:report, catalog:check in packages/ui/package.json.",
+        "Required checks per block-catalog-implementation.md S7.3 (matrix status, schema, candidate/Ready consistency, web+flutter source+export, renderer infra export, required functions/adapters, permission-filtered scope, security policy, URL allowlist, rich text sanitizer, file policy, payment policy, i18n key+fallback, a11y link, adaptive, performance, cache/offline, version+migration, no-stub scan, demo ref, test ref)."
+      ],
+      "verification": "cd packages/ui; npm run catalog:validate; npm run catalog:report -- --check",
+      "status": "open"
+    },
+    {
+      "id": "P0-VALIDATOR-POLICY",
+      "title": "Validator policy gates (URL allowlist, sanitizer default-on, file, payment, no-stub, i18n, a11y link, source/export/demo cross-checks)",
+      "gapCategory": "validator-policy",
+      "priority": "P0",
+      "batch": "P4",
+      "owningPackage": "packages/ui-schema/src/block-catalog/ + packages/ui/scripts/",
+      "dependsOn": ["ADR-017 S4", "ADR-017 S8", "ADR-018 S9"],
+      "blocks": ["P0-VALIDATOR-CLI"],
+      "missingWork": [
+        "Extend ui-schema validateBlockCatalogEntry (currently shape validator) with policy predicates consumed by the CLI.",
+        "URL allowlist check for URL/provider/media action capabilities.",
+        "Rich text sanitizer default-on check (opt-out must be explicit + policy-gated).",
+        "File policy check (type/size/extension/scan) for file/download/upload/import capabilities.",
+        "Payment adapter policy check for commerce payment capability.",
+        "No-stub scan for Ready entries.",
+        "i18n key + English fallback presence.",
+        "A11y evidence link (catalog metadata, readiness report, or demo test ref).",
+        "Source + public export cross-check (web index.ts / flutter bc_ui_flutter.dart); renderer infra export check separate from component-file check."
+      ],
+      "verification": "cd packages/ui-schema; npx tsc --noEmit; cd packages/ui; npm run test -- src/block-catalog",
+      "status": "open"
+    },
+    {
+      "id": "P0-BRIDGE-WEB-LIFECYCLE",
+      "title": "Web lifecycle bridge + adapter wiring (NOT a re-implementation of evaluator/runner)",
+      "gapCategory": "action-expression-wiring",
+      "priority": "P0",
+      "batch": "P3 (web wiring)",
+      "owningPackage": "packages/ui/src/core/actions/ + packages/ui/src/core/expressions/",
+      "dependsOn": ["ADR-018 S3", "ADR-018 S7", "ADR-018 S8", "block-catalog-action-expression-implementation-notes.md S3.13"],
+      "blocks": ["interaction.form", "content.cta", "content.pricing-table", "commerce.payment-action", "workflow.approval-actions", "workflow.chatter", "interaction.multi-step-wizard", "interaction.record-picker"],
+      "missingWork": [
+        "Lifecycle emitter bridge: map ActionLifecycleEvent phases to bc-action-start/success/error/validation-error/settled via existing wc-event-bridge.ts (extend BC_EVENTS map).",
+        "Adapter wiring: local/url/model/mock action adapters delegating to ui-schema ActionAdapter contracts; url adapter reuses retry/backoff/abort plumbing from data-source.ts (read mirror, no coupling).",
+        "ReactiveStore.runAction delegate method: thin delegate to ui-schema ActionRunner.run(store, ...).",
+        "ExpressionEvaluator option slot on ReactiveStoreOptions wiring AST-backed reactions for Ready blocks (parallel to existing string Evaluator escape hatch).",
+        "Redaction bridge to ui-schema redactSensitiveFields.",
+        "THIN RE-EXPORT / BRIDGE ONLY. Do NOT port evaluator or ActionRunner logic into packages/ui/src/core/."
+      ],
+      "verification": "cd packages/ui; npm run test -- src/core/actions src/core/expressions; npm run audit:contract",
+      "status": "open"
+    },
+    {
+      "id": "P0-ACTIONS-DART-PARITY",
+      "title": "Dart actions parity (source/result/effect/lifecycle/adapter/runner + lifecycle_notifier)",
+      "gapCategory": "foundation-runtime",
+      "priority": "P0",
+      "batch": "P3 (Dart parity)",
+      "owningPackage": "packages/ui-flutter/lib/src/actions/",
+      "dependsOn": ["ADR-018 S1-S8", "block-catalog-action-expression-implementation-notes.md S2.3"],
+      "blocks": ["P0-RENDERER-FLUTTER", "every action-capable Ready block on Flutter"],
+      "missingWork": [
+        "packages/ui-flutter/lib/src/actions/ does not exist. Port: source.dart, result.dart, effect.dart, lifecycle.dart, adapter.dart, runtime_context.dart, runner.dart (pure Dart), effect_runner.dart, lifecycle_notifier.dart (Flutter-importing Stream bridge), adapters/{local,url,model,mock}_adapter.dart, redact.dart.",
+        "Freezed/json_serializable sealed classes matching TS field-for-field; commit generated .freezed.dart/.g.dart.",
+        "url_adapter uses injectable http.Client (deterministic tests).",
+        "Lifecycle Stream<ActionLifecycleEvent> parity with web CustomEvent payload.",
+        "Tests mirror TS action tests: A1-A8, E9-E14, deterministic effect order, lifecycle parity, redaction, offline replay permission revalidation.",
+        "Shared golden fixtures already live in packages/ui-flutter/test/fixtures/expressions/ (P2); actions parity tests reuse the same fixture discipline."
+      ],
+      "verification": "cd packages/ui-flutter; flutter analyze; flutter test test/actions",
+      "status": "open"
+    },
+    {
+      "id": "P0-STALE-DOC-CLEANUP",
+      "title": "Stale-doc cleanup (REVIEW-FINDINGS, plan S13, ADR-017 S4) — deferred until worktree settles",
+      "gapCategory": "stale-doc",
+      "priority": "P0",
+      "batch": "P0 hygiene",
+      "owningPackage": "sprints/package-ui-elementor/REVIEW-FINDINGS.md + docs/plans/block-catalog-implementation.md + docs/adr/017-block-catalog-architecture.md",
+      "dependsOn": ["worktree clean of in-flight edits"],
+      "blocks": ["none (hygiene; prevents confusion in later batches)"],
+      "missingWork": [
+        "DEFERRED: do not edit in-session. Worktree has in-flight edits (AGENTS.md, engine/go.mod, engine/go.sum, handoff, runner.ts pending external modification).",
+        "When safe: flip 3 REVIEW-FINDINGS entries currently marked 'DECISION RESOLVED, IMPLEMENTATION PENDING' to IMPLEMENTED for: flutter-parity (BcAvatar/BcBadge/BcProgress/BcKpi), web-markdown-gap (BcMarkdown), BcShare/BcGridView export gap.",
+        "Rewrite plan §13 'Known blockers' table: all 8 documented blockers RESOLVED with audit SHAs (web index.ts lines 56,219,226; flutter bc_ui_flutter.dart lines 78,95,231,260,279-282).",
+        "Rewrite ADR-017 S4 'Current known gaps' paragraph: export blockers resolved; remaining blockers are P4 renderer/validator + true component gaps."
+      ],
+      "verification": "git diff --check on touched files; re-run after worktree settles",
+      "status": "open"
+    },
+    {
+      "id": "P1-CATALOG-SOURCE-ERP",
+      "title": "Per-category catalog source files + Ready entries for ERP data + interaction candidates",
+      "gapCategory": "schema-metadata",
+      "priority": "P1",
+      "batch": "P6",
+      "owningPackage": "packages/ui/src/block-catalog/",
+      "dependsOn": ["P0-RENDERER-WEB", "P0-VALIDATOR-CLI", "P0-BRIDGE-WEB-LIFECYCLE"],
+      "blocks": ["data.record-list", "data.record-detail", "data.account-summary", "data.download-center", "interaction.form", "interaction.multi-step-wizard", "interaction.record-picker", "interaction.notification-center"],
+      "missingWork": [
+        "Create per-category source files (content.ts, data.ts, interaction.ts, workflow.ts, commerce.ts, analytics.ts, navigation.ts, builder.ts) per plan S3.2.",
+        "Ready entries for the 8 ERP candidates above with full metadata (id, version, schemaVersion, labelKey, fallbackLabel, category, channels, capabilities, renderStrategy, requiredComponents/Functions/Adapters, adaptivePolicy, securityPolicy, cachePolicy, offlinePolicy, migration, readiness=ready, a11yEvidence, tests).",
+        "interaction.form: foundation batch but production-validated here after P2/P3/P4.",
+        "interaction.record-picker: contract-gap — must resolve unified picker contract + quick-create action + snapshot convention before Ready.",
+        "interaction.notification-center: Ready for generic contract only; engine realtime wiring stays ADR-014.",
+        "Mock demos in packages/ui/demo-app + packages/ui-flutter/example."
+      ],
+      "verification": "cd packages/ui; npm run catalog:validate; npm run test; cd packages/ui-flutter; flutter test",
+      "status": "open"
+    },
+    {
+      "id": "P1-CATALOG-SOURCE-WORKFLOW",
+      "title": "Ready entries for workflow non-editor candidates",
+      "gapCategory": "schema-metadata",
+      "priority": "P1",
+      "batch": "P7",
+      "owningPackage": "packages/ui/src/block-catalog/",
+      "dependsOn": ["P0-RENDERER-WEB", "P0-VALIDATOR-CLI", "P0-BRIDGE-WEB-LIFECYCLE", "P1-COMP-STATE-BADGE"],
+      "blocks": ["data.audit-log", "workflow.approval-actions", "workflow.state-indicator", "workflow.diagram-viewer", "workflow.chatter"],
+      "missingWork": [
+        "Ready entries for the 5 non-editor workflow candidates.",
+        "data.audit-log + workflow.chatter: generic contract only; endpoint/model/permission/realtime/persistence stays ADR-014.",
+        "workflow.approval-actions: requires ActionSource lifecycle (P0 bridge) + component-gap resolution (approval component).",
+        "workflow.state-indicator: contract-gap resolved by P1-COMP-STATE-BADGE decision.",
+        "workflow.diagram-viewer: read-only process graph preset (schema-preset-only); editor stays P2.",
+        "Existing BcChatter/BcActivity/BcTimelineSocial confirmed exported web+flutter; reuse for chatter + audit-log."
+      ],
+      "verification": "cd packages/ui; npm run catalog:validate; npm run test",
+      "status": "open"
+    },
+    {
+      "id": "P1-CATALOG-SOURCE-ANALYTICS",
+      "title": "Ready entries for analytics candidates (KPI grid + chart)",
+      "gapCategory": "schema-metadata",
+      "priority": "P1",
+      "batch": "P8",
+      "owningPackage": "packages/ui/src/block-catalog/",
+      "dependsOn": ["P0-RENDERER-WEB", "P0-VALIDATOR-CLI"],
+      "blocks": ["analytics.kpi-grid", "analytics.chart"],
+      "missingWork": [
+        "Ready entries for analytics.kpi-grid + analytics.chart.",
+        "analytics.kpi-grid depends on canonical Flutter BcKpi (RESOLVED, exported line 282) — no longer a blocker.",
+        "analytics.chart uses ADR-015 shared ECharts option contract; Flutter BcProgress exported (line 281).",
+        "Dashboard performance budget declared.",
+        "data.pivot-table stays Candidate (component-gap) — see P2-COMP-PIVOT."
+      ],
+      "verification": "cd packages/ui; npm run catalog:validate; cd packages/ui-flutter; flutter analyze",
+      "status": "open"
+    },
+    {
+      "id": "P1-COMP-IMPORT-WIZARD",
+      "title": "BcImportWizard component (web + flutter) unblocking interaction.import-wizard",
+      "gapCategory": "component-source",
+      "priority": "P1",
+      "batch": "P6",
+      "owningPackage": "packages/ui/src/components/ + packages/ui-flutter/lib/src/components/",
+      "dependsOn": ["P0-BRIDGE-WEB-LIFECYCLE", "ADR-018 S1 (file action policy)"],
+      "blocks": ["interaction.import-wizard"],
+      "missingWork": [
+        "Dedicated import wizard component: file parse adapter (CSV/XLSX/JSON/XML), field mapping UI, preview grid (BcDataTable), ActionRunner integration.",
+        "Web source + tests + public export; Flutter source + tests + barrel export.",
+        "File policy metadata (type/size/extension/scan) per ADR-018 S9.",
+        "Platform-aware: iOS Cupertino / Android Material per ADR-011 where applicable."
+      ],
+      "verification": "cd packages/ui; npm run build; npm run test; cd packages/ui-flutter; flutter test",
+      "status": "open"
+    },
+    {
+      "id": "P1-COMP-STATE-BADGE",
+      "title": "BcStateBadge decision + component if semantically distinct from BcBadge",
+      "gapCategory": "component-source",
+      "priority": "P1",
+      "batch": "P7",
+      "owningPackage": "packages/ui/src/components/ + packages/ui-flutter/lib/src/components/",
+      "dependsOn": ["ADR-017 S4 (workflow.state-indicator contract-gap)"],
+      "blocks": ["workflow.state-indicator"],
+      "missingWork": [
+        "Decision: does workflow state semantics require a distinct BcStateBadge/BcStatusBar, or does BcBadge (RESOLVED, exported web line 190 + flutter line 280) suffice?",
+        "If distinct: web source + tests + export; flutter source + tests + barrel export; platform-aware.",
+        "If not distinct: schema preset over BcBadge + BcSteps + BcProgress; document decision in catalog metadata."
+      ],
+      "verification": "cd packages/ui; npm run catalog:validate; npm run test",
+      "status": "open"
+    },
+    {
+      "id": "P1-DEMO-SECTIONS",
+      "title": "Block Catalog demo sections in web demo-app + Flutter example",
+      "gapCategory": "demo",
+      "priority": "P1",
+      "batch": "P6-P10",
+      "owningPackage": "packages/ui/demo-app/ + packages/ui-flutter/example/",
+      "dependsOn": ["P1-CATALOG-SOURCE-ERP", "P1-CATALOG-SOURCE-WORKFLOW", "P1-CATALOG-SOURCE-ANALYTICS"],
+      "blocks": ["ADR-017 AC: Ready entries have web + Flutter demos"],
+      "missingWork": [
+        "Web demo-app: Block Catalog section rendering Ready entries with mock data/action adapters.",
+        "Flutter example: Block Catalog section mirroring web demos.",
+        "Demos include realistic edge cases (loading/empty/error/disabled), not only happy path.",
+        "Engine integration demo only when engine-bound (ADR-014 scope)."
+      ],
+      "verification": "cd packages/ui; npm run build; cd packages/ui-flutter; flutter run example",
+      "status": "open"
+    },
+    {
+      "id": "P1-VALIDATOR-GATES-ACTIVE",
+      "title": "Activate validator-policy gates in catalog:validate after policy predicates land",
+      "gapCategory": "validator-policy",
+      "priority": "P1",
+      "batch": "P4 follow-up",
+      "owningPackage": "packages/ui/scripts/validate-block-catalog.mjs",
+      "dependsOn": ["P0-VALIDATOR-CLI", "P0-VALIDATOR-POLICY"],
+      "blocks": ["every Ready promotion after P0"],
+      "missingWork": [
+        "Wire P0-VALIDATOR-POLICY predicates into the validator CLI so Ready entries must pass all policy gates (not just shape validation).",
+        "Test fixtures: one Ready entry that fails each gate; assert non-zero exit + correct diagnostic code."
+      ],
+      "verification": "cd packages/ui; npm run catalog:validate (with intentional-failing fixture in test mode)",
+      "status": "open"
+    },
+    {
+      "id": "P2-CATALOG-SOURCE-CONTENT-NAV",
+      "title": "Ready entries for content + navigation candidates (13 + 2)",
+      "gapCategory": "schema-metadata",
+      "priority": "P2",
+      "batch": "P10",
+      "owningPackage": "packages/ui/src/block-catalog/",
+      "dependsOn": ["P0-RENDERER-WEB", "P0-VALIDATOR-CLI", "P0-BRIDGE-WEB-LIFECYCLE", "P2-COMP-COUNTDOWN"],
+      "blocks": ["content.hero", "content.cta", "content.rich-text", "content.plain-text", "content.media", "content.gallery", "content.faq", "content.testimonial", "content.team-member", "content.pricing-table", "content.social-links", "data.map-view", "navigation.menu", "navigation.search-toc-sitemap"],
+      "missingWork": [
+        "Ready entries for 13 content + 2 navigation candidates.",
+        "content.rich-text: web BcMarkdown RESOLVED (exported line 56); Flutter bc_markdown exported line 95. Sanitize policy default-on.",
+        "content.testimonial / content.team-member / data.account-summary: Flutter BcAvatar RESOLVED (line 279).",
+        "content.social-links: BcShare export RESOLVED (line 219); URL safety + provider icon strategy.",
+        "data.record-list / commerce.product-grid: BcGridView export RESOLVED (web 226, flutter 260).",
+        "data.map-view: generic map adapter contract + mock/local adapter; Google provider stays plugin.",
+        "navigation.menu: responsive/adapt policies per menu variant (BcNavigationMenu/MegaMenu/Menubar/PanelMenu/SlideMenu/Sidebar all exported).",
+        "content.countdown stays Candidate until P2-COMP-COUNTDOWN."
+      ],
+      "verification": "cd packages/ui; npm run catalog:validate; npm run test",
+      "status": "open"
+    },
+    {
+      "id": "P2-CATALOG-SOURCE-COMMERCE",
+      "title": "Ready entries for commerce candidates (generic contract + mock adapter)",
+      "gapCategory": "schema-metadata",
+      "priority": "P2",
+      "batch": "P9",
+      "owningPackage": "packages/ui/src/block-catalog/",
+      "dependsOn": ["P0-RENDERER-WEB", "P0-VALIDATOR-CLI", "P0-BRIDGE-WEB-LIFECYCLE", "P2-COMP-CHECKOUT"],
+      "blocks": ["commerce.product-grid", "commerce.product-detail", "commerce.payment-action", "commerce.review"],
+      "missingWork": [
+        "Ready entries for 4 commerce candidates (cart-checkout stays Candidate until P2-COMP-CHECKOUT).",
+        "commerce.product-grid: commerce variant of data.record-list; BcGridView export RESOLVED.",
+        "commerce.product-detail: commerce variant of data.record-detail; cart ActionSource.",
+        "commerce.payment-action: generic payment adapter contract + mock/local adapter only; no provider secrets/SDKs in core.",
+        "commerce.review: generic datasource/action shape.",
+        "commerce.cart-checkout: Candidate until dedicated UX + security + platform tests pass."
+      ],
+      "verification": "cd packages/ui; npm run catalog:validate",
+      "status": "open"
+    },
+    {
+      "id": "P2-COMP-CHECKOUT",
+      "title": "BcCheckout / cart-checkout component (web + flutter) + payment adapter contract",
+      "gapCategory": "component-source",
+      "priority": "P2",
+      "batch": "P9",
+      "owningPackage": "packages/ui/src/components/ + packages/ui-flutter/lib/src/components/",
+      "dependsOn": ["P0-BRIDGE-WEB-LIFECYCLE", "ADR-018 S9 (payment policy)"],
+      "blocks": ["commerce.cart-checkout"],
+      "missingWork": [
+        "Dedicated cart/checkout component: cart list (BcDataTable variant), checkout wizard (BcWizard), payment ActionSource via generic payment adapter.",
+        "Web + flutter source + tests + exports; platform-aware.",
+        "Generic payment adapter contract + mock/local adapter; provider SDKs (Stripe/PayPal) explicitly excluded — plugin packages only.",
+        "Security review: no secrets in schema; payment policy metadata."
+      ],
+      "verification": "cd packages/ui; npm run build; npm run test; cd packages/ui-flutter; flutter test",
+      "status": "open"
+    },
+    {
+      "id": "P2-COMP-COUNTDOWN",
+      "title": "BcCountdown component (web + flutter) — portable time/reactive block",
+      "gapCategory": "component-source",
+      "priority": "P2",
+      "batch": "P10",
+      "owningPackage": "packages/ui/src/components/ + packages/ui-flutter/lib/src/components/",
+      "dependsOn": ["ADR-004 reactive engine", "ADR-018 S5 (Portable Expression AST for reactive behavior)"],
+      "blocks": ["content.countdown"],
+      "missingWork": [
+        "BcCountdown or portable time/reactive block using ADR-004 hooks in web and Flutter.",
+        "Web source + tests + export; flutter source + tests + barrel export.",
+        "Reactive behavior uses Portable Expression AST (not string expressions) for Ready status.",
+        "Platform-aware rendering."
+      ],
+      "verification": "cd packages/ui; npm run build; npm run test; cd packages/ui-flutter; flutter test",
+      "status": "open"
+    },
+    {
+      "id": "P2-COMP-PIVOT",
+      "title": "BcPivot or pivot-mode contract in BcDataTable + aggregation adapter",
+      "gapCategory": "component-source",
+      "priority": "P2",
+      "batch": "P8",
+      "owningPackage": "packages/ui/src/components/ + packages/ui-flutter/lib/src/components/",
+      "dependsOn": ["ADR-014 (engine aggregation endpoints — out of Ready scope)"],
+      "blocks": ["data.pivot-table"],
+      "missingWork": [
+        "Decision: dedicated BcPivot component vs pivot-mode contract in BcDataTable.",
+        "Either way: web + flutter source + tests + exports; aggregation adapter contract (engine endpoints stay ADR-014).",
+        "data.pivot-table remains Candidate until this lands + ADR-014 aggregation wiring."
+      ],
+      "verification": "cd packages/ui; npm run build; npm run test",
+      "status": "open"
+    },
+    {
+      "id": "P2-COMP-DIAGRAM-EDITOR",
+      "title": "Workflow diagram editor authoring component (drag nodes/edges/properties, persistence, undo/redo)",
+      "gapCategory": "component-source",
+      "priority": "P2",
+      "batch": "P11",
+      "owningPackage": "packages/ui/src/components/ + packages/ui-flutter/lib/src/components/",
+      "dependsOn": ["P0-RENDERER-WEB", "ADR-014 (persistence wiring — out of Ready scope)"],
+      "blocks": ["workflow.diagram-editor"],
+      "missingWork": [
+        "Dedicated authoring component: drag nodes/edges/properties, persistence, undo/redo, validation.",
+        "workflow.diagram-viewer (read-only) can be Ready independently (P1-CATALOG-SOURCE-WORKFLOW); editor stays Candidate until this lands.",
+        "Builder-surface: runtime must not import this for simple rendering."
+      ],
+      "verification": "cd packages/ui; npm run build; npm run test",
+      "status": "open"
+    },
+    {
+      "id": "P2-BUILDER-SURFACES",
+      "title": "Builder surfaces: query-builder, expression-builder (visual), page-builder, report-builder",
+      "gapCategory": "component-source",
+      "priority": "P2",
+      "batch": "P11",
+      "owningPackage": "packages/ui/src/components/ + packages/ui-flutter/lib/src/components/",
+      "dependsOn": ["P0-BRIDGE-WEB-LIFECYCLE", "ADR-018 S5 (Portable Expression AST foundation already merged)"],
+      "blocks": ["builder.query-builder", "builder.expression-builder", "builder.page-builder", "builder.report-builder"],
+      "missingWork": [
+        "4 dedicated builder components; each: undo/versioning, validation, persistence strategy, security model.",
+        "builder.expression-builder splits: AST/evaluator foundation (DONE, merged commit 71885aa) + visual editor component (this item).",
+        "Builder packages may depend on Block Catalog runtime; Block Catalog runtime must NOT depend on builder packages.",
+        "Export/report engine wiring stays ADR-014."
+      ],
+      "verification": "cd packages/ui; npm run build; npm run test; prove runtime does not import builder surfaces",
+      "status": "open"
+    },
+    {
+      "id": "P2-PLUGIN-PROVIDER-CONTRACT",
+      "title": "Plugin/provider catalog contract (generic adapter + mock; provider SDKs excluded from core)",
+      "gapCategory": "schema-metadata",
+      "priority": "P2",
+      "batch": "P12",
+      "owningPackage": "packages/ui/src/block-catalog/ + packages/ui-schema/src/block-catalog/",
+      "dependsOn": ["P0-RENDERER-WEB", "P0-VALIDATOR-CLI", "ADR-017 S6"],
+      "blocks": ["plugin.embed-social", "provider maps", "provider payments"],
+      "missingWork": [
+        "Generic plugin registration mechanism; host-injected plugin entries over generic map/payment/media adapter.",
+        "Plugin entry schema: provider ID + version, required adapters/capabilities, security policy, URL allowlist, supported platforms, fallback behavior, conformance fixtures.",
+        "Provider secrets stay in host/plugin config, never schema.",
+        "Provider-neutral core validator: core Ready Catalog remains provider-neutral.",
+        "plugin.embed-social: alias to generic provider/embed capability, NOT core Ready primitive.",
+        "excluded.wordpress-specific: remains excluded with reason."
+      ],
+      "verification": "cd packages/ui; npm run catalog:validate (plugin conformance fixtures pass with mock adapters)",
+      "status": "open"
+    },
+    {
+      "id": "P2-A11Y-PERF-OFFLINE-EVIDENCE",
+      "title": "Per-block a11y contract artifacts + performance policy (large-data) + offline queue policy tests",
+      "gapCategory": "a11y-perf-offline",
+      "priority": "P2",
+      "batch": "P6-P12",
+      "owningPackage": "packages/ui/src/block-catalog/ + packages/ui-flutter/test/",
+      "dependsOn": ["P1-CATALOG-SOURCE-ERP", "P1-CATALOG-SOURCE-WORKFLOW", "P0-ACTIONS-DART-PARITY"],
+      "blocks": ["ADR-017 AC: a11y/performance/offline gates"],
+      "missingWork": [
+        "Per Ready block: a11y contract artifact linked from catalog metadata or readiness report.",
+        "Large-data blocks (data.record-list, commerce.product-grid, data.pivot-table, analytics.chart): declare pagination, virtualization, bounded Flutter scrolling, debounce/abort.",
+        "Offline-capable action blocks: durable queue persistence, retry/backoff, idempotency key, replay, conflict normalization, permission revalidation on replay, visible failure/recovery states. Tests for enqueue/replay-success/replay-conflict/replay-permission-denial/user-visible-failure.",
+        "No action-capable block claims offline with only a cache flag (ADR-018 S9)."
+      ],
+      "verification": "cd packages/ui; npm run catalog:validate; cd packages/ui-flutter; flutter test test/actions (offline replay suite)",
+      "status": "open"
+    }
+  ],
+  "topTenNextTasks": [
+    "P0-REGISTRY-WEB",
+    "P0-REGISTRY-FLUTTER",
+    "P0-BRIDGE-WEB-LIFECYCLE",
+    "P0-ACTIONS-DART-PARITY",
+    "P0-VALIDATOR-POLICY",
+    "P0-VALIDATOR-CLI",
+    "P0-RENDERER-WEB",
+    "P0-RENDERER-FLUTTER",
+    "P1-CATALOG-SOURCE-ERP",
+    "P1-CATALOG-SOURCE-WORKFLOW"
+  ],
+  "exclusions": [
+    "ADR-014 engine feature wiring (chatter/audit/notification/wizard/import/pivot/report/page-builder endpoints, models, permissions, realtime, persistence) is NOT in scope for Ready promotion in this backlog. Generic catalog/runtime contracts only.",
+    "Provider SDKs (Stripe, PayPal, Google Maps, Facebook, SoundCloud) are plugin packages, NOT core Ready entries.",
+    "WordPress-specific theme/WooCommerce internals remain excluded (matrix decision: alias)."
+  ],
+  "resolvedBlockersAudit": {
+    "note": "Plan §13 'Known blockers' and REVIEW-FINDINGS documented 8 export/component blockers. Repo audit 2026-07-01 confirms all 8 RESOLVED. See P0-STALE-DOC-CLEANUP for doc rewrite.",
+    "resolved": [
+      { "blocker": "BcShare web export", "evidence": "packages/ui/src/index.ts line 219", "status": "RESOLVED" },
+      { "blocker": "BcGridView web export", "evidence": "packages/ui/src/index.ts line 226", "status": "RESOLVED" },
+      { "blocker": "BcMarkdown web source + export", "evidence": "packages/ui/src/index.ts line 56; src/components/content/markdown/BcMarkdown.lite.tsx exists", "status": "RESOLVED" },
+      { "blocker": "Flutter bc_avatar", "evidence": "packages/ui-flutter/lib/bc_ui_flutter.dart line 279; src/components/bc_avatar.dart exists", "status": "RESOLVED" },
+      { "blocker": "Flutter bc_badge", "evidence": "bc_ui_flutter.dart line 280; src/components/bc_badge.dart exists", "status": "RESOLVED" },
+      { "blocker": "Flutter bc_progress", "evidence": "bc_ui_flutter.dart line 281; src/components/bc_progress.dart exists", "status": "RESOLVED" },
+      { "blocker": "Flutter bc_kpi", "evidence": "bc_ui_flutter.dart line 282; src/components/bc_kpi.dart exists", "status": "RESOLVED" },
+      { "blocker": "Flutter bc_statistic / bc_markdown / bc_share / bc_grid_view exports", "evidence": "bc_ui_flutter.dart lines 78, 95, 231, 260", "status": "RESOLVED" }
+    ]
+  }
+}
