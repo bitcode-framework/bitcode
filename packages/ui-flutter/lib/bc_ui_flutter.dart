@@ -290,3 +290,8 @@ export 'src/renderer/bc_renderer.dart';
 // Pure types + validator + scope + manifest. No widgets, no I/O.
 export 'src/expressions/expressions.dart';
 
+// Block Renderer (ADR-017 §3, Agent H) - Dart contract mirror.
+// Types, registry interface, renderer contract only. The full Flutter
+// BcBlockRenderer widget + Dart engine port is a dedicated follow-up.
+export 'src/block_renderer/block_renderer.dart';
+

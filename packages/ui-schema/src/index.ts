@@ -171,3 +171,39 @@ export type {
   PolicyResult,
   ResolvedPolicyConfig,
 } from './block-catalog/index.ts';
+
+// ============================================================================
+// Block Renderer (ADR-017 §3, Agent H)
+//
+// Portable block composition engine. Emits RENDER PLANS only — never framework
+// output. Platform bindings translate plans into actual rendering. The
+// registry stores COMPONENT METADATA only (no framework component objects).
+// ============================================================================
+export type {
+  ActionHandlerPlan,
+  BlockBindings,
+  BlockNode,
+  BlockRenderDiagnosticCode,
+  BlockRenderScope,
+  BlockRendererDeps,
+  CatalogResolver,
+  ComponentMetadata,
+  ComponentRenderPlan,
+  DiagnosticPlan,
+  HiddenPlan,
+  RenderOptions,
+  RenderPlan,
+  ResolvedBindings,
+  ResolvedBlockTree,
+  RuntimeAvailability,
+  SchemaRenderPlan,
+} from './block-renderer/index.ts';
+
+export {
+  BLOCK_RENDER_DIAGNOSTIC_CODES,
+  BlockRenderer,
+  InMemoryBlockComponentRegistry,
+  availabilityFromContext,
+  validateRuntimeRequirements,
+} from './block-renderer/index.ts';
+export type { BlockComponentRegistry } from './block-renderer/index.ts';
