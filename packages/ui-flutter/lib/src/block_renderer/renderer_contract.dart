@@ -13,21 +13,13 @@
 ///   - Actions bound as deferred plans; executed on events, not during render.
 ///   - Dependencies injected (no globals, ADR-018 S7 discipline).
 ///
-/// DEFERRED (amendment 1 - G not yet ported to Dart): the [BlockRendererDeps]
-/// `actionRunner` field references ActionRunner, part of the ADR-018 action
-/// contract (Agent G). Agent G landed the TypeScript ActionRunner (commit
-/// a8a28a8) but the Dart port does not yet exist. The actionRunner dependency
-/// is typed as `Object?` here so the contract mirror compiles today; replace
-/// with the typed `ActionRunner?` when Agent G's Dart port lands.
 library bitcode.ui_schema.block_renderer.renderer_contract;
 
-import 'block_node.dart'
-    show
-        BlockNode,
-        RenderOptions,
-        ResolvedBlockTree;
+import 'block_node.dart' show BlockNode, RenderOptions, ResolvedBlockTree;
 import 'registry.dart' show BlockComponentRegistry;
+import '../actions/runner.dart' show ActionRunner;
 import '../expressions/evaluator.dart' show ExpressionEvaluator;
+import '../expressions/scope.dart' show PermissionSnapshot;
 
 /// The catalog resolver the engine consults.
 abstract class CatalogResolver {
@@ -51,9 +43,7 @@ class BlockRenderScope {
   final Map<String, dynamic> meta;
   final Map<String, dynamic> data;
   final Map<String, dynamic> services;
-  /// Permission snapshot. DEFERRED typing until the full permission surface is
-  /// finalized; passed through to the F permission-filter builder verbatim.
-  final Object? permissions;
+  final PermissionSnapshot? permissions;
   final Map<String, dynamic>? args;
 }
 
@@ -86,9 +76,7 @@ class BlockRendererDeps {
   final CatalogResolver catalog;
   final BlockComponentRegistry componentRegistry;
   final ExpressionEvaluator? evaluator;
-  /// DEFERRED: typed as `Object?` until the ADR-018 action contract (Agent G)
-  /// Dart port lands. The TS engine consumes an `ActionRunner` instance.
-  final Object? actionRunner;
+  final ActionRunner? actionRunner;
 }
 
 /// BlockRenderer engine contract. Implementations resolve a BlockNode tree

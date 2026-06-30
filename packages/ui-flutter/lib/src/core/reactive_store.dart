@@ -14,6 +14,9 @@
 
 library reactive_store;
 
+import '../actions/actions.dart' as actions;
+import '../expressions/scope.dart' show ExpressionScope, PermissionSnapshot;
+
 typedef FieldPath = String;
 typedef Listener = void Function(Map<String, dynamic> snapshot);
 
@@ -45,16 +48,15 @@ class FieldMeta {
     List<ValidationRule>? rules,
     String? error,
     bool? loading,
-  }) =>
-      FieldMeta(
-        visible: visible ?? this.visible,
-        disabled: disabled ?? this.disabled,
-        required: required ?? this.required,
-        options: options ?? this.options,
-        rules: rules ?? this.rules,
-        error: error ?? this.error,
-        loading: loading ?? this.loading,
-      );
+  }) => FieldMeta(
+    visible: visible ?? this.visible,
+    disabled: disabled ?? this.disabled,
+    required: required ?? this.required,
+    options: options ?? this.options,
+    rules: rules ?? this.rules,
+    error: error ?? this.error,
+    loading: loading ?? this.loading,
+  );
 }
 
 /// Validation rule. Mirrors TS ValidationRule.
@@ -64,12 +66,7 @@ class ValidationRule {
   final String? message;
   final bool Function(dynamic value)? fn;
 
-  const ValidationRule({
-    required this.type,
-    this.value,
-    this.message,
-    this.fn,
-  });
+  const ValidationRule({required this.type, this.value, this.message, this.fn});
 }
 
 /// Effect types (discriminated union via kind).
@@ -115,7 +112,8 @@ class UiEffect extends Effect {
 
 /// Replace a field's validation rules.
 class ValidationEffect extends Effect {
-  final dynamic rules; // List<ValidationRule> or Function(scope) => List<ValidationRule>
+  final dynamic
+  rules; // List<ValidationRule> or Function(scope) => List<ValidationRule>
 
   ValidationEffect({required this.rules});
 
@@ -155,10 +153,10 @@ class Reaction {
     required this.effect,
     this.condition,
   }) : when = when is List<FieldPath>
-            ? when
-            : when is List
-                ? List<FieldPath>.from(when)
-                : [when];
+           ? when
+           : when is List
+           ? List<FieldPath>.from(when)
+           : [when];
 }
 
 /// Minimal contract for a parent scope (nested stores).
@@ -205,11 +203,11 @@ class ReactiveStore implements ReactiveScopeLike {
   Evaluator? _evaluator;
 
   ReactiveStore([ReactiveStoreOptions opts = const ReactiveStoreOptions()])
-      : _reactions = opts.reactions != null ? List.from(opts.reactions!) : [],
-        _onChange = opts.onChange,
-        _parent = opts.parent,
-        _index = opts.index,
-        _evaluator = opts.evaluator {
+    : _reactions = opts.reactions != null ? List.from(opts.reactions!) : [],
+      _onChange = opts.onChange,
+      _parent = opts.parent,
+      _index = opts.index,
+      _evaluator = opts.evaluator {
     if (opts.initialValues != null) {
       _values.addAll(opts.initialValues!);
     }
@@ -234,6 +232,50 @@ class ReactiveStore implements ReactiveScopeLike {
   }
 
   Evaluator? getEvaluator() => _evaluator;
+
+  Future<actions.ActionResult<Object?>> runAction(
+    actions.ActionSource source, {
+    Object? payload,
+    actions.ActionRunner? runner,
+    actions.ActionAdapterRegistry? adapterRegistry,
+    actions.CustomActionRegistry? customRegistry,
+    actions.ActionAdapterSet adapters = const actions.ActionAdapterSet(),
+    ExpressionScope? scope,
+    PermissionSnapshot permissions = const PermissionSnapshot(superuser: true),
+    actions.RedactConfig? redact,
+    actions.ActionRunOptions options = const actions.ActionRunOptions(),
+  }) {
+    final sink = _ReactiveStoreEffectSink(this);
+    final ctx = actions.ActionRuntimeContext(
+      values: _localSnapshot(),
+      meta: _metaSnapshot(),
+      data: const {},
+      scope:
+          scope ??
+          ExpressionScope(
+            values: _localSnapshot(),
+            meta: _metaSnapshot(),
+            data: const {},
+            services: const {},
+            permissions: permissions,
+          ),
+      adapters: adapters,
+      effectSink: sink,
+      redact: redact,
+      permissions: permissions,
+    );
+    final effectiveRunner =
+        runner ??
+        actions.ActionRunner(
+          actions.ActionRunnerDeps(
+            adapterRegistry:
+                adapterRegistry ?? actions.InMemoryActionAdapterRegistry(),
+            customRegistry:
+                customRegistry ?? actions.InMemoryCustomActionRegistry(),
+          ),
+        );
+    return effectiveRunner.run(source, payload, ctx, options);
+  }
 
   // -- Read / write cells --------------------------------------------------
 
@@ -278,6 +320,17 @@ class ReactiveStore implements ReactiveScopeLike {
     return Map<String, dynamic>.from(_values);
   }
 
+  Map<String, dynamic> _metaSnapshot() => _meta.map(
+    (key, value) => MapEntry(key, {
+      'visible': value.visible,
+      'disabled': value.disabled,
+      'required': value.required,
+      if (value.options != null) 'options': value.options,
+      if (value.error != null) 'error': value.error,
+      'loading': value.loading,
+    }),
+  );
+
   @override
   Map<String, dynamic> snapshot() {
     final self = _localSnapshot();
@@ -293,8 +346,8 @@ class ReactiveStore implements ReactiveScopeLike {
       final rootLocal = root == _parent
           ? parentLocal
           : root is ReactiveStore
-              ? root._localSnapshot()
-              : root.snapshot();
+          ? root._localSnapshot()
+          : root.snapshot();
       s['\$root'] = rootLocal;
     } else {
       s['\$root'] = self;
@@ -348,7 +401,11 @@ class ReactiveStore implements ReactiveScopeLike {
         if (!reaction.when.contains(source)) continue;
         final scope = snapshot();
         if (reaction.condition != null && !reaction.condition!(scope)) continue;
-        final valueChanged = _applyEffect(reaction.target, reaction.effect, scope);
+        final valueChanged = _applyEffect(
+          reaction.target,
+          reaction.effect,
+          scope,
+        );
         if (valueChanged) queue.add(reaction.target);
       }
     }
@@ -369,7 +426,11 @@ class ReactiveStore implements ReactiveScopeLike {
   }
 
   /// Returns true if the effect changed the target's VALUE (triggers cascade).
-  bool _applyEffect(FieldPath target, Effect effect, Map<String, dynamic> scope) {
+  bool _applyEffect(
+    FieldPath target,
+    Effect effect,
+    Map<String, dynamic> scope,
+  ) {
     switch (effect.kind) {
       case EffectKind.ui:
         _applyUi(target, effect as UiEffect, scope);
@@ -389,15 +450,24 @@ class ReactiveStore implements ReactiveScopeLike {
     var changed = false;
     if (ui.visible != null) {
       final v = _resolveBool(ui.visible, scope);
-      if (meta.visible != v) { meta = meta.copyWith(visible: v); changed = true; }
+      if (meta.visible != v) {
+        meta = meta.copyWith(visible: v);
+        changed = true;
+      }
     }
     if (ui.disabled != null) {
       final v = _resolveBool(ui.disabled, scope);
-      if (meta.disabled != v) { meta = meta.copyWith(disabled: v); changed = true; }
+      if (meta.disabled != v) {
+        meta = meta.copyWith(disabled: v);
+        changed = true;
+      }
     }
     if (ui.required != null) {
       final v = _resolveBool(ui.required, scope);
-      if (meta.required != v) { meta = meta.copyWith(required: v); changed = true; }
+      if (meta.required != v) {
+        meta = meta.copyWith(required: v);
+        changed = true;
+      }
     }
     if (changed) _meta[target] = meta;
   }
@@ -407,7 +477,11 @@ class ReactiveStore implements ReactiveScopeLike {
     return fnOrVal == true;
   }
 
-  bool _applyValue(FieldPath target, ValueEffect value, Map<String, dynamic> scope) {
+  bool _applyValue(
+    FieldPath target,
+    ValueEffect value,
+    Map<String, dynamic> scope,
+  ) {
     if (value.expr == null) return false;
     final next = value.expr!(scope);
     final old = _values[target];
@@ -417,7 +491,11 @@ class ReactiveStore implements ReactiveScopeLike {
     return true;
   }
 
-  void _applyValidation(FieldPath target, ValidationEffect validation, Map<String, dynamic> scope) {
+  void _applyValidation(
+    FieldPath target,
+    ValidationEffect validation,
+    Map<String, dynamic> scope,
+  ) {
     List<ValidationRule> rules;
     if (validation.rules is Function) {
       rules = (validation.rules as Function)(scope) as List<ValidationRule>;
@@ -427,7 +505,11 @@ class ReactiveStore implements ReactiveScopeLike {
     _meta[target] = getMeta(target).copyWith(rules: rules);
   }
 
-  bool _applyData(FieldPath target, DataEffect data, Map<String, dynamic> scope) {
+  bool _applyData(
+    FieldPath target,
+    DataEffect data,
+    Map<String, dynamic> scope,
+  ) {
     var valueChanged = false;
     if (data.clearOnChange) {
       final old = _values[target];
@@ -447,22 +529,27 @@ class ReactiveStore implements ReactiveScopeLike {
     }
 
     // Fire-and-forget async re-query.
-    fetcher().then((options) {
-      _meta[target] = getMeta(target).copyWith(loading: false, options: options);
-      _notify();
-    }).catchError((err) {
-      _meta[target] = getMeta(target).copyWith(
-        loading: false,
-        options: [],
-        error: err.toString(),
-      );
-      _notify();
-    });
+    fetcher()
+        .then((options) {
+          _meta[target] = getMeta(
+            target,
+          ).copyWith(loading: false, options: options);
+          _notify();
+        })
+        .catchError((err) {
+          _meta[target] = getMeta(
+            target,
+          ).copyWith(loading: false, options: [], error: err.toString());
+          _notify();
+        });
 
     return valueChanged;
   }
 
-  Future<List<dynamic>> Function()? _buildFetcher(DataEffect data, Map<String, dynamic> scope) {
+  Future<List<dynamic>> Function()? _buildFetcher(
+    DataEffect data,
+    Map<String, dynamic> scope,
+  ) {
     switch (data.source.type) {
       case 'local':
         return () async => data.source.data ?? [];
@@ -490,5 +577,58 @@ class ReactiveStore implements ReactiveScopeLike {
     _meta.clear();
     _parent = null;
     _evaluator = null;
+  }
+}
+
+class _ReactiveStoreEffectSink implements actions.EffectSink {
+  _ReactiveStoreEffectSink(this.store);
+
+  final ReactiveStore store;
+
+  @override
+  void closeOverlay([String? overlayId]) {}
+
+  @override
+  void emit(String event, [Object? payload]) {}
+
+  @override
+  void invalidateKey(String key) {}
+
+  @override
+  void refreshDataSource(String key) {}
+
+  @override
+  void resetForm([String? formId, String? scope]) {
+    if (scope == null || scope.isEmpty) {
+      store.setMany({});
+    }
+  }
+
+  @override
+  void setError(String path, Object? error) {
+    store._meta[path] = store.getMeta(path).copyWith(error: error?.toString());
+    store._notify();
+  }
+
+  @override
+  void setMeta(String path, Map<String, dynamic> meta) {
+    var current = store.getMeta(path);
+    current = current.copyWith(
+      visible: meta['visible'] is bool ? meta['visible'] as bool : null,
+      disabled: meta['disabled'] is bool ? meta['disabled'] as bool : null,
+      required: meta['required'] is bool ? meta['required'] as bool : null,
+      options: meta['options'] is List
+          ? List<dynamic>.from(meta['options'] as List)
+          : null,
+      error: meta['error'] is String ? meta['error'] as String : null,
+      loading: meta['loading'] is bool ? meta['loading'] as bool : null,
+    );
+    store._meta[path] = current;
+    store._notify();
+  }
+
+  @override
+  void setValue(String path, Object? value) {
+    store.set(path, value);
   }
 }

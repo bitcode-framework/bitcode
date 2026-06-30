@@ -50,7 +50,8 @@ class InMemoryBlockComponentRegistry implements BlockComponentRegistry {
   }
 
   /// Remove a registered component (test/demo convenience).
-  bool unregister(String componentKey) => _components.remove(componentKey) != null;
+  bool unregister(String componentKey) =>
+      _components.remove(componentKey) != null;
 
   @override
   ComponentMetadata? resolve(String componentKey) => _components[componentKey];

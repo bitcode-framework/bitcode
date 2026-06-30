@@ -14,18 +14,10 @@
 ///   - Actions are bound as deferred handler plans; the runner executes them
 ///     on user events, NOT during tree resolution.
 ///
-/// DEFERRED (amendment 1 - G not yet ported to Dart): the `actions` field on
-/// BlockNode and the `ActionHandlerPlan` type reference ActionSource, which
-/// is part of the ADR-018 action contract (Agent G). Agent G has landed the
-/// TypeScript ActionRunner (commit a8a28a8) but the Dart port does not yet
-/// exist. These action-bearing surfaces are declared using a dynamic JSON
-/// shape (`Object?`) so the contract mirror compiles today. When Agent G's
-/// Dart port lands, replace `Object?` with the typed `ActionSource` /
-/// `ActionHandlerPlan` and remove this note.
-///
 /// Manual sealed classes (no freezed) to control the JSON discriminator.
 library bitcode.ui_schema.block_renderer.types;
 
+import '../actions/source.dart' show ActionSource;
 import '../expressions/ast.dart' show PortableExpression;
 
 // ---------------------------------------------------------------------------
@@ -66,23 +58,19 @@ class BlockNode {
   /// Props forwarded to a component-strategy catalog entry.
   final Map<String, dynamic>? props;
 
-  /// Named action bindings (trigger name -> ActionSource JSON).
-  ///
-  /// DEFERRED: typed as `Object?` until the ADR-018 action contract (Agent G)
-  /// Dart port lands. The TS engine consumes `ActionSource`; the JSON shape is
-  /// `{ type: 'local'|'handler'|'url'|'model', ... }`.
-  final Map<String, Object?>? actions;
+  /// Named action bindings (trigger name -> ActionSource).
+  final Map<String, ActionSource>? actions;
 
   Map<String, dynamic> toJson() => {
-        if (blockId != null) 'blockId': blockId,
-        if (version != null) 'version': version,
-        if (schema != null) 'schema': schema,
-        if (children != null)
-          'children': children!.map((c) => c.toJson()).toList(),
-        if (bindings != null) 'bindings': bindings!.toJson(),
-        if (props != null) 'props': props,
-        if (actions != null) 'actions': actions,
-      };
+    if (blockId != null) 'blockId': blockId,
+    if (version != null) 'version': version,
+    if (schema != null) 'schema': schema,
+    if (children != null) 'children': children!.map((c) => c.toJson()).toList(),
+    if (bindings != null) 'bindings': bindings!.toJson(),
+    if (props != null) 'props': props,
+    if (actions != null)
+      'actions': actions!.map((key, value) => MapEntry(key, value.toJson())),
+  };
 }
 
 /// Per-node bindings evaluated by the engine.
@@ -96,6 +84,7 @@ class BlockBindings {
   });
 
   final Map<String, dynamic>? values;
+
   /// Literal bool or PortableExpression.
   final Object? visible;
   final Object? disabled;
@@ -103,21 +92,21 @@ class BlockBindings {
   final Map<String, dynamic>? data;
 
   Map<String, dynamic> toJson() => {
-        if (values != null) 'values': values,
-        if (visible != null)
-          'visible': visible is bool
-              ? visible
-              : (visible as PortableExpression).toJson(),
-        if (disabled != null)
-          'disabled': disabled is bool
-              ? disabled
-              : (disabled as PortableExpression).toJson(),
-        if (readOnly != null)
-          'readOnly': readOnly is bool
-              ? readOnly
-              : (readOnly as PortableExpression).toJson(),
-        if (data != null) 'data': data,
-      };
+    if (values != null) 'values': values,
+    if (visible != null)
+      'visible': visible is bool
+          ? visible
+          : (visible as PortableExpression).toJson(),
+    if (disabled != null)
+      'disabled': disabled is bool
+          ? disabled
+          : (disabled as PortableExpression).toJson(),
+    if (readOnly != null)
+      'readOnly': readOnly is bool
+          ? readOnly
+          : (readOnly as PortableExpression).toJson(),
+    if (data != null) 'data': data,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -155,13 +144,13 @@ class SchemaRenderPlan extends RenderPlan {
 
   @override
   Map<String, dynamic> toJson() => {
-        'kind': 'schema',
-        'schema': schema,
-        'values': values,
-        'disabled': disabled,
-        'readOnly': readOnly,
-        'key': key,
-      };
+    'kind': 'schema',
+    'schema': schema,
+    'values': values,
+    'disabled': disabled,
+    'readOnly': readOnly,
+    'key': key,
+  };
 }
 
 /// A component-strategy plan. The Flutter widget resolves the actual widget
@@ -185,12 +174,12 @@ class ComponentRenderPlan extends RenderPlan {
 
   @override
   Map<String, dynamic> toJson() => {
-        'kind': 'component',
-        'componentKey': componentKey,
-        'props': props,
-        'disabled': disabled,
-        'key': key,
-      };
+    'kind': 'component',
+    'componentKey': componentKey,
+    'props': props,
+    'disabled': disabled,
+    'key': key,
+  };
 }
 
 /// A hidden plan. visible resolved to false; the subtree is pruned.
@@ -207,10 +196,10 @@ class HiddenPlan extends RenderPlan {
 
   @override
   Map<String, dynamic> toJson() => {
-        'kind': 'hidden',
-        'reason': reason,
-        'key': key,
-      };
+    'kind': 'hidden',
+    'reason': reason,
+    'key': key,
+  };
 }
 
 /// A diagnostic plan. Resolution failed. The Flutter widget renders an
@@ -227,30 +216,39 @@ class DiagnosticPlan extends RenderPlan {
 
   @override
   Map<String, dynamic> toJson() => {
-        'kind': 'error',
-        'diagnostics': diagnostics,
-        'key': key,
-      };
+    'kind': 'error',
+    'diagnostics': diagnostics,
+    'key': key,
+  };
 }
 
-/// A resolved block tree node: plan + children + diagnostics.
-///
-/// DEFERRED: the `actions` field (deferred ActionHandlerPlan map) is omitted
-/// until the ADR-018 action contract (Agent G) Dart port lands. The TS engine
-/// emits `actions`; this mirror carries the plan + children + diagnostics
-/// which is sufficient for the Flutter widget contract.
+/// A resolved block tree node: plan + children + diagnostics + actions.
 class ResolvedBlockTree {
   const ResolvedBlockTree({
     required this.plan,
     required this.children,
     required this.diagnostics,
     required this.key,
+    this.actions,
   });
 
   final RenderPlan plan;
   final List<ResolvedBlockTree> children;
   final List<Map<String, dynamic>> diagnostics;
   final String key;
+  final Map<String, ActionHandlerPlan>? actions;
+}
+
+class ActionHandlerPlan {
+  const ActionHandlerPlan({required this.source, this.trigger});
+
+  final ActionSource source;
+  final String? trigger;
+
+  Map<String, dynamic> toJson() => {
+    'source': source.toJson(),
+    if (trigger != null) 'trigger': trigger,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -264,13 +262,14 @@ class RenderOptions {
   /// By default the engine rejects candidate/deprecated entries. Set true for
   /// builder/dev/diagnostic tooling.
   final bool allowCandidate;
+
   /// 'web' | 'flutter' | 'react-native' | 'server'.
   final String? platform;
 
   Map<String, dynamic> toJson() => {
-        if (allowCandidate) 'allowCandidate': allowCandidate,
-        if (platform != null) 'platform': platform,
-      };
+    if (allowCandidate) 'allowCandidate': allowCandidate,
+    if (platform != null) 'platform': platform,
+  };
 }
 
 /// Resolved binding flags after evaluating visible/disabled/readOnly.
@@ -308,12 +307,12 @@ class ComponentMetadata {
   final String? adapterRef;
 
   Map<String, dynamic> toJson() => {
-        'componentKey': componentKey,
-        if (category != null) 'category': category,
-        if (capabilities != null) 'capabilities': capabilities,
-        if (supportedPlatforms != null) 'supportedPlatforms': supportedPlatforms,
-        if (adapterRef != null) 'adapterRef': adapterRef,
-      };
+    'componentKey': componentKey,
+    if (category != null) 'category': category,
+    if (capabilities != null) 'capabilities': capabilities,
+    if (supportedPlatforms != null) 'supportedPlatforms': supportedPlatforms,
+    if (adapterRef != null) 'adapterRef': adapterRef,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -347,4 +346,3 @@ class BlockRenderDiagnosticCodes {
     renderAborted,
   };
 }
-
