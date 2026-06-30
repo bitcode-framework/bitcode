@@ -60,6 +60,35 @@ export {
   candidateInteractionNotificationCenter,
 } from './fixtures.ts';
 
+// ---------------------------------------------------------------------------
+// Deep Block Catalog Validator (ADR-017 §8, plan §7)
+// ---------------------------------------------------------------------------
+
+// Diagnostic types + codes (reuses BlockCatalogDiagnostic via CatalogDiagnostic)
+export type {
+  CatalogDiagnostic,
+  CatalogDiagnosticSource,
+  CatalogValidationResult,
+} from './catalog-diagnostic.ts';
+export {
+  CATALOG_DIAGNOSTIC_CODES,
+  CATALOG_DIAGNOSTIC_CODE_SET,
+  severityRank,
+} from './catalog-diagnostic.ts';
+
+// Deep validator (composes P1 + Agent F expression validator + Agent G action validator)
+export type {
+  CatalogValidationOptions,
+  ComponentRegistryProbe,
+} from './validate-catalog-deep.ts';
+export {
+  isActionSourceLike,
+  isPortableExpressionLike,
+  validateBlockCatalogEntryDeep,
+  validateCatalogEntryDeep,
+  validateEmbeddedActionSources,
+} from './validate-catalog-deep.ts';
+
 // ============================================================================
 // Policy validators (ADR-017/018, Agent L)
 //

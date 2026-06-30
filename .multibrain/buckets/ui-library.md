@@ -6,6 +6,14 @@
 
 ---
 
+## 2026-07-01 — Deep Block Catalog validator (Agent I)
+
+**Status:** done
+**Files touched:** `packages/ui-schema/src/block-catalog/{catalog-diagnostic,validate-catalog-deep}.ts`, `packages/ui-schema/src/{block-catalog/index,index}.ts`, `packages/ui-schema/test/block-catalog/validate-catalog-deep.test.ts`
+**Evidence:** `npx tsc --noEmit` EXIT 0; `node scripts/run-tests.mjs` 299 pass / 0 fail.
+
+Added `validateBlockCatalogEntryDeep()` without Ready promotion. It composes P1 shape validation + Agent F expression validator (`71885aa`) + Agent G action validator (`a8a28a8`), with path-scoped guards for embedded expressions/actions, DataSource structural checks, serializability warning/error, nesting/cycle detection, minimal action/permission adapter gates, and per-platform component registry probes. Policy readiness gates stay Agent L scope.
+
 ## 2026-07-01 — BcBlockRenderer portable engine + web binding (P4, ADR-017 S3, Agent H)
 
 - **Status:** done

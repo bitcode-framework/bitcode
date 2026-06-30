@@ -142,6 +142,36 @@ export {
 } from './block-catalog/index.ts';
 
 // ============================================================================
+// Deep Block Catalog Validator (ADR-017 §8, plan §7, Agent I)
+//
+// Composes P1 shape validator + Agent F expression validator + Agent G action
+// validator. Adds schemaPreset deep walk, serializability, nesting, minimal
+// capability gates, and component reference checks. Reuses the existing
+// BlockCatalogDiagnostic shape. Never throws. No Ready promotion.
+// ============================================================================
+export type {
+  CatalogDiagnostic,
+  CatalogDiagnosticSource,
+  CatalogValidationResult,
+} from './block-catalog/index.ts';
+export {
+  CATALOG_DIAGNOSTIC_CODES,
+  CATALOG_DIAGNOSTIC_CODE_SET,
+  severityRank,
+} from './block-catalog/index.ts';
+export type {
+  CatalogValidationOptions,
+  ComponentRegistryProbe,
+} from './block-catalog/index.ts';
+export {
+  isActionSourceLike,
+  isPortableExpressionLike,
+  validateBlockCatalogEntryDeep,
+  validateCatalogEntryDeep,
+  validateEmbeddedActionSources,
+} from './block-catalog/index.ts';
+
+// ============================================================================
 // Policy validators (ADR-017/018, Agent L)
 //
 // Compose over the shape validator. Same diagnostic model, separate

@@ -3,8 +3,8 @@
 > Per-project lightweight cross-session memory for AI agents.
 > Active whenever this file exists. Read this FIRST at session start.
 
-**Last session:** 2026-07-01 (Agent L block catalog policy validators; Agent K block catalog preview demos)
-**Last bucket touched:** adr (Agent L policy validators), demo-app (Agent K preview demos)
+**Last session:** 2026-07-01 (Agent I deep Block Catalog validator)
+**Last bucket touched:** ui-library (Agent I deep validator in ui-schema)
 
 ---
 
