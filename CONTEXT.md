@@ -12,6 +12,22 @@ _Avoid_: polish phase, cleanup, refactor
 The P0 subset of `packages/ui` components and infrastructure that defines how host applications integrate with the library. It includes primitives for form input, overlays, data grids, metadata rendering, reactive scope, providers, theming, and Web Component event bridging.
 _Avoid_: top components, most used components, first batch
 
+**Website Block**:
+A website-facing composition unit for public pages, portals, landing pages, CMS pages, and commerce pages. It is built above UI primitives and carries layout/content semantics rather than acting as a low-level primitive component.
+_Avoid_: primitive widget, generic component, Elementor clone
+
+**ERP Interaction Component**:
+An application-facing UI component for internal ERP workflows where data binding, permissions, relations, workflow state, auditability, import/export, or operational actions are part of the contract.
+_Avoid_: website block, marketing widget, generic admin component
+
+**Block Catalog**:
+A metadata layer that classifies reusable page blocks by capability category, usage channel, and behavioral capabilities without changing the technical component taxonomy. Categories describe what the block does; channels describe where it may be used.
+_Avoid_: source taxonomy, package group, website-vs-ERP split
+
+**Ready Block**:
+A Block Catalog entry that is production-grade across web and Flutter from the moment it is marked ready. It has schema/type coverage, full renderer support, platform-aware Flutter behavior, tests, and no stub or placeholder implementation.
+_Avoid_: web-first block, partial block, MVP block, stubbed block
+
 **Semantic Event**:
 A renderer-neutral component event whose payload carries the UI meaning directly, such as a changed value, open state, or selection. DOM and native events may be included as metadata, but they are not the primary contract.
 _Avoid_: raw event, DOM-first event, framework event payload

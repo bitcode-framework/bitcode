@@ -4,7 +4,47 @@
 > berubah status. Untuk *kenapa* dan *arsitektur*, baca [ADR](./adr/README.md).
 > Untuk *bagaimana spec engine*, baca `engine/docs/features/*.md`.
 
-**Last updated:** 2026-06-24 (ADR-011 Phase 5c COMPLETE: full Mitosis↔Flutter parity achieved. 130 Flutter widgets, 1158 tests, 297/297 validation assertions passed across 7 milestones. flutter analyze 0 errors/warnings, build_runner succeeds, 132 barrel exports.)
+**Last updated:** 2026-06-30 (Block Catalog candidate matrix drafted. 44 candidates mapped against existing `packages/ui` and `packages/ui-flutter`. Status: 8 schema-preset-only, 21 existing-component-needs-binding, 10 component-gap, 2 contract-gap, 1 adapter-gap, 1 duplicate-alias, 1 excluded. 5 foundational work items required before any Ready entry. ADR-017 and ADR-018 skeletons Proposed; full bodies pending.)
+
+## Block Catalog (Draft 0.1)
+
+The Block Catalog is a metadata layer that classifies reusable page blocks by capability category, usage channel, and behavioral capabilities. It is matrix-first: `sprints/package-ui-elementor/block-catalog-candidate-matrix.json` is the source of truth, and `sprints/package-ui-elementor/block-catalog-parity-matrix.md` is the readable report. No ADR drafted yet.
+
+**Candidate counts by status (2026-06-30):**
+
+| Status | Count |
+|---|---|
+| `schema-preset-only` | 8 |
+| `existing-component-needs-binding` | 21 |
+| `component-gap` | 10 |
+| `contract-gap` | 2 |
+| `adapter-gap` | 1 |
+| `duplicate-alias` | 1 |
+| `excluded` | 1 |
+| **Total** | **43** |
+
+**Required foundational work before any Ready entry:**
+
+1. `foundation.block-catalog-types` — BlockCatalogEntry/Ready/Candidate types in `@bitcode/ui-schema`.
+2. `foundation.action-source` — ActionSource, ActionAdapter, ActionResult, ActionError, ActionEffect, ActionRunner.
+3. `foundation.portable-expression-ast` — Portable expression types + built-in function registry.
+4. `foundation.block-renderer` — `BcBlockRenderer` thin layer over `BcRenderer` with schema/component strategies.
+5. `foundation.validation-tooling` — build-time and runtime validators enforcing no-stub, web+Flutter availability, and gate contracts.
+
+**Top-level capability categories (8):** `content`, `data`, `interaction`, `commerce`, `workflow`, `builder`, `analytics`, `navigation`. `account` is a subcategory/tag.
+
+**Reclassification rule from review session:** blocks with `action-trigger` semantics must not be marked `schema-preset-only`; they belong in `existing-component-needs-binding` until ActionSource/ActionRunner are available. After this rule was applied, `content.cta`, `content.pricing-table`, and `commerce.product-detail` were reclassified.
+
+**Flutter parity checks still pending:** `BcAvatar`, `BcBadge`, `BcProgress`, `BcKpi` are referenced in candidate mappings but their Flutter counterparts are not currently in the Flutter component file list. These rows cannot become Ready until Flutter parity is resolved or until the rows are re-mapped to existing Flutter components.
+
+**Export/registry gaps blocking Ready validation:** `BcShare` and `BcGridView` source files exist but are not exported from `packages/ui/src/index.ts`. Matrix rows that depend on these (`content.social-links`, `data.record-list`, `commerce.product-grid`) must remain non-Ready until the exports are fixed.
+
+**Workflow Diagram is split:**
+
+- `workflow.diagram-viewer` (schema-preset-only): static process graph using `BcChartGraph`/`BcSteps`.
+- `workflow.diagram-editor` (component-gap): dedicated authoring component with drag, edges, properties, persistence, undo/redo.
+
+**Commerce blocks reuse generic record list/detail:** `commerce.product-grid` and `commerce.product-detail` are documented as Ready Catalog entries that reuse `data.record-list`/`data.record-detail` with commerce schema variants, plus add-to-cart ActionSource.
 
 ## Phase C3 Sign-Off (2026-06-22 update)
 
@@ -547,3 +587,21 @@ Bukan komponen, tapi prasyarat. Tracker ringkas:
 
 4. **Tracker ini stale kalau tidak diupdate.** Update bersamaan dengan setiap
    commit yang menyentuh `packages/ui/`.
+
+## Block Catalog Gate (ADR-017 / ADR-018, 2026-06-30 proposal)
+
+Lihat [ADR-017](./adr/017-block-catalog-architecture.md) dan [ADR-018](./adr/018-block-catalog-data-action-reactivity.md).
+Candidate matrix + parity report: `sprints/package-ui-elementor/block-catalog-candidate-matrix.json` + `block-catalog-parity-matrix.md`.
+
+| Gate | Status | Notes |
+|---|---|---|
+| BlockCatalogEntry types in `@bitcode/ui-schema` | Pending | Required for Ready promotion. Amends ADR-003 (metadata layer, no source taxonomy change). |
+| `BcBlockRenderer` thin layer over `BcRenderer` | Pending | Scheduled in `docs/plans/block-catalog-implementation.md` foundation batch. |
+| ActionSource / ActionResult / ActionEffect / ActionLifecycle | Pending | Locks cross-platform mutation contract. Required by Ready entries that use `action-trigger` / `action-source`. |
+| Portable Expression AST + built-in function registry | Pending | Locks cross-platform reaction descriptor. Required by Ready entries that use `reactive`. |
+| Catalog validators (build-time + runtime) | Pending | Build-time is CI-blocking; runtime throws typed `BlockCapabilityError`. |
+| Export/registry fixes (`BcShare`, `BcGridView`) | Pending | Source-only roots are blocking dependents in Ready Catalog. |
+| Flutter parity audit (`BcAvatar`, `BcBadge`, `BcProgress`, `BcKpi`) | Pending | Either add Flutter equivalents or degrade presets to existing Flutter components before promotion. |
+| Ready Catalog completeness gate | Pending | All 44 Candidate entries promoted to Ready (or explicitly aliased / excluded) per ADR-017 Section 7 before the catalog can be declared complete. |
+
+**No-stub principle:** Per ADR-017 Section 7 and stakeholder quality principles, entries marked Ready must render fully on web and Flutter with no placeholder, banner, or mocked-out input. Candidate entries that cannot clear every gate stay in the Candidate Catalog only.
