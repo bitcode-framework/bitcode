@@ -79,3 +79,57 @@ export type {
   FieldResolver,
   ResolvedFormField,
 } from './schema/resolver.ts';
+
+// ============================================================================
+// Block Catalog (ADR-017)
+// ============================================================================
+
+export type {
+  BlockAdaptivePolicy,
+  BlockA11yEvidence,
+  BlockCachePolicy,
+  BlockCapability,
+  BlockCatalogEntry,
+  BlockCategory,
+  BlockChannel,
+  BlockMigrationMetadata,
+  BlockOfflinePolicy,
+  BlockPlatform,
+  BlockPlatformFamily,
+  BlockReadiness,
+  BlockRenderStrategy,
+  BlockSecurityPolicy,
+  BlockTestReference,
+  CandidateCatalogEntry,
+  RequiredAdapter,
+  RequiredComponent,
+  RequiredFunction,
+} from './block-catalog/index.ts';
+
+export {
+  BLOCK_CAPABILITY_ALIASES,
+  CANONICAL_BLOCK_CAPABILITIES,
+  findCapabilityAliases,
+  isCanonicalCapability,
+  isKnownCapabilityAlias,
+  normalizeCapability,
+  normalizeCapabilities,
+} from './block-catalog/index.ts';
+
+export {
+  BLOCK_DIAGNOSTIC_CODES,
+  validateBlockCatalogEntry,
+  validateCandidateCatalogEntry,
+} from './block-catalog/index.ts';
+export type {
+  BlockCatalogDiagnostic,
+  BlockCatalogValidationResult,
+  BlockDiagnosticSeverity,
+} from './block-catalog/index.ts';
+
+// Candidate fixtures (@internal - not a Ready catalog)
+export {
+  candidateContentHero,
+  candidateFixtures,
+  candidateInteractionNotificationCenter,
+} from './block-catalog/index.ts';

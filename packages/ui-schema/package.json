@@ -23,7 +23,11 @@
       "types": "./src/types.ts",
       "default": "./src/types.ts"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./block-catalog": {
+      "types": "./src/block-catalog/index.ts",
+      "default": "./src/block-catalog/index.ts"
+    }
   },
   "files": [
     "src"
