@@ -23,16 +23,26 @@
       "types": "./src/types.ts",
       "default": "./src/types.ts"
     },
-    "./package.json": "./package.json",
+    "./expressions": {
+      "types": "./src/expressions/index.ts",
+      "default": "./src/expressions/index.ts"
+    },
     "./block-catalog": {
       "types": "./src/block-catalog/index.ts",
       "default": "./src/block-catalog/index.ts"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "files": [
-    "src"
+    "src",
+    "test"
   ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "node scripts/run-tests.mjs"
+  },
   "devDependencies": {
+    "@types/node": "^26.0.1",
     "typescript": "^5.4.0"
   }
 }

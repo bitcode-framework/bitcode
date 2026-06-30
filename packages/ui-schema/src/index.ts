@@ -7,6 +7,8 @@
 //   - @bitcode/ui-flutter (Dart port, Phase 5a)
 //   - BitCode engine (optional mapping from domain models to UiSchema)
 //   - Any standalone consumer (JsonForms-style usage)
+
+export * from './expressions/index.ts';
 //
 // Zero framework dependency. Zero platform globals. Safe in Node/SSR/RN/Dart.
 // ============================================================================
