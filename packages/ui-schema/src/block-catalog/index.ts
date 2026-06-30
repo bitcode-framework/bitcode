@@ -59,3 +59,89 @@ export {
   candidateFixtures,
   candidateInteractionNotificationCenter,
 } from './fixtures.ts';
+
+// ============================================================================
+// Policy validators (ADR-017/018, Agent L)
+//
+// Compose over the shape validator above. Same diagnostic model, separate
+// BLOCK_POLICY_* code space. Never flip readiness (no Ready promotion).
+// ============================================================================
+export {
+  DEFAULT_POLICY_CONFIG,
+  gateSeverity,
+  hasAnyCapability,
+  hasCapability,
+  isDeprecatedEntry,
+  isReadyEntry,
+  mergeResults,
+  POLICY_DIAGNOSTIC_CODES,
+  policyDiagnostic,
+  resolvePolicyConfig,
+  resultFromDiagnostics,
+  validateAccessibilityPolicy,
+  validateAdaptivePolicy,
+  validateBlockCatalogPolicies,
+  validateOfflinePolicy,
+  validatePerformancePolicy,
+  validateSecurityPolicy,
+} from './policies/index.ts';
+export type {
+  PolicyConfig,
+  PolicyResult,
+  ResolvedPolicyConfig,
+} from './policies/index.ts';
+
+// ============================================================================
+// Per-category Candidate metadata seed + platform audit + pilot analysis
+// (ADR-017, Agent J). Canonical Candidate metadata for all 44 matrix rows.
+// Every entry is `readiness: 'candidate'` — NO Ready promotion.
+// ============================================================================
+
+// Static platform availability audit (@internal — P4 live scanner is the
+// authoritative Ready gate).
+export {
+  PLATFORM_AUDIT,
+  PLATFORM_AUDIT_META,
+  componentPlatforms,
+  getPlatformAuditEntry,
+  isComponentOnBothPlatforms,
+} from './platform-audit.ts';
+export type {
+  PlatformAuditEntry,
+  PlatformAuditMeta,
+} from './platform-audit.ts';
+
+// Per-category candidate metadata + helpers.
+export {
+  ALL_CANDIDATE_ENTRIES,
+  CANDIDATE_COUNT,
+  assertUniqueIds,
+  getCandidateById,
+  getCandidatesByBatch,
+  getCandidatesByCategory,
+} from './categories/index.ts';
+export {
+  analyticsCandidates,
+  builderCandidates,
+  commerceCandidates,
+  contentCandidates,
+  dataCandidates,
+  excludedCandidates,
+  interactionCandidates,
+  navigationCandidates,
+  pluginCandidates,
+  workflowCandidates,
+} from './categories/index.ts';
+
+// Pilot candidate analysis (NOT promotion).
+export {
+  CONDITIONAL_CANDIDATES,
+  PILOT_CANDIDATES,
+  PILOT_SUMMARY,
+  allComponentsOnBothPlatforms,
+  validatePilotConsistency,
+} from './pilot-candidates.ts';
+export type {
+  ConditionalCandidate,
+  PilotCandidate,
+} from './pilot-candidates.ts';

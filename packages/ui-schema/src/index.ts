@@ -140,3 +140,34 @@ export {
   candidateFixtures,
   candidateInteractionNotificationCenter,
 } from './block-catalog/index.ts';
+
+// ============================================================================
+// Policy validators (ADR-017/018, Agent L)
+//
+// Compose over the shape validator. Same diagnostic model, separate
+// BLOCK_POLICY_* code space. Never flip readiness (no Ready promotion).
+// ============================================================================
+export {
+  DEFAULT_POLICY_CONFIG,
+  gateSeverity,
+  hasAnyCapability,
+  hasCapability,
+  isDeprecatedEntry,
+  isReadyEntry,
+  mergeResults,
+  POLICY_DIAGNOSTIC_CODES,
+  policyDiagnostic,
+  resolvePolicyConfig,
+  resultFromDiagnostics,
+  validateAccessibilityPolicy,
+  validateAdaptivePolicy,
+  validateBlockCatalogPolicies,
+  validateOfflinePolicy,
+  validatePerformancePolicy,
+  validateSecurityPolicy,
+} from './block-catalog/index.ts';
+export type {
+  PolicyConfig,
+  PolicyResult,
+  ResolvedPolicyConfig,
+} from './block-catalog/index.ts';
