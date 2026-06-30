@@ -9,6 +9,11 @@
 //   - Any standalone consumer (JsonForms-style usage)
 
 export * from './expressions/index.ts';
+// ============================================================================
+// Action Runtime (ADR-018 S1-S8)
+// ============================================================================
+
+export * from './actions/index.ts';
 //
 // Zero framework dependency. Zero platform globals. Safe in Node/SSR/RN/Dart.
 // ============================================================================

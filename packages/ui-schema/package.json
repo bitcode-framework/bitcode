@@ -27,6 +27,10 @@
       "types": "./src/expressions/index.ts",
       "default": "./src/expressions/index.ts"
     },
+    "./actions": {
+      "types": "./src/actions/index.ts",
+      "default": "./src/actions/index.ts"
+    },
     "./block-catalog": {
       "types": "./src/block-catalog/index.ts",
       "default": "./src/block-catalog/index.ts"
