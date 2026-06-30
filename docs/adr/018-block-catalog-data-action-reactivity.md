@@ -506,6 +506,8 @@ Rules:
 - `packages/ui-schema/src/types.ts`
 - `packages/ui-schema/src/reactive/`
 - `packages/ui-schema/src/schema/`
+- `packages/ui-schema/src/expressions/`
+- `packages/ui-flutter/lib/src/expressions/`
 - `packages/ui/src/core/data-source.ts`
 - `packages/ui/src/core/renderer/`
 - `packages/ui-flutter/lib/src/core/reactive_store.dart`
