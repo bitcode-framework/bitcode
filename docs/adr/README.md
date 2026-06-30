@@ -5,9 +5,7 @@
 
 ## Status di Repo
 
-ADR-001 hingga ADR-015 berstatus **Accepted** (lihat tabel di bawah untuk
-detail tanggal). ADR-001 sebagian **superseded** oleh ADR-002 (lihat catatan
-kolom).
+ADR-001 hingga ADR-012 serta ADR-015 hingga ADR-018 berstatus **Accepted** (lihat tabel di bawah untuk detail tanggal). ADR-013 dan ADR-014 masih **Proposed**. ADR-001 sebagian **superseded** oleh ADR-002 (lihat catatan kolom).
 
 > **Catatan paralelisasi (ADR-013/014/015):** Ketiga ADR dirancang untuk
 > dapat dikerjakan paralel oleh agent berbeda. Scope boundary per ADR
@@ -37,8 +35,8 @@ kolom).
 | [014](./014-engine-ui-feature-wiring.md) | Engine UI Feature Wiring (SSR → component-backed render) | **Proposed** *(2026-06-26)* | 005, 007, 010, 011 | Wire 9 ERP UI features (visual builders, chatter, activity, export, pivot, email/notification) into BitCode engine; extends ADR-005 BcRenderer with component-backed SSR render mode; parallel-safe with ADR-013/015 |
 | [015](./015-flutter-echarts-chart-strategy.md) | Flutter ECharts Chart Strategy (deprecate CustomPaint) | **Accepted** *(2026-06-26)* | 002, 011 | Replace 912-line hobby-grade CustomPaint with `flutter_echarts`; parity 26/26 chart types via shared ECharts option contract; CustomPaint removed entirely (no deprecation period) |
 | [016](./016-demo-app-qa-bug-audit.md) | Demo App QA Bug Audit & Improvement Plan | **Accepted** *(2026-06-29 all 4 phases complete; 5 architectural decisions: useRef migration + lint guardrail, post-build portal AST, @source Tailwind consumption contract, contract-alignment recipe, echarts dependency-injection loader; 28 stub components ported across 5 clusters)* | 001, 002, 006, 007, 011 | Full browser QA of React + Flutter demos: 2 critical bugs (Mitosis ref compiler, overlay portal), 6 high, 10 medium, 28 stubs ported; charts fixed via DI loader pattern; 3 pre-existing runtime bugs fixed (getAnimationClasses import, BcTabs API alignment, BcSplitter dragging init) |
-| [017](./017-block-catalog-architecture.md) | Block Catalog Architecture (`@bitcode/ui-blocks`) | **Proposed** *(2026-06-30; full body drafted against matrix 0.1)* | 002, 003, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 016 | Amends ADR-003 (metadata catalog layer, no source taxonomy change) and ADR-005 (block-level composition surface); defines Ready/Candidate registries, render strategies, RuntimeContext, Ready gates, plugin model, validation discipline |
-| [018](./018-block-catalog-data-action-reactivity.md) | Block Catalog Data, Action, Reactivity Contract | **Proposed** *(2026-06-30; full body drafted; required by ADR-017 before any Ready entry)* | 002, 004, 005, 006, 007, 011, 012, 013, 017 | Adds ActionSource, ActionResult, ActionEffect, ActionLifecycle; Portable Expression AST, built-in function registry, ReactiveStore.runAction, RuntimeContext action wiring, security/privacy gates |
+| [017](./017-block-catalog-architecture.md) | Block Catalog Architecture (`@bitcode/ui-blocks`) | **Accepted** *(2026-06-30; matrix 0.1 accepted baseline)* | 002, 003, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 016 | Amends ADR-003 (metadata catalog layer, no source taxonomy change) and ADR-005 (block-level composition surface); defines Ready/Candidate registries, render strategies, RuntimeContext, Ready gates, plugin model, validation discipline |
+| [018](./018-block-catalog-data-action-reactivity.md) | Block Catalog Data, Action, Reactivity Contract | **Accepted** *(2026-06-30; required by ADR-017 before any Ready entry)* | 002, 004, 005, 006, 007, 011, 012, 013, 017 | Adds ActionSource, ActionResult, ActionEffect, ActionLifecycle; Portable Expression AST, built-in function registry, ReactiveStore.runAction, RuntimeContext action wiring, security/privacy gates |
 
 ## Dependency Graph
 

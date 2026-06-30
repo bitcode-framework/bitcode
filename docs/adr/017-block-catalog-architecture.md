@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | Proposed (2026-06-30; full body drafted against matrix 0.1 accepted baseline; minor review edits applied before final acceptance) |
+| **Status** | Accepted (2026-06-30; matrix 0.1 accepted baseline; minor review edits applied before acceptance) |
 | **Depends on** | 002, 003, 005, 006, 007, 008, 009, 010, 011, 012, 013, 014, 016 |
 | **Amends** | 003 (adds metadata catalog layer, does not change source taxonomy), 005 (extends schema surface with block-level composition) |
 | **Impact** | Adds Block Catalog types to `@bitcode/ui-schema`, Ready/Candidate registries, per-category preset catalogs in `packages/ui`, render strategies, RuntimeContext requirements, validation gates, and plugin/extension model |

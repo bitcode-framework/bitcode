@@ -72,8 +72,8 @@ Sesi grilling-with-docs untuk merancang **Block Catalog Architecture** (website 
 - `sprints/package-ui-elementor/block-catalog-candidate-matrix.json` — machine-readable matrix (44 candidates, 12 raw groups, 5 foundational work). Version 0.1 accepted baseline for ADR-017/018.
 - `sprints/package-ui-elementor/block-catalog-parity-matrix.md` — generated/readable report.
 - `docs/components-progress.md` — tambah section "Block Catalog (Baseline 0.1)" dengan counts + foundational work + categories + key findings.
-- `docs/adr/017-block-catalog-architecture.md` — full body Proposed (catalog surface, categories/channels/capabilities, render strategies, Ready gate, RuntimeContext, plugin model, Flutter parity, validation, consequences, phases, AC).
-- `docs/adr/018-block-catalog-data-action-reactivity.md` — full body Proposed (ActionSource, ActionResult/ActionError, lifecycle, effects, Portable Expression AST, function registry, RuntimeContext, runAction, security, phases, AC).
+- `docs/adr/017-block-catalog-architecture.md` — Accepted (catalog surface, categories/channels/capabilities, render strategies, Ready gate, RuntimeContext, plugin model, Flutter parity, validation, consequences, phases, AC).
+- `docs/adr/018-block-catalog-data-action-reactivity.md` — Accepted (ActionSource, ActionResult/ActionError, lifecycle, effects, Portable Expression AST, function registry, RuntimeContext, runAction, security, phases, AC).
 - `docs/adr/README.md` — row ADR-017/018 updated to full body status and next ADR number corrected to ADR-019.
 - `sprints/package-ui-elementor/REVIEW-FINDINGS.md` — review findings for count drift, Flutter parity gaps, web export gaps, BcMarkdown gap, and ADR-014 overlap.
 
@@ -89,7 +89,7 @@ Sesi grilling-with-docs untuk merancang **Block Catalog Architecture** (website 
 
 ## Konteks penting / gotcha
 
-- ADR-017 dan ADR-018 sudah didraft full body pada 2026-06-30, tetapi status tetap **Proposed** dan harus direview human/architect sebelum implementasi foundational work.
+- ADR-017 dan ADR-018 sudah dipromote ke **Accepted** pada 2026-06-30 setelah final read-through; tidak ada architectural blocker tersisa sebelum implementation planning.
 - Matrix 0.1 sudah reclassify dan dilabel accepted baseline untuk ADR-017/018. Later changes require version bump atau documented change record.
 - `workflow.diagram-editor` = component-gap (dedicated authoring component, drag/edges/properties/persistence/undo-redo). `workflow.diagram-viewer` = schema-preset-only (BcChartGraph + BcSteps preset read-only).
 - Flutter parity decision: add canonical Flutter `BcAvatar`, `BcBadge`, `BcProgress`, and `BcKpi` with source, tests, and barrel exports before Ready; do not remap to generic primitives just to pass parity.
@@ -103,8 +103,8 @@ Sesi grilling-with-docs untuk merancang **Block Catalog Architecture** (website 
 
 ## Next steps (konkret)
 
-1. Final read-through ADR-017/018 after minor edits, then decide whether to promote status from Proposed to Accepted.
-2. Implement resolved gap fixes in a separate code phase after Accepted: canonical Flutter widgets (`BcAvatar`, `BcBadge`, `BcProgress`, `BcKpi`), canonical web `BcMarkdown`, and public export/registry fixes for `BcShare`/`BcGridView`.
+1. Create implementation plan appendix (batch sampai semua Ready) in `docs/plans/` before code changes.
+2. Implement resolved gap fixes in a separate code phase: canonical Flutter widgets (`BcAvatar`, `BcBadge`, `BcProgress`, `BcKpi`), canonical web `BcMarkdown`, and public export/registry fixes for `BcShare`/`BcGridView`.
 3. Keep overlap rows non-Ready until ADR-014 surface exists for endpoint/model/permission/realtime/persistence/engine wiring.
 4. Keep provider-specific SDK integrations out of core; implement only generic adapter contracts and mock/local test adapters in core.
 5. If ADRs are approved, implement foundational work in order: block-catalog types, ActionSource/ActionRunner, Portable Expression AST, BcBlockRenderer, validation tooling.

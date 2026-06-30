@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | Proposed (2026-06-30; full body drafted as ADR-017 prerequisite for Ready entries) |
+| **Status** | Accepted (2026-06-30; ADR-017 prerequisite for Ready entries; accepted with matrix 0.1 baseline) |
 | **Depends on** | 002, 004, 005, 006, 007, 011, 012, 013, 017 |
 | **Amends** | 004 (extends `ReactiveStore` with action execution and portable expression evaluation), 005 (extends `UiAction` beyond button descriptors), 007 (formalizes normalized action results and lifecycle events) |
 | **Impact** | Adds `ActionSource`, `ActionAdapter`, `ActionResult`, `ActionError`, `ActionEffect`, `ActionRunner`, action lifecycle events, Portable Expression AST, built-in function registry, and RuntimeContext action wiring to `@bitcode/ui-schema` and Flutter ports |
