@@ -32,6 +32,7 @@ import (
 	ws "github.com/bitcode-framework/bitcode/internal/presentation/websocket"
 	"github.com/bitcode-framework/bitcode/pkg/email"
 	"github.com/bitcode-framework/bitcode/internal/runtime/bridge"
+	"github.com/bitcode-framework/bitcode/internal/runtime/builder"
 	"github.com/bitcode-framework/bitcode/internal/runtime/activity"
 	"github.com/bitcode-framework/bitcode/internal/runtime/comment"
 	"github.com/bitcode-framework/bitcode/internal/runtime/notification"
@@ -704,6 +705,12 @@ func (a *App) setupRoutes() {
 		Processes:   a.ProcessRegistry.List(),
 	}, a.Config.ModuleDir, a.JWTConfig)
 	adminPanel.RegisterRoutes(a.Fiber)
+
+	builderViewValidator := builder.NewViewValidator(a.ModelRegistry)
+	builderHandler := api.NewBuilderHandler(api.BuilderHandlerConfig{
+		ViewValidator: builderViewValidator,
+	})
+	api.RegisterBuilderRoutes(a.Fiber, "/api/v1/admin", builderHandler, a.JWTConfig)
 
 	metaHandler := api.NewMetaHandler(api.MetaHandlerConfig{
 		ModelRegistry:   a.ModelRegistry,

@@ -148,6 +148,9 @@ engine/
 │   │   │   ├── service.go                      # Comment service — Create (mention parse + resolve + notify), ListByRecord (paginated), Delete (soft), EnsureTables, ResolveMentions, recordFromMap
 │   │   │   ├── mention.go                      # Mention parser — @username extraction (email-aware, dedup, boundary-safe), ResolveMentions (batch user lookup)
 │   │   │   └── service_test.go                 # 13 tests — parse mentions (edge cases), resolve, create+notify, list by record
+│   │   ├── builder/
+│   │   │   ├── view_validator.go               # ViewValidator — validates view.json structure + field refs against model registry, returns {valid, errors[], warnings[]}
+│   │   │   └── view_validator_test.go          # 16 tests — valid view, invalid field ref, missing required, invalid type, model not found, layout/sort/filter refs, data source mutex, render mode, custom template
 │   │
 │   ├── infrastructure/                         # External concerns
 │   │   ├── persistence/
@@ -246,7 +249,9 @@ engine/
 │       │   ├── pivot_handler.go                # PivotHandler — POST /api/v1/{module}/{model}/pivot (OLAP aggregation), read permission + field-level mask + RLS filter
 │       │   ├── pivot_handler_test.go           # 9 tests (single agg, multi agg, missing rows/values, invalid agg, permission denied, field-level permission, auth required, no cols)
 │       │   ├── notification_handler.go         # NotificationHandler — GET /api/v1/notifications (user-scoped, unread-first, pagination), POST /:id/read, POST /read-all, GET /unread-count
-│       │   └── notification_handler_test.go    # 7 tests (list unread-first, mark single read, mark all read, unread count, pagination, auth required, user scope isolation)
+│       │   ├── notification_handler_test.go    # 7 tests (list unread-first, mark single read, mark all read, unread count, pagination, auth required, user scope isolation)
+│       │   ├── builder_handler.go              # BuilderHandler — POST /api/v1/admin/views/validate (view.json validation), admin-only
+│       │   └── builder_handler_test.go         # 5 tests (valid view, invalid field ref, missing required, empty body, invalid JSON)
 │       ├── middleware/
 │       │   ├── auth.go                         # JWT validation, user context injection, impersonated_by extraction
 │       │   ├── permission.go                   # Permission checking via PermissionChecker interface (ModelAccess-based)
@@ -1039,6 +1044,7 @@ samples/erp/
 | `runtime/hook` | 10 | Event dispatcher (priority, condition, sync/async, retry, on_change cascade), context, expression eval |
 | `runtime/pivot` | 20 | PivotService: single agg, multi agg, multi rows, multi cols, null handling, totals, avg correctness, min/max, validation |
 | `runtime/notification` | 16 | NotificationService: create, list (unread-first, user-scoped), mark read, mark all read, unread count, WS push, morph_to ref |
+| `runtime/builder` | 16 | ViewValidator: valid view, invalid field ref, missing required, invalid type, model not found, invalid JSON, layout refs, sort/filter refs, data source mutex, render mode, custom template, JSON serialization |
 | `embedded` | — | Embed FS tests |
 | **Total** | **131+** | |
 

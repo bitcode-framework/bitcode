@@ -137,7 +137,7 @@ Before the gap list — what's already **production-solid**:
 
 | # | Feature | Status | Effort | What Exists | What's Missing |
 |---|---------|--------|--------|-------------|----------------|
-| 30 | Form Builder (Visual) | ⚠️ | L | JSON-based form layout (rows, fields, widths, tabs). SSR rendering. 122 Stencil.js components. | Visual drag-and-drop form designer in browser. |
+| 30 | Form Builder (Visual) | ⚠️ | L | JSON-based form layout (rows, fields, widths, tabs). SSR rendering. 122 Stencil.js components. POST /api/v1/admin/views/validate endpoint (ADR-014 Phase 4) validates view.json structure + field refs against model registry. ViewValidator service (runtime/builder). i18n keys (11 locales). | Visual drag-and-drop form designer in browser. |
 | 31 | Conditional Field Logic | ✅ | — | `"visible": "expression"`, `"readonly": true`. Component compiler evaluates conditions. Stencil components support `behavior.dependsOn`, `readonlyIf`, `mandatoryIf`. Client-side: `BcSetup.reactivity()` for imperative cross-field logic, `depend-on` prop for declarative cascading. | — |
 | 32 | Custom Validation Rules | ✅ | — | Process `validate` step with eq, neq, required operators. Client-side: 3-level validation (built-in props, custom JS validators, server-side validation). `BcSetup.registerValidator()` for named validators. | — |
 | 33 | Multi-Step Form / Wizard | ❌ | M | — | No wizard component. Need wizard JSON definition (steps + fields per step) + `bc-dialog-wizard` exists in Stencil but not wired to engine. |
