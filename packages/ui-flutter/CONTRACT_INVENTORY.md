@@ -161,7 +161,7 @@ High-value components from the P1 tier that lack a `flutter:` hint.
 | `BcViewerTiktok` | P1 | `src/components/media/viewer-tiktok/BcViewerTiktok.contract.ts` |
 | `BcViewerVideo` | P1 | `src/components/media/viewer-video/BcViewerVideo.contract.ts` |
 | `BcViewerYoutube` | P1 | `src/components/media/viewer-youtube/BcViewerYoutube.contract.ts` |
-| `BcWizard` | P1 | `src/components/overlays/wizard/BcWizard.contract.ts` |
+| `BcWizard` | P1 | `src/components/overlays/wizard/BcWizard.contract.ts` | ✅ Schema-driven steps, per-step validation (client/server/both), icon per step, skippable, onFinish(values), merged values, renderStepContent callback. Flutter parity in `bc_wizard.dart`. |
 
 ### P2 Contracts (need flutter hint)
 

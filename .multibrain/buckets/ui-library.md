@@ -6,6 +6,28 @@
 
 ---
 
+## 2026-07-01 — Wizard schema-driven multi-step form (Steps 1-4 complete)
+
+- **Step 1 (ui-schema):** Added `WizardStepSchema`, `WizardValidationMode` types + `'wizard'` to `UiSchemaKind` + `steps?: WizardStepSchema[]` to `UiSchema`. Barrels updated. 308/308 tests pass.
+- **Step 2 (web BcWizard):** Rewrote `BcWizard.lite.tsx` — per-step icon, schema-driven content via `renderStepContent` callback (ADR-005 §2 compositor, BcRenderer NOT imported directly), client+server validation (ADR-004 ValidationRule), `onFinish(mergedValues)`, `skippable`, `values`/`onValuesChange`. Contract updated with all new fields.
+  - **Mitosis compiler workarounds:** (a) removed `export interface` blocks from `.lite.tsx` — Babel's TS parser can't round-trip `=> any;` in interface function-type properties when collapsed to one line by Mitosis; (b) stripped ALL type annotations from `useStore` methods (Mitosis leaks them into compiled output); (c) used `renderStepContent` callback prop instead of direct BcRenderer import (Mitosis places imports mid-file).
+  - **Mitosis plugin fix:** Extended `reactFixesPlugin` step 5 in `mitosis-plugin-react-fixes.mjs` — added `)` → `const [` and `)` → `function` semicolon insertion (for multi-useState + useStore method patterns), added `export` to `}` → keyword regex, added `};` → newline before `function`/`export` (prevents Babel parse failure on collapsed interface+function on same line).
+  - **Build:** `mitosis build` 190 components, `reformat-react-output` 0 failures (was 1). Source tests 18/18 pass. RTL tests 2/2 pass (axe-core zero violations). Full suite: 2143/2143 source + 822/822 RTL pass.
+- **Step 3 (Flutter):** Updated `bc_wizard.dart` — `BcWizardStep` gains `icon`, `schema`, `validationMode`, `validationEndpoint`, `skippable`. `_BcWizardPageState` gains `_stepValues`, `_validating`, `_stepErrors`, client validation (`_validateField`/`_validateStepClient`), server validation (`_validateStepServer` via http.post), `_validateCurrentStep` cascade, `_handleNext`/`_handleFinish` async with validation, `_buildStepNode` renders icon via `_iconData`, `_buildContent` uses 3-arg `stepContentBuilder(index, step, values)`. 9/9 Flutter tests pass. 1950/1950 full Flutter suite pass.
+- **Step 4 (docs):** Removed "Wizard schema convention not yet authored" gap from block catalog. Updated `docs/components-progress.md` wizard row. Updated `CONTRACT_INVENTORY.md` Flutter wizard entry. Created `engine/docs/features/wizard.md`.
+- **Also fixed:** BcChatter.lite.tsx — moved `parseMentions` standalone function into `useStore` (same Mitosis limitation). This was another agent's WIP that broke the build. All 18 BcChatter source tests pass.
+- **Commits:** `88fd11f` (wizard web), `a003b6f` (chatter Mitosis fix), `c9438e9` (ui pointer bump), `e03327b` (wizard Flutter), `c48fcb7` (ui-schema types).
+
+## 2026-07-01 — CRITICAL FIX: vitest .web.tsx resolve.extensions (Droid)
+
+- **What:** The entire `packages/ui` vitest runtime test suite was BROKEN (171/182 test files failed, 733 tests failed) because `vitest.config.ts` was missing `.web.tsx`/`.web.ts`/`.web.jsx`/`.web.js` in `resolve.extensions`. Adapt components (BcLightbox, BcMap, BcWebcam, BcShare, BcGridView, BcNative*) use the `.web.tsx` extension per ADR-006 §3, and their entry `index.ts` does `export { BcLightbox } from './BcLightbox'` (extensionless). Vite's default extensions list does NOT include `.web.*`, so resolution failed for ANY test importing `@bitcode/ui` (which aliases to `output/react/src`).
+- **Root cause:** The Adapt entry `index.ts` comments say "Vite sees `extensions: ['.web.tsx', ...]`" — but that only holds in `demo-app/vite.config.ts`, NOT in `vitest.config.ts`. The vitest config was never updated when Adapt components were introduced (ADR-016 Phase 4, commit `9fbd97c`).
+- **Fix:** Added `extensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.tsx', '.ts', '.jsx', '.js', '.mjs', '.json']` to `vitest.config.ts` `resolve` block, mirroring `demo-app/vite.config.ts`.
+- **Verification:** Before = 733 fail / 89 pass. After = **822 pass / 0 fail / 13 skipped** (176 test files passed, 6 skipped). Single-test confirm: BcDataTable.rtl.test.tsx 38/38 pass.
+- **Commits:** `packages/ui` `77b94ff` (config fix) + root `658468a0` (submodule bump).
+- **Gotcha:** The bucket's prior claim "2131/2131 source tests pass" was TRUE but MISLEADING — `npm test` runs `node scripts/run-source-tests.mjs && vitest run`. The source tests (node --test) passed, but `vitest run` was completely broken. Always run BOTH halves of `npm test` and check vitest exit code separately.
+- **Note:** `npx tsc --noEmit` in packages/ui has PRE-EXISTING errors (rootDir/output inclusion, missing @types/react, .native.tsx node:test). These are unrelated to this fix and not introduced by it. The vitest.config.ts change is not even in the tsc `include` glob.
+
 ## 2026-07-01 — Agent cleanup and verification sweep
 
 **Status:** done

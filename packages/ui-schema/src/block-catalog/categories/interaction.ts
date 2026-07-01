@@ -121,7 +121,8 @@ const interactionMultiStepWizard: CandidateCatalogEntry = {
   decision: 'keep',
   matrixStatus: 'existing-component-needs-binding',
   gaps: [
-    'Wizard schema convention not yet authored.',
+    // Wizard schema convention now authored — WizardStepSchema in types.ts,
+    // BcWizard contract + impl in packages/ui, Flutter parity in ui-flutter.
     'Action lifecycle (ActionSource) not yet wired into ReactiveStore.runAction.',
     'Engine feature wiring remains ADR-014 scope where engine-backed.',
     'a11y evidence not yet produced.',
