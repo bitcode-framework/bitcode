@@ -215,7 +215,7 @@ Before the gap list — what's already **production-solid**:
 
 | # | Feature | Status | Effort | What Exists | What's Missing |
 |---|---------|--------|--------|-------------|----------------|
-| 63 | Comment & Mention | ❌ | M | — | No comment system per record. Need comment model + API + `bc-chatter` component exists in Stencil but not wired. |
+| 63 | Comment & Mention | ✅ | M | Comment service (`internal/runtime/comment/`) with polymorphic comments (commentable_type + commentable_id), threaded replies (parent_id), @mention parsing & resolution, notification creation on mention, WebSocket broadcast on create. HTTP handler at `/api/v1/:module/comments` (GET list, POST create, DELETE). Permission + record-rule enforcement (read/write/create/delete). Model-registry morph-type resolution. Wired in `app.go`. 17 tests (service + handler). | `bc-chatter` Stencil component exists but not wired to backend API. |
 | 64 | Activity Feed | ❌ | M | — | No activity feed. `bc-activity` and `bc-timeline` Stencil components exist but not wired. Need feed API + WebSocket integration. |
 | 65 | Email Inbox Integration | ❌ | XL | — | No email integration at all. Need IMAP client + email parsing + thread linking + SMTP send. |
 | 66 | Task / To-Do per Record | ❌ | M | — | No task/todo system. Need todo model + API + UI widget. |
@@ -280,7 +280,7 @@ Features most requested by users and blocking other features:
 - [ ] **#41** Export Data (CSV/Excel) — server-side export handler per model
 - [ ] **#57** 2FA (TOTP) — TOTP library + setup flow + verification middleware
 - [ ] **#59** Backup & Restore — db dump/restore commands + optional scheduling
-- [ ] **#63** Comment & Mention — comment model + API + wire `bc-chatter` component
+- [x] **#63** Comment & Mention — comment model + API + mention parsing/resolution + permission checks + threading + WebSocket broadcast. `bc-chatter` component wiring still pending.
 - [ ] **#67** In-App Notification — notification model + preferences + bell UI + WebSocket delivery
 
 ### Phase 3 — Visual Builders (6–8 weeks, effort L)

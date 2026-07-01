@@ -141,6 +141,10 @@ engine/
 │   │   ├── dynamic_finder_test.go              # 24 tests for dynamic finder parsing
 │   │   └── plugin/
 │   │       └── manager.go                      # Plugin manager — spawn TS/Python processes, JSON-RPC over stdin/stdout
+│   │   ├── comment/
+│   │   │   ├── service.go                      # Comment service — Create (mention parse + resolve + notify), ListByRecord (paginated), Delete (soft), EnsureTables, ResolveMentions, recordFromMap
+│   │   │   ├── mention.go                      # Mention parser — @username extraction (email-aware, dedup, boundary-safe), ResolveMentions (batch user lookup)
+│   │   │   └── service_test.go                 # 13 tests — parse mentions (edge cases), resolve, create+notify, list by record
 │   │
 │   ├── infrastructure/                         # External concerns
 │   │   ├── persistence/
@@ -229,7 +233,9 @@ engine/
 │       │   ├── swagger.go                      # SwaggerGenerator — auto-generates OpenAPI 3.0 spec from model + API definitions. Swagger UI at /api/v1/docs
 │       │   ├── auth_handler.go                 # POST /auth/login, /register, /logout, /2fa/enable, /2fa/disable, /2fa/validate
 │       │   ├── upload_handler.go               # Legacy upload handler (replaced by file_handler)
-│       │   └── file_handler.go                 # FileHandler — upload, download, list, delete, versions, resize, thumbnail
+│       │   ├── file_handler.go                 # FileHandler — upload, download, list, delete, versions, resize, thumbnail
+│       │   ├── comment_handler.go              # CommentHandler — polymorphic comments per record, threaded replies, @mention parsing, permission + record rule enforcement
+│       │   └── comment_handler_test.go         # 5 tests (create+list, threading, missing record_id, empty body, permission denied)
 │       ├── middleware/
 │       │   ├── auth.go                         # JWT validation, user context injection, impersonated_by extraction
 │       │   ├── permission.go                   # Permission checking via PermissionChecker interface (ModelAccess-based)

@@ -1,5 +1,20 @@
 # AGENTS.md — BitCode Platform
 
+## Multi Brain (MANDATORY — read before starting work)
+
+- Read `.multibrain/session.md` before starting work.
+- Use `.multibrain/session.md` as the master index only.
+- Open only the `.multibrain/buckets/*.md` files that match the current task.
+- Open `.multibrain/context/*.md` only when the selected bucket points to deeper context that matters.
+- After meaningful work, update the relevant named bucket and refresh the master index if needed.
+
+## Code Search: bit-rag MCP (MANDATORY — use before Grep)
+
+- Use `bit-rag___rag_search_code` with `root_path="D:\NodeJS\lowcode"` for ALL code search.
+- bit-rag has hybrid search (dense + BM25 keyword + RRF fusion) — handles both semantic and identifier queries.
+- If search returns "Indexing started" (new/changed project), use Grep as fallback while indexing completes.
+- Do NOT use ccc (`.cocoindex_code/` is legacy — bit-rag replaces it).
+
 ## Understanding the Project
 
 Read these docs **before** making any changes:
@@ -272,6 +287,29 @@ All 11 locale files must be provided for every module that has user-facing text.
 
 > **Full roadmap with 75 features**: see [`docs/features.md`](docs/features.md)
 
+## Multi-Brain Session Memory (ALWAYS ACTIVE)
+
+Lightweight cross-session memory system. Lives in `.multibrain/`. Complements (does not replace) the JCE `.opencode-context.md` + `.opencode-jce/context/` system and the `handoffs/` folder.
+
+**When `.multibrain/session.md` exists (it does now):**
+- **Session start:** Read `.multibrain/session.md` first. Then open only the bucket file(s) matching the current task. Do not open all buckets.
+- **After meaningful work:** Append ONE short entry (date + 3–8 bullets) to the matching bucket file. Update the bucket's "Last touched" line and the master `.multibrain/INDEX.md` if status changed.
+- **Bucket selection:** Match the task to a bucket. If a task spans buckets, write the primary entry to the most relevant bucket and add a one-line cross-reference in the secondary bucket.
+
+**Buckets (see `.multibrain/INDEX.md` for live status):**
+- `ui-library` — `packages/ui` Mitosis components, ADR-007/008/009/010/013, contract-first freeze
+- `engine` — Go engine, runtime, JSON definitions, modules, persistence
+- `flutter` — `packages/ui-flutter` adapter, token bridge, FPW adaptive, demo parity
+- `offline-mode` — Tauri shell, sync engine, `bc-native` bridge, `_off_*` tables
+- `adr` — Architecture Decision Records (active frontier: ADR-017/018 Block Catalog)
+- `demo-app` — `packages/ui/demo-app` + `packages/ui-flutter/example` parity sweeps
+
+**Rules:**
+- One file per bucket; append-only within a bucket (never overwrite past entries).
+- Never delete bucket files or the archive. Move resolved entries to `.multibrain/archive/` only when a bucket exceeds ~50 entries.
+- Multi-brain is for AI session context, not human docs. Human-facing docs still go to `docs/`, `engine/docs/features/`, and `handoffs/`.
+- If another agent is working a different feature, do not remove or rewrite their bucket entries — append your own with a date.
+
 ## Session Handoff
 
 Ketika pekerjaan perlu dilanjutkan di session baru (context terlalu panjang, ganti hari, atau perlu fresh session), gunakan folder `handoffs/` untuk menyimpan konteks handoff.
@@ -326,7 +364,7 @@ go test ./... -v          # All go-json tests
 go test ./lang/ -v        # Language engine tests only
 ```
 
-Current: 570 Go engine tests + 82 go-json tests + 74 Stencil tests, 0 failures. Build: OK.
+Current: 588 Go engine tests + 82 go-json tests + 74 Stencil tests, 0 failures. Build: OK.
 
 ## Build
 
