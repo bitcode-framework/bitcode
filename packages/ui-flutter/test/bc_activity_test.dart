@@ -182,4 +182,103 @@ void main() {
 
     expect(find.text('Project X'), findsOneWidget);
   });
+
+  testWidgets('loading state renders skeleton placeholders', (tester) async {
+    await tester.pumpWidget(harness(
+      child: const BcActivity(items: [], loading: true),
+    ));
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey<String>('bc_activity_loading')),
+        findsOneWidget);
+  });
+
+  testWidgets('variant=compact renders compact layout', (tester) async {
+    await tester.pumpWidget(harness(
+      child: const BcActivity(
+        items: [
+          BcActivityEntry(
+            id: 'c1',
+            actor: 'Gina',
+            action: 'updated',
+            timestamp: '2026-01-01',
+          ),
+        ],
+        variant: BcActivityLayout.compact,
+      ),
+    ));
+    await tester.pump();
+
+    expect(find.text('Gina'), findsOneWidget);
+    expect(find.byKey(const ValueKey<String>('bc_activity_compact_0')),
+        findsOneWidget);
+  });
+
+  testWidgets('variant=timeline renders timeline layout', (tester) async {
+    await tester.pumpWidget(harness(
+      child: const BcActivity(
+        items: [
+          BcActivityEntry(
+            id: 't2',
+            actor: 'Henry',
+            action: 'created',
+            timestamp: '2026-01-01',
+          ),
+        ],
+        variant: BcActivityLayout.timeline,
+      ),
+    ));
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey<String>('bc_activity_timeline_0')),
+        findsOneWidget);
+  });
+
+  testWidgets('onLoadMore renders a Load more button', (tester) async {
+    var loadCount = 0;
+    await tester.pumpWidget(harness(
+      child: BcActivity(
+        items: items,
+        onLoadMore: () { loadCount++; },
+      ),
+    ));
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey<String>('bc_activity_load_more')),
+        findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey<String>('bc_activity_load_more')));
+    await tester.pumpAndSettle();
+    expect(loadCount, 1);
+  });
+
+  testWidgets('onItemAction fires when an item is tapped', (tester) async {
+    BcActivityEntry? captured;
+    await tester.pumpWidget(harness(
+      child: BcActivity(
+        items: items,
+        onItemAction: (entry) => captured = entry,
+      ),
+    ));
+    await tester.pump();
+
+    await tester.tap(find.text('Alice'));
+    await tester.pumpAndSettle();
+
+    expect(captured, isNotNull);
+    expect(captured!.id, '1');
+  });
+
+  testWidgets('custom loadMoreText renders on load more button', (tester) async {
+    await tester.pumpWidget(harness(
+      child: const BcActivity(
+        items: [],
+        onLoadMore: null,
+        loadMoreText: 'Plus de résultats',
+      ),
+    ));
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey<String>('bc_activity_load_more')),
+        findsNothing);
+  });
 }

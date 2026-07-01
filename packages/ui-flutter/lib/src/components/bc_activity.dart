@@ -1,8 +1,11 @@
 library bc_activity;
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:http/http.dart' as http;
 import '../core/types.dart';
 import '../theme/bc_theme.dart';
 
@@ -17,12 +20,38 @@ import '../theme/bc_theme.dart';
 /// VAL-M6-020: tapping an item emits onItemClick with item id and a
 /// BcChangeMeta (pointer source). When disabled, no callback fires. Items
 /// without an id do not crash the handler.
+///
+/// ADR-008 upgraded surface: [dataSource] declarative fetch, [loading]
+/// skeleton, [onLoadMore] pagination, [variant] layout (timeline/feed/compact),
+/// [onItemAction] item click.
 class BcActivity extends StatefulWidget {
   final List<BcActivityEntry> items;
   final bool disabled;
   final String emptyText;
   final Widget? emptyState;
   final BcChangeHandler<String>? onItemClick;
+
+  /// Layout variant: timeline (avatar + gaps), feed (default), compact (dense).
+  final BcActivityLayout variant;
+
+  /// When true, renders skeleton placeholder rows instead of data.
+  final bool loading;
+
+  /// Declarative data-source binding. When provided, the widget fetches
+  /// entries from the engine activity API on init.
+  final BcActivityDataSource? dataSource;
+
+  /// Called when the user taps the "Load more" affordance.
+  /// Pagination callback — invoked when the user taps the "Load more" button.
+  /// Declared as `void Function()` (not `Future<void>`) so simple synchronous
+  /// callbacks (e.g. `() => page++`) work without an async wrapper.
+  final void Function()? onLoadMore;
+
+  /// Called when the user taps an activity entry. Receives the full entry.
+  final void Function(BcActivityEntry entry)? onItemAction;
+
+  /// Label for the "Load more" button.
+  final String loadMoreText;
 
   const BcActivity({
     super.key,
@@ -31,6 +60,12 @@ class BcActivity extends StatefulWidget {
     this.emptyText = 'No activity',
     this.emptyState,
     this.onItemClick,
+    this.variant = BcActivityLayout.feed,
+    this.loading = false,
+    this.dataSource,
+    this.onLoadMore,
+    this.onItemAction,
+    this.loadMoreText = 'Load more',
   });
 
   @override
@@ -38,6 +73,84 @@ class BcActivity extends StatefulWidget {
 }
 
 class _BcActivityState extends State<BcActivity> {
+  List<BcActivityEntry> _fetched = const [];
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.dataSource != null) {
+      _fetchFromDataSource();
+    }
+  }
+
+  Future<void> _fetchFromDataSource() async {
+    final ds = widget.dataSource;
+    if (ds == null) return;
+    setState(() => _isLoading = true);
+    try {
+      final entries = await _fetchActivity(ds);
+      if (mounted) {
+        setState(() {
+          _fetched = entries;
+          _isLoading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<List<BcActivityEntry>> _fetchActivity(BcActivityDataSource ds) async {
+    final uri = Uri.parse(ds.endpoint ?? '/api/v1/activity');
+    final params = Map<String, String>.from(ds.params ?? {});
+    if (ds.model != null) params['model'] = ds.model!;
+    if (ds.recordId != null) params['record_id'] = ds.recordId!;
+    final url = uri.replace(queryParameters: {
+      ...uri.queryParameters,
+      ...params,
+    });
+    final resp = await http.get(url, headers: {'Accept': 'application/json'});
+    if (resp.statusCode < 200 || resp.statusCode >= 300) {
+      return const [];
+    }
+    final body = jsonDecode(resp.body);
+    final data = body is Map ? body['data'] : body;
+    if (data is! List) return const [];
+    return data
+        .map((e) => BcActivityEntry(
+              id: (e['id'] ?? '').toString(),
+              actor: (e['actor'] ?? '').toString(),
+              action: (e['verb'] ?? e['action'] ?? '').toString(),
+              timestamp: (e['timestamp'] ?? '').toString(),
+              target: e['target']?.toString(),
+              variant: _parseVariant(e['variant']),
+            ))
+        .toList();
+  }
+
+  BcActivityVariant _parseVariant(dynamic v) {
+    switch (v) {
+      case 'success':
+        return BcActivityVariant.success;
+      case 'warning':
+        return BcActivityVariant.warning;
+      case 'destructive':
+        return BcActivityVariant.destructive;
+      case 'info':
+        return BcActivityVariant.info;
+      default:
+        return BcActivityVariant.defaultVariant;
+    }
+  }
+
+  List<BcActivityEntry> get _effectiveItems {
+    if (widget.items.isNotEmpty) return widget.items;
+    return _fetched;
+  }
+
+  bool get _showLoading => widget.loading || (widget.dataSource != null && _isLoading);
+
   Color _variantColor(BcActivityVariant variant) {
     switch (variant) {
       case BcActivityVariant.success:
@@ -77,6 +190,7 @@ class _BcActivityState extends State<BcActivity> {
         source: BcEventSource.pointer,
       ),
     );
+    widget.onItemAction?.call(entry);
   }
 
   Widget _buildAvatar(BcActivityEntry entry) {
@@ -103,8 +217,9 @@ class _BcActivityState extends State<BcActivity> {
   }
 
   Widget _buildItem(BcActivityEntry entry, int index) {
+    final variantKey = 'bc_activity_${widget.variant.name}_$index';
     final content = Container(
-      key: ValueKey<String>('bc_activity_item_${entry.id}_$index'),
+      key: ValueKey<String>(variantKey),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.transparent,
@@ -211,9 +326,125 @@ class _BcActivityState extends State<BcActivity> {
     );
   }
 
+  Widget _buildSkeletonItem() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        border: Border.all(color: BcTheme.border),
+        borderRadius: const BorderRadius.all(Radius.circular(BcTheme.radius)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: BcTheme.muted,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 12,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: BcTheme.muted,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  height: 10,
+                  width: 120,
+                  decoration: BoxDecoration(
+                    color: BcTheme.muted,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadMore() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: SizedBox(
+        width: double.infinity,
+        child: PlatformWidget(
+          material: (ctx, _) => Material(
+            color: BcTheme.muted,
+            borderRadius: const BorderRadius.all(Radius.circular(BcTheme.radius)),
+            child: InkWell(
+              key: const ValueKey<String>('bc_activity_load_more'),
+              onTap: widget.onLoadMore,
+              borderRadius:
+                  const BorderRadius.all(Radius.circular(BcTheme.radius)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text(
+                  widget.loadMoreText,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: BcTheme.mutedForeground,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          cupertino: (ctx, _) => CupertinoButton(
+            key: const ValueKey<String>('bc_activity_load_more'),
+            onPressed: widget.onLoadMore,
+            color: BcTheme.muted,
+            minimumSize: Size.zero,
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              widget.loadMoreText,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: BcTheme.mutedForeground,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (widget.items.isEmpty) {
+    if (_showLoading) {
+      return Semantics(
+        container: true,
+        label: 'Loading activity',
+        child: Column(
+          key: const ValueKey<String>('bc_activity_loading'),
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var i = 0; i < 3; i++)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _buildSkeletonItem(),
+              ),
+          ],
+        ),
+      );
+    }
+
+    final items = _effectiveItems;
+    if (items.isEmpty) {
       return widget.emptyState ??
           Center(
             key: const ValueKey<String>('bc_activity_empty'),
@@ -227,17 +458,23 @@ class _BcActivityState extends State<BcActivity> {
           );
     }
 
+    final children = <Widget>[
+      for (var i = 0; i < items.length; i++)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: _buildItem(items[i], i),
+        ),
+    ];
+
+    if (widget.onLoadMore != null) {
+      children.add(_buildLoadMore());
+    }
+
     return Semantics(
       container: true,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var i = 0; i < widget.items.length; i++)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: _buildItem(widget.items[i], i),
-            ),
-        ],
+        children: children,
       ),
     );
   }
