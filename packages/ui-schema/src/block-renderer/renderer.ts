@@ -118,6 +118,16 @@ export class BlockRenderer {
   }
 
   /**
+   * Read-only access to the renderer's deps. Platform bindings use this to
+   * access the component registry when setting up their own resolver slots
+   * (e.g., the web BcBlockRenderer reads componentRegistry to resolve
+   * framework components for ComponentRenderPlan).
+   */
+  getDeps(): Readonly<BlockRendererDeps> {
+    return this.deps;
+  }
+
+  /**
    * Resolve a BlockNode tree into a ResolvedBlockTree of render plans.
    *
    * Never throws: failures are captured as DiagnosticPlan entries + non-fatal
