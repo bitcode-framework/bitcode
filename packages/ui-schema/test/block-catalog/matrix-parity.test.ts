@@ -44,12 +44,12 @@ test('matrix-parity: matrix baseline is accepted-baseline v0.1.0', () => {
   assert.equal(matrix.status, 'accepted-baseline');
 });
 
-test('matrix-parity: candidate count matches matrix (44)', () => {
-  assert.equal(matrix.candidates.length, 44, 'matrix must have 44 candidates');
+test('matrix-parity: candidate count matches matrix (46)', () => {
+  assert.equal(matrix.candidates.length, 46, 'matrix must have 46 candidates');
   assert.equal(
     ALL_CANDIDATE_ENTRIES.length,
-    44,
-    'seed must have exactly 44 entries',
+    46,
+    'seed must have exactly 46 entries',
   );
 });
 

@@ -168,6 +168,9 @@ export const PLATFORM_AUDIT: Readonly<Record<string, PlatformAuditEntry>> = {
   BcChatter: { web: true, flutter: true, flutterKey: 'bc_chatter' },
   BcNotificationCenter: { web: true, flutter: true, flutterKey: 'bc_notification_center' },
   BcNotificationItem: { web: true, flutter: true, flutterKey: 'bc_notification_item' },
+  BcPivot: { web: true, flutter: true, flutterKey: 'bc_pivot' },
+  BcBuilder: { web: true, flutter: false, flutterKey: '' },
+  BcFormBuilder: { web: true, flutter: true, flutterKey: 'bc_form_builder' },
   BcComment: { web: true, flutter: true, flutterKey: 'bc_comment' },
   BcMentions: { web: true, flutter: true, flutterKey: 'bc_mentions' },
 
