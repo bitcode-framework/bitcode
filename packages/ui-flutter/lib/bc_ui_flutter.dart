@@ -285,6 +285,7 @@ export 'src/components/bc_kpi.dart';
 export 'src/renderer/bc_field_builder.dart';
 export 'src/renderer/bc_data_source_loader.dart';
 export 'src/renderer/bc_renderer.dart';
+export 'src/spa_runtime.dart';
 
 // Portable Expression AST (ADR-018 S5-S6) - Dart mirror of the TS package.
 // Pure types + validator + scope + manifest. No widgets, no I/O.

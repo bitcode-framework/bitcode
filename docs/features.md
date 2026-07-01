@@ -246,7 +246,7 @@ The `@bitcode/components` Stencil library (122 components across 11 groups) prov
 
 **Theme system**: `BcSetup.setTheme('light'|'dark'|'system')` / `onThemeChange()` / `setRtl()`. CSS custom properties (80+ tokens). `light.css` + `dark.css` theme files.
 
-**Key gap**: Components are built but the engine primarily uses SSR (Go templates). Full SPA mode with client-side component rendering is not yet implemented.
+**Key gap**: Components are built and the SPA mode foundation is now in place (`render: "spa"` + JSON envelope). Full SPA coverage of all view types is incremental (Phase 3+).
 
 ---
 
@@ -324,7 +324,7 @@ Enterprise-grade capabilities:
 - [ ] **AGENTS.md** Redis cache wiring — wire into permission checker and query result cache
 - [ ] **AGENTS.md** NATS event bus — replace in-process bus for distributed deployments
 - [ ] **AGENTS.md** Marketplace — community module sharing
-- [ ] **SPA Mode** — full client-side rendering using Stencil components (currently SSR only)
+- [x] **SPA Mode** (Phase 2 — Foundation) — `view.json { "render": "spa" }` returns a JSON envelope `{ view, data, meta }` instead of HTML; client runtimes in `packages/ui` (web/Mitosis) and `packages/ui-flutter` (Flutter) fetch the envelope and render via the existing BcRenderer + ReactiveStore. SSR is the default and stays fully backwards compatible. See `engine/docs/features/spa-mode.md`. 11 engine tests, 13 web tests, 28 Flutter tests, 100% passing.
 
 ---
 

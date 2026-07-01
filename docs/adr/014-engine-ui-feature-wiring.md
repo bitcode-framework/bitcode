@@ -233,9 +233,11 @@ core refaktor stabilizes** (estimated Week 2).
 - [ ] At least 1 engine test per feature (handler + integration)
 
 ### Phase 2 (SPA Foundation)
-- [ ] `view.json` `{ "render": "spa" }` flag respected
-- [ ] BcRenderer client runtime renders component tree from JSON
-- [ ] SSR mode unchanged (backwards compatible)
+- [x] `view.json` `{ "render": "spa" }` flag respected — engine parser accepts `Render` field on `ViewDefinition` with `RenderSSR`/`RenderSPA` constants
+- [x] BcRenderer client runtime renders component tree from JSON — `packages/ui/src/spa-runtime.ts` (web/Mitosis) + `packages/ui-flutter/lib/src/spa_runtime.dart` (Flutter) fetch envelope, map to `UiSchema`, build `BcRendererProps` + `ReactiveStore`
+- [x] SSR mode unchanged (backwards compatible) — `view.IsSPAMode` predicate returns true only for `"spa"`; views with `render:"ssr"` or no `render` continue to return HTML
+- [x] Engine SPA envelope = `{ view, data, meta }` (data-parity with SSR enforced by `TestDataParity_SPAEqualsSSR_FormView`)
+- [x] Test coverage: 11 engine tests, 13 web tests, 28 Flutter tests, 100% passing
 
 ### Phase 3 (New Components)
 - [ ] `POST /api/v1/{module}/{model}/pivot` endpoint
