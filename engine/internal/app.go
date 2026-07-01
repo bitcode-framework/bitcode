@@ -1320,6 +1320,24 @@ func (a *App) handleViewGet(c *fiber.Ctx) error {
 	menu := a.buildMenu(moduleName)
 	activeView := moduleName + "/" + viewPath
 
+	if view.IsSPAMode(entry.Def) {
+		opts := view.RenderOptions{
+			Module:     moduleName,
+			Username:   username,
+			ViewPath:   moduleName + "/" + viewPath,
+			RecordID:   c.Query("id"),
+			Page:       c.QueryInt("page", 1),
+			Locale:     locale,
+			ActiveView: activeView,
+		}
+		envelope, err := a.ViewRenderer.RenderSPAEnvelope(c.Context(), entry.Def, opts)
+		if err != nil {
+			return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		}
+		c.Set("Content-Type", "application/json; charset=utf-8")
+		return c.JSON(envelope)
+	}
+
 	opts := view.RenderOptions{
 		Module:       moduleName,
 		Username:     username,

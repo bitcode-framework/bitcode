@@ -8,6 +8,8 @@ import (
 
 type ViewType string
 
+type RenderMode string
+
 const (
 	ViewList     ViewType = "list"
 	ViewForm     ViewType = "form"
@@ -20,6 +22,11 @@ const (
 	ViewTree     ViewType = "tree"
 	ViewActivity ViewType = "activity"
 	ViewReport   ViewType = "report"
+)
+
+const (
+	RenderSSR RenderMode = "ssr"
+	RenderSPA RenderMode = "spa"
 )
 
 type ActionDefinition struct {
@@ -111,6 +118,7 @@ type LayoutItem struct {
 	Rows       []LayoutItem            `json:"rows,omitempty"`
 	ChildTable *ChildTableDefinition   `json:"child_table,omitempty"`
 	Chatter    bool                    `json:"chatter,omitempty"`
+	Activity   bool                    `json:"activity,omitempty"`
 	Separator  *SeparatorDefinition    `json:"separator,omitempty"`
 }
 
@@ -138,6 +146,8 @@ type ViewDefinition struct {
 	StartField  string                          `json:"start_field,omitempty"`
 	EndField    string                          `json:"end_field,omitempty"`
 	ParentField string                          `json:"parent_field,omitempty"`
+	Exportable  bool                            `json:"exportable,omitempty"`
+	Render      RenderMode                      `json:"render,omitempty"`
 }
 
 func ParseView(data []byte) (*ViewDefinition, error) {
@@ -153,6 +163,10 @@ func ParseView(data []byte) (*ViewDefinition, error) {
 	}
 	if view.Type == ViewCustom && view.Template == "" {
 		return nil, fmt.Errorf("custom view requires a template")
+	}
+
+	if view.Render != "" && view.Render != RenderSSR && view.Render != RenderSPA {
+		return nil, fmt.Errorf("invalid render mode %q: must be %q or %q", view.Render, RenderSSR, RenderSPA)
 	}
 
 	resolveTabFilterBy(&view)

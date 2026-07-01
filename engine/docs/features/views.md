@@ -191,6 +191,17 @@ curl http://localhost:8080/app/crm/lead_list
 curl http://localhost:8080/app/sales/order_form
 ```
 
+### SPA Mode (opt-in)
+
+Add `"render": "spa"` to a view to swap SSR for a JSON envelope. The engine
+loads the same data as SSR, then returns `{ view, data, meta }` with
+`Content-Type: application/json`. A client runtime (web or Flutter) consumes
+the envelope and renders via the portable BcRenderer + ReactiveStore. SSR
+remains the default and is fully backwards compatible.
+
+See `engine/docs/features/spa-mode.md` for the full contract, mapping rules,
+and test coverage.
+
 ## Action Options
 
 | Option | Type | Description |

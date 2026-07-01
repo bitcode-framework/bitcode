@@ -37,6 +37,7 @@ type RenderOptions struct {
 	ActiveView   string
 	RecordID     string
 	Page         int
+	Locale       string
 }
 
 type ProcessExecutor interface {
