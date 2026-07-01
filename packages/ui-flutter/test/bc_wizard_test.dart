@@ -36,9 +36,9 @@ void main() {
                     defaultStep: defaultStep,
                     canAdvance: canAdvance,
                     onStepChange: onStepChange,
-                    onFinish: onFinish,
+                    onFinishLegacy: onFinish,
                     onCancel: onCancel,
-                    stepContentBuilder: stepContentBuilder,
+                    stepContentBuilderLegacy: stepContentBuilder,
                   );
                 },
                 child: const Text('Open'),
