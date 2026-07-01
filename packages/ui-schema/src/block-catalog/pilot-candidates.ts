@@ -1,9 +1,11 @@
 // ============================================================================
 // @bitcode/ui-schema — Block Catalog Pilot Candidate Analysis (ADR-017)
 //
-// ANALYSIS ONLY. This does NOT promote any entry to Ready. It identifies
-// which candidates are the strongest FIRST Ready-promotion targets once P4
-// (BcBlockRenderer + validator) and schema-preset authoring land.
+// ANALYSIS ONLY. This module identifies which candidates are the strongest
+// FIRST Ready-promotion targets. The pilot entries (content.plain-text and
+// content.faq) have NOW BEEN PROMOTED to Ready — see ready-promotions.ts.
+// Their pilot records remain here as historical documentation of the blockers
+// that were resolved.
 //
 // Selection criteria (all must hold):
 //   1. renderStrategy = 'schema' (component-strategy needs a registered impl).

@@ -77,12 +77,12 @@ const contentPlainTextReady: BlockCatalogEntry = {
   readiness: 'ready',
   a11yEvidence: {
     contract: 'Semantic landmark section with a labelled textarea; heading hierarchy via section title.',
-    testReference: 'test/block-catalog/ready-promotions.test.ts',
+    testReference: 'packages/ui/demo-app/src/demos/block-catalog/ReadyCatalogRender.tsx',
     wcagLevel: 'AA',
   },
   tests: {
-    schema: 'test/block-catalog/ready-promotions.test.ts',
-    web: 'packages/ui/demo-app/src/demos/plain-text.tsx',
+    schema: 'packages/ui-schema/test/block-catalog/ready-promotions.test.ts',
+    web: 'packages/ui/demo-app/src/demos/block-catalog/ReadyCatalogRender.tsx',
     flutter: 'packages/ui-flutter/test/actions/source_test.dart',
   },
 };
@@ -147,12 +147,12 @@ const contentFaqReady: BlockCatalogEntry = {
   a11yEvidence: {
     contract:
       'Accordion/disclosure semantics with keyboard operability; heading hierarchy via section title; list semantics for FAQ items.',
-    testReference: 'test/block-catalog/ready-promotions.test.ts',
+    testReference: 'packages/ui/demo-app/src/demos/block-catalog/ReadyCatalogRender.tsx',
     wcagLevel: 'AA',
   },
   tests: {
-    schema: 'test/block-catalog/ready-promotions.test.ts',
-    web: 'packages/ui/demo-app/src/demos/faq.tsx',
+    schema: 'packages/ui-schema/test/block-catalog/ready-promotions.test.ts',
+    web: 'packages/ui/demo-app/src/demos/block-catalog/ReadyCatalogRender.tsx',
     flutter: 'packages/ui-flutter/test/actions/effect_runner_test.dart',
   },
 };

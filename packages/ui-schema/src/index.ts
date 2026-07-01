@@ -141,6 +141,13 @@ export {
   candidateInteractionNotificationCenter,
 } from './block-catalog/index.ts';
 
+// Ready promotions — the first production-Ready catalog entries (ADR-017/018).
+export {
+  READY_CATALOG_ENTRIES,
+  READY_COUNT,
+  getReadyEntryById,
+} from './block-catalog/index.ts';
+
 // ============================================================================
 // Deep Block Catalog Validator (ADR-017 §8, plan §7, Agent I)
 //
