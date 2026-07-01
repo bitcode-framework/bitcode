@@ -33,33 +33,38 @@ sealed class ActionEffect {
     switch (rawType) {
       case 'setValue':
         final path = json['path'];
-        if (path is! String)
+        if (path is! String) {
           throw const FormatException('setValue.path must be a string.');
+        }
         return SetValueEffect(path: path, value: json['value']);
       case 'setMeta':
         final path = json['path'];
-        if (path is! String)
+        if (path is! String) {
           throw const FormatException('setMeta.path must be a string.');
+        }
         return SetMetaEffect(
           path: path,
           meta: Map<String, dynamic>.from(json['meta'] as Map? ?? const {}),
         );
       case 'setError':
         final path = json['path'];
-        if (path is! String)
+        if (path is! String) {
           throw const FormatException('setError.path must be a string.');
+        }
         return SetErrorEffect(path: path, error: json['error']);
       case 'refreshDataSource':
         final key = json['key'];
-        if (key is! String)
+        if (key is! String) {
           throw const FormatException(
             'refreshDataSource.key must be a string.',
           );
+        }
         return RefreshDataSourceEffect(key: key);
       case 'invalidateKey':
         final key = json['key'];
-        if (key is! String)
+        if (key is! String) {
           throw const FormatException('invalidateKey.key must be a string.');
+        }
         return InvalidateKeyEffect(key: key);
       case 'toast':
         final level = json['level'];
@@ -76,8 +81,9 @@ sealed class ActionEffect {
         );
       case 'navigate':
         final to = json['to'];
-        if (to is! String)
+        if (to is! String) {
           throw const FormatException('navigate.to must be a string.');
+        }
         return NavigateEffect(
           to: to,
           replace: json['replace'] as bool?,
@@ -92,8 +98,9 @@ sealed class ActionEffect {
         );
       case 'emit':
         final event = json['event'];
-        if (event is! String)
+        if (event is! String) {
           throw const FormatException('emit.event must be a string.');
+        }
         return EmitEffect(event: event, payload: json['payload']);
       default:
         throw FormatException("Unknown action effect type '$rawType'.");

@@ -34,8 +34,9 @@ sealed class ActionSource {
         return LocalActionSource(effects: effects);
       case 'handler':
         final handlerKey = json['handlerKey'];
-        if (handlerKey is! String)
+        if (handlerKey is! String) {
           throw const FormatException('handlerKey must be a string.');
+        }
         return HandlerActionSource(handlerKey: handlerKey);
       case 'url':
         final method = json['method'];

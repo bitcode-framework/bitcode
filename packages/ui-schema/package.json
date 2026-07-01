@@ -43,7 +43,8 @@
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "node scripts/run-tests.mjs"
+    "test": "node scripts/run-tests.mjs",
+    "validate-catalog": "node --experimental-strip-types scripts/validate-catalog.mjs"
   },
   "devDependencies": {
     "@types/node": "^26.0.1",

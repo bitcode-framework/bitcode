@@ -297,3 +297,6 @@ export 'src/actions/actions.dart';
 // Types, registry interface, renderer contract only. The full Flutter
 // BcBlockRenderer widget + Dart engine port is a dedicated follow-up.
 export 'src/block_renderer/block_renderer.dart';
+
+// Ready Block Catalog runtime registration (ADR-017 §5).
+export 'src/block_renderer/ready_catalog.dart';

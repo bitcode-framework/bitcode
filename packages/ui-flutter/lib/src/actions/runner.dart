@@ -244,17 +244,20 @@ class ActionRunner {
     final completer = Completer<Object?>();
     late Timer timer;
     void onAbort() {
-      if (!completer.isCompleted)
+      if (!completer.isCompleted) {
         completer.completeError(const ActionAbortedException());
+      }
       timer.cancel();
     }
 
-    if (signal.aborted)
+    if (signal.aborted) {
       return Future<Object?>.error(const ActionAbortedException());
+    }
     signal.addListener(onAbort);
     timer = Timer(Duration(milliseconds: timeoutMs), () {
-      if (!completer.isCompleted)
+      if (!completer.isCompleted) {
         completer.completeError(ActionTimeoutException(timeoutMs));
+      }
     });
     run()
         .then((value) {
@@ -271,11 +274,15 @@ class ActionRunner {
   }
 
   ActionAdapter _resolveAdapter(ActionSource action) {
-    if (action is HandlerActionSource)
+    if (action is HandlerActionSource) {
       return deps.customRegistry.resolve(action.handlerKey)!;
-    if (action is UrlActionSource) return deps.adapterRegistry.resolve('url')!;
-    if (action is ModelActionSource)
+    }
+    if (action is UrlActionSource) {
+      return deps.adapterRegistry.resolve('url')!;
+    }
+    if (action is ModelActionSource) {
       return deps.adapterRegistry.resolve(action.adapter ?? 'model')!;
+    }
     throw StateError(
       "resolveAdapter: unsupported source type '${action.type}'.",
     );
