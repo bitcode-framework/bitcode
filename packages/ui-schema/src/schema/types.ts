@@ -28,8 +28,57 @@ import type { DataSource } from '../types.ts';
  *                    `<div data-bc-renderer-custom={name}>` sentinel that
  *                    consumers replace via DOM portal or by pre-processing
  *                    the schema into known node types.
+ *   - `'wizard'`  -> multi-step form (ADR-005 §1). Each step carries its own
+ *                    `UiSchema` form fragment in `steps[]`. The renderer
+ *                    composes `<BcWizard>` + `<BcRenderer>` per step, with
+ *                    per-step validation (client, server, or both) and a
+ *                    finish callback/action.
  */
-export type UiSchemaKind = 'form' | 'list' | 'detail' | 'section' | 'grid' | 'custom';
+export type UiSchemaKind = 'form' | 'list' | 'detail' | 'section' | 'grid' | 'custom' | 'wizard';
+
+/**
+ * Validation mode for a wizard step (ADR-005 + ADR-004).
+ *
+ * - `'client'` — validate using ReactiveStore's ValidationRule set (ADR-004
+ *   VALIDATION effect). No network round-trip. Default.
+ * - `'server'` — delegate validation to a server endpoint. The endpoint URL
+ *   is provided by `WizardStepSchema.validationEndpoint` or
+ *   `WizardStepSchema.validationAction`. The wizard blocks advance until the
+ *   server returns `ok: true`.
+ * - `'both'` — run client-side rules first; if they pass, send to server.
+ *   Combines instant feedback with authoritative server validation.
+ */
+export type WizardValidationMode = 'client' | 'server' | 'both';
+
+/**
+ * A single step in a wizard schema (ADR-005 `kind: 'wizard'`).
+ *
+ * Each step carries its own form fragment (`schema?: UiSchema`) rendered by
+ * BcRenderer. The wizard validates the step before allowing advance, using
+ * `validationMode` to determine client/server/both. The `icon` field allows
+ * per-step iconography (ADR-007 contract surface).
+ *
+ * When `schema` is omitted the step renders via the wizard's default slot —
+ * this preserves backward compatibility with the slot-based BcWizard API.
+ */
+export interface WizardStepSchema {
+  title: string;
+  description?: string;
+  /** Icon name/identifier per ADR-007 icon convention. */
+  icon?: string;
+  /** Form fragment for this step. Rendered by BcRenderer (ADR-005 §2). */
+  schema?: UiSchema;
+  /** Validation strategy before allowing advance. Default: `'client'`. */
+  validationMode?: WizardValidationMode;
+  /** Server endpoint for server/both validation. Generic contract: `{ step, values } → { ok, errors }`. */
+  validationEndpoint?: string;
+  /** Declarative validation action (ADR-018 ActionSource). Takes precedence over `validationEndpoint` when set. */
+  validationAction?: import('../actions/source.ts').ActionSource;
+  /** Allow skipping this step without validation (mirrors Filament `->skippable()`). */
+  skippable?: boolean;
+  /** Blocks moving past this step (existing BcWizard field, preserved). */
+  blocking?: boolean;
+}
 
 /**
  * Field type discriminator. Maps 1:1 onto components in the default
@@ -188,6 +237,15 @@ export interface UiSchema {
    * the host doesn't override.
    */
   actions?: UiAction[];
+
+  // Wizard (ADR-005 kind: 'wizard')
+  /**
+   * Ordered steps for `'wizard'` schemas. Each step carries its own form
+   * fragment (`schema: UiSchema`) plus validation mode. The renderer
+   * composes one `BcRenderer` per active step, keeping a single
+   * `ReactiveStore` across all steps so cross-step reactions fire.
+   */
+  steps?: WizardStepSchema[];
 
   // Custom escape hatch
   /**

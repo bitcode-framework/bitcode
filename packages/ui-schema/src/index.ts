@@ -73,6 +73,8 @@ export type {
   UiAction,
   UiSchema,
   UiSchemaKind,
+  WizardStepSchema,
+  WizardValidationMode,
 } from './schema/types.ts';
 
 export {
