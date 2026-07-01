@@ -21,6 +21,16 @@
     "activity.empty": "아직 활동이 없습니다",
     "activity.load_more": "더 보기",
     "activity.forbidden_read": "이 레코드의 활동을 읽을 권한이 없습니다",
-    "activity.authentication_required": "인증이 필요합니다"
+    "activity.authentication_required": "인증이 필요합니다",
+    "export.title": "내보내기",
+    "export.empty": "내보낼 데이터가 없습니다",
+    "export.no_columns": "최소 하나의 열이 필요합니다",
+    "export.permission_denied": "이 데이터를 내보낼 권한이 없습니다",
+    "export.authentication_required": "인증이 필요합니다",
+    "export.unsupported_format": "지원되지 않는 형식",
+    "export.model_required": "모델이 필요합니다",
+    "export.exporting": "내보내는 중...",
+    "export.complete": "내보내기 완료",
+    "export.failed": "내보내기 실패"
   }
 }

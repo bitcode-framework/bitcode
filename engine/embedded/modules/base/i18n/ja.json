@@ -21,6 +21,16 @@
     "activity.empty": "まだアクティビティがありません",
     "activity.load_more": "もっと読み込む",
     "activity.forbidden_read": "このレコードのアクティビティを読む権限がありません",
-    "activity.authentication_required": "認証が必要です"
+    "activity.authentication_required": "認証が必要です",
+    "export.title": "エクスポート",
+    "export.empty": "エクスポートするデータがありません",
+    "export.no_columns": "少なくとも1つの列が必要です",
+    "export.permission_denied": "このデータをエクスポートする権限がありません",
+    "export.authentication_required": "認証が必要です",
+    "export.unsupported_format": "サポートされていない形式",
+    "export.model_required": "モデルは必須です",
+    "export.exporting": "エクスポート中...",
+    "export.complete": "エクスポートが完了しました",
+    "export.failed": "エクスポートに失敗しました"
   }
 }

@@ -21,6 +21,16 @@
     "activity.empty": "لا يوجد نشاط بعد",
     "activity.load_more": "تحميل المزيد",
     "activity.forbidden_read": "ليس لديك إذن لقراءة النشاط على هذا السجل",
-    "activity.authentication_required": "المصادقة مطلوبة"
+    "activity.authentication_required": "المصادقة مطلوبة",
+    "export.title": "تصدير",
+    "export.empty": "لا توجد بيانات للتصدير",
+    "export.no_columns": "مطلوب عمود واحد على الأقل",
+    "export.permission_denied": "ليس لديك إذن لتصدير هذه البيانات",
+    "export.authentication_required": "المصادقة مطلوبة",
+    "export.unsupported_format": "تنسيق غير مدعوم",
+    "export.model_required": "النموذج مطلوب",
+    "export.exporting": "جاري التصدير...",
+    "export.complete": "اكتمل التصدير",
+    "export.failed": "فشل التصدير"
   }
 }

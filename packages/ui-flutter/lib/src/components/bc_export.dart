@@ -61,6 +61,38 @@ enum BcExportFormat {
   }
 }
 
+/// A single export column with optional permission gating.
+///
+/// Mirrors TS `BcExportColumn`. When [permitted] is `false` the column is
+/// excluded from the export request by the caller (engine enforces this
+/// server-side; the field is surfaced so the UI can grey out denied columns).
+class BcExportColumn {
+  final String field;
+  final String? label;
+  final bool permitted;
+
+  const BcExportColumn({
+    required this.field,
+    this.label,
+    this.permitted = true,
+  });
+}
+
+/// Progress metadata for a long-running export.
+///
+/// Mirrors TS `BcExportProgress`.
+class BcExportProgress {
+  final int loaded;
+  final int total;
+  final int percent;
+
+  const BcExportProgress({
+    required this.loaded,
+    required this.total,
+    required this.percent,
+  });
+}
+
 /// Export button with a dropdown menu of configurable formats.
 ///
 /// Mirrors TS `BcExportContract`. Tapping the trigger opens a menu listing
@@ -68,6 +100,11 @@ enum BcExportFormat {
 /// format and a [BcChangeMeta], then closes the menu. An empty [formats]
 /// list renders a disabled trigger. When [disabled] is true, the trigger is
 /// non-interactive and no [onExport] fires.
+///
+/// ADR-014 additions: [endpoint] + [columns] + [filter] enable declarative
+/// server-side exports (the caller may POST to [endpoint] with the columns).
+/// [loading] / [progress] render an inline progress indicator on the trigger.
+/// [onExportComplete] / [onProgress] mirror the web callbacks.
 ///
 /// Platform-aware: Material uses a popup overlay; Cupertino uses a bottom
 /// action sheet on iOS/macOS.
@@ -84,6 +121,27 @@ class BcExport extends StatefulWidget {
   /// Callback when a format is selected. Carries the format and meta.
   final void Function(BcExportFormat format, BcChangeMeta meta)? onExport;
 
+  /// Server-side export endpoint (e.g. `/api/v1/crm/contacts/export`).
+  /// When set, the caller can POST `{format, columns, filter, sort}` to
+  /// stream the file. The widget itself only fires [onExport]; the actual
+  /// fetch is the caller's responsibility (mirrors the web declarative path).
+  final String? endpoint;
+
+  /// Permission-gated column list to include in the export request.
+  final List<BcExportColumn>? columns;
+
+  /// When true, renders a progress indicator on the trigger.
+  final bool loading;
+
+  /// Live progress for the in-flight export. Shown when [loading] is true.
+  final BcExportProgress? progress;
+
+  /// Fired when a declarative export completes (blob downloaded).
+  final void Function(BcExportFormat format)? onExportComplete;
+
+  /// Fired as an export progresses (for large datasets).
+  final void Function(BcExportProgress progress)? onProgress;
+
   const BcExport({
     super.key,
     this.formats = const [
@@ -94,6 +152,12 @@ class BcExport extends StatefulWidget {
     this.disabled = false,
     this.label = 'Export',
     this.onExport,
+    this.endpoint,
+    this.columns,
+    this.loading = false,
+    this.progress,
+    this.onExportComplete,
+    this.onProgress,
   });
 
   @override
@@ -315,13 +379,29 @@ class _BcExportState extends State<BcExport> {
               ),
             ),
             const SizedBox(width: 4),
-            Icon(
-              isCupertino ? CupertinoIcons.chevron_down : Icons.arrow_drop_down,
-              size: isCupertino ? 14 : 20,
-              color: isDisabled
-                  ? BcTheme.mutedForeground
-                  : BcTheme.primaryForeground,
-            ),
+            if (widget.loading)
+              SizedBox(
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    isDisabled
+                        ? BcTheme.mutedForeground
+                        : BcTheme.primaryForeground,
+                  ),
+                ),
+              )
+            else
+              Icon(
+                isCupertino
+                    ? CupertinoIcons.chevron_down
+                    : Icons.arrow_drop_down,
+                size: isCupertino ? 14 : 20,
+                color: isDisabled
+                    ? BcTheme.mutedForeground
+                    : BcTheme.primaryForeground,
+              ),
           ],
         ),
       ),

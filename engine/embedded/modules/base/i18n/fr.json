@@ -21,6 +21,16 @@
     "activity.empty": "Pas encore d'activité",
     "activity.load_more": "Charger plus",
     "activity.forbidden_read": "Vous n'avez pas l'autorisation de lire l'activité de cet enregistrement",
-    "activity.authentication_required": "Authentification requise"
+    "activity.authentication_required": "Authentification requise",
+    "export.title": "Exporter",
+    "export.empty": "Aucune donnée à exporter",
+    "export.no_columns": "Au moins une colonne est requise",
+    "export.permission_denied": "Vous n'avez pas l'autorisation d'exporter ces données",
+    "export.authentication_required": "Authentification requise",
+    "export.unsupported_format": "Format non pris en charge",
+    "export.model_required": "Le modèle est requis",
+    "export.exporting": "Exportation...",
+    "export.complete": "Exportation terminée",
+    "export.failed": "Échec de l'exportation"
   }
 }

@@ -21,6 +21,16 @@
     "activity.empty": "Noch keine Aktivität",
     "activity.load_more": "Mehr laden",
     "activity.forbidden_read": "Sie haben keine Berechtigung, Aktivitäten zu diesem Datensatz zu lesen",
-    "activity.authentication_required": "Authentifizierung erforderlich"
+    "activity.authentication_required": "Authentifizierung erforderlich",
+    "export.title": "Exportieren",
+    "export.empty": "Keine Daten zum Exportieren",
+    "export.no_columns": "Mindestens eine Spalte ist erforderlich",
+    "export.permission_denied": "Sie haben keine Berechtigung, diese Daten zu exportieren",
+    "export.authentication_required": "Authentifizierung erforderlich",
+    "export.unsupported_format": "Nicht unterstütztes Format",
+    "export.model_required": "Modell ist erforderlich",
+    "export.exporting": "Exportieren...",
+    "export.complete": "Export abgeschlossen",
+    "export.failed": "Export fehlgeschlagen"
   }
 }

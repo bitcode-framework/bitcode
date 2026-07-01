@@ -21,6 +21,16 @@
     "activity.empty": "暂无活动",
     "activity.load_more": "加载更多",
     "activity.forbidden_read": "您没有权限阅读此记录的活动",
-    "activity.authentication_required": "需要身份验证"
+    "activity.authentication_required": "需要身份验证",
+    "export.title": "导出",
+    "export.empty": "没有可导出的数据",
+    "export.no_columns": "至少需要一列",
+    "export.permission_denied": "您没有权限导出此数据",
+    "export.authentication_required": "需要身份验证",
+    "export.unsupported_format": "不支持的格式",
+    "export.model_required": "模型为必填项",
+    "export.exporting": "导出中...",
+    "export.complete": "导出完成",
+    "export.failed": "导出失败"
   }
 }

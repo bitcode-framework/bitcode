@@ -168,6 +168,25 @@ void main() {
     });
 
     testWidgets(
+        'loading shows a progress indicator on the trigger (ADR-014)',
+        (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: BcExport(
+              formats: const [BcExportFormat.csv],
+              loading: true,
+            ),
+          ),
+        ),
+      ));
+
+      // The trigger renders and shows a CircularProgressIndicator while loading.
+      expect(find.byKey(const Key('bc-export-trigger')), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    });
+
+    testWidgets(
         'displays custom label text (VAL-M6-027)', (tester) async {
       await tester.pumpWidget(buildHarness(label: 'Download'));
 

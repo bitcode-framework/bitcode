@@ -235,7 +235,11 @@ engine/
 │       │   ├── upload_handler.go               # Legacy upload handler (replaced by file_handler)
 │       │   ├── file_handler.go                 # FileHandler — upload, download, list, delete, versions, resize, thumbnail
 │       │   ├── comment_handler.go              # CommentHandler — polymorphic comments per record, threaded replies, @mention parsing, permission + record rule enforcement
-│       │   └── comment_handler_test.go         # 5 tests (create+list, threading, missing record_id, empty body, permission denied)
+│       │   ├── comment_handler_test.go         # 5 tests (create+list, threading, missing record_id, empty body, permission denied)
+│       │   ├── activity_handler.go             # ActivityHandler — GET /api/v1/activity aggregated feed, permission + record rule enforcement
+│       │   ├── activity_handler_test.go        # 10 tests (happy path, filters, pagination, permission denial, auth)
+│       │   ├── export_handler.go               # ExportHandler — POST/GET /api/v1/{module}/{model}/export (CSV/XLSX/JSON streaming), export permission + field-level mask + column sanitization
+│       │   └── export_handler_test.go          # 12 tests (csv, xlsx, json, streaming, permission denial, filter, columns, field mask, column sanitization, superuser bypass)
 │       ├── middleware/
 │       │   ├── auth.go                         # JWT validation, user context injection, impersonated_by extraction
 │       │   ├── permission.go                   # Permission checking via PermissionChecker interface (ModelAccess-based)

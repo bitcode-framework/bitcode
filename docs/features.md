@@ -159,7 +159,7 @@ Before the gap list — what's already **production-solid**:
 | 38 | Report Builder | ⚠️ | L | List view with filters + sort. Custom API endpoints can serve report data. | Dedicated report builder with group-by, aggregation, calculated columns. |
 | 39 | Query / Script Report | ⚠️ | M | Process `query` step + plugin scripts can execute custom logic. | Dedicated SQL/script report system runnable from UI. |
 | 40 | Chart Builder | ✅ | — | Chart view type. 26 Stencil chart components (23 ECharts: line, bar, pie, area, scatter, radar, gauge, funnel, heatmap, treemap, sunburst, candlestick, boxplot, mixed, sankey, graph, tree, polar, parallel, themeriver, pictorialbar, custom + 3 pure CSS: pivot, KPI, scorecard, progress). Modular ECharts imports, multi-series support, shared chart-utils, remote data fetching, toolbox, data zoom, theme/renderer switching. | — |
-| 41 | Export Data (CSV/Excel/PDF) | ❌ | M | `bc-export` Stencil component exists (uses xlsx library). | No server-side export handler. Need export endpoint per model (CSV via encoding/csv, Excel via excelize). |
+| 41 | Export Data (CSV/Excel/PDF) | ✅ | M | `bc-export` Stencil component + BcExport Mitosis component (ADR-014 wired). | `POST /api/v1/{module}/{model}/export` endpoint (CSV/XLSX/JSON) with streaming response. ExportService Go layer (encoding/csv, excelize, encoding/json). Filter+sort via query builder. Permission-aware (export permission per group, field-level column sanitization + mask). BcExport contract upgraded (format, columns, onExport, progress). Flutter parity. i18n (11 locales). |
 | 42 | Pivot Table | ❌ | L | `bc-chart-pivot` Stencil component exists. | No server-side pivot engine (dimensions, measures, aggregations). Frontend component needs data feed. |
 | 43 | Scheduled Report | ❌ | M* | Cron system exists. | No report + email delivery integration. *Depends on email (#26) + report builder (#38). |
 
@@ -238,7 +238,7 @@ The `@bitcode/components` Stencil library (122 components across 11 groups) prov
 | Search | search, favorites | 2 | ❌ Not wired |
 | Widgets | badge, copy, phone, email, url, progress, statusbar, priority, handle, domain, placeholder, sync-status | 12 | ⚠️ Some via component compiler |
 | Media | pdf, image, document, youtube, instagram, tiktok, video, audio | 8 | ✅ Standalone viewer/player components |
-| Print | export, print, report-link | 3 | ❌ Not wired |
+| Print | export, print, report-link | 3 | ✅ Export wired (ADR-014) |
 | Social | activity, chatter, timeline | 3 | ⚠️ activity + chatter wired (Phase 1 ADR-014); timeline not wired |
 | **Total** | | **122** | |
 
@@ -277,7 +277,7 @@ Features most requested by users and blocking other features:
 - [ ] **#28** Webhook System — webhook definition (URL, events, headers) + event bus dispatcher
 - [ ] **#33** Multi-Step Form / Wizard — wire `bc-dialog-wizard` component + wizard JSON definition
 - [ ] **#35** Web Form (Public) — public form route (bypass auth) + CAPTCHA + rate limiting
-- [ ] **#41** Export Data (CSV/Excel) — server-side export handler per model
+- [x] **#41** Export Data (CSV/Excel/JSON) — `POST /api/v1/{module}/{model}/export` endpoint with streaming CSV/XLSX/JSON, query builder filter/sort, export permission check, field-level column sanitization + masking
 - [ ] **#57** 2FA (TOTP) — TOTP library + setup flow + verification middleware
 - [ ] **#59** Backup & Restore — db dump/restore commands + optional scheduling
 - [x] **#63** Comment & Mention — comment model + API + mention parsing/resolution + permission checks + threading + WebSocket broadcast. `bc-chatter` component wiring still pending.

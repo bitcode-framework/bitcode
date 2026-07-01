@@ -21,6 +21,16 @@
     "activity.empty": "Активности пока нет",
     "activity.load_more": "Загрузить ещё",
     "activity.forbidden_read": "У вас нет прав для чтения активности этой записи",
-    "activity.authentication_required": "Требуется аутентификация"
+    "activity.authentication_required": "Требуется аутентификация",
+    "export.title": "Экспорт",
+    "export.empty": "Нет данных для экспорта",
+    "export.no_columns": "Требуется хотя бы один столбец",
+    "export.permission_denied": "У вас нет прав для экспорта этих данных",
+    "export.authentication_required": "Требуется аутентификация",
+    "export.unsupported_format": "Неподдерживаемый формат",
+    "export.model_required": "Модель обязательна",
+    "export.exporting": "Экспорт...",
+    "export.complete": "Экспорт завершён",
+    "export.failed": "Ошибка экспорта"
   }
 }

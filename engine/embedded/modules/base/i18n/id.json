@@ -21,6 +21,16 @@
     "activity.empty": "Belum ada aktivitas",
     "activity.load_more": "Muat lebih banyak",
     "activity.forbidden_read": "Anda tidak memiliki izin untuk membaca aktivitas pada record ini",
-    "activity.authentication_required": "Autentikasi diperlukan"
+    "activity.authentication_required": "Autentikasi diperlukan",
+    "export.title": "Ekspor",
+    "export.empty": "Tidak ada data untuk diekspor",
+    "export.no_columns": "Minimal satu kolom diperlukan",
+    "export.permission_denied": "Anda tidak memiliki izin untuk mengekspor data ini",
+    "export.authentication_required": "Autentikasi diperlukan",
+    "export.unsupported_format": "Format tidak didukung",
+    "export.model_required": "Model diperlukan",
+    "export.exporting": "Mengekspor...",
+    "export.complete": "Ekspor selesai",
+    "export.failed": "Ekspor gagal"
   }
 }
