@@ -31,6 +31,19 @@
     "export.model_required": "モデルは必須です",
     "export.exporting": "エクスポート中...",
     "export.complete": "エクスポートが完了しました",
-    "export.failed": "エクスポートに失敗しました"
+    "export.failed": "エクスポートに失敗しました",
+    "pivot.title": "ピボットテーブル",
+    "pivot.no_data": "表示するデータがありません",
+    "pivot.total": "合計",
+    "pivot.grand_total": "総合計",
+    "pivot.row_total": "行の合計",
+    "pivot.col_total": "列の合計",
+    "pivot.authentication_required": "認証が必要です",
+    "pivot.permission_denied": "このデータをピボットする権限がありません",
+    "pivot.rows_required": "少なくとも1つの行ディメンションが必要です",
+    "pivot.values_required": "少なくとも1つの値フィールドが必要です",
+    "pivot.invalid_agg": "サポートされていない集計関数",
+    "pivot.loading": "ピボットデータを読み込み中...",
+    "pivot.error": "ピボットデータの読み込みに失敗しました"
   }
 }

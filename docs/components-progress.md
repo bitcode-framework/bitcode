@@ -414,6 +414,7 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 | BcViewEditor | views | ✅ | ✅ | ✅ `views/editor` data-language + textarea + spellcheck=false + char count. 8 tests. |
 | BcViewActivity | views | ✅ | ✅ | ✅ `views/activity` role=log + aria-live=polite + ordered list + <time>. 7 tests. |
 | BcExport | print | ✅ | ✅ | ✅ `print/export` role=group + per-format aria-label + data-format markers. 7 tests. |
+| BcPivot | analytics | ✅ | ✅ | ✅ `analytics/pivot` role=region + aria-label + expandable rows + totals + grand total + no-data state. 14 tests. |
 | BcPrint | print | ✅ | ✅ | ✅ `print/print` 3 variants (default/outline/ghost) + data-target marker. 7 tests. |
 | BcReportLink | print | ✅ | ✅ | ✅ `print/report-link` external rel=noopener noreferrer + format badge aria-hidden. 7 tests. |
 | BcSearch | navigation | ✅ | ✅ | ✅ `navigation/search` role=search + listbox/option + aria-controls + autocomplete=off. 8 tests. |

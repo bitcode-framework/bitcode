@@ -31,6 +31,19 @@
     "export.model_required": "Model is required",
     "export.exporting": "Exporting...",
     "export.complete": "Export complete",
-    "export.failed": "Export failed"
+    "export.failed": "Export failed",
+    "pivot.title": "Pivot Table",
+    "pivot.no_data": "No data to display",
+    "pivot.total": "Total",
+    "pivot.grand_total": "Grand Total",
+    "pivot.row_total": "Row Total",
+    "pivot.col_total": "Column Total",
+    "pivot.authentication_required": "Authentication required",
+    "pivot.permission_denied": "You do not have permission to pivot this data",
+    "pivot.rows_required": "At least one row dimension is required",
+    "pivot.values_required": "At least one value field is required",
+    "pivot.invalid_agg": "Unsupported aggregation function",
+    "pivot.loading": "Loading pivot data...",
+    "pivot.error": "Failed to load pivot data"
   }
 }

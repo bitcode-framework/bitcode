@@ -31,6 +31,19 @@
     "export.model_required": "O modelo é obrigatório",
     "export.exporting": "Exportando...",
     "export.complete": "Exportação concluída",
-    "export.failed": "Falha na exportação"
+    "export.failed": "Falha na exportação",
+    "pivot.title": "Tabela Dinâmica",
+    "pivot.no_data": "Não há dados para exibir",
+    "pivot.total": "Total",
+    "pivot.grand_total": "Total Geral",
+    "pivot.row_total": "Total da Linha",
+    "pivot.col_total": "Total da Coluna",
+    "pivot.authentication_required": "Autenticação necessária",
+    "pivot.permission_denied": "Você não tem permissão para dinamizar estes dados",
+    "pivot.rows_required": "Pelo menos uma dimensão de linha é necessária",
+    "pivot.values_required": "Pelo menos um campo de valor é necessário",
+    "pivot.invalid_agg": "Função de agregação não suportada",
+    "pivot.loading": "Carregando dados dinâmicos...",
+    "pivot.error": "Falha ao carregar dados dinâmicos"
   }
 }

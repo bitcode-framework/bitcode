@@ -999,3 +999,21 @@ func actionsToJSON(actions []parser.ActionDefinition) string {
 	}
 	return fmt.Sprintf("[%s]", strings.Join(parts, ","))
 }
+
+// CompilePivot emits a <bc-pivot> web component bound to the pivot API
+// endpoint. The endpoint attribute points the component at
+// POST /api/v1/{module}/{model}/pivot so it can compute the matrix
+// client-side. The fields attribute passes the view's declared fields as the
+// default row/col/value configuration.
+func (c *ComponentCompiler) CompilePivot(viewDef *parser.ViewDefinition) string {
+	var b strings.Builder
+	b.WriteString(fmt.Sprintf(`<div class="bc-card"><div class="bc-card-header"><h2>%s</h2></div><div class="bc-card-body">`, esc(viewDef.Title)))
+
+	endpoint := fmt.Sprintf("/api/v1/%s/pivot", esc(viewDef.Model))
+	fieldsJSON := toJSONArray(viewDef.Fields)
+
+	b.WriteString(fmt.Sprintf(`<bc-pivot data-model="%s" data-endpoint="%s" data-fields='%s'></bc-pivot>`,
+		esc(viewDef.Model), endpoint, fieldsJSON))
+	b.WriteString(`</div></div>`)
+	return b.String()
+}

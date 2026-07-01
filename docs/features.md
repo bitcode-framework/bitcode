@@ -160,7 +160,7 @@ Before the gap list — what's already **production-solid**:
 | 39 | Query / Script Report | ⚠️ | M | Process `query` step + plugin scripts can execute custom logic. | Dedicated SQL/script report system runnable from UI. |
 | 40 | Chart Builder | ✅ | — | Chart view type. 26 Stencil chart components (23 ECharts: line, bar, pie, area, scatter, radar, gauge, funnel, heatmap, treemap, sunburst, candlestick, boxplot, mixed, sankey, graph, tree, polar, parallel, themeriver, pictorialbar, custom + 3 pure CSS: pivot, KPI, scorecard, progress). Modular ECharts imports, multi-series support, shared chart-utils, remote data fetching, toolbox, data zoom, theme/renderer switching. | — |
 | 41 | Export Data (CSV/Excel/PDF) | ✅ | M | `bc-export` Stencil component + BcExport Mitosis component (ADR-014 wired). | `POST /api/v1/{module}/{model}/export` endpoint (CSV/XLSX/JSON) with streaming response. ExportService Go layer (encoding/csv, excelize, encoding/json). Filter+sort via query builder. Permission-aware (export permission per group, field-level column sanitization + mask). BcExport contract upgraded (format, columns, onExport, progress). Flutter parity. i18n (11 locales). |
-| 42 | Pivot Table | ❌ | L | `bc-chart-pivot` Stencil component exists. | No server-side pivot engine (dimensions, measures, aggregations). Frontend component needs data feed. |
+| 42 | Pivot Table | ✅ | L | `POST /api/v1/{module}/{model}/pivot` endpoint. PivotService Go layer performing OLAP aggregation (GROUP BY rows+cols, sum/count/avg/min/max). Multiple value fields, multiple row/col dimensions, null handling, grand totals. Permission-aware (read + field-level). BcPivot Mitosis component (Pure/Adapt, ADR-006) + Flutter (Material/Cupertino adaptive). BcRenderer part:'pivot'. i18n (11 locales). Engine tests (single agg, multi agg, multi rows, multi cols, null handling, permission). Component tests. | — |
 | 43 | Scheduled Report | ❌ | M* | Cron system exists. | No report + email delivery integration. *Depends on email (#26) + report builder (#38). |
 
 ---
@@ -308,7 +308,7 @@ Enterprise-grade capabilities:
 
 - [ ] **#7** Multi-Source Data — connection pool manager for multiple datasources
 - [ ] **#26** Email / Notification Automation — SMTP config, email queue, template engine
-- [ ] **#42** Pivot Table — server-side pivot engine + wire `bc-chart-pivot` component
+- [x] **#42** Pivot Table — PivotService OLAP engine + `POST /pivot` endpoint + BcPivot Mitosis + Flutter component
 - [ ] **#45** OAuth2 / SSO — OAuth2 client (Google, Microsoft, GitHub) + LDAP connector
 - [ ] **#49** GraphQL API — schema generator from model definitions + resolver layer
 - [ ] **#54** Multi-Currency — currency model + exchange rate table + conversion logic

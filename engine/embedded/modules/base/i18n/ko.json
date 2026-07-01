@@ -31,6 +31,19 @@
     "export.model_required": "모델이 필요합니다",
     "export.exporting": "내보내는 중...",
     "export.complete": "내보내기 완료",
-    "export.failed": "내보내기 실패"
+    "export.failed": "내보내기 실패",
+    "pivot.title": "피벗 테이블",
+    "pivot.no_data": "표시할 데이터가 없습니다",
+    "pivot.total": "합계",
+    "pivot.grand_total": "총합계",
+    "pivot.row_total": "행 합계",
+    "pivot.col_total": "열 합계",
+    "pivot.authentication_required": "인증이 필요합니다",
+    "pivot.permission_denied": "이 데이터를 피벗할 권한이 없습니다",
+    "pivot.rows_required": "하나 이상의 행 차원이 필요합니다",
+    "pivot.values_required": "하나 이상의 값 필드가 필요합니다",
+    "pivot.invalid_agg": "지원되지 않는 집계 함수",
+    "pivot.loading": "피벗 데이터 로드 중...",
+    "pivot.error": "피벗 데이터 로드 실패"
   }
 }

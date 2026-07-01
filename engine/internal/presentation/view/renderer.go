@@ -165,6 +165,8 @@ func (r *Renderer) RenderView(ctx context.Context, viewDef *parser.ViewDefinitio
 		contentHTML, err = r.renderChart(ctx, viewDef)
 	case parser.ViewActivity:
 		contentHTML, err = r.renderActivity(ctx, viewDef, opt)
+	case parser.ViewPivot:
+		contentHTML, err = r.renderPivot(ctx, viewDef)
 	case parser.ViewCustom:
 		contentHTML, err = r.renderCustom(ctx, viewDef, opt.Module)
 	default:
@@ -361,6 +363,9 @@ func (r *Renderer) renderChart(ctx context.Context, viewDef *parser.ViewDefiniti
 
 func (r *Renderer) renderActivity(ctx context.Context, viewDef *parser.ViewDefinition, opt RenderOptions) (string, error) {
 	return r.componentCompiler.CompileActivity(viewDef, opt.RecordID), nil
+}
+func (r *Renderer) renderPivot(ctx context.Context, viewDef *parser.ViewDefinition) (string, error) {
+	return r.componentCompiler.CompilePivot(viewDef), nil
 }
 
 func (r *Renderer) renderCustom(ctx context.Context, viewDef *parser.ViewDefinition, moduleName string) (string, error) {

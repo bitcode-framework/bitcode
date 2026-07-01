@@ -31,6 +31,19 @@
     "export.model_required": "النموذج مطلوب",
     "export.exporting": "جاري التصدير...",
     "export.complete": "اكتمل التصدير",
-    "export.failed": "فشل التصدير"
+    "export.failed": "فشل التصدير",
+    "pivot.title": "جدول محوري",
+    "pivot.no_data": "لا توجد بيانات للعرض",
+    "pivot.total": "المجموع",
+    "pivot.grand_total": "المجموع الكلي",
+    "pivot.row_total": "مجموع الصف",
+    "pivot.col_total": "مجموع العمود",
+    "pivot.authentication_required": "المصادقة مطلوبة",
+    "pivot.permission_denied": "ليس لديك إذن لعرض هذه البيانات بشكل محوري",
+    "pivot.rows_required": "مطلوب بُعد صف واحد على الأقل",
+    "pivot.values_required": "مطلوب حقل قيمة واحد على الأقل",
+    "pivot.invalid_agg": "دالة التجميع غير مدعومة",
+    "pivot.loading": "جاري تحميل البيانات المحورية...",
+    "pivot.error": "فشل تحميل البيانات المحورية"
   }
 }

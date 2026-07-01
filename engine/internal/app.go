@@ -674,6 +674,13 @@ func (a *App) setupRoutes() {
 			moduleModels[m.Module] = append(moduleModels[m.Module], m.Name)
 		}
 		api.RegisterExportRoutes(a.Fiber, "/api/v1", moduleModels, exportHandler, a.JWTConfig)
+
+		pivotHandler := api.NewPivotHandler(api.PivotHandlerConfig{
+			DB:                a.DB,
+			PermissionService: exportPermSvc,
+			ModelRegistry:     a.ModelRegistry,
+		})
+		api.RegisterPivotRoutes(a.Fiber, "/api/v1", moduleModels, pivotHandler, a.JWTConfig)
 	}
 
 	adminPanel := admin.NewAdminPanel(a.DB, a.ModelRegistry, a.ModuleRegistry, a.viewsByName, admin.HealthInfo{

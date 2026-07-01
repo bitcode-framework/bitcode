@@ -31,6 +31,19 @@
     "export.model_required": "El modelo es obligatorio",
     "export.exporting": "Exportando...",
     "export.complete": "Exportación completada",
-    "export.failed": "Error en la exportación"
+    "export.failed": "Error en la exportación",
+    "pivot.title": "Tabla Pivot",
+    "pivot.no_data": "No hay datos para mostrar",
+    "pivot.total": "Total",
+    "pivot.grand_total": "Total General",
+    "pivot.row_total": "Total de Fila",
+    "pivot.col_total": "Total de Columna",
+    "pivot.authentication_required": "Se requiere autenticación",
+    "pivot.permission_denied": "No tienes permiso para pivotar estos datos",
+    "pivot.rows_required": "Se requiere al menos una dimensión de fila",
+    "pivot.values_required": "Se requiere al menos un campo de valor",
+    "pivot.invalid_agg": "Función de agregación no admitida",
+    "pivot.loading": "Cargando datos pivot...",
+    "pivot.error": "Error al cargar los datos pivot"
   }
 }

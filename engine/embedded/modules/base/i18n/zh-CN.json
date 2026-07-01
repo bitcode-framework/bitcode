@@ -31,6 +31,19 @@
     "export.model_required": "模型为必填项",
     "export.exporting": "导出中...",
     "export.complete": "导出完成",
-    "export.failed": "导出失败"
+    "export.failed": "导出失败",
+    "pivot.title": "数据透视表",
+    "pivot.no_data": "没有可显示的数据",
+    "pivot.total": "合计",
+    "pivot.grand_total": "总计",
+    "pivot.row_total": "行合计",
+    "pivot.col_total": "列合计",
+    "pivot.authentication_required": "需要身份验证",
+    "pivot.permission_denied": "您没有权限对此数据进行透视",
+    "pivot.rows_required": "至少需要一个行维度",
+    "pivot.values_required": "至少需要一个值字段",
+    "pivot.invalid_agg": "不支持的聚合函数",
+    "pivot.loading": "正在加载透视数据...",
+    "pivot.error": "加载透视数据失败"
   }
 }

@@ -31,6 +31,19 @@
     "export.model_required": "Модель обязательна",
     "export.exporting": "Экспорт...",
     "export.complete": "Экспорт завершён",
-    "export.failed": "Ошибка экспорта"
+    "export.failed": "Ошибка экспорта",
+    "pivot.title": "Сводная таблица",
+    "pivot.no_data": "Нет данных для отображения",
+    "pivot.total": "Итого",
+    "pivot.grand_total": "Общий итог",
+    "pivot.row_total": "Итого по строке",
+    "pivot.col_total": "Итого по столбцу",
+    "pivot.authentication_required": "Требуется аутентификация",
+    "pivot.permission_denied": "У вас нет прав для создания сводной таблицы по этим данным",
+    "pivot.rows_required": "Требуется хотя бы одно измерение строки",
+    "pivot.values_required": "Требуется хотя бы одно поле значения",
+    "pivot.invalid_agg": "Неподдерживаемая функция агрегации",
+    "pivot.loading": "Загрузка данных сводной таблицы...",
+    "pivot.error": "Ошибка загрузки данных сводной таблицы"
   }
 }

@@ -22,6 +22,7 @@ const (
 	ViewTree     ViewType = "tree"
 	ViewActivity ViewType = "activity"
 	ViewReport   ViewType = "report"
+	ViewPivot    ViewType = "pivot"
 )
 
 const (

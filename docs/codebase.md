@@ -139,6 +139,9 @@ engine/
 │   │   ├── model_process.go                    # ModelProcessRegistry — built-in model operations (CRUD, aggregates, dynamic finders)
 │   │   ├── dynamic_finder.go                   # Dynamic finder parser — FindBy{Field}, CountBy, SumBy, etc. with And/Or/operator suffixes
 │   │   ├── dynamic_finder_test.go              # 24 tests for dynamic finder parsing
+│   │   ├── pivot/
+│   │   │   ├── service.go                      # PivotService — OLAP aggregation (GROUP BY rows+cols, sum/count/avg/min/max), null handling, grand totals
+│   │   │   └── service_test.go                 # 20 tests (single agg, multi agg, multi rows, multi cols, null handling, totals, avg correctness, min/max, validation)
 │   │   └── plugin/
 │   │       └── manager.go                      # Plugin manager — spawn TS/Python processes, JSON-RPC over stdin/stdout
 │   │   ├── comment/
@@ -239,7 +242,9 @@ engine/
 │       │   ├── activity_handler.go             # ActivityHandler — GET /api/v1/activity aggregated feed, permission + record rule enforcement
 │       │   ├── activity_handler_test.go        # 10 tests (happy path, filters, pagination, permission denial, auth)
 │       │   ├── export_handler.go               # ExportHandler — POST/GET /api/v1/{module}/{model}/export (CSV/XLSX/JSON streaming), export permission + field-level mask + column sanitization
-│       │   └── export_handler_test.go          # 12 tests (csv, xlsx, json, streaming, permission denial, filter, columns, field mask, column sanitization, superuser bypass)
+│       │   ├── export_handler_test.go          # 12 tests (csv, xlsx, json, streaming, permission denial, filter, columns, field mask, column sanitization, superuser bypass)
+│       │   ├── pivot_handler.go                # PivotHandler — POST /api/v1/{module}/{model}/pivot (OLAP aggregation), read permission + field-level mask + RLS filter
+│       │   └── pivot_handler_test.go           # 9 tests (single agg, multi agg, missing rows/values, invalid agg, permission denied, field-level permission, auth required, no cols)
 │       ├── middleware/
 │       │   ├── auth.go                         # JWT validation, user context injection, impersonated_by extraction
 │       │   ├── permission.go                   # Permission checking via PermissionChecker interface (ModelAccess-based)
@@ -1024,6 +1029,7 @@ samples/erp/
 | `runtime/executor/steps` | 9 | Validate (eq/fail/required), emit, assign, if, process parse |
 | `runtime/validation` | 28 | Field validators (required, email, regex, conditional, etc.), sanitizers, model-level validators, update merge |
 | `runtime/hook` | 10 | Event dispatcher (priority, condition, sync/async, retry, on_change cascade), context, expression eval |
+| `runtime/pivot` | 20 | PivotService: single agg, multi agg, multi rows, multi cols, null handling, totals, avg correctness, min/max, validation |
 | `embedded` | — | Embed FS tests |
 | **Total** | **131+** | |
 

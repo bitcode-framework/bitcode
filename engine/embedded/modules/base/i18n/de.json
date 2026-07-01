@@ -31,6 +31,19 @@
     "export.model_required": "Modell ist erforderlich",
     "export.exporting": "Exportieren...",
     "export.complete": "Export abgeschlossen",
-    "export.failed": "Export fehlgeschlagen"
+    "export.failed": "Export fehlgeschlagen",
+    "pivot.title": "Pivot-Tabelle",
+    "pivot.no_data": "Keine Daten zum Anzeigen",
+    "pivot.total": "Summe",
+    "pivot.grand_total": "Gesamtsumme",
+    "pivot.row_total": "Zeilensumme",
+    "pivot.col_total": "Spaltensumme",
+    "pivot.authentication_required": "Authentifizierung erforderlich",
+    "pivot.permission_denied": "Sie haben keine Berechtigung, diese Daten zu pivotieren",
+    "pivot.rows_required": "Mindestens eine Zeilendimension ist erforderlich",
+    "pivot.values_required": "Mindestens ein Wertfeld ist erforderlich",
+    "pivot.invalid_agg": "Nicht unterstützte Aggregationsfunktion",
+    "pivot.loading": "Pivot-Daten werden geladen...",
+    "pivot.error": "Fehler beim Laden der Pivot-Daten"
   }
 }

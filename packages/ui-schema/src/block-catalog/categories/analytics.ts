@@ -117,7 +117,53 @@ const analyticsChart: CandidateCatalogEntry = {
   ],
 };
 
+// ---------------------------------------------------------------------------
+// analytics.pivot — OLAP pivot table, ADR-014 Phase 3
+// ---------------------------------------------------------------------------
+
+const analyticsPivot: CandidateCatalogEntry = {
+  id: 'analytics.pivot',
+  version: '0.1.0',
+  schemaVersion: '0.1.0',
+  labelKey: 'block.analytics.pivot.title',
+  fallbackLabel: 'Pivot Table',
+  category: 'analytics',
+  subcategory: 'pivot',
+  channels: ['internal', 'portal', 'saas'],
+  capabilities: ['data-source', 'i18n', 'responsive', 'permission-aware'],
+  renderStrategy: 'component',
+  componentKey: 'BcPivot',
+  requiredComponents: [rc('BcPivot')],
+  requiredFunctions: [],
+  requiredAdapters: [
+    { name: 'data', kind: 'data', platforms: ['web', 'flutter'] },
+    { name: 'permission', kind: 'permission', platforms: ['web', 'flutter'] },
+  ],
+  adaptivePolicy: { breakpoints: true, platformMorph: ['material', 'cupertino'], loadingState: true, emptyState: true, errorState: true },
+  securityPolicy: { richTextSanitize: 'n/a', externalLinks: 'deny' },
+  cachePolicy: { strategy: 'memory', invalidateOn: ['model-refresh'] },
+  offlinePolicy: { support: 'unsupported' },
+  migration: { toVersion: '0.1.0' },
+  readiness: 'candidate',
+  sourceReferences: [
+    'ADR-014:Pivot Table',
+    'chatgpt:Pivot Table',
+    'easyerp:PivotGrid',
+  ],
+  decision: 'keep',
+  matrixStatus: 'component-gap',
+  gaps: [
+    'a11y evidence not yet produced.',
+    'test coverage not yet produced.',
+  ],
+  priorityBatch: 'analytics',
+  blockedBy: [
+    'a11y-evidence-missing',
+  ],
+};
+
 export const analyticsCandidates: CandidateCatalogEntry[] = [
   analyticsKpiGrid,
   analyticsChart,
+  analyticsPivot,
 ];

@@ -31,6 +31,19 @@
     "export.model_required": "Le modèle est requis",
     "export.exporting": "Exportation...",
     "export.complete": "Exportation terminée",
-    "export.failed": "Échec de l'exportation"
+    "export.failed": "Échec de l'exportation",
+    "pivot.title": "Tableau Croisé",
+    "pivot.no_data": "Aucune donnée à afficher",
+    "pivot.total": "Total",
+    "pivot.grand_total": "Total Général",
+    "pivot.row_total": "Total de Ligne",
+    "pivot.col_total": "Total de Colonne",
+    "pivot.authentication_required": "Authentification requise",
+    "pivot.permission_denied": "Vous n'avez pas la permission de croiser ces données",
+    "pivot.rows_required": "Au moins une dimension de ligne est requise",
+    "pivot.values_required": "Au moins un champ de valeur est requis",
+    "pivot.invalid_agg": "Fonction d'agrégation non prise en charge",
+    "pivot.loading": "Chargement des données croisées...",
+    "pivot.error": "Échec du chargement des données croisées"
   }
 }

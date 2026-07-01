@@ -6,6 +6,17 @@
 
 ---
 
+## 2026-07-01 — BcPivot Mitosis component (Phase 3 Pivot Table)
+
+- **BcPivot.lite.tsx** — `packages/ui/src/components/data/pivot/`. Renders pivot matrix from declarative data source (endpoint+module+model) or inline `result` prop. Expandable/collapsible rows, row totals, grand total, no-data state. Uses `useStore` pattern (no refs, no hooks).
+- **BcPivot.contract.ts** — Types: `PivotValueField`, `PivotResult`, `BcPivotConfig`. 5 aggregation types (sum/count/avg/min/max). declarative endpoint config.
+- **BcPivot.test.ts** — 14 source tests: result structure, 5 agg types, aria attributes, loading/error/no-data states, expandable rows, row+grand totals, declarative data source, token palette, tabular-nums, formatCell null/NaN.
+- **Block Catalog:** `analytics.pivot` entry in `packages/ui-schema/src/block-catalog/categories/analytics.ts`.
+- **Build:** `npm run build` — 198 components. `tsc --noEmit` passes. Source tests 14/14 pass.
+- **Companion:** Flutter `bc_pivot.dart` + 12 widget tests (see flutter bucket).
+
+---
+
 ## 2026-07-01 — Wizard schema-driven multi-step form (Steps 1-4 complete)
 
 - **Step 1 (ui-schema):** Added `WizardStepSchema`, `WizardValidationMode` types + `'wizard'` to `UiSchemaKind` + `steps?: WizardStepSchema[]` to `UiSchema`. Barrels updated. 308/308 tests pass.
