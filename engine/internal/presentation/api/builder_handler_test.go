@@ -57,9 +57,11 @@ func setupBuilderTestApp(t *testing.T) *fiber.App {
 	}
 	viewValidator := builder.NewViewValidator(registry)
 	processValidator := builder.NewProcessValidator(procRegistry)
+	modelValidator := builder.NewModelValidator(registry)
 	handler := NewBuilderHandler(BuilderHandlerConfig{
 		ViewValidator:    viewValidator,
 		ProcessValidator: processValidator,
+		ModelValidator:   modelValidator,
 	})
 
 	app := fiber.New()
@@ -70,6 +72,7 @@ func setupBuilderTestApp(t *testing.T) *fiber.App {
 	group := app.Group("/api/v1/admin")
 	group.Post("/views/validate", handler.ValidateView)
 	group.Post("/processes/validate", handler.ValidateProcess)
+	group.Post("/models/validate", handler.ValidateModel)
 	return app
 }
 
@@ -311,6 +314,106 @@ func TestBuilderHandler_ValidateProcess_EmptyBody(t *testing.T) {
 	app := setupBuilderTestApp(t)
 
 	req := httptest.NewRequest("POST", "/api/v1/admin/processes/validate", nil)
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := app.Test(req)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if resp.StatusCode != 400 {
+		t.Fatalf("expected 400 for empty body, got %d", resp.StatusCode)
+	}
+}
+
+func TestBuilderHandler_ValidateModel_ValidModel(t *testing.T) {
+	app := setupBuilderTestApp(t)
+
+	body := `{
+		"name": "product",
+		"fields": {
+			"name":  {"type": "string", "label": "Name"},
+			"price": {"type": "float", "label": "Price"}
+		}
+	}`
+
+	req := httptest.NewRequest("POST", "/api/v1/admin/models/validate",
+		bytes.NewReader([]byte(body)))
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := app.Test(req)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Fatalf("expected 200, got %d", resp.StatusCode)
+	}
+
+	var result builder.ValidationResult
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		t.Fatalf("failed to decode response: %v", err)
+	}
+	if !result.Valid {
+		t.Fatalf("expected valid=true for valid model, got false; errors: %+v", result.Errors)
+	}
+}
+
+func TestBuilderHandler_ValidateModel_InvalidFieldType(t *testing.T) {
+	app := setupBuilderTestApp(t)
+
+	body := `{
+		"name": "bad_model",
+		"fields": {
+			"quantity": {"type": "nonexistent", "label": "Quantity"}
+		}
+	}`
+
+	req := httptest.NewRequest("POST", "/api/v1/admin/models/validate",
+		bytes.NewReader([]byte(body)))
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := app.Test(req)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	var result builder.ValidationResult
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		t.Fatalf("failed to decode response: %v", err)
+	}
+	if result.Valid {
+		t.Fatal("expected valid=false for invalid field type")
+	}
+}
+
+func TestBuilderHandler_ValidateModel_ReservedNamespace(t *testing.T) {
+	app := setupBuilderTestApp(t)
+
+	body := `{
+		"name": "reserved_model",
+		"fields": {
+			"ctx":    {"type": "string", "label": "Context"},
+			"normal": {"type": "string", "label": "Normal"}
+		}
+	}`
+
+	req := httptest.NewRequest("POST", "/api/v1/admin/models/validate",
+		bytes.NewReader([]byte(body)))
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := app.Test(req)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	var result builder.ValidationResult
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		t.Fatalf("failed to decode response: %v", err)
+	}
+	if result.Valid {
+		t.Fatal("expected valid=false for reserved namespace field")
+	}
+}
+
+func TestBuilderHandler_ValidateModel_EmptyBody(t *testing.T) {
+	app := setupBuilderTestApp(t)
+
+	req := httptest.NewRequest("POST", "/api/v1/admin/models/validate", nil)
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := app.Test(req)
 	if err != nil {
