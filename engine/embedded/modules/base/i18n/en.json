@@ -1,0 +1,26 @@
+{
+  "locale": "en",
+  "translations": {
+    "comment.placeholder": "Write a comment...",
+    "comment.send": "Send",
+    "comment.reply": "Reply",
+    "comment.cancel_reply": "Cancel",
+    "comment.replying_to": "Replying to comment",
+    "comment.load_more": "Load more",
+    "comment.mentions": "Mentions",
+    "comment.empty": "No comments yet",
+    "comment.delete": "Delete",
+    "comment.mentioned_you": "You were mentioned",
+    "comment.body_required": "Comment body is required",
+    "comment.record_required": "Record ID is required",
+    "comment.not_found": "Comment not found",
+    "comment.forbidden_delete": "Only the author or a user with delete permission can delete a comment",
+    "comment.forbidden_read": "You do not have permission to read comments on this record",
+    "comment.forbidden_write": "You do not have permission to comment on this record",
+    "activity.title": "Activity",
+    "activity.empty": "No activity yet",
+    "activity.load_more": "Load more",
+    "activity.forbidden_read": "You do not have permission to view activity for this record",
+    "activity.authentication_required": "Authentication required"
+  }
+}

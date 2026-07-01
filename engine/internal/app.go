@@ -32,12 +32,14 @@ import (
 	ws "github.com/bitcode-framework/bitcode/internal/presentation/websocket"
 	"github.com/bitcode-framework/bitcode/pkg/email"
 	"github.com/bitcode-framework/bitcode/internal/runtime/bridge"
+	"github.com/bitcode-framework/bitcode/internal/runtime/activity"
+	"github.com/bitcode-framework/bitcode/internal/runtime/comment"
+	"github.com/bitcode-framework/bitcode/internal/runtime/executor/steps"
 	jsrt "github.com/bitcode-framework/bitcode/internal/runtime/embedded"
 	gojaRT "github.com/bitcode-framework/bitcode/internal/runtime/embedded/goja"
 	qjsRT "github.com/bitcode-framework/bitcode/internal/runtime/embedded/qjs"
 	yaegiRT "github.com/bitcode-framework/bitcode/internal/runtime/embedded/yaegi"
 	"github.com/bitcode-framework/bitcode/internal/runtime/executor"
-	"github.com/bitcode-framework/bitcode/internal/runtime/executor/steps"
 	"github.com/bitcode-framework/bitcode/internal/runtime/expression"
 	"github.com/bitcode-framework/bitcode/internal/runtime/format"
 	"github.com/bitcode-framework/bitcode/internal/runtime/hook"
@@ -611,6 +613,68 @@ func (a *App) setupRoutes() {
 
 	a.WSHub.ConnectToEventBus(a.EventBus)
 	a.WSHub.RegisterRoutes(a.Fiber)
+
+	commentSvc := comment.NewService(a.DB)
+	commentSvc.SetBroadcaster(a.WSHub)
+	commentSvc.SetUserTable(a.ModelRegistry.TableName("user"))
+	if tn := a.ModelRegistry.TableName("notification"); tn != "" && tn != "notification" {
+		commentSvc.SetNotificationTable(tn)
+	}
+	if tn := a.ModelRegistry.TableName("comment"); tn != "" && tn != "comment" {
+		commentSvc.SetTableName(tn)
+	}
+	commentPermSvc := persistence.NewPermissionService(a.DB)
+	commentPermSvc.SetTableNameResolver(func(name string) string { return a.ModelRegistry.TableName(name) })
+	commentRRSvc := persistence.NewRecordRuleService(a.DB)
+	commentRRSvc.SetTableNameResolver(func(name string) string { return a.ModelRegistry.TableName(name) })
+	commentRRSvc.SetModelFieldsResolver(func(modelName string) []string {
+		modelDef, err := a.ModelRegistry.Get(modelName)
+		if err != nil || modelDef == nil {
+			return nil
+		}
+		fields := make([]string, 0, len(modelDef.Fields))
+		for name := range modelDef.Fields {
+			fields = append(fields, name)
+		}
+		return fields
+	})
+	commentHandler := api.NewCommentHandler(api.CommentHandlerConfig{
+		Service:           commentSvc,
+		PermissionService: commentPermSvc,
+		RecordRuleService: commentRRSvc,
+		ModelRegistry:     a.ModelRegistry,
+	})
+	api.RegisterCommentRoutes(a.Fiber, "/api/v1", a.ModuleRegistry.InstalledNames(), commentHandler, a.JWTConfig)
+
+	activitySvc := activity.NewService(a.DB)
+	if tn := a.ModelRegistry.TableName("user"); tn != "" {
+		activitySvc.SetUserTable(tn)
+	}
+	activityHandler := api.NewActivityHandler(api.ActivityHandlerConfig{
+		Service:           activitySvc,
+		PermissionService: persistence.NewPermissionService(a.DB),
+		RecordRuleService: persistence.NewRecordRuleService(a.DB),
+		ModelRegistry:     a.ModelRegistry,
+	})
+	api.RegisterActivityRoutes(a.Fiber, "/api/v1", activityHandler, a.JWTConfig)
+
+	if a.DB != nil {
+		exportPermSvc := persistence.NewPermissionService(a.DB)
+		exportPermSvc.SetTableNameResolver(func(name string) string { return a.ModelRegistry.TableName(name) })
+		exportHandler := api.NewExportHandler(api.ExportHandlerConfig{
+			DB:                a.DB,
+			PermissionService: exportPermSvc,
+			ModelRegistry:     a.ModelRegistry,
+		})
+		moduleModels := make(map[string][]string)
+		for _, m := range a.ModelRegistry.List() {
+			if m.API == nil || m.Module == "" {
+				continue
+			}
+			moduleModels[m.Module] = append(moduleModels[m.Module], m.Name)
+		}
+		api.RegisterExportRoutes(a.Fiber, "/api/v1", moduleModels, exportHandler, a.JWTConfig)
+	}
 
 	adminPanel := admin.NewAdminPanel(a.DB, a.ModelRegistry, a.ModuleRegistry, a.viewsByName, admin.HealthInfo{
 		Version:     "0.1.0",

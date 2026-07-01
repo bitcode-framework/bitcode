@@ -1,0 +1,26 @@
+{
+  "locale": "ar",
+  "translations": {
+    "comment.record_required": "معرف السجل مطلوب",
+    "comment.body_required": "محتوى التعليق مطلوب",
+    "comment.send": "إرسال",
+    "comment.mentions": "إشارات",
+    "comment.forbidden_read": "ليس لديك إذن لقراءة التعليقات على هذا السجل",
+    "comment.delete": "حذف",
+    "comment.forbidden_delete": "فقط المؤلف أو المستخدم بإذن الحذف يمكنه حذف التعليق",
+    "comment.placeholder": "اكتب تعليقاً...",
+    "comment.empty": "لا توجد تعليقات بعد",
+    "comment.load_more": "تحميل المزيد",
+    "comment.cancel_reply": "إلغاء",
+    "comment.reply": "رد",
+    "comment.mentioned_you": "تمت الإشارة إليك",
+    "comment.replying_to": "الرد على تعليق",
+    "comment.forbidden_write": "ليس لديك إذن للتعليق على هذا السجل",
+    "comment.not_found": "التعليق غير موجود",
+    "activity.title": "النشاط",
+    "activity.empty": "لا يوجد نشاط بعد",
+    "activity.load_more": "تحميل المزيد",
+    "activity.forbidden_read": "ليس لديك إذن لقراءة النشاط على هذا السجل",
+    "activity.authentication_required": "المصادقة مطلوبة"
+  }
+}

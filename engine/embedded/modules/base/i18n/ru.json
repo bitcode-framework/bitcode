@@ -1,0 +1,26 @@
+{
+  "locale": "ru",
+  "translations": {
+    "comment.record_required": "Требуется ID записи",
+    "comment.body_required": "Текст комментария обязателен",
+    "comment.send": "Отправить",
+    "comment.mentions": "Упоминания",
+    "comment.forbidden_read": "У вас нет прав для чтения комментариев к этой записи",
+    "comment.delete": "Удалить",
+    "comment.forbidden_delete": "Только автор или пользователь с правом удаления может удалить комментарий",
+    "comment.placeholder": "Напишите комментарий...",
+    "comment.empty": "Комментариев пока нет",
+    "comment.load_more": "Загрузить ещё",
+    "comment.cancel_reply": "Отмена",
+    "comment.reply": "Ответить",
+    "comment.mentioned_you": "Вас упомянули",
+    "comment.replying_to": "Ответ на комментарий",
+    "comment.forbidden_write": "У вас нет прав для комментирования этой записи",
+    "comment.not_found": "Комментарий не найден",
+    "activity.title": "Активность",
+    "activity.empty": "Активности пока нет",
+    "activity.load_more": "Загрузить ещё",
+    "activity.forbidden_read": "У вас нет прав для чтения активности этой записи",
+    "activity.authentication_required": "Требуется аутентификация"
+  }
+}

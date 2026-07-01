@@ -1,0 +1,26 @@
+{
+  "locale": "fr",
+  "translations": {
+    "comment.record_required": "L'ID d'enregistrement est requis",
+    "comment.body_required": "Le contenu du commentaire est requis",
+    "comment.send": "Envoyer",
+    "comment.mentions": "Mentions",
+    "comment.forbidden_read": "Vous n'avez pas l'autorisation de lire les commentaires sur cet enregistrement",
+    "comment.delete": "Supprimer",
+    "comment.forbidden_delete": "Seul l'auteur ou un utilisateur avec autorisation de suppression peut supprimer le commentaire",
+    "comment.placeholder": "Écrire un commentaire...",
+    "comment.empty": "Pas encore de commentaires",
+    "comment.load_more": "Charger plus",
+    "comment.cancel_reply": "Annuler",
+    "comment.reply": "Répondre",
+    "comment.mentioned_you": "Vous avez été mentionné",
+    "comment.replying_to": "Répondre au commentaire",
+    "comment.forbidden_write": "Vous n'avez pas l'autorisation de commenter cet enregistrement",
+    "comment.not_found": "Commentaire introuvable",
+    "activity.title": "Activité",
+    "activity.empty": "Pas encore d'activité",
+    "activity.load_more": "Charger plus",
+    "activity.forbidden_read": "Vous n'avez pas l'autorisation de lire l'activité de cet enregistrement",
+    "activity.authentication_required": "Authentification requise"
+  }
+}

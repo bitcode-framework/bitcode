@@ -1,0 +1,26 @@
+{
+  "locale": "de",
+  "translations": {
+    "comment.record_required": "Datensatz-ID ist erforderlich",
+    "comment.body_required": "Kommentarinhalt ist erforderlich",
+    "comment.send": "Senden",
+    "comment.mentions": "Erwähnungen",
+    "comment.forbidden_read": "Sie haben keine Berechtigung, Kommentare zu diesem Datensatz zu lesen",
+    "comment.delete": "Löschen",
+    "comment.forbidden_delete": "Nur der Autor oder ein Benutzer mit Löschberechtigung kann den Kommentar löschen",
+    "comment.placeholder": "Kommentar schreiben...",
+    "comment.empty": "Noch keine Kommentare",
+    "comment.load_more": "Mehr laden",
+    "comment.cancel_reply": "Abbrechen",
+    "comment.reply": "Antworten",
+    "comment.mentioned_you": "Sie wurden erwähnt",
+    "comment.replying_to": "Auf Kommentar antworten",
+    "comment.forbidden_write": "Sie haben keine Berechtigung, diesen Datensatz zu kommentieren",
+    "comment.not_found": "Kommentar nicht gefunden",
+    "activity.title": "Aktivität",
+    "activity.empty": "Noch keine Aktivität",
+    "activity.load_more": "Mehr laden",
+    "activity.forbidden_read": "Sie haben keine Berechtigung, Aktivitäten zu diesem Datensatz zu lesen",
+    "activity.authentication_required": "Authentifizierung erforderlich"
+  }
+}

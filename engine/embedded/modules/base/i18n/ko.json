@@ -1,0 +1,26 @@
+{
+  "locale": "ko",
+  "translations": {
+    "comment.record_required": "레코드 ID는 필수입니다",
+    "comment.body_required": "댓글 내용은 필수입니다",
+    "comment.send": "보내기",
+    "comment.mentions": "멘션",
+    "comment.forbidden_read": "이 레코드의 댓글을 읽을 권한이 없습니다",
+    "comment.delete": "삭제",
+    "comment.forbidden_delete": "작성자 또는 삭제 권한이 있는 사용자만 댓글을 삭제할 수 있습니다",
+    "comment.placeholder": "댓글을 입력하세요...",
+    "comment.empty": "아직 댓글이 없습니다",
+    "comment.load_more": "더 보기",
+    "comment.cancel_reply": "취소",
+    "comment.reply": "답글",
+    "comment.mentioned_you": "회원님이 멘션되었습니다",
+    "comment.replying_to": "댓글에 답글 작성 중",
+    "comment.forbidden_write": "이 레코드에 댓글을 작성할 권한이 없습니다",
+    "comment.not_found": "댓글을 찾을 수 없습니다",
+    "activity.title": "활동",
+    "activity.empty": "아직 활동이 없습니다",
+    "activity.load_more": "더 보기",
+    "activity.forbidden_read": "이 레코드의 활동을 읽을 권한이 없습니다",
+    "activity.authentication_required": "인증이 필요합니다"
+  }
+}

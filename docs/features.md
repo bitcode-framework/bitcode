@@ -216,7 +216,7 @@ Before the gap list — what's already **production-solid**:
 | # | Feature | Status | Effort | What Exists | What's Missing |
 |---|---------|--------|--------|-------------|----------------|
 | 63 | Comment & Mention | ✅ | M | Comment service (`internal/runtime/comment/`) with polymorphic comments (commentable_type + commentable_id), threaded replies (parent_id), @mention parsing & resolution, notification creation on mention, WebSocket broadcast on create. HTTP handler at `/api/v1/:module/comments` (GET list, POST create, DELETE). Permission + record-rule enforcement (read/write/create/delete). Model-registry morph-type resolution. Wired in `app.go`. 17 tests (service + handler). | `bc-chatter` Stencil component exists but not wired to backend API. |
-| 64 | Activity Feed | ❌ | M | — | No activity feed. `bc-activity` and `bc-timeline` Stencil components exist but not wired. Need feed API + WebSocket integration. |
+| 64 | Activity Feed | ✅ | M | `ActivityService` (`internal/runtime/activity/`) aggregates `audit_log` → `BcActivityEntry[]` with server-side transform (verb, variant, icon, actor name resolution via batch user lookup). `GET /api/v1/activity` endpoint with query params (model, record_id, user, since, limit, page). Permission-aware (record-scoped queries enforce read permission + record rules; superuser bypass). 22 tests (service transform/aggregation/pagination/filter + handler permission/pagination/edge cases). `ViewActivity` view type wired in `renderer.go` + `CompileActivity` in component compiler emits `bc-activity` bound to `/api/v1/activity`. BcActivity contract upgraded (variant, dataSource, onLoadMore, onItemAction) — web + Flutter parity with 15 source tests + 14 widget tests. i18n keys in 11 locales. | — |
 | 65 | Email Inbox Integration | ❌ | XL | — | No email integration at all. Need IMAP client + email parsing + thread linking + SMTP send. |
 | 66 | Task / To-Do per Record | ❌ | M | — | No task/todo system. Need todo model + API + UI widget. |
 | 67 | In-App Notification | ⚠️ | M | WebSocket event broadcasting exists. Subscribe per channel. | No persistent notification model (read/unread), no notification preferences, no bell UI. |
@@ -239,7 +239,7 @@ The `@bitcode/components` Stencil library (122 components across 11 groups) prov
 | Widgets | badge, copy, phone, email, url, progress, statusbar, priority, handle, domain, placeholder, sync-status | 12 | ⚠️ Some via component compiler |
 | Media | pdf, image, document, youtube, instagram, tiktok, video, audio | 8 | ✅ Standalone viewer/player components |
 | Print | export, print, report-link | 3 | ❌ Not wired |
-| Social | activity, chatter, timeline | 3 | ❌ Not wired |
+| Social | activity, chatter, timeline | 3 | ⚠️ activity + chatter wired (Phase 1 ADR-014); timeline not wired |
 | **Total** | | **122** | |
 
 **Export architecture**: Post-build `generate-exports.mjs` creates group barrels in `dist/components/{group}/index.js`, `dist/full.js` (defineAll), per-group CSS, per-component CSS, theme CSS. 151 export paths in package.json. Component registry (`Registry.select()`) with dependency graph and include/exclude selector.
@@ -313,7 +313,7 @@ Enterprise-grade capabilities:
 - [ ] **#49** GraphQL API — schema generator from model definitions + resolver layer
 - [ ] **#54** Multi-Currency — currency model + exchange rate table + conversion logic
 - [ ] **#55** Multi-Company — company model + company-level settings + inter-company transactions
-- [ ] **#64** Activity Feed — feed API (aggregate audit_log + comments) + wire `bc-activity` component
+- [x] **#64** Activity Feed — `GET /api/v1/activity` aggregates `audit_log` → `BcActivityEntry[]` (ActivityService transform with verb/variant/icon/actor). Permission-aware (record-scoped read checks). Pagination (`limit`/`page`). `bc-activity` web + Flutter wired. `ViewActivity` renderer + `CompileActivity`. i18n (11 locales).
 - [ ] **#66** Task / To-Do per Record — todo model + API + UI widget
 
 ### Phase 5 — Ecosystem (ongoing)

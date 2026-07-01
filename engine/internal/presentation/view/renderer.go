@@ -162,6 +162,8 @@ func (r *Renderer) RenderView(ctx context.Context, viewDef *parser.ViewDefinitio
 		contentHTML, err = r.renderCalendar(ctx, viewDef)
 	case parser.ViewChart:
 		contentHTML, err = r.renderChart(ctx, viewDef)
+	case parser.ViewActivity:
+		contentHTML, err = r.renderActivity(ctx, viewDef, opt)
 	case parser.ViewCustom:
 		contentHTML, err = r.renderCustom(ctx, viewDef, opt.Module)
 	default:
@@ -356,6 +358,10 @@ func (r *Renderer) renderChart(ctx context.Context, viewDef *parser.ViewDefiniti
 	return fmt.Sprintf(`<div class="bc-card"><div class="bc-card-header"><h2>%s (Chart)</h2></div><div class="bc-card-body"><p>Chart data loaded</p></div></div>`, viewDef.Title), nil
 }
 
+func (r *Renderer) renderActivity(ctx context.Context, viewDef *parser.ViewDefinition, opt RenderOptions) (string, error) {
+	return r.componentCompiler.CompileActivity(viewDef, opt.RecordID), nil
+}
+
 func (r *Renderer) renderCustom(ctx context.Context, viewDef *parser.ViewDefinition, moduleName string) (string, error) {
 	data := make(map[string]any)
 
@@ -402,6 +408,7 @@ func (r *Renderer) defaultListHTML(viewDef *parser.ViewDefinition, records []map
 
 	opts := &DatatableOptions{
 		ModuleName: moduleName,
+		Exportable: viewDef.Exportable,
 	}
 	if moduleName != "" && viewDef.Model != "" {
 		opts.CreateUrl = "/" + moduleName + "/" + viewDef.Model + "/new"

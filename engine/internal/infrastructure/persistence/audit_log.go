@@ -7,6 +7,15 @@ import (
 	"gorm.io/gorm"
 )
 
+type ActivityQueryFilter struct {
+	Model    string
+	RecordID string
+	UserID   string
+	Since    time.Time
+	Limit    int
+	Offset   int
+}
+
 type AuditLogRepository struct {
 	db *gorm.DB
 }
@@ -165,6 +174,48 @@ func (r *AuditLogRepository) FindRequests(limit int, methodFilter string) ([]map
 		results = []map[string]any{}
 	}
 	return results, nil
+}
+
+// FindActivity queries audit_logs with flexible filtering for the activity
+// feed. All filters are optional — pass empty values to skip them. When all
+// filters are empty a global timeline is returned. Results are ordered
+// newest-first. Returns the total count (ignoring limit/offset) alongside the
+// rows so callers can paginate without a second round-trip.
+func (r *AuditLogRepository) FindActivity(model, recordID, userID string, since time.Time, limit, offset int) ([]map[string]any, int64, error) {
+	q := r.db.Table("audit_logs")
+	if model != "" {
+		q = q.Where("model_name = ?", model)
+	}
+	if recordID != "" {
+		q = q.Where("record_id = ?", recordID)
+	}
+	if userID != "" {
+		q = q.Where("user_id = ?", userID)
+	}
+	if !since.IsZero() {
+		q = q.Where("created_at >= ?", since)
+	}
+
+	var total int64
+	if err := q.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if offset > 0 {
+		q = q.Offset(offset)
+	}
+	if limit > 0 {
+		q = q.Limit(limit)
+	}
+
+	var results []map[string]any
+	if err := q.Order("created_at DESC").Find(&results).Error; err != nil {
+		return nil, 0, err
+	}
+	if results == nil {
+		results = []map[string]any{}
+	}
+	return results, total, nil
 }
 
 func nilIfEmpty(s string) any {

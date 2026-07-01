@@ -1,0 +1,26 @@
+{
+  "locale": "ja",
+  "translations": {
+    "comment.record_required": "レコードIDは必須です",
+    "comment.body_required": "コメント本文は必須です",
+    "comment.send": "送信",
+    "comment.mentions": "メンション",
+    "comment.forbidden_read": "このレコードのコメントを読む権限がありません",
+    "comment.delete": "削除",
+    "comment.forbidden_delete": "作成者または削除権限を持つユーザーのみがコメントを削除できます",
+    "comment.placeholder": "コメントを書く...",
+    "comment.empty": "まだコメントがありません",
+    "comment.load_more": "もっと読み込む",
+    "comment.cancel_reply": "キャンセル",
+    "comment.reply": "返信",
+    "comment.mentioned_you": "あなたがメンションされました",
+    "comment.replying_to": "コメントに返信中",
+    "comment.forbidden_write": "このレコードにコメントする権限がありません",
+    "comment.not_found": "コメントが見つかりません",
+    "activity.title": "アクティビティ",
+    "activity.empty": "まだアクティビティがありません",
+    "activity.load_more": "もっと読み込む",
+    "activity.forbidden_read": "このレコードのアクティビティを読む権限がありません",
+    "activity.authentication_required": "認証が必要です"
+  }
+}

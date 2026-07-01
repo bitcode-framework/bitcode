@@ -1,0 +1,26 @@
+{
+  "locale": "id",
+  "translations": {
+    "comment.record_required": "ID record diperlukan",
+    "comment.body_required": "Isi komentar diperlukan",
+    "comment.send": "Kirim",
+    "comment.mentions": "Sebutan",
+    "comment.forbidden_read": "Anda tidak memiliki izin untuk membaca komentar pada record ini",
+    "comment.delete": "Hapus",
+    "comment.forbidden_delete": "Hanya penulis atau pengguna dengan izin hapus yang dapat menghapus komentar",
+    "comment.placeholder": "Tulis komentar...",
+    "comment.empty": "Belum ada komentar",
+    "comment.load_more": "Muat lebih banyak",
+    "comment.cancel_reply": "Batal",
+    "comment.reply": "Balas",
+    "comment.mentioned_you": "Anda disebut",
+    "comment.replying_to": "Membalas komentar",
+    "comment.forbidden_write": "Anda tidak memiliki izin untuk berkomentar pada record ini",
+    "comment.not_found": "Komentar tidak ditemukan",
+    "activity.title": "Aktivitas",
+    "activity.empty": "Belum ada aktivitas",
+    "activity.load_more": "Muat lebih banyak",
+    "activity.forbidden_read": "Anda tidak memiliki izin untuk membaca aktivitas pada record ini",
+    "activity.authentication_required": "Autentikasi diperlukan"
+  }
+}

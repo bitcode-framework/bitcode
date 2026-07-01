@@ -1,0 +1,26 @@
+{
+  "locale": "zh-CN",
+  "translations": {
+    "comment.record_required": "记录ID不能为空",
+    "comment.body_required": "评论内容不能为空",
+    "comment.send": "发送",
+    "comment.mentions": "提及",
+    "comment.forbidden_read": "您没有权限阅读此记录的评论",
+    "comment.delete": "删除",
+    "comment.forbidden_delete": "只有作者或有删除权限的用户才能删除评论",
+    "comment.placeholder": "写下评论...",
+    "comment.empty": "暂无评论",
+    "comment.load_more": "加载更多",
+    "comment.cancel_reply": "取消",
+    "comment.reply": "回复",
+    "comment.mentioned_you": "有人提到了你",
+    "comment.replying_to": "正在回复评论",
+    "comment.forbidden_write": "您没有权限在此记录上评论",
+    "comment.not_found": "未找到评论",
+    "activity.title": "活动",
+    "activity.empty": "暂无活动",
+    "activity.load_more": "加载更多",
+    "activity.forbidden_read": "您没有权限阅读此记录的活动",
+    "activity.authentication_required": "需要身份验证"
+  }
+}

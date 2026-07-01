@@ -141,8 +141,8 @@ func TestCompileForm_WithChatter(t *testing.T) {
 
 	html := cc.CompileForm(viewDef, nil)
 
-	if !strings.Contains(html, `<bc-chatter></bc-chatter>`) {
-		t.Error("expected bc-chatter")
+	if !strings.Contains(html, `<bc-chatter`) || !strings.Contains(html, `data-model="order"`) {
+		t.Error("expected bc-chatter with data-model attribute")
 	}
 }
 
@@ -187,5 +187,55 @@ func TestCompileKanban(t *testing.T) {
 	}
 	if !strings.Contains(html, `"group_by":"status"`) {
 		t.Error("expected group_by in config")
+	}
+}
+
+func TestCompileForm_WithActivity(t *testing.T) {
+	cc := NewComponentCompiler()
+	viewDef := &parser.ViewDefinition{
+		Name:  "test_form",
+		Type:  parser.ViewForm,
+		Model: "order",
+		Title: "Test",
+		Layout: []parser.LayoutItem{
+			{Activity: true},
+		},
+	}
+
+	html := cc.CompileForm(viewDef, nil)
+
+	if !strings.Contains(html, `<bc-activity`) || !strings.Contains(html, `data-model="order"`) {
+		t.Error("expected bc-activity with data-model attribute")
+	}
+	if !strings.Contains(html, `data-source="activity"`) {
+		t.Error("expected data-source=activity on bc-activity")
+	}
+	if !strings.Contains(html, `data-variant="timeline"`) {
+		t.Error("expected timeline variant for form-embedded activity")
+	}
+}
+
+func TestCompileActivity_StandaloneView(t *testing.T) {
+	cc := NewComponentCompiler()
+	viewDef := &parser.ViewDefinition{
+		Name:  "contact_activity",
+		Type:  parser.ViewActivity,
+		Model: "contact",
+		Title: "Activity Log",
+	}
+
+	html := cc.CompileActivity(viewDef, "rec-1")
+
+	if !strings.Contains(html, `<bc-activity`) {
+		t.Error("expected bc-activity component in standalone activity view")
+	}
+	if !strings.Contains(html, `data-model="contact"`) {
+		t.Error("expected data-model=contact")
+	}
+	if !strings.Contains(html, `data-source="/api/v1/activity?model=contact&amp;record_id=rec-1"`) {
+		t.Error("expected data-source bound to /api/v1/activity filtered by model and record_id")
+	}
+	if !strings.Contains(html, `data-variant="timeline"`) {
+		t.Error("expected timeline variant for standalone activity view")
 	}
 }

@@ -192,7 +192,11 @@ func (c *ComponentCompiler) CompileFormFull(viewDef *parser.ViewDefinition, reco
 			continue
 		}
 		if item.Chatter {
-			b.WriteString(`<div style="margin-top:1.5rem;border-top:1px solid var(--border,#e5e7eb);padding-top:1rem;"><bc-chatter></bc-chatter></div>`)
+			b.WriteString(fmt.Sprintf(`<div style="margin-top:1.5rem;border-top:1px solid var(--border,#e5e7eb);padding-top:1rem;"><bc-chatter data-model="%s" data-record-id="%s" data-source="comments" data-threading="true"></bc-chatter></div>`, esc(model), esc(recordID)))
+			continue
+		}
+		if item.Activity {
+			b.WriteString(fmt.Sprintf(`<div style="margin-top:1.5rem;border-top:1px solid var(--border,#e5e7eb);padding-top:1rem;"><bc-activity data-model="%s" data-record-id="%s" data-source="/api/v1/activity?model=%s&amp;record_id=%s" data-variant="timeline"></bc-activity></div>`, esc(model), esc(recordID), esc(model), esc(recordID)))
 			continue
 		}
 		if item.Separator != nil {
@@ -619,6 +623,7 @@ type DatatableOptions struct {
 	EditUrl     string
 	DetailUrl   string
 	ModalMode   bool
+	Exportable  bool
 }
 
 func (c *ComponentCompiler) CompileListDatatable(viewDef *parser.ViewDefinition, opts *DatatableOptions) string {
@@ -647,6 +652,15 @@ func (c *ComponentCompiler) CompileListDatatable(viewDef *parser.ViewDefinition,
 		if opts.ModalMode {
 			attrs += ` modal-mode="true"`
 		}
+	}
+
+	exportable := (opts != nil && opts.Exportable) || viewDef.Exportable
+	if exportable && viewDef.Model != "" {
+		exportAttrs := fmt.Sprintf(`model="%s" formats='["csv","xlsx","json"]'`, esc(viewDef.Model))
+		if opts != nil && opts.ModuleName != "" {
+			exportAttrs += fmt.Sprintf(` endpoint="/api/v1/%s/%s/export"`, esc(opts.ModuleName), esc(viewDef.Model))
+		}
+		return fmt.Sprintf(`<div class="bc-list-toolbar"><bc-export %s></bc-export></div><bc-datatable %s></bc-datatable>`, exportAttrs, attrs)
 	}
 
 	return fmt.Sprintf(`<bc-datatable %s></bc-datatable>`, attrs)
@@ -700,6 +714,29 @@ func (c *ComponentCompiler) CompileKanban(viewDef *parser.ViewDefinition) string
 		esc(viewDef.Model), esc(viewDef.Title), fieldsJSON, esc(viewDef.GroupBy))
 }
 
+// CompileActivity emits a <bc-activity> web component bound to the aggregated
+// activity API. When the view declares a model (optionally with a record_id
+// from RenderOptions) the feed is scoped to that record; otherwise a global
+// timeline is rendered. The data-source attribute points the Stencil component
+// at GET /api/v1/activity so it can fetch entries client-side.
+func (c *ComponentCompiler) CompileActivity(viewDef *parser.ViewDefinition, recordID string) string {
+	var b strings.Builder
+	b.WriteString(fmt.Sprintf(`<div class="bc-card"><div class="bc-card-header"><h2>%s</h2></div><div class="bc-card-body">`, esc(viewDef.Title)))
+
+	dataSource := "/api/v1/activity"
+	if viewDef.Model != "" {
+		dataSource = fmt.Sprintf("/api/v1/activity?model=%s", esc(viewDef.Model))
+		if recordID != "" {
+			dataSource += fmt.Sprintf("&amp;record_id=%s", esc(recordID))
+		}
+	}
+
+	b.WriteString(fmt.Sprintf(`<bc-activity data-model="%s" data-record-id="%s" data-source="%s" data-variant="timeline"></bc-activity>`,
+		esc(viewDef.Model), esc(recordID), dataSource))
+	b.WriteString(`</div></div>`)
+	return b.String()
+}
+
 func (c *ComponentCompiler) compileLayoutItem(item parser.LayoutItem, record map[string]any, modelName string) string {
 	var b strings.Builder
 
@@ -726,7 +763,23 @@ func (c *ComponentCompiler) compileLayoutItem(item parser.LayoutItem, record map
 	}
 
 	if item.Chatter {
-		b.WriteString(`<bc-chatter></bc-chatter>`)
+		recID := ""
+		if record != nil {
+			if v, ok := record["id"]; ok {
+				recID = fmt.Sprintf("%v", v)
+			}
+		}
+		b.WriteString(fmt.Sprintf(`<bc-chatter data-model="%s" data-record-id="%s" data-source="comments" data-threading="true"></bc-chatter>`, esc(modelName), esc(recID)))
+	}
+
+	if item.Activity {
+		recID := ""
+		if record != nil {
+			if v, ok := record["id"]; ok {
+				recID = fmt.Sprintf("%v", v)
+			}
+		}
+		b.WriteString(fmt.Sprintf(`<div style="margin-top:1rem;"><bc-activity data-model="%s" data-record-id="%s" data-source="activity" data-variant="timeline"></bc-activity></div>`, esc(modelName), esc(recID)))
 	}
 
 	if item.Separator != nil {

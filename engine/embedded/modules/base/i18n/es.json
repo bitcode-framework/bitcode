@@ -1,0 +1,26 @@
+{
+  "locale": "es",
+  "translations": {
+    "comment.record_required": "El ID del registro es obligatorio",
+    "comment.body_required": "El cuerpo del comentario es obligatorio",
+    "comment.send": "Enviar",
+    "comment.mentions": "Menciones",
+    "comment.forbidden_read": "No tienes permiso para leer comentarios en este registro",
+    "comment.delete": "Eliminar",
+    "comment.forbidden_delete": "Solo el autor o un usuario con permiso de eliminación puede eliminar el comentario",
+    "comment.placeholder": "Escribe un comentario...",
+    "comment.empty": "Aún no hay comentarios",
+    "comment.load_more": "Cargar más",
+    "comment.cancel_reply": "Cancelar",
+    "comment.reply": "Responder",
+    "comment.mentioned_you": "Fuiste mencionado",
+    "comment.replying_to": "Respondiendo al comentario",
+    "comment.forbidden_write": "No tienes permiso para comentar en este registro",
+    "comment.not_found": "Comentario no encontrado",
+    "activity.title": "Actividad",
+    "activity.empty": "Aún no hay actividad",
+    "activity.load_more": "Cargar más",
+    "activity.forbidden_read": "No tienes permiso para leer la actividad de este registro",
+    "activity.authentication_required": "Se requiere autenticación"
+  }
+}
