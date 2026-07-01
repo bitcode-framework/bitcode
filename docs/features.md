@@ -219,7 +219,7 @@ Before the gap list — what's already **production-solid**:
 | 64 | Activity Feed | ✅ | M | `ActivityService` (`internal/runtime/activity/`) aggregates `audit_log` → `BcActivityEntry[]` with server-side transform (verb, variant, icon, actor name resolution via batch user lookup). `GET /api/v1/activity` endpoint with query params (model, record_id, user, since, limit, page). Permission-aware (record-scoped queries enforce read permission + record rules; superuser bypass). 22 tests (service transform/aggregation/pagination/filter + handler permission/pagination/edge cases). `ViewActivity` view type wired in `renderer.go` + `CompileActivity` in component compiler emits `bc-activity` bound to `/api/v1/activity`. BcActivity contract upgraded (variant, dataSource, onLoadMore, onItemAction) — web + Flutter parity with 15 source tests + 14 widget tests. i18n keys in 11 locales. | — |
 | 65 | Email Inbox Integration | ❌ | XL | — | No email integration at all. Need IMAP client + email parsing + thread linking + SMTP send. |
 | 66 | Task / To-Do per Record | ❌ | M | — | No task/todo system. Need todo model + API + UI widget. |
-| 67 | In-App Notification | ⚠️ | M | WebSocket event broadcasting exists. Subscribe per channel. | No persistent notification model (read/unread), no notification preferences, no bell UI. |
+| 67 | In-App Notification | ✅ | M | Notification model (`notification.json`: user_id m2o, type selection [info\|warning\|error\|success\|mention\|message], title, body, data json, notifiable morph_to, read_at, created_at). NotificationService Go layer (Create, List unread-first user-scoped, MarkRead, MarkAllRead, UnreadCount, WS push via BroadcastToUser). REST endpoints: GET /api/v1/notifications (user-scoped, unread-first, pagination), POST /:id/read, POST /read-all, GET /unread-count. WebSocket push on new notification. @mention integration (comment service writes notification on @mention). BcNotificationCenter + BcNotificationItem web components (Pure/Adapt, bell + dropdown panel, unread badge, mark-read, infinite scroll). Flutter parity (iOS Cupertino dropdown + Android Material). BcRenderer part:'notification-center' in navbar. i18n (11 locales). Engine tests (16) + handler tests (7) + component tests (21) + Flutter tests (10). | — |
 
 ---
 
@@ -281,7 +281,7 @@ Features most requested by users and blocking other features:
 - [ ] **#57** 2FA (TOTP) — TOTP library + setup flow + verification middleware
 - [ ] **#59** Backup & Restore — db dump/restore commands + optional scheduling
 - [x] **#63** Comment & Mention — comment model + API + mention parsing/resolution + permission checks + threading + WebSocket broadcast. `bc-chatter` component wiring still pending.
-- [ ] **#67** In-App Notification — notification model + preferences + bell UI + WebSocket delivery
+- [x] **#67** In-App Notification — notification model + NotificationService (Create, List unread-first, MarkRead, MarkAllRead, UnreadCount) + REST endpoints + WebSocket push (BroadcastToUser) + @mention integration + BcNotificationCenter/BcNotificationItem (Pure/Adapt) + Flutter parity + i18n (11 locales) + engine/handler/component tests
 
 ### Phase 3 — Visual Builders (6–8 weeks, effort L)
 
@@ -336,7 +336,7 @@ Known limitations in the Bridge API (`engine/internal/runtime/bridge/`) that wil
 |---|------|--------------|--------|-------|
 | 1 | Storage + AttachmentRepository | `storage_bridge.go` wraps `StorageDriver` only | Integrate `AttachmentRepository` for metadata tracking, thumbnails, versioning | 1 (iteration 2) |
 | 2 | Email template rendering | `email.go` sends raw HTML body only | Support `template` + `data` fields via Go `html/template` engine | 1 (iteration 2) |
-| 3 | Notify user targeting | `notify.go` broadcasts to channel `notification:{userID}` | Add `SendToUser(userID, msg)` method on Hub that filters by `Client.UserID` | 1 (iteration 2) |
+| 3 | Notify user targeting | ✅ `BroadcastToUser(userID, channel, data)` on Hub filters by `Client.UserID` — used by NotificationService | Done in Phase 3 | 0 |
 | 4 | Execution log cleanup cron | `execution.go` has config but no cleanup goroutine | Add cron-based cleanup using `max_age` + `max_records` from `ExecutionLogConfig` | 1 (iteration 2) |
 | 5 | Execution retry | `execution.Retry()` returns "not yet implemented" | Re-run process with same input, link via `parent_id` | 1 (iteration 2) |
 | 6 | Executor integration | `executor.go` not yet wrapped with execution log recording | Wrap `Execute()` to auto-record `process_execution` + per-step logging | 1 (iteration 2) |

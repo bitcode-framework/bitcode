@@ -3,11 +3,18 @@
 > Go engine + JSON definitions + runtime + modules. Lightweight session memory.
 > Source of truth: AGENTS.md, docs/architecture.md, docs/features.md, engine/docs/features/
 
-## Current State (2026-06-30)
+## Current State (2026-07-01)
 
 ### Test baseline
-- 570 Go engine tests + 82 go-json tests, 0 failures. Build OK.
+- 1004 Go engine tests + 82 go-json tests, 0 failures. Build OK.
 - Run: `cd engine && rtk go test ./... -count=1` (rtk summarizes). Full output: `| Out-String`.
+
+### 2026-07-01 — Notification system (ADR-014 Phase 3)
+- **What:** Full notification feature — model, service, REST endpoints, WS push, mention integration
+- **Decision / outcome:** Dedicated NotificationService (not convention CRUD) for user-scope, unread-first, and WS push via `BroadcastToUser` on hub
+- **Files touched:** `embedded/modules/base/models/notification.json`, `internal/runtime/notification/service.go`, `internal/presentation/api/notification_handler.go`, `internal/presentation/websocket/hub.go` (+BroadcastToUser), `internal/runtime/comment/service.go` (mention→notification), `internal/app.go`
+- **Tests:** 16 service + 7 handler = 23 new engine tests. Full suite 1004 pass.
+- **Gotcha:** `MarkRead` with GORM `Updates` map on filtered row was unreliable on SQLite — switched to single `Update("read_at", now)`. @worker
 
 ### Recent completions (engine-side)
 - Data Migration System (Laravel-style, 29 tests, MongoDB parity via MigrationStore)

@@ -208,6 +208,7 @@ export 'src/components/bc_viewer_tiktok.dart';
 // M6 social widgets
 export 'src/components/bc_chatter.dart';
 export 'src/components/bc_activity.dart';
+export 'src/components/bc_notification_center.dart';
 export 'src/components/bc_timeline_social.dart';
 export 'src/components/bc_galleria.dart';
 export 'src/components/bc_image.dart';

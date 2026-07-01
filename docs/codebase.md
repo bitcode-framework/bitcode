@@ -244,7 +244,9 @@ engine/
 │       │   ├── export_handler.go               # ExportHandler — POST/GET /api/v1/{module}/{model}/export (CSV/XLSX/JSON streaming), export permission + field-level mask + column sanitization
 │       │   ├── export_handler_test.go          # 12 tests (csv, xlsx, json, streaming, permission denial, filter, columns, field mask, column sanitization, superuser bypass)
 │       │   ├── pivot_handler.go                # PivotHandler — POST /api/v1/{module}/{model}/pivot (OLAP aggregation), read permission + field-level mask + RLS filter
-│       │   └── pivot_handler_test.go           # 9 tests (single agg, multi agg, missing rows/values, invalid agg, permission denied, field-level permission, auth required, no cols)
+│       │   ├── pivot_handler_test.go           # 9 tests (single agg, multi agg, missing rows/values, invalid agg, permission denied, field-level permission, auth required, no cols)
+│       │   ├── notification_handler.go         # NotificationHandler — GET /api/v1/notifications (user-scoped, unread-first, pagination), POST /:id/read, POST /read-all, GET /unread-count
+│       │   └── notification_handler_test.go    # 7 tests (list unread-first, mark single read, mark all read, unread count, pagination, auth required, user scope isolation)
 │       ├── middleware/
 │       │   ├── auth.go                         # JWT validation, user context injection, impersonated_by extraction
 │       │   ├── permission.go                   # Permission checking via PermissionChecker interface (ModelAccess-based)
@@ -281,7 +283,7 @@ engine/
 │       ├── assets/
 │       │   └── handler.go                      # Static asset serving
 │       └── websocket/
-│           ├── hub.go                          # WebSocket hub — connect to EventBus, broadcast domain events, route CRUD messages
+│           ├── hub.go                          # WebSocket hub — connect to EventBus, broadcast domain events, route CRUD messages, BroadcastToUser (user-scoped push for notifications)
 │           ├── crud.go                         # CRUDHandler — CRUD over WebSocket with request/reply protocol, permission + record rule enforcement
 │           └── crud_test.go                    # 7 tests (create, list, read, update, delete, model enable, permission denied)
 │
@@ -316,7 +318,7 @@ engine/
 ├── modules/                                    # Built-in modules (on disk)
 │   ├── base/                                   # Core module — users, groups, model_access, security_history, record_rules, settings
 │   │   ├── module.json                         # 11 permissions, 2 groups (user, manager), menu
-│   │   ├── models/                             # user (is_superuser), role, group (share, comment, module), permission, model_access (12 ERPNext permissions), security_history (ir_security_histories), record_rule (module, modified_source), audit_log, setting
+│   │   ├── models/                             # user (is_superuser), role, group (share, comment, module), permission, model_access (12 ERPNext permissions), security_history (ir_security_histories), record_rule (module, modified_source), audit_log, setting, notification (user_id m2o, type selection [info|warning|error|success|mention|message], title, body, data json, notifiable morph_to, read_at, created_at)
 │   │   ├── apis/                               # auth_api, user_api, group_api, role_api, permission_api, etc.
 │   │   ├── views/                              # CRUD views for all base models
 │   │   ├── data/                               # default_roles, default_groups, default_users
@@ -640,6 +642,12 @@ packages/components/
         │   ├── bc-dialog-quickentry/           # Quick record entry
         │   ├── bc-dialog-wizard/               # Multi-step wizard
         │   └── bc-toast/                       # Toast notifications
+        │
+        ├── overlays/notification/              # Notification center (Pure/Adapt)
+        │   ├── BcNotificationCenter.lite.tsx   # Bell + dropdown panel, unread badge, mark-read, mark-all-read, infinite scroll
+        │   ├── BcNotificationItem.lite.tsx     # Individual notification item (6 variants: info/warning/error/success/mention/message)
+        │   ├── BcNotificationCenter.contract.ts # Public contract (props, events, slots)
+        │   └── BcNotificationCenter.test.ts    # 21 source tests (contract, variants, badge, dropdown, mark-read, scroll, a11y)
         │
         ├── search/                             # Search & filter components
         │   ├── bc-search/                      # Search bar
@@ -972,7 +980,7 @@ samples/erp/
 └── modules/
     ├── base/                                   # Core module (users, roles, groups, permissions)
     │   ├── module.json
-    │   ├── models/                             # 7 models: user, role, group, permission, record_rule, audit_log, setting
+    │   ├── models/                             # 8 models: user, role, group, permission, record_rule, audit_log, setting, notification
     │   ├── apis/                               # 8 APIs: auth, user, group, role, permission, record_rule, setting, audit_log
     │   ├── views/                              # CRUD views for all models
     │   ├── data/                               # Default roles, groups, users
@@ -1030,6 +1038,7 @@ samples/erp/
 | `runtime/validation` | 28 | Field validators (required, email, regex, conditional, etc.), sanitizers, model-level validators, update merge |
 | `runtime/hook` | 10 | Event dispatcher (priority, condition, sync/async, retry, on_change cascade), context, expression eval |
 | `runtime/pivot` | 20 | PivotService: single agg, multi agg, multi rows, multi cols, null handling, totals, avg correctness, min/max, validation |
+| `runtime/notification` | 16 | NotificationService: create, list (unread-first, user-scoped), mark read, mark all read, unread count, WS push, morph_to ref |
 | `embedded` | — | Embed FS tests |
 | **Total** | **131+** | |
 

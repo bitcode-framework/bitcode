@@ -6,6 +6,18 @@
 
 ---
 
+## 2026-07-01 — BcNotificationCenter + BcNotificationItem (Phase 3 Notification)
+
+- **BcNotificationCenter.lite.tsx** — `packages/ui/src/components/overlays/notification/`. Bell button + dropdown panel, unread badge (99+ overflow), mark-read per item, mark-all-read, infinite scroll pagination, loading/error/empty states. Declarative `data-source` attribute for API binding. Uses `useStore` pattern.
+- **BcNotificationItem.lite.tsx** — Subcomponent. 6 variants (info/warning/error/success/mention/message) with semantic icons + token-driven palette. role=article, unread dot, mark-read button, tabular-nums timestamp.
+- **BcNotificationCenter.contract.ts** — Types: `NotificationType`, `NotificationItem`, `BcNotificationCenterProps`. 6 type variants.
+- **BcNotificationCenter.test.ts** — 21 source tests: contract, bell button a11y, badge, dropdown dialog, mark-all-read, mark-read, infinite scroll, loading/error/empty states, declarative data source, token palette, 6 variants, BcNotificationItem subcomponent.
+- **Barrel exports:** `packages/ui/src/index.ts` updated with BcNotificationCenter + BcNotificationItem.
+- **Platform audit:** `packages/ui-schema/src/block-catalog/platform-audit.ts` — added BcNotificationCenter + BcNotificationItem entries.
+- **Companion:** Flutter `bc_notification_center.dart` + 10 widget tests (see flutter bucket). @worker
+
+---
+
 ## 2026-07-01 — BcPivot Mitosis component (Phase 3 Pivot Table)
 
 - **BcPivot.lite.tsx** — `packages/ui/src/components/data/pivot/`. Renders pivot matrix from declarative data source (endpoint+module+model) or inline `result` prop. Expandable/collapsible rows, row totals, grand total, no-data state. Uses `useStore` pattern (no refs, no hooks).

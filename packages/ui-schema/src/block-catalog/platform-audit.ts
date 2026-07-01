@@ -166,6 +166,8 @@ export const PLATFORM_AUDIT: Readonly<Record<string, PlatformAuditEntry>> = {
   BcTimelineSocial: { web: true, flutter: true, flutterKey: 'bc_timeline_social' },
   BcViewActivity: { web: true, flutter: true, flutterKey: 'bc_view_activity' },
   BcChatter: { web: true, flutter: true, flutterKey: 'bc_chatter' },
+  BcNotificationCenter: { web: true, flutter: true, flutterKey: 'bc_notification_center' },
+  BcNotificationItem: { web: true, flutter: true, flutterKey: 'bc_notification_item' },
   BcComment: { web: true, flutter: true, flutterKey: 'bc_comment' },
   BcMentions: { web: true, flutter: true, flutterKey: 'bc_mentions' },
 

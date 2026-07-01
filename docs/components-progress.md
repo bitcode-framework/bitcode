@@ -415,6 +415,8 @@ Kolom **Tier** = klasifikasi ADR-006 Section 2 (P=Pure, A=Adapt). Estimasi awal 
 | BcViewActivity | views | ✅ | ✅ | ✅ `views/activity` role=log + aria-live=polite + ordered list + <time>. 7 tests. |
 | BcExport | print | ✅ | ✅ | ✅ `print/export` role=group + per-format aria-label + data-format markers. 7 tests. |
 | BcPivot | analytics | ✅ | ✅ | ✅ `analytics/pivot` role=region + aria-label + expandable rows + totals + grand total + no-data state. 14 tests. |
+| BcNotificationCenter | interaction | ✅ | ✅ | ✅ `interaction/notification-center` bell button aria-label + aria-expanded + role=dialog dropdown + unread badge + mark-all-read + mark-read per item + infinite scroll + loading/error/empty states. 21 tests. |
+| BcNotificationItem | interaction | — | ✅ | ✅ 6 variants (info/warning/error/success/mention/message) with semantic icon + token-driven palette + role=article + unread dot + mark-read button + tabular-nums timestamp. Covered by BcNotificationCenter tests. |
 | BcPrint | print | ✅ | ✅ | ✅ `print/print` 3 variants (default/outline/ghost) + data-target marker. 7 tests. |
 | BcReportLink | print | ✅ | ✅ | ✅ `print/report-link` external rel=noopener noreferrer + format badge aria-hidden. 7 tests. |
 | BcSearch | navigation | ✅ | ✅ | ✅ `navigation/search` role=search + listbox/option + aria-controls + autocomplete=off. 8 tests. |

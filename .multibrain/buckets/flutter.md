@@ -3,6 +3,14 @@
 > Flutter adapter, token bridge, demo parity, platform widgets.
 > Scope: `packages/ui-flutter/` + Flutter-side of `packages/ui` contracts.
 
+## 2026-07-01 — BcNotificationCenter Flutter widget (Phase 3 Notification)
+
+- **bc_notification_center.dart** — `packages/ui-flutter/lib/src/components/`. StatefulWidget. Adaptive rendering via PlatformWidget: iOS Cupertino dropdown (CupertinoButton bell + CupertinoAlertDialog panel), Android Material dropdown (IconButton bell + Dialog panel). Bell button with badge (99+ overflow), notification items list, mark-all-read, infinite scroll, loading/error/empty states.
+- **bc_notification_center_test.dart** — 10 tests: fromJson parses all fields, defaults type to info, isUnread false when read_at set, copyWith marks as read, equality by id, bell renders with badge when unread > 0, no badge when 0, 99+ overflow, onMarkRead callback when item tapped, disabled bell doesn't respond.
+- **dart analyze:** clean on both files.
+- **flutter test:** 10/10 pass.
+- **Gotcha:** Row overflow in dropdown header — wrapped title in `Expanded` + `TextOverflow.ellipsis`. @worker
+
 ## 2026-07-01 — BcPivot Flutter widget (Phase 3 Pivot Table)
 
 - **bc_pivot.dart** — `packages/ui-flutter/lib/src/components/`. StatelessWidget with StatefulWidget for expand/collapse. Material `DataTable` on Android, Cupertino-styled container on iOS (per ADR-011). Expandable rows, row totals, grand total, no-data state.
