@@ -98,6 +98,49 @@
 
 1. **ADR-014 Phase 1 (wire existing):** Start with Comment (#5) or Activity (#6) — components exist, only API + BcRenderer part needed. Fastest value. Files: `engine/internal/presentation/api/`, `engine/internal/domain/`, view JSON parts.
 2. **ADR-017/018 P7 merge:** Wire `ActionRunner` into `ReactiveStore.runAction` (TS + Dart). The types and runner exist and pass tests in ui-schema; the integration into ReactiveStore is the missing piece.
+### 5. Wizard multi-step form implementation (committed, beyond original audit scope)
+
+User asked about wizard/multi-step form support like Filament. Researched ADR-005, ADR-004, ADR-007/008, ADR-018. Got user requirements via questionnaire: (1) client+server validation, (2) icon per step, (3) multiple steps, (4) finish callback with values, (5) align with ADRs (not copy Filament). Implemented in 4 steps:
+
+**Step 1 — ui-schema types (committed `c48fcb7`):**
+- Added `'wizard'` to `UiSchemaKind` union
+- Added `WizardValidationMode = 'client' | 'server' | 'both'` type
+- Added `WizardStepSchema` interface (title, description, icon, schema, validationMode, validationEndpoint, skippable, blocking)
+- Added `steps?: WizardStepSchema[]` to `UiSchema`
+- Updated barrels `src/schema/index.ts` and `src/index.ts`
+
+**Step 2 — Web component (committed `88fd11f` + `a003b6f`):**
+- `BcWizard.contract.ts`: Added icon, schema, validationMode, validationEndpoint, skippable, finishAction, onFinish(values), values, onValuesChange, renderStepContent
+- `BcWizard.lite.tsx`: Complete rewrite with renderStepContent callback (ADR-005 §2 compositor — BcRenderer NOT imported directly to avoid Mitosis import-hoisting issues), validateField/validateStepClient/validateStepServer, validationMode cascade (client → server), onFinish(mergedValues), error display, validating state, icon per step
+- `BcWizard.test.ts`: 18 source tests (icon, schema-driven, validationMode, onFinish values, skippable, renderStepContent callback)
+- `mitosis-plugin-react-fixes.mjs`: Extended with 3 new regex rules (5b: `)`→`const[` and `)`→`function` semicolons; 5c: `};`→newline before `function`/`export`) to fix Mitosis output that Babel couldn't parse
+- BcChatter.lite.tsx fix: Moved `parseMentions` standalone function into `useStore` as method (Mitosis can't parse standalone functions before component)
+- Build: 190 components generated, reformat 486/486 pass (0 failed), 2143 source tests pass, 822 RTL tests pass
+
+**Step 3 — Flutter parity (committed `e03327b`):**
+- `bc_wizard.dart`: Added icon (45+ icon name→Icons mapping), schema-driven content via stepContentBuilder(index, step, values), client validation (validateField, validateStepClient), server validation (validateStepServer via http.post), validationMode cascade, merged values tracking, onFinish(values, meta), onValuesChange, skippable, validating state, validation error display
+- `bc_wizard_test.dart`: Updated to use onFinishLegacy + stepContentBuilderLegacy for backward compat. All 9 tests pass.
+- All 1950 Flutter tests pass.
+
+**Step 4 — Docs (committed `d4c7856`):**
+- Block catalog: Removed "Wizard schema convention not yet authored" gap
+- `docs/components-progress.md`: Updated wizard row
+- `packages/ui-flutter/CONTRACT_INVENTORY.md`: Updated wizard row
+- `engine/docs/features/wizard.md`: Created feature doc placeholder
+- `.multibrain/buckets/ui-library.md` + `adr.md`: Added wizard entries
+
+**Key design decisions:**
+- `renderStepContent` callback prop instead of direct BcRenderer import (ADR-005 §2 compositor pattern, keeps wizard standalone)
+- Generic `validationEndpoint` for server validation (standalone-friendly, no BitCode coupling). Contract: `{ step, values } → { ok, errors }`
+- Plain `onFinish(values)` as default + optional `finishAction?: ActionSource` for declarative mode (ADR-018)
+- Interfaces removed from `.lite.tsx` (Mitosis inlines `export interface` on single line, Babel can't parse function-type properties like `=> void` in that format)
+
+---
+
+## Next steps
+
+1. **BcWizard RTL test expansion:** Currently only 2 a11y smoke tests. Add interaction tests (step navigation, validation blocking, icon rendering, schema-driven content rendering, onFinish with values).
+2. **BcChatter RTL test:** Another agent's chatter work needs RTL tests once the contract stabilizes.
 3. **packages/ui tsc cleanup (optional):** Investigate why tsc includes `output/` files despite `exclude: ["output"]`. Likely needs `tsconfig.tsbuildinfo` deletion + clean rebuild, or a separate `tsconfig.test.json`.
 4. **ADR-011 Phase 5c:** Port P2 Flutter widgets (~90). Long tail, can be parallelized.
 
