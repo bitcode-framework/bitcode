@@ -614,3 +614,26 @@ Candidate matrix + parity report: `sprints/package-ui-elementor/block-catalog-ca
 | Ready Catalog completeness gate | Pending | All 44 Candidate entries promoted to Ready (or explicitly aliased / excluded) per ADR-017 Section 7 before the catalog can be declared complete. |
 
 **No-stub principle:** Per ADR-017 Section 7 and stakeholder quality principles, entries marked Ready must render fully on web and Flutter with no placeholder, banner, or mocked-out input. Candidate entries that cannot clear every gate stay in the Candidate Catalog only.
+
+## ADR-014 Engine ↔ UI Feature Wiring (2026-07-02 — All 9 Features Complete)
+
+All 9 ADR-014 features are implemented across 4 phases with full engine API, web (Mitosis), and Flutter parity.
+
+| # | Feature | Component | Engine | Web | Flutter | Phase |
+|---|---------|-----------|--------|-----|---------|-------|
+| 5 | Comment & Mention | BcChatter (upgrade) | ✅ comment.json + CommentService + @mention parser | ✅ BcChatter.lite.tsx | ✅ bc_chatter.dart | 1 |
+| 6 | Activity Feed | BcActivity (upgrade) | ✅ ActivityService + GET /api/v1/activity | ✅ BcActivity.lite.tsx | ✅ bc_activity.dart | 1 |
+| 7 | Export Data | BcExport (upgrade) | ✅ ExportService + POST /export (CSV/XLSX/JSON) | ✅ BcExport.lite.tsx | ✅ bc_export.dart | 1 |
+| 4 | Multi-Step Wizard | BcWizard (upgrade) | ✅ wizard view type + process transitions | ✅ BcWizard.lite.tsx | ✅ bc_wizard.dart | 1 |
+| 2 | SPA Foundation | BcRenderer (existing) | ✅ render:"spa" + JSON envelope | ✅ spa-runtime.ts | ✅ spa_runtime.dart | 2 |
+| 8 | Pivot Table | BcPivot (new) | ✅ PivotService + POST /pivot (OLAP) | ✅ BcPivot.lite.tsx | ✅ bc_pivot.dart | 3 |
+| 9 | Notification | BcNotificationCenter (new) | ✅ notification.json + NotificationService + WS push | ✅ BcNotificationCenter.lite.tsx | ✅ bc_notification_center.dart | 3 |
+| 1 | Form Builder | BcFormBuilder (new) | ✅ ViewValidator + POST /admin/views/validate | ✅ BcFormBuilder.lite.tsx | ✅ bc_form_builder.dart | 4 |
+| 2 | Workflow Builder | BcWorkflowBuilder (new) | ✅ ProcessValidator + POST /admin/processes/validate | ✅ BcWorkflowBuilder.lite.tsx | ✅ bc_workflow_builder.dart | 4 |
+| 3 | Schema Builder | BcSchemaBuilder (new) | ✅ ModelValidator + POST /admin/models/validate | ✅ BcSchemaBuilder.lite.tsx | ✅ bc_schema_builder.dart | 4 |
+
+**Block Catalog entries:** BcPivot (analytics), BcNotificationCenter (interaction), BcBuilder/FormBuilder/WorkflowBuilder/SchemaBuilder (builder) registered as `candidate` entries in `packages/ui-schema/src/block-catalog/categories/`.
+
+**i18n:** All user-facing strings use i18n keys across 11 locales (en, id, ar, de, es, fr, ja, ko, pt-BR, ru, zh-CN) in `engine/embedded/modules/base/i18n/`.
+
+**Permissions:** Export honors `CanExport` group permission. Pivot honors `CanRead`/`CanSelect`. Comments/notifications/activity honor group-based read/write. Builders are admin-only.

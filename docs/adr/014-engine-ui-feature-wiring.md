@@ -1,6 +1,6 @@
 # ADR-014: Engine ↔ UI Feature Wiring
 
-- **Status:** Proposed
+- **Status:** Accepted (2026-07-02 — all 9 features complete across 4 phases)
 - **Date:** 2026-06-26
 - **Decision Makers:** Stakeholder, UI Team, Engine Team
 - **Supersedes:** —

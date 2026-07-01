@@ -139,18 +139,31 @@ engine/
 │   │   ├── model_process.go                    # ModelProcessRegistry — built-in model operations (CRUD, aggregates, dynamic finders)
 │   │   ├── dynamic_finder.go                   # Dynamic finder parser — FindBy{Field}, CountBy, SumBy, etc. with And/Or/operator suffixes
 │   │   ├── dynamic_finder_test.go              # 24 tests for dynamic finder parsing
-│   │   ├── pivot/
+│   │   ├── pivot/                              # [ADR-014] Pivot Table OLAP aggregation
 │   │   │   ├── service.go                      # PivotService — OLAP aggregation (GROUP BY rows+cols, sum/count/avg/min/max), null handling, grand totals
 │   │   │   └── service_test.go                 # 20 tests (single agg, multi agg, multi rows, multi cols, null handling, totals, avg correctness, min/max, validation)
-│   │   └── plugin/
-│   │       └── manager.go                      # Plugin manager — spawn TS/Python processes, JSON-RPC over stdin/stdout
-│   │   ├── comment/
+│   │   ├── comment/                            # [ADR-014] Comment & Mention service
 │   │   │   ├── service.go                      # Comment service — Create (mention parse + resolve + notify), ListByRecord (paginated), Delete (soft), EnsureTables, ResolveMentions, recordFromMap
 │   │   │   ├── mention.go                      # Mention parser — @username extraction (email-aware, dedup, boundary-safe), ResolveMentions (batch user lookup)
 │   │   │   └── service_test.go                 # 13 tests — parse mentions (edge cases), resolve, create+notify, list by record
-│   │   ├── builder/
+│   │   ├── activity/                           # [ADR-014] Activity Feed aggregator
+│   │   │   ├── service.go                      # ActivityService — transforms audit_log + domain events → BcActivityItem[] (icon, title, actor, action, variant, timestamp)
+│   │   │   └── service_test.go                 # 9 tests — aggregation, transform mapping, filter by model/record/user, pagination, empty result
+│   │   ├── export/                             # [ADR-014] Data Export service
+│   │   │   ├── service.go                      # ExportService — query builder → CSV/XLSX/JSON stream, column sanitization, field-level mask, export permission check
+│   │   │   └── service_test.go                 # 14 tests — csv output, xlsx output, json output, streaming, filter, sort, column sanitization, field mask
+│   │   ├── notification/                       # [ADR-014] Notification service
+│   │   │   ├── service.go                      # NotificationService — create, list user-scoped (unread-first), mark read, mark all read, unread count, WebSocket push via hub
+│   │   │   └── service_test.go                 # 8 tests — create, list unread-first, mark read, mark all read, unread count, user scope isolation, WS push
+│   │   ├── builder/                            # [ADR-014] Visual Builder validators
 │   │   │   ├── view_validator.go               # ViewValidator — validates view.json structure + field refs against model registry, returns {valid, errors[], warnings[]}
-│   │   │   └── view_validator_test.go          # 16 tests — valid view, invalid field ref, missing required, invalid type, model not found, layout/sort/filter refs, data source mutex, render mode, custom template
+│   │   │   ├── view_validator_test.go          # 16 tests — valid view, invalid field ref, missing required, invalid type, model not found, layout/sort/filter refs, data source mutex, render mode, custom template
+│   │   │   ├── process_validator.go            # ProcessValidator — validates process.json structure + step refs + transition completeness
+│   │   │   ├── process_validator_test.go       # Tests — valid process, invalid step ref, orphan transition
+│   │   │   ├── model_validator.go              # ModelValidator — validates model.json structure + field types + relation integrity + reserved namespace
+│   │   │   └── model_validator_test.go         # Tests — valid model, invalid field type, circular relation, reserved namespace
+│   │   └── plugin/
+│   │       └── manager.go                      # Plugin manager — spawn TS/Python processes, JSON-RPC over stdin/stdout
 │   │
 │   ├── infrastructure/                         # External concerns
 │   │   ├── persistence/
@@ -250,8 +263,8 @@ engine/
 │       │   ├── pivot_handler_test.go           # 9 tests (single agg, multi agg, missing rows/values, invalid agg, permission denied, field-level permission, auth required, no cols)
 │       │   ├── notification_handler.go         # NotificationHandler — GET /api/v1/notifications (user-scoped, unread-first, pagination), POST /:id/read, POST /read-all, GET /unread-count
 │       │   ├── notification_handler_test.go    # 7 tests (list unread-first, mark single read, mark all read, unread count, pagination, auth required, user scope isolation)
-│       │   ├── builder_handler.go              # BuilderHandler — POST /api/v1/admin/views/validate (view.json validation), admin-only
-│       │   └── builder_handler_test.go         # 5 tests (valid view, invalid field ref, missing required, empty body, invalid JSON)
+│       │   ├── builder_handler.go              # BuilderHandler — POST /api/v1/admin/{views,processes,models}/validate (admin-only JSON definition validation for visual builders)
+│       │   └── builder_handler_test.go         # 14 tests (valid/invalid view, process, model; missing required, empty body, invalid JSON)
 │       ├── middleware/
 │       │   ├── auth.go                         # JWT validation, user context injection, impersonated_by extraction
 │       │   ├── permission.go                   # Permission checking via PermissionChecker interface (ModelAccess-based)
@@ -658,6 +671,17 @@ packages/components/
         │   ├── bc-search/                      # Search bar
         │   └── bc-favorites/                   # Saved filters
         │
+        ├── data/pivot/                         # [ADR-014] Pivot Table component (Pure/Adapt)
+        │   ├── BcPivot.lite.tsx                # Pivot table renderer — row/col headers, cells, totals (row/col/grand), expandable, no-data state
+        │   ├── BcPivot.contract.ts             # Props: rows[], cols[], values[], data, totals
+        │   └── BcPivot.test.ts                 # Component tests (render, totals, empty, multi-agg)
+        │
+        ├── builders/                           # [ADR-014] Visual Builder components (Pure/Adapt, admin-only)
+        │   ├── BcBuilder.lite.tsx              # Shared base — drag-drop canvas, property panel, JSON preview, validation
+        │   ├── form-builder/BcFormBuilder.lite.tsx    # Visual form builder → outputs view.json, validates via admin endpoint
+        │   ├── workflow-builder/BcWorkflowBuilder.lite.tsx  # Visual process builder → outputs process.json, validates via admin endpoint
+        │   └── schema-builder/BcSchemaBuilder.lite.tsx      # Visual model builder → outputs model.json, validates via admin endpoint
+        │
         ├── widgets/                            # Widget components
         │   ├── bc-badge/                       # Status badge
         │   ├── bc-copy/                        # Copy to clipboard
@@ -819,6 +843,17 @@ packages/ui-flutter/
 │           ├── bc_kanban_view.dart             # Kanban board (columns + cards + onCardMove)
 │           ├── bc_calendar_view.dart           # Calendar (month/week/day + events + onDateSelect)
 │           └── bc_dashboard.dart               # Widget grid (configurable columns + renderWidget)
+│           # ADR-014 Engine↔UI wiring (Phase 1-4):
+│           ├── bc_chatter.dart                 # Comment & mention widget (record-bound, threaded)
+│           ├── bc_activity.dart                # Activity feed (timeline/feed variant, grouped)
+│           ├── bc_export.dart                  # Data export (CSV/XLSX/JSON, column selection)
+│           ├── bc_wizard.dart                  # Multi-step wizard (process-driven transitions)
+│           ├── bc_pivot.dart                   # Pivot table (OLAP matrix, totals, adaptive)
+│           ├── bc_notification.dart            # Notification model widget (single notification display)
+│           ├── bc_notification_center.dart     # Notification center dropdown (unread badge, mark-read, infinite scroll, adaptive iOS/Android)
+│           ├── bc_form_builder.dart            # Visual form builder → view.json (drag-drop, property panel, JSON preview)
+│           ├── bc_workflow_builder.dart        # Visual process builder → process.json (node canvas, step palette, transitions)
+│           └── bc_schema_builder.dart          # Visual model builder → model.json (field list, type picker, relation config)
 ├── test/
 │   ├── types_test.dart                         # 7 tests — BcChangeMeta, BcEventSource, BcChangeReason, BcComponentSize, BcComponentVariant
 │   ├── reactive_store_test.dart                # 12 tests — get/set, setMany, metadata, VALUE effects, cascade, conditions, snapshot, subscription, dispose

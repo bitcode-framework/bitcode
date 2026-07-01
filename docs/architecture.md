@@ -287,6 +287,78 @@ Tenant detection: header (`X-Tenant-ID`), subdomain, or path — configured via 
 
 ---
 
+## ADR-014: Engine ↔ UI Feature Wiring
+
+ADR-014 defines the 3-tier contract model that wires the Go engine to cross-platform UI components (web Mitosis + Flutter). All 9 features are implemented across 4 phases.
+
+### 3-Tier Architecture
+
+```
+┌─────────────────────┐     ┌──────────────────┐     ┌──────────────┐
+│  Engine (Go)        │     │  BcRenderer      │     │  Components  │
+│                     │     │  (portable)      │     │              │
+│  JSON models        │     │                  │     │  web (.tsx)  │
+│  (comment, notif)   │────►│  JSON view       │────►│  flutter     │
+│  + Go services      │     │  descriptor      │     │  (.dart)     │
+│  (mention, pivot,   │     │  + data envelope │     │              │
+│  export, activity)  │     │                  │     │  iOS→Cupertino│
+│  + API handlers     │     │  Block Catalog   │     │  Android→    │
+│                     │     │  (ADR-017/018)   │     │    Material  │
+└─────────────────────┘     └──────────────────┘     └──────────────┘
+```
+
+### SPA Mode (Phase 2)
+
+When `view.json` declares `"render": "spa"`, the engine returns a JSON envelope instead of SSR HTML:
+
+```json
+{
+  "view": { "name": "...", "type": "...", "fields": [...] },
+  "data": { ... },
+  "meta": { "total": 100, "page": 1, "page_size": 20 }
+}
+```
+
+The client-side BcRenderer (`packages/ui-schema/src/block-renderer/`) renders the ViewDefinition tree. Web bootstrap in `packages/ui/src/spa-runtime.ts`, Flutter bootstrap in `packages/ui-flutter/lib/src/spa_runtime.dart`. SSR remains the default (backwards compatible).
+
+### New JSON Models
+
+- **`comment`** (`engine/embedded/modules/base/models/comment.json`) — Polymorphic comments with `@mention` parsing. Fields: `body`, `commentable_type` (morph target model), `commentable_id` (morph target record), `parent_id` (threading), `author_id`. Gets auto-CRUD, permissions, i18n, record rules, WebSocket events for free.
+- **`notification`** (`engine/embedded/modules/base/models/notification.json`) — User-scoped notifications. Fields: `user_id` (many2one), `type` (selection: info/warning/error/success/mention/message), `title`, `body`, `data` (JSON), `read_at`, `notifiable_type`, `notifiable_id`. WebSocket push on creation.
+
+### New API Endpoints
+
+| Feature | Endpoint | Description |
+|---------|----------|-------------|
+| Comment | `GET/POST /api/v1/{module}/comments` | Threaded comments with @mention → notification |
+| Activity | `GET /api/v1/activity` | Aggregated feed from audit_log + events |
+| Export | `POST /api/v1/{module}/{model}/export` | CSV/XLSX/JSON streaming (permission + field mask) |
+| Pivot | `POST /api/v1/{module}/{model}/pivot` | OLAP aggregation (rows × cols × values) |
+| Notification | `GET /api/v1/notifications` | User-scoped, unread-first, WS push |
+| SPA | `GET /app/{module}/{view}` | JSON envelope when `render: "spa"` |
+| Builder Validate | `POST /api/v1/admin/{views,processes,models}/validate` | Admin-only JSON definition validation |
+
+### New View Types
+
+- **Wizard** (`type: "wizard"`) — Multi-step forms with process-driven transitions. Each step is a view fragment with validation and process trigger.
+- **Activity** (`type: "activity"`) — Aggregated activity stream renderer.
+
+### New UI Components
+
+| Component | Tier | Platform |
+|-----------|------|----------|
+| BcChatter (upgrade) | Pure/Adapt | web + Flutter |
+| BcActivity (upgrade) | Pure/Adapt | web + Flutter |
+| BcExport (upgrade) | Pure/Adapt | web + Flutter |
+| BcWizard (upgrade) | Pure/Adapt | web + Flutter |
+| BcPivot (new) | Pure/Adapt | web + Flutter |
+| BcNotificationCenter (new) | Pure/Adapt | web + Flutter |
+| BcFormBuilder (new) | Pure/Adapt | web + Flutter |
+| BcWorkflowBuilder (new) | Pure/Adapt | web + Flutter |
+| BcSchemaBuilder (new) | Pure/Adapt | web + Flutter |
+
+---
+
 ## Data Flow
 
 ### API Request Lifecycle

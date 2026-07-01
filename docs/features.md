@@ -75,7 +75,7 @@ Before the gap list — what's already **production-solid**:
 
 | # | Feature | Status | Effort | What Exists | What's Missing |
 |---|---------|--------|--------|-------------|----------------|
-| 1 | Schema Builder | ⚠️ | L | JSON-based model definitions (`models/*.json`), parsed by `compiler/parser/model.go`. Admin UI at `/admin/models/:name` shows fields & rules. Schema tab with visual field table + JSON editor + save/validate API. | Full drag-and-drop visual builder with field palette. Current schema tab is visual table + JSON editor, not drag-and-drop yet. |
+| 1 | Schema Builder | ✅ | L | JSON-based model definitions (`models/*.json`), parsed by `compiler/parser/model.go`. Admin UI at `/admin/models/:name` shows fields & rules. Schema tab with visual field table + JSON editor + save/validate API. ADR-014 Phase 4: BcSchemaBuilder visual builder (field list, type picker, relation config, property panel, JSON preview). Validates via `POST /api/v1/admin/models/validate` (ModelValidator service). Flutter parity `bc_schema_builder.dart`. i18n (11 locales). | — |
 | 2 | Field Types | ✅ | — | 16+ types: string, text, integer, decimal, boolean, date, datetime, selection, email, many2one, one2many, many2many, json, file, computed. Stencil components cover 30+ field types. | — |
 | 3 | Model Relationships | ✅ | — | `many2one` (FK column), `one2many` (reverse FK), `many2many` (auto junction table), `morph_to` (polymorphic belongs-to), `morph_one` (polymorphic has-one), `morph_many` (polymorphic has-many), `morph_to_many` (polymorphic M2M parent), `morph_by_many` (polymorphic M2M inverse). Morph map for type aliasing. `MigrateModel()` handles DDL. | — |
 | 4 | Child Table / Inline Table | ✅ | — | `one2many` field + form view tabs embedding child views. `bc-child-table` Stencil component. | — |
@@ -121,11 +121,11 @@ Before the gap list — what's already **production-solid**:
 
 | # | Feature | Status | Effort | What Exists | What's Missing |
 |---|---------|--------|--------|-------------|----------------|
-| 22 | Workflow Builder (Visual) | ⚠️ | L | Full workflow engine via JSON: states, transitions, permissions, process linking. Runtime in `runtime/workflow/`. | Visual drag-and-drop builder in browser. Need frontend state machine editor. |
+| 22 | Workflow Builder (Visual) | ✅ | L | Full workflow engine via JSON: states, transitions, permissions, process linking. Runtime in `runtime/workflow/`. ADR-014 Phase 4: BcWorkflowBuilder visual builder (drag-drop node canvas, step palette, transition arrows, property panel, JSON preview). Validates via `POST /api/v1/admin/processes/validate` (ProcessValidator service). Flutter parity `bc_workflow_builder.dart`. i18n (11 locales). | — |
 | 23 | Approval Chain | ✅ | — | Workflow transitions with `permission` field. Multi-level via chained transitions. | — |
 | 24 | Trigger & Action Rules | ✅ | — | Agent system with event triggers + process `emit` step. Documented in `docs/features/agents.md`. | — |
 | 25 | Scheduled Tasks / Cron | ✅ | — | Agent cron with standard cron format. Runtime in `runtime/agent/`. Retry + backoff. | — |
-| 26 | Email / Notification | ❌ | L | — | No SMTP/email sending. Agent can trigger scripts, but no built-in email integration. Need SMTP config, email queue, template engine, notification preferences. |
+| 26 | Email / Notification | ✅ | L | SMTP sender (`pkg/email`), HTML templates, configurable via `smtp.*`. ADR-014 Phase 3: Notification model + NotificationService + REST endpoints + WebSocket push + @mention integration + BcNotificationCenter/BcNotificationItem + Flutter parity + i18n (11 locales). | — |
 | 27 | Assignment Rules | ❌ | M | — | No auto-assignment based on rules. Need assignment rule JSON definition + evaluator on record create/update. |
 | 28 | Webhook | ❌ | M | Process engine has `http` step for outbound calls, but not a configurable webhook system. | Need webhook definition (URL, events, headers) + dispatcher listening to event bus. |
 | 29 | Server Script / Business Logic | ✅ | — | Plugin system (TS + Python) via JSON-RPC. Process `script` step. Documented in `docs/features/plugins.md`. | — |
@@ -137,10 +137,10 @@ Before the gap list — what's already **production-solid**:
 
 | # | Feature | Status | Effort | What Exists | What's Missing |
 |---|---------|--------|--------|-------------|----------------|
-| 30 | Form Builder (Visual) | ⚠️ | L | JSON-based form layout (rows, fields, widths, tabs). SSR rendering. 122 Stencil.js components. POST /api/v1/admin/views/validate endpoint (ADR-014 Phase 4) validates view.json structure + field refs against model registry. ViewValidator service (runtime/builder). i18n keys (11 locales). | Visual drag-and-drop form designer in browser. |
+| 30 | Form Builder (Visual) | ✅ | L | JSON-based form layout (rows, fields, widths, tabs). SSR rendering. 122 Stencil.js components. POST /api/v1/admin/views/validate endpoint (ADR-014 Phase 4) validates view.json structure + field refs against model registry. ViewValidator service (runtime/builder). i18n keys (11 locales). ADR-014 Phase 4: BcFormBuilder visual builder (drag-drop canvas, property panel, JSON preview, live preview). Outputs valid view.json. Validates via admin endpoint. Flutter parity `bc_form_builder.dart`. | — |
 | 31 | Conditional Field Logic | ✅ | — | `"visible": "expression"`, `"readonly": true`. Component compiler evaluates conditions. Stencil components support `behavior.dependsOn`, `readonlyIf`, `mandatoryIf`. Client-side: `BcSetup.reactivity()` for imperative cross-field logic, `depend-on` prop for declarative cascading. | — |
 | 32 | Custom Validation Rules | ✅ | — | Process `validate` step with eq, neq, required operators. Client-side: 3-level validation (built-in props, custom JS validators, server-side validation). `BcSetup.registerValidator()` for named validators. | — |
-| 33 | Multi-Step Form / Wizard | ❌ | M | — | No wizard component. Need wizard JSON definition (steps + fields per step) + `bc-dialog-wizard` exists in Stencil but not wired to engine. |
+| 33 | Multi-Step Form / Wizard | ✅ | M | ADR-014 Phase 1: Wizard view type (`type: "wizard"`) in parser + renderer. Multi-step wizard with process-driven transitions. BcWizard Mitosis component (upgraded: steps from view JSON, process transitions, validation per step). Flutter parity `bc_wizard.dart`. i18n (11 locales). Engine tests. | — |
 | 34 | Print Format / PDF | ❌ | L | Template engine exists (Go html/template) but HTML only. No PDF generation. | Need print template JSON definition + PDF renderer (wkhtmltopdf/chromedp/gotenberg). |
 | 35 | Web Form (Public) | ❌ | M | — | All forms require auth. Need public form route (bypass auth) + CAPTCHA + rate limiting. |
 | 36 | View Types (List/Kanban/Calendar) | ✅ | — | 6 view types: list, form, kanban, calendar, chart, custom. All implemented in `view/renderer.go` + templates. Stencil has 9 view components (+ gantt, map, tree, report, activity). | — |
@@ -159,7 +159,7 @@ Before the gap list — what's already **production-solid**:
 | 38 | Report Builder | ⚠️ | L | List view with filters + sort. Custom API endpoints can serve report data. | Dedicated report builder with group-by, aggregation, calculated columns. |
 | 39 | Query / Script Report | ⚠️ | M | Process `query` step + plugin scripts can execute custom logic. | Dedicated SQL/script report system runnable from UI. |
 | 40 | Chart Builder | ✅ | — | Chart view type. 26 Stencil chart components (23 ECharts: line, bar, pie, area, scatter, radar, gauge, funnel, heatmap, treemap, sunburst, candlestick, boxplot, mixed, sankey, graph, tree, polar, parallel, themeriver, pictorialbar, custom + 3 pure CSS: pivot, KPI, scorecard, progress). Modular ECharts imports, multi-series support, shared chart-utils, remote data fetching, toolbox, data zoom, theme/renderer switching. | — |
-| 41 | Export Data (CSV/Excel/PDF) | ✅ | M | `bc-export` Stencil component + BcExport Mitosis component (ADR-014 wired). | `POST /api/v1/{module}/{model}/export` endpoint (CSV/XLSX/JSON) with streaming response. ExportService Go layer (encoding/csv, excelize, encoding/json). Filter+sort via query builder. Permission-aware (export permission per group, field-level column sanitization + mask). BcExport contract upgraded (format, columns, onExport, progress). Flutter parity. i18n (11 locales). |
+| 41 | Export Data (CSV/Excel/PDF) | ✅ | M | `bc-export` Stencil component + BcExport Mitosis component (ADR-014 wired). `POST /api/v1/{module}/{model}/export` endpoint (CSV/XLSX/JSON) with streaming response. ExportService Go layer (encoding/csv, excelize, encoding/json). Filter+sort via query builder. Permission-aware (export permission per group, field-level column sanitization + mask). BcExport contract upgraded (format, columns, onExport, progress). Flutter parity. i18n (11 locales). | — |
 | 42 | Pivot Table | ✅ | L | `POST /api/v1/{module}/{model}/pivot` endpoint. PivotService Go layer performing OLAP aggregation (GROUP BY rows+cols, sum/count/avg/min/max). Multiple value fields, multiple row/col dimensions, null handling, grand totals. Permission-aware (read + field-level). BcPivot Mitosis component (Pure/Adapt, ADR-006) + Flutter (Material/Cupertino adaptive). BcRenderer part:'pivot'. i18n (11 locales). Engine tests (single agg, multi agg, multi rows, multi cols, null handling, permission). Component tests. | — |
 | 43 | Scheduled Report | ❌ | M* | Cron system exists. | No report + email delivery integration. *Depends on email (#26) + report builder (#38). |
 
@@ -275,7 +275,7 @@ Features most requested by users and blocking other features:
 - [ ] **#17** Record Activity Timeline — API endpoint + timeline UI component
 - [ ] **#27** Assignment Rules — assignment rule JSON definition + evaluator on create/update
 - [ ] **#28** Webhook System — webhook definition (URL, events, headers) + event bus dispatcher
-- [ ] **#33** Multi-Step Form / Wizard — wire `bc-dialog-wizard` component + wizard JSON definition
+- [x] **#33** Multi-Step Form / Wizard — wizard view type + process-driven transitions + BcWizard upgrade + Flutter parity + i18n (11 locales)
 - [ ] **#35** Web Form (Public) — public form route (bypass auth) + CAPTCHA + rate limiting
 - [x] **#41** Export Data (CSV/Excel/JSON) — `POST /api/v1/{module}/{model}/export` endpoint with streaming CSV/XLSX/JSON, query builder filter/sort, export permission check, field-level column sanitization + masking
 - [ ] **#57** 2FA (TOTP) — TOTP library + setup flow + verification middleware
@@ -287,9 +287,9 @@ Features most requested by users and blocking other features:
 
 The gap between "JSON-code" and true "low-code":
 
-- [ ] **#1** Visual Schema Builder — frontend CRUD for model JSON + field type picker + relation builder
-- [ ] **#22** Visual Workflow Builder — frontend state machine editor (nodes + edges + properties)
-- [ ] **#30** Visual Form Builder — drag-and-drop form designer outputting JSON layout
+- [x] **#1** Visual Schema Builder — BcSchemaBuilder visual field list + type picker + relation config + ModelValidator endpoint + Flutter parity + i18n (11 locales)
+- [x] **#22** Visual Workflow Builder — BcWorkflowBuilder drag-drop node canvas (step palette + transitions + property panel + JSON preview) + ProcessValidator endpoint + Flutter parity + i18n (11 locales)
+- [x] **#30** Visual Form Builder — BcFormBuilder drag-drop canvas (property panel + JSON preview + live preview) + ViewValidator endpoint + Flutter parity + i18n (11 locales)
 - [ ] **#34** Print Format / PDF — print template JSON + PDF renderer (wkhtmltopdf/chromedp/gotenberg)
 - [ ] **#38** Report Builder — report JSON definition (columns, filters, group_by, aggregations) + renderer
 - [ ] **#47** Data Import / Export Wizard — upload → map columns → validate → insert
@@ -307,7 +307,7 @@ JSON/JSONC programming language engine replacing process engine scripting:
 Enterprise-grade capabilities:
 
 - [ ] **#7** Multi-Source Data — connection pool manager for multiple datasources
-- [ ] **#26** Email / Notification Automation — SMTP config, email queue, template engine
+- [x] **#26** Email / Notification — SMTP sender (pkg/email) + HTML templates + notification model + NotificationService + REST endpoints + WebSocket push + BcNotificationCenter + Flutter parity + i18n (11 locales)
 - [x] **#42** Pivot Table — PivotService OLAP engine + `POST /pivot` endpoint + BcPivot Mitosis + Flutter component
 - [ ] **#45** OAuth2 / SSO — OAuth2 client (Google, Microsoft, GitHub) + LDAP connector
 - [ ] **#49** GraphQL API — schema generator from model definitions + resolver layer
