@@ -44,6 +44,22 @@
     "pivot.values_required": "Требуется хотя бы одно поле значения",
     "pivot.invalid_agg": "Неподдерживаемая функция агрегации",
     "pivot.loading": "Загрузка данных сводной таблицы...",
-    "pivot.error": "Ошибка загрузки данных сводной таблицы"
+    "pivot.error": "Ошибка загрузки данных сводной таблицы",
+    "notification.title": "Уведомления",
+    "notification.empty": "Нет уведомлений",
+    "notification.mark_all_read": "Отметить все как прочитанные",
+    "notification.mark_read": "Отметить как прочитанное",
+    "notification.load_more": "Загрузить ещё",
+    "notification.loading": "Загрузка...",
+    "notification.unread": "непрочитанное",
+    "notification.mentioned_you": "Вас упомянули",
+    "notification.authentication_required": "Требуется аутентификация",
+    "notification.not_found": "Уведомление не найдено",
+    "notification.type_info": "Информация",
+    "notification.type_warning": "Предупреждение",
+    "notification.type_error": "Ошибка",
+    "notification.type_success": "Успех",
+    "notification.type_mention": "Упоминание",
+    "notification.type_message": "Сообщение"
   }
 }

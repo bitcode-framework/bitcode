@@ -44,6 +44,22 @@
     "pivot.values_required": "Minimal satu kolom nilai diperlukan",
     "pivot.invalid_agg": "Fungsi agregasi tidak didukung",
     "pivot.loading": "Memuat data pivot...",
-    "pivot.error": "Gagal memuat data pivot"
+    "pivot.error": "Gagal memuat data pivot",
+    "notification.title": "Notifikasi",
+    "notification.empty": "Tidak ada notifikasi",
+    "notification.mark_all_read": "Tandai semua dibaca",
+    "notification.mark_read": "Tandai dibaca",
+    "notification.load_more": "Muat lebih banyak",
+    "notification.loading": "Memuat...",
+    "notification.unread": "belum dibaca",
+    "notification.mentioned_you": "Anda disebut",
+    "notification.authentication_required": "Autentikasi diperlukan",
+    "notification.not_found": "Notifikasi tidak ditemukan",
+    "notification.type_info": "Info",
+    "notification.type_warning": "Peringatan",
+    "notification.type_error": "Error",
+    "notification.type_success": "Sukses",
+    "notification.type_mention": "Sebutan",
+    "notification.type_message": "Pesan"
   }
 }

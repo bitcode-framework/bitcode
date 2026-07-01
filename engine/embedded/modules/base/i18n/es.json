@@ -44,6 +44,22 @@
     "pivot.values_required": "Se requiere al menos un campo de valor",
     "pivot.invalid_agg": "Función de agregación no admitida",
     "pivot.loading": "Cargando datos pivot...",
-    "pivot.error": "Error al cargar los datos pivot"
+    "pivot.error": "Error al cargar los datos pivot",
+    "notification.title": "Notificaciones",
+    "notification.empty": "Sin notificaciones",
+    "notification.mark_all_read": "Marcar todo como leído",
+    "notification.mark_read": "Marcar como leído",
+    "notification.load_more": "Cargar más",
+    "notification.loading": "Cargando...",
+    "notification.unread": "sin leer",
+    "notification.mentioned_you": "Fuiste mencionado",
+    "notification.authentication_required": "Se requiere autenticación",
+    "notification.not_found": "Notificación no encontrada",
+    "notification.type_info": "Información",
+    "notification.type_warning": "Advertencia",
+    "notification.type_error": "Error",
+    "notification.type_success": "Éxito",
+    "notification.type_mention": "Mención",
+    "notification.type_message": "Mensaje"
   }
 }

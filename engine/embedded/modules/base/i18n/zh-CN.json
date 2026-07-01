@@ -44,6 +44,22 @@
     "pivot.values_required": "至少需要一个值字段",
     "pivot.invalid_agg": "不支持的聚合函数",
     "pivot.loading": "正在加载透视数据...",
-    "pivot.error": "加载透视数据失败"
+    "pivot.error": "加载透视数据失败",
+    "notification.title": "通知",
+    "notification.empty": "暂无通知",
+    "notification.mark_all_read": "全部标记为已读",
+    "notification.mark_read": "标记为已读",
+    "notification.load_more": "加载更多",
+    "notification.loading": "加载中...",
+    "notification.unread": "未读",
+    "notification.mentioned_you": "有人提到了你",
+    "notification.authentication_required": "需要身份验证",
+    "notification.not_found": "未找到通知",
+    "notification.type_info": "信息",
+    "notification.type_warning": "警告",
+    "notification.type_error": "错误",
+    "notification.type_success": "成功",
+    "notification.type_mention": "提及",
+    "notification.type_message": "消息"
   }
 }

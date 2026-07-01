@@ -44,6 +44,22 @@
     "pivot.values_required": "하나 이상의 값 필드가 필요합니다",
     "pivot.invalid_agg": "지원되지 않는 집계 함수",
     "pivot.loading": "피벗 데이터 로드 중...",
-    "pivot.error": "피벗 데이터 로드 실패"
+    "pivot.error": "피벗 데이터 로드 실패",
+    "notification.title": "알림",
+    "notification.empty": "알림이 없습니다",
+    "notification.mark_all_read": "모두 읽음으로 표시",
+    "notification.mark_read": "읽음으로 표시",
+    "notification.load_more": "더 보기",
+    "notification.loading": "로드 중...",
+    "notification.unread": "읽지 않음",
+    "notification.mentioned_you": "회원님이 멘션되었습니다",
+    "notification.authentication_required": "인증이 필요합니다",
+    "notification.not_found": "알림을 찾을 수 없습니다",
+    "notification.type_info": "정보",
+    "notification.type_warning": "경고",
+    "notification.type_error": "오류",
+    "notification.type_success": "성공",
+    "notification.type_mention": "멘션",
+    "notification.type_message": "메시지"
   }
 }

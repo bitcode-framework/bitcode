@@ -44,6 +44,22 @@
     "pivot.values_required": "مطلوب حقل قيمة واحد على الأقل",
     "pivot.invalid_agg": "دالة التجميع غير مدعومة",
     "pivot.loading": "جاري تحميل البيانات المحورية...",
-    "pivot.error": "فشل تحميل البيانات المحورية"
+    "pivot.error": "فشل تحميل البيانات المحورية",
+    "notification.title": "الإشعارات",
+    "notification.empty": "لا توجد إشعارات",
+    "notification.mark_all_read": "وضع علامة مقروء على الكل",
+    "notification.mark_read": "وضع علامة مقروء",
+    "notification.load_more": "تحميل المزيد",
+    "notification.loading": "جاري التحميل...",
+    "notification.unread": "غير مقروء",
+    "notification.mentioned_you": "تمت الإشارة إليك",
+    "notification.authentication_required": "المصادقة مطلوبة",
+    "notification.not_found": "الإشعار غير موجود",
+    "notification.type_info": "معلومات",
+    "notification.type_warning": "تحذير",
+    "notification.type_error": "خطأ",
+    "notification.type_success": "نجاح",
+    "notification.type_mention": "إشارة",
+    "notification.type_message": "رسالة"
   }
 }

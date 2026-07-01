@@ -34,10 +34,10 @@ func setupCommentTestDB(t *testing.T) *gorm.DB {
 		type TEXT DEFAULT 'mention',
 		title TEXT,
 		body TEXT,
-		model_name TEXT,
-		record_id TEXT,
-		comment_id TEXT,
-		read INTEGER DEFAULT 0,
+		data TEXT,
+		notifiable_type TEXT,
+		notifiable_id TEXT,
+		read_at DATETIME,
 		active INTEGER DEFAULT 1,
 		created_at DATETIME,
 		updated_at DATETIME
@@ -121,7 +121,7 @@ func TestCreate_ParsesMentionsAndCreatesNotification(t *testing.T) {
 	}
 
 	var notifCount int64
-	db.Table("notifications").Where("user_id = ? AND comment_id = ?", "u-1", created.ID).Count(&notifCount)
+	db.Table("notifications").Where("user_id = ? AND notifiable_id = ?", "u-1", created.CommentableID).Count(&notifCount)
 	if notifCount != 1 {
 		t.Errorf("expected 1 notification for alice, got %d", notifCount)
 	}

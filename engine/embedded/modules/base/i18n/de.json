@@ -44,6 +44,22 @@
     "pivot.values_required": "Mindestens ein Wertfeld ist erforderlich",
     "pivot.invalid_agg": "Nicht unterstützte Aggregationsfunktion",
     "pivot.loading": "Pivot-Daten werden geladen...",
-    "pivot.error": "Fehler beim Laden der Pivot-Daten"
+    "pivot.error": "Fehler beim Laden der Pivot-Daten",
+    "notification.title": "Benachrichtigungen",
+    "notification.empty": "Keine Benachrichtigungen",
+    "notification.mark_all_read": "Alle als gelesen markieren",
+    "notification.mark_read": "Als gelesen markieren",
+    "notification.load_more": "Mehr laden",
+    "notification.loading": "Wird geladen...",
+    "notification.unread": "ungelesen",
+    "notification.mentioned_you": "Sie wurden erwähnt",
+    "notification.authentication_required": "Authentifizierung erforderlich",
+    "notification.not_found": "Benachrichtigung nicht gefunden",
+    "notification.type_info": "Info",
+    "notification.type_warning": "Warnung",
+    "notification.type_error": "Fehler",
+    "notification.type_success": "Erfolg",
+    "notification.type_mention": "Erwähnung",
+    "notification.type_message": "Nachricht"
   }
 }

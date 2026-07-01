@@ -171,19 +171,24 @@ func (s *Service) createNotification(ctx context.Context, userID, commentableTyp
 	if len(excerpt) > 200 {
 		excerpt = excerpt[:200]
 	}
+	dataPayload, _ := json.Marshal(map[string]any{
+		"comment_id":     commentID,
+		"comment_body":   excerpt,
+		"commentable":    commentableType + ":" + commentableID,
+	})
 	notif := map[string]any{
-		"id":          uuid.New().String(),
-		"user_id":     userID,
-		"type":        "mention",
-		"title":       "You were mentioned",
-		"body":        excerpt,
-		"model_name":  commentableType,
-		"record_id":   commentableID,
-		"comment_id":  commentID,
-		"read":        false,
-		"created_at":  now,
-		"updated_at":  now,
-		"active":      true,
+		"id":              uuid.New().String(),
+		"user_id":         userID,
+		"type":            "mention",
+		"title":           "You were mentioned",
+		"body":            excerpt,
+		"data":            string(dataPayload),
+		"notifiable_type": commentableType,
+		"notifiable_id":   commentableID,
+		"read_at":         nil,
+		"created_at":      now,
+		"updated_at":      now,
+		"active":          true,
 	}
 	if err := s.db.Table(s.notifTable).Create(&notif).Error; err != nil {
 		return

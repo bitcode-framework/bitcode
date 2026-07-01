@@ -44,6 +44,22 @@
     "pivot.values_required": "Pelo menos um campo de valor é necessário",
     "pivot.invalid_agg": "Função de agregação não suportada",
     "pivot.loading": "Carregando dados dinâmicos...",
-    "pivot.error": "Falha ao carregar dados dinâmicos"
+    "pivot.error": "Falha ao carregar dados dinâmicos",
+    "notification.title": "Notificações",
+    "notification.empty": "Sem notificações",
+    "notification.mark_all_read": "Marcar todas como lidas",
+    "notification.mark_read": "Marcar como lida",
+    "notification.load_more": "Carregar mais",
+    "notification.loading": "Carregando...",
+    "notification.unread": "não lida",
+    "notification.mentioned_you": "Você foi mencionado",
+    "notification.authentication_required": "Autenticação necessária",
+    "notification.not_found": "Notificação não encontrada",
+    "notification.type_info": "Informação",
+    "notification.type_warning": "Aviso",
+    "notification.type_error": "Erro",
+    "notification.type_success": "Sucesso",
+    "notification.type_mention": "Menção",
+    "notification.type_message": "Mensagem"
   }
 }

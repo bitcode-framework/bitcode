@@ -34,6 +34,7 @@ import (
 	"github.com/bitcode-framework/bitcode/internal/runtime/bridge"
 	"github.com/bitcode-framework/bitcode/internal/runtime/activity"
 	"github.com/bitcode-framework/bitcode/internal/runtime/comment"
+	"github.com/bitcode-framework/bitcode/internal/runtime/notification"
 	"github.com/bitcode-framework/bitcode/internal/runtime/executor/steps"
 	jsrt "github.com/bitcode-framework/bitcode/internal/runtime/embedded"
 	gojaRT "github.com/bitcode-framework/bitcode/internal/runtime/embedded/goja"
@@ -657,6 +658,19 @@ func (a *App) setupRoutes() {
 		ModelRegistry:     a.ModelRegistry,
 	})
 	api.RegisterActivityRoutes(a.Fiber, "/api/v1", activityHandler, a.JWTConfig)
+
+	notificationSvc := notification.NewService(a.DB)
+	notificationSvc.SetBroadcaster(a.WSHub)
+	if tn := a.ModelRegistry.TableName("notification"); tn != "" && tn != "notification" {
+		notificationSvc.SetTableName(tn)
+	}
+	if tn := a.ModelRegistry.TableName("user"); tn != "" && tn != "user" {
+		notificationSvc.SetUserTable(tn)
+	}
+	notificationHandler := api.NewNotificationHandler(api.NotificationHandlerConfig{
+		Service: notificationSvc,
+	})
+	api.RegisterNotificationRoutes(a.Fiber, "/api/v1", notificationHandler, a.JWTConfig)
 
 	if a.DB != nil {
 		exportPermSvc := persistence.NewPermissionService(a.DB)

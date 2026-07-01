@@ -44,6 +44,22 @@
     "pivot.values_required": "Au moins un champ de valeur est requis",
     "pivot.invalid_agg": "Fonction d'agrégation non prise en charge",
     "pivot.loading": "Chargement des données croisées...",
-    "pivot.error": "Échec du chargement des données croisées"
+    "pivot.error": "Échec du chargement des données croisées",
+    "notification.title": "Notifications",
+    "notification.empty": "Aucune notification",
+    "notification.mark_all_read": "Tout marquer comme lu",
+    "notification.mark_read": "Marquer comme lu",
+    "notification.load_more": "Charger plus",
+    "notification.loading": "Chargement...",
+    "notification.unread": "non lu",
+    "notification.mentioned_you": "Vous avez été mentionné",
+    "notification.authentication_required": "Authentification requise",
+    "notification.not_found": "Notification introuvable",
+    "notification.type_info": "Information",
+    "notification.type_warning": "Avertissement",
+    "notification.type_error": "Erreur",
+    "notification.type_success": "Succès",
+    "notification.type_mention": "Mention",
+    "notification.type_message": "Message"
   }
 }

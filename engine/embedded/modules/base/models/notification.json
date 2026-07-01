@@ -1,0 +1,51 @@
+{
+  "name": "notification",
+  "module": "base",
+  "label": "Notification",
+  "tenant_scoped": true,
+  "timestamps": true,
+  "fields": {
+    "user_id": {
+      "type": "many2one",
+      "model": "user",
+      "required": true,
+      "label": "Recipient"
+    },
+    "type": {
+      "type": "selection",
+      "options": ["info", "warning", "error", "success", "mention", "message"],
+      "default": "info",
+      "label": "Type"
+    },
+    "title": {
+      "type": "string",
+      "max": 500,
+      "label": "Title"
+    },
+    "body": {
+      "type": "text",
+      "label": "Body"
+    },
+    "data": {
+      "type": "json",
+      "label": "Payload"
+    },
+    "notifiable": {
+      "type": "morph_to",
+      "label": "Related Record"
+    },
+    "read_at": {
+      "type": "datetime",
+      "label": "Read At"
+    }
+  },
+  "indexes": [
+    ["user_id", "read_at"],
+    ["user_id", "created_at"],
+    ["notifiable_type", "notifiable_id"]
+  ],
+  "api": {
+    "enabled": true,
+    "auth": true
+  }
+}

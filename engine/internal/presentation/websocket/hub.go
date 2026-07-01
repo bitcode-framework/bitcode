@@ -100,6 +100,19 @@ func (h *Hub) BroadcastToTenant(tenantID string, channel string, data any) {
 	}
 }
 
+func (h *Hub) BroadcastToUser(userID string, channel string, data any) {
+	msg := Message{Type: "event", Channel: channel, Data: data}
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+	for client := range h.clients {
+		if client.UserID == userID {
+			if len(client.Channels) == 0 || client.Channels[channel] || client.Channels["*"] {
+				go client.Send(msg)
+			}
+		}
+	}
+}
+
 func (h *Hub) ConnectToEventBus(bus *event.Bus) {
 	bus.SubscribeAll(func(ctx context.Context, eventName string, data map[string]any) error {
 		h.Broadcast(eventName, data)
