@@ -264,10 +264,102 @@ const builderFormBuilder: CandidateCatalogEntry = {
   ],
 };
 
+// ---------------------------------------------------------------------------
+// builder.workflow-builder — ADR-014 Phase 4 visual workflow builder
+// ---------------------------------------------------------------------------
+
+const builderWorkflowBuilder: CandidateCatalogEntry = {
+  id: 'builder.workflow-builder',
+  version: '0.1.0',
+  schemaVersion: '0.1.0',
+  labelKey: 'block.builder.workflow-builder.title',
+  fallbackLabel: 'Workflow Builder',
+  category: 'builder',
+  subcategory: 'workflow',
+  channels: ['internal'],
+  capabilities: ['builder', 'data-source', 'i18n', 'responsive', 'permission-aware'],
+  renderStrategy: 'component',
+  componentKey: 'BcWorkflowBuilder',
+  requiredComponents: [rc('BcWorkflowBuilder'), rc('BcBuilder')],
+  requiredFunctions: [],
+  requiredAdapters: [
+    { name: 'data', kind: 'data', platforms: ['web', 'flutter'] },
+    { name: 'permission', kind: 'permission', platforms: ['web', 'flutter'] },
+  ],
+  adaptivePolicy: { breakpoints: true, platformMorph: ['material', 'cupertino'], loadingState: true, emptyState: true, errorState: true },
+  securityPolicy: { richTextSanitize: 'n/a', externalLinks: 'deny' },
+  cachePolicy: { strategy: 'none' },
+  offlinePolicy: { support: 'unsupported' },
+  migration: { toVersion: '0.1.0' },
+  readiness: 'candidate',
+  sourceReferences: [
+    'ADR-014:Workflow Builder',
+    'ADR-006:Pure/Adapt',
+    'ADR-011:Platform-aware',
+  ],
+  decision: 'keep',
+  matrixStatus: 'component-gap',
+  gaps: [
+    'a11y evidence not yet produced.',
+    'test coverage not yet produced.',
+  ],
+  priorityBatch: 'builder-surface',
+  blockedBy: [
+    'a11y-evidence-missing',
+  ],
+};
+
+// ---------------------------------------------------------------------------
+// builder.schema-builder — ADR-014 Phase 4 visual schema builder
+// ---------------------------------------------------------------------------
+
+const builderSchemaBuilder: CandidateCatalogEntry = {
+  id: 'builder.schema-builder',
+  version: '0.1.0',
+  schemaVersion: '0.1.0',
+  labelKey: 'block.builder.schema-builder.title',
+  fallbackLabel: 'Schema Builder',
+  category: 'builder',
+  subcategory: 'schema',
+  channels: ['internal'],
+  capabilities: ['builder', 'data-source', 'i18n', 'responsive', 'permission-aware'],
+  renderStrategy: 'component',
+  componentKey: 'BcSchemaBuilder',
+  requiredComponents: [rc('BcSchemaBuilder'), rc('BcBuilder')],
+  requiredFunctions: [],
+  requiredAdapters: [
+    { name: 'data', kind: 'data', platforms: ['web', 'flutter'] },
+    { name: 'permission', kind: 'permission', platforms: ['web', 'flutter'] },
+  ],
+  adaptivePolicy: { breakpoints: true, platformMorph: ['material', 'cupertino'], loadingState: true, emptyState: true, errorState: true },
+  securityPolicy: { richTextSanitize: 'n/a', externalLinks: 'deny' },
+  cachePolicy: { strategy: 'none' },
+  offlinePolicy: { support: 'unsupported' },
+  migration: { toVersion: '0.1.0' },
+  readiness: 'candidate',
+  sourceReferences: [
+    'ADR-014:Schema Builder',
+    'ADR-006:Pure/Adapt',
+    'ADR-011:Platform-aware',
+  ],
+  decision: 'keep',
+  matrixStatus: 'component-gap',
+  gaps: [
+    'a11y evidence not yet produced.',
+    'test coverage not yet produced.',
+  ],
+  priorityBatch: 'builder-surface',
+  blockedBy: [
+    'a11y-evidence-missing',
+  ],
+};
+
 export const builderCandidates: CandidateCatalogEntry[] = [
   builderQueryBuilder,
   builderExpressionBuilder,
   builderPageBuilder,
   builderReportBuilder,
   builderFormBuilder,
+  builderWorkflowBuilder,
+  builderSchemaBuilder,
 ];

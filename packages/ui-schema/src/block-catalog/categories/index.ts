@@ -27,7 +27,7 @@ import {
 } from './plugin-excluded.ts';
 
 /**
- * All Candidate entries from the accepted matrix baseline (46 rows).
+ * All Candidate entries from the accepted matrix baseline (47 rows).
  * Order: by category for readability; ids are stable slugs.
  */
 export const ALL_CANDIDATE_ENTRIES: readonly CandidateCatalogEntry[] = [
@@ -107,6 +107,6 @@ export function assertUniqueIds(
 }
 
 /**
- * Count of candidate entries (should equal the matrix candidate count: 46).
+ * Count of candidate entries (should equal the matrix candidate count: 48).
  */
 export const CANDIDATE_COUNT: number = ALL_CANDIDATE_ENTRIES.length;

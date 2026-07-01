@@ -171,6 +171,8 @@ export const PLATFORM_AUDIT: Readonly<Record<string, PlatformAuditEntry>> = {
   BcPivot: { web: true, flutter: true, flutterKey: 'bc_pivot' },
   BcBuilder: { web: true, flutter: false, flutterKey: '' },
   BcFormBuilder: { web: true, flutter: true, flutterKey: 'bc_form_builder' },
+  BcWorkflowBuilder: { web: true, flutter: true, flutterKey: 'bc_workflow_builder' },
+  BcSchemaBuilder: { web: true, flutter: true, flutterKey: 'bc_schema_builder' },
   BcComment: { web: true, flutter: true, flutterKey: 'bc_comment' },
   BcMentions: { web: true, flutter: true, flutterKey: 'bc_mentions' },
 
