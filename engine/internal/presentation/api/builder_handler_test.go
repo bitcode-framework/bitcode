@@ -26,6 +26,17 @@ type notFoundErr struct{ name string }
 
 func (e *notFoundErr) Error() string { return "model not found: " + e.name }
 
+type testProcessResolver struct {
+	processes map[string]*parser.ProcessDefinition
+}
+
+func (s *testProcessResolver) LoadProcess(name string) (*parser.ProcessDefinition, error) {
+	if p, ok := s.processes[name]; ok {
+		return p, nil
+	}
+	return nil, &notFoundErr{name: name}
+}
+
 func setupBuilderTestApp(t *testing.T) *fiber.App {
 	t.Helper()
 	registry := &testModelResolver{
@@ -39,9 +50,16 @@ func setupBuilderTestApp(t *testing.T) *fiber.App {
 			},
 		},
 	}
+	procRegistry := &testProcessResolver{
+		processes: map[string]*parser.ProcessDefinition{
+			"send_email": {Name: "send_email"},
+		},
+	}
 	viewValidator := builder.NewViewValidator(registry)
+	processValidator := builder.NewProcessValidator(procRegistry)
 	handler := NewBuilderHandler(BuilderHandlerConfig{
-		ViewValidator: viewValidator,
+		ViewValidator:    viewValidator,
+		ProcessValidator: processValidator,
 	})
 
 	app := fiber.New()
@@ -51,6 +69,7 @@ func setupBuilderTestApp(t *testing.T) *fiber.App {
 	})
 	group := app.Group("/api/v1/admin")
 	group.Post("/views/validate", handler.ValidateView)
+	group.Post("/processes/validate", handler.ValidateProcess)
 	return app
 }
 
@@ -182,5 +201,122 @@ func TestBuilderHandler_ValidateView_InvalidJSON(t *testing.T) {
 	}
 	if result.Valid {
 		t.Fatal("expected valid=false for invalid JSON")
+	}
+}
+
+func TestBuilderHandler_ValidateProcess_Valid(t *testing.T) {
+	app := setupBuilderTestApp(t)
+
+	body := `{
+		"name": "create_lead",
+		"steps": [
+			{"name": "validate_input", "type": "validate", "rules": {}},
+			{"name": "create_record", "type": "create", "model": "contact"},
+			{"name": "emit_created", "type": "emit", "event": "lead_created"}
+		]
+	}`
+
+	req := httptest.NewRequest("POST", "/api/v1/admin/processes/validate",
+		bytes.NewReader([]byte(body)))
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := app.Test(req)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Fatalf("expected 200, got %d", resp.StatusCode)
+	}
+
+	var result builder.ValidationResult
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		t.Fatalf("failed to decode response: %v", err)
+	}
+	if !result.Valid {
+		t.Fatalf("expected valid=true for valid process, got false; errors: %+v", result.Errors)
+	}
+}
+
+func TestBuilderHandler_ValidateProcess_InvalidStepRef(t *testing.T) {
+	app := setupBuilderTestApp(t)
+
+	body := `{
+		"name": "bad_step_ref",
+		"steps": [
+			{"name": "check", "type": "if", "condition": "x > 0", "then": "ghost_step", "else": "done"},
+			{"name": "done", "type": "log", "message": "finished"}
+		]
+	}`
+
+	req := httptest.NewRequest("POST", "/api/v1/admin/processes/validate",
+		bytes.NewReader([]byte(body)))
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := app.Test(req)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	var result builder.ValidationResult
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		t.Fatalf("failed to decode response: %v", err)
+	}
+	if result.Valid {
+		t.Fatal("expected valid=false for invalid step ref")
+	}
+	if len(result.Errors) == 0 {
+		t.Fatal("expected at least one error")
+	}
+}
+
+func TestBuilderHandler_ValidateProcess_OrphanTransition(t *testing.T) {
+	app := setupBuilderTestApp(t)
+
+	body := `{
+		"name": "orphan_edge",
+		"nodes": {
+			"start": {"type": "query", "model": "contact"},
+			"save":  {"type": "create", "model": "contact"}
+		},
+		"edges": [
+			{"from": "start", "to": "ghost_node"}
+		]
+	}`
+
+	req := httptest.NewRequest("POST", "/api/v1/admin/processes/validate",
+		bytes.NewReader([]byte(body)))
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := app.Test(req)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	var result builder.ValidationResult
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		t.Fatalf("failed to decode response: %v", err)
+	}
+	if result.Valid {
+		t.Fatal("expected valid=false for orphan transition")
+	}
+	foundEdgeError := false
+	for _, e := range result.Errors {
+		if e.Field == "edges[0].to" {
+			foundEdgeError = true
+		}
+	}
+	if !foundEdgeError {
+		t.Fatalf("expected edge ref error for ghost_node, got: %+v", result.Errors)
+	}
+}
+
+func TestBuilderHandler_ValidateProcess_EmptyBody(t *testing.T) {
+	app := setupBuilderTestApp(t)
+
+	req := httptest.NewRequest("POST", "/api/v1/admin/processes/validate", nil)
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := app.Test(req)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if resp.StatusCode != 400 {
+		t.Fatalf("expected 400 for empty body, got %d", resp.StatusCode)
 	}
 }

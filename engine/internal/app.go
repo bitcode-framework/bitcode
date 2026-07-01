@@ -707,8 +707,10 @@ func (a *App) setupRoutes() {
 	adminPanel.RegisterRoutes(a.Fiber)
 
 	builderViewValidator := builder.NewViewValidator(a.ModelRegistry)
+	builderProcessValidator := builder.NewProcessValidator(a.ProcessRegistry)
 	builderHandler := api.NewBuilderHandler(api.BuilderHandlerConfig{
-		ViewValidator: builderViewValidator,
+		ViewValidator:    builderViewValidator,
+		ProcessValidator: builderProcessValidator,
 	})
 	api.RegisterBuilderRoutes(a.Fiber, "/api/v1/admin", builderHandler, a.JWTConfig)
 
