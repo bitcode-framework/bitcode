@@ -606,14 +606,20 @@ added to barrel.
 | `flutter test` (packages/ui-flutter) | 2106 pass / 0 fail |
 | Browser QA (Playwright) | All groups render, 0 fatal errors |
 
-### Remaining Non-Fatal Warnings (Mitosis Compiler Limitations)
+### Remaining Non-Fatal Console Messages (External, Not Code Bugs)
 
-These are cosmetic console warnings, not functional bugs:
-- `stroke-width` / `stroke-linecap` / `stroke-linejoin` in SVG elements (Mitosis doesn't transform kebab-case SVG attributes to React camelCase)
-- `class` vs `className` in adapt-poc `.web.tsx` files (these target Vue/Stencil conventions)
-- Key-prop warnings on `<For>`-compiled `.map()` calls (Mitosis `<For>` doesn't emit `key` props)
-- External API 400 for QR code service (network-dependent, not a code bug)
+After the Phase 5 cleanup (class=className + SVG attr fixes), the browser
+console shows only 3 messages, all external resource issues:
+- `soundhelix.com` MP3 demo URL (network error)
+- `api.qrserver.com` QR code API rejecting empty data param (demo data issue)
+- `favicon.ico` 404 (cosmetic)
 
-Fixing these would require either post-build AST transforms or sweeping
-changes to 50+ `.lite.tsx` files. They do not affect rendering or
-functionality.
+**Zero React warnings remain.** The `class=`/`className` and SVG
+`stroke-width`/`strokeWidth` issues have been fixed at source level
+(14 `.web.tsx` files, 93 replacements; 24 `.lite.tsx` files, 95
+replacements).
+
+**Still not fixed:** `<For>` key-prop warnings — these come from the
+Mitosis compiler's `<For>` → `.map()` output which doesn't emit React
+`key` props. This would require either a compiler plugin or post-build
+AST transform. It's a performance hint, not a functional bug.
