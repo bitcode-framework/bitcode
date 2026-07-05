@@ -1,4 +1,4 @@
-// Data display demo — BcDataTable, BcDescriptions, BcStatistic.
+// Data display demo — BcDataTable, BcDescriptions, BcStatistic, BcList.
 library data_section;
 
 import 'package:flutter/material.dart';
@@ -198,6 +198,29 @@ class DataSection extends StatelessWidget {
               BcChip(label: 'Avatar', avatar: 'AB'),
               BcChip(label: 'Removable', removable: true),
             ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // -- BcList --
+        DemoCard(
+          title: 'BcList',
+          description: 'Material list view with optional leading/trailing builders and tap handler.',
+          child: SizedBox(
+            height: 260,
+            child: BcList<String>(
+              shrinkWrap: true,
+              items: const ['Inbox', 'Drafts', 'Sent', 'Spam', 'Trash'],
+              leadingBuilder: (_, item) => const Icon(Icons.mail_outline, size: 20),
+              trailingBuilder: (_, item) => const Icon(Icons.chevron_right, size: 20),
+              onTap: (item) => ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Tapped: $item'),
+                  duration: const Duration(milliseconds: 800),
+                ),
+              ),
+              itemBuilder: (_, item, __) => Text(item),
+            ),
           ),
         ),
       ],

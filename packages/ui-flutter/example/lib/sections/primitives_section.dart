@@ -1,5 +1,5 @@
 ﻿// Primitives demo - BcBox, BcCenter, BcCircle, BcSquare, BcKbd, BcSlot,
-// BcVisuallyHidden, BcAspectRatio, BcBackdrop, BcLoadingOverlay.
+// BcVisuallyHidden, BcAspectRatio, BcBackdrop, BcLoadingOverlay, BcStack.
 library primitives_section;
 
 import 'package:flutter/material.dart';
@@ -295,6 +295,48 @@ class _PrimitivesSectionState extends State<PrimitivesSection> {
                   message: 'Please wait...',
                 ),
             ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // -- BcStack --
+        DemoCard(
+          title: 'BcStack',
+          description: 'Z-axis stack positioning container. Later children paint above earlier ones.',
+          child: SizedBox(
+            height: 160,
+            child: BcStack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 140,
+                  height: 140,
+                  decoration: BoxDecoration(
+                    color: BcTheme.primary.withValues(alpha: 0.7),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    color: BcTheme.destructive.withValues(alpha: 0.7),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: BcTheme.background,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: BcTheme.border),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Text('Top'),
+                ),
+              ],
+            ),
           ),
         ),
       ],

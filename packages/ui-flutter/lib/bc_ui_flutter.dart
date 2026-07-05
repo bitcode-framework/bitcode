@@ -265,6 +265,7 @@ export 'src/components/bc_grid_view.dart';
 export 'src/components/bc_tree_view.dart';
 export 'src/components/bc_kanban_view.dart';
 export 'src/components/bc_calendar_view.dart';
+export 'src/components/bc_pivot.dart';
 
 // M7 misc widgets
 export 'src/components/bc_watermark.dart';

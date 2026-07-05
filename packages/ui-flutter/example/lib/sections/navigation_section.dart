@@ -3,7 +3,7 @@ import 'package:bc_ui_flutter/bc_ui_flutter.dart';
 import '../demo_widgets.dart';
 
 /// Navigation widgets: BcBreadcrumb, BcPagination, BcMenubar, BcAffix,
-/// BcSearch, BcBackTop.
+/// BcSearch, BcBackTop, BcDrawer.
 class NavigationSection extends StatefulWidget {
   const NavigationSection({super.key});
 
@@ -16,6 +16,7 @@ class _NavigationSectionState extends State<NavigationSection> {
   final ScrollController _scrollController = ScrollController();
   List<BcSearchResult> _searchResults = const [];
   String _searchQuery = '';
+  int _drawerIndex = 0;
 
   void _onSearch(String query, _) {
     setState(() {
@@ -392,6 +393,53 @@ class _NavigationSectionState extends State<NavigationSection> {
                 BcSidebarItem(value: 'settings', label: 'Settings', icon: Icons.settings_outlined),
               ],
               selectedValue: 'home',
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // -- BcDrawer --
+        DemoCard(
+          title: 'BcDrawer',
+          description: 'Material navigation drawer. Tap "Open Drawer" to slide it in.',
+          child: SizedBox(
+            height: 220,
+            child: Scaffold(
+              drawer: BcDrawer(
+                header: Container(
+                  height: 100,
+                  color: BcTheme.primary,
+                  padding: const EdgeInsets.all(16),
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    'Menu',
+                    style: TextStyle(
+                      color: BcTheme.primaryForeground,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                selectedIndex: _drawerIndex,
+                onSelected: (i) {
+                  setState(() => _drawerIndex = i);
+                  Navigator.of(context).pop();
+                },
+                items: const [
+                  BcDrawerItem(label: 'Inbox', icon: Icons.inbox_outlined),
+                  BcDrawerItem(label: 'Starred', icon: Icons.star_outline),
+                  BcDrawerItem(label: 'Sent', icon: Icons.send_outlined),
+                  BcDrawerItem(label: 'Drafts', icon: Icons.drafts_outlined),
+                  BcDrawerItem(label: 'Trash', icon: Icons.delete_outline),
+                ],
+              ),
+              body: Center(
+                child: ElevatedButton.icon(
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                  icon: const Icon(Icons.menu),
+                  label: const Text('Open Drawer'),
+                ),
+              ),
             ),
           ),
         ),

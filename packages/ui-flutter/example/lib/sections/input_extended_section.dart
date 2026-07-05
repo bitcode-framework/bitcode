@@ -1,5 +1,6 @@
 ﻿// Input Extended demo - BcRichText, BcCode, BcJson, BcMarkdown, BcColorPicker,
-// BcKnob, BcMentions, BcOtp, BcTransfer, BcCascader, BcTreeSelect.
+// BcKnob, BcMentions, BcOtp, BcTransfer, BcCascader, BcTreeSelect,
+// BcFieldDynLink.
 library input_extended_section;
 
 import 'package:flutter/material.dart';
@@ -287,6 +288,51 @@ class _InputExtendedSectionState extends State<InputExtendedSection> {
               {'name': 'Alice', 'email': 'alice@example.com'},
               {'name': 'Bob', 'email': 'bob@example.com'},
             ],
+          ),
+        ),
+
+        // -- BcFieldDynLink --
+        DemoCard(
+          title: 'BcFieldDynLink',
+          description: 'Dynamic link field: pick a model, then search and select a record.',
+          child: BcFieldDynLink(
+            label: 'Linked Record',
+            placeholder: 'Select a record...',
+            models: const [
+              BcDynLinkModel(model: 'contact', label: 'Contact'),
+              BcDynLinkModel(model: 'product', label: 'Product'),
+            ],
+            dataFetcher: (model, query) async {
+              // Demo data source — returns records filtered by query.
+              final all = {
+                'contact': const [
+                  BcDynLinkRecord(id: 'c1', label: 'Alice Anderson'),
+                  BcDynLinkRecord(id: 'c2', label: 'Bob Brown'),
+                  BcDynLinkRecord(id: 'c3', label: 'Charlie Chen'),
+                ],
+                'product': const [
+                  BcDynLinkRecord(id: 'p1', label: 'Laptop'),
+                  BcDynLinkRecord(id: 'p2', label: 'Keyboard'),
+                  BcDynLinkRecord(id: 'p3', label: 'Mouse'),
+                ],
+              };
+              final list = all[model] ?? const [];
+              if (query.isEmpty) return list;
+              return list
+                  .where((r) =>
+                      r.label.toLowerCase().contains(query.toLowerCase()))
+                  .toList();
+            },
+            onChange: (value) {
+              if (value != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Selected: ${value.display} (${value.id})'),
+                    duration: const Duration(milliseconds: 900),
+                  ),
+                );
+              }
+            },
           ),
         ),
       ],

@@ -1,6 +1,6 @@
 // Views demo - BcViewMap, BcViewReport, BcViewEditor, BcViewActivity,
 // BcViewGantt, BcKanbanBoard, BcVirtualScroller, BcTieredMenu, BcOrgChart,
-// BcCarousel.
+// BcCarousel, BcPivot.
 library views_section;
 
 import 'package:flutter/material.dart';
@@ -366,6 +366,43 @@ class ViewsSection extends StatelessWidget {
               BcDashboardWidget(id: '2', title: 'Users', kind: BcDashboardWidgetKind.stat),
               BcDashboardWidget(id: '3', title: 'Orders', kind: BcDashboardWidgetKind.stat),
             ],
+          ),
+        ),
+
+        // -- BcPivot --
+        DemoCard(
+          title: 'BcPivot',
+          description: 'Pivot table with 2D aggregation matrix and row/column totals.',
+          child: BcPivot(
+            title: 'Sales by Region × Quarter',
+            showTotals: true,
+            showGrandTotal: true,
+            result: BcPivotResult(
+              rowHeaders: const ['North', 'South', 'East', 'West'],
+              colHeaders: const ['Q1', 'Q2', 'Q3', 'Q4'],
+              cells: const [
+                [[120.0], [150.0], [180.0], [200.0]],
+                [[90.0], [110.0], [130.0], [160.0]],
+                [[200.0], [220.0], [240.0], [260.0]],
+                [[75.0], [95.0], [115.0], [135.0]],
+              ],
+              rowTotals: const [
+                [650.0],
+                [490.0],
+                [920.0],
+                [420.0],
+              ],
+              colTotals: const [
+                [485.0],
+                [575.0],
+                [665.0],
+                [755.0],
+              ],
+              grandTotal: const [2480.0],
+              valueFields: const [
+                BcPivotValueField(field: 'sales', agg: BcPivotAggFunc.sum, alias: 'Revenue'),
+              ],
+            ),
           ),
         ),
       ],

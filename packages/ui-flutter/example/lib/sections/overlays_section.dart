@@ -1,6 +1,6 @@
 // Overlays demo - BcDialog, BcAlertDialog, BcTooltip, BcAccordion,
 // BcDisclosure, BcTabs, BcSplitter, BcDropdown, BcPopover, BcCommand,
-// BcHoverCard, BcActionsheet.
+// BcHoverCard, BcActionsheet, BcContextMenu, BcPortal, BcNotificationCenter.
 library overlays_section;
 
 import 'package:flutter/material.dart';
@@ -20,6 +20,7 @@ class _OverlaysSectionState extends State<OverlaysSection> {
   String _dropdownValue = 'Option A';
   bool _actionsheetOpen = false;
   String _lastAction = 'none';
+  bool _portalOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -372,6 +373,180 @@ class _OverlaysSectionState extends State<OverlaysSection> {
                   },
                 ),
               ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // -- BcContextMenu --
+        DemoCard(
+          title: 'BcContextMenu',
+          description: 'Long-press or right-click the card to open a context menu.',
+          child: BcContextMenu(
+            items: [
+              BcContextMenuItem(
+                key: 'edit',
+                label: 'Edit',
+                icon: Icons.edit_outlined,
+                onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Context: Edit'),
+                    duration: Duration(milliseconds: 800),
+                  ),
+                ),
+              ),
+              const BcContextMenuItem(
+                key: 'copy',
+                label: 'Copy',
+                icon: Icons.copy_outlined,
+              ),
+              const BcContextMenuItem(
+                key: 'disabled',
+                label: 'Disabled',
+                enabled: false,
+              ),
+              BcContextMenuItem(
+                key: 'delete',
+                label: 'Delete',
+                icon: Icons.delete_outline,
+                onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Context: Delete'),
+                    duration: Duration(milliseconds: 800),
+                  ),
+                ),
+              ),
+            ],
+            child: BcBox(
+              padding: 24,
+              border: true,
+              borderRadius: BcTheme.radius,
+              backgroundColor: BcBoxColorToken.muted,
+              child: const Center(
+                child: Text('Long-press or right-click me'),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // -- BcPortal --
+        DemoCard(
+          title: 'BcPortal',
+          description: 'Renders child into a root-level Overlay, outside the parent stacking context.',
+          child: BcYStack(
+            gap: 8,
+            children: [
+              ElevatedButton(
+                onPressed: () => setState(() => _portalOpen = !_portalOpen),
+                child: Text(_portalOpen ? 'Close Portal' : 'Open Portal'),
+              ),
+              Text(
+                'When open, the portal floats above the rest of the app via an OverlayEntry.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              BcPortal(
+                open: _portalOpen,
+                name: 'demo',
+                animation: BcPortalAnimation.fade,
+                onRequestClose: (_) => setState(() => _portalOpen = false),
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 80, left: 40, right: 40),
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: BcTheme.popover,
+                      borderRadius: BorderRadius.circular(BcTheme.radius),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x33000000),
+                          blurRadius: 20,
+                          offset: Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Portal Content',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'This widget is mounted in the root Overlay, '
+                          'so it paints above the demo card boundaries.',
+                        ),
+                        const SizedBox(height: 12),
+                        ElevatedButton(
+                          onPressed: () => setState(() => _portalOpen = false),
+                          child: const Text('Close'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // -- BcNotificationCenter --
+        DemoCard(
+          title: 'BcNotificationCenter',
+          description: 'Bell icon with unread badge and a dropdown notification list.',
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: BcNotificationCenter(
+              unreadCount: 2,
+              notifications: const [
+                BcNotificationItemData(
+                  id: 'n1',
+                  type: BcNotificationVariant.message,
+                  title: 'New message from Alice',
+                  body: 'Can you review my PR when you get a chance?',
+                  createdAt: '2m ago',
+                ),
+                BcNotificationItemData(
+                  id: 'n2',
+                  type: BcNotificationVariant.warning,
+                  title: 'Build warning',
+                  body: 'deploy.yml has 2 deprecated actions.',
+                  createdAt: '1h ago',
+                ),
+                BcNotificationItemData(
+                  id: 'n3',
+                  type: BcNotificationVariant.success,
+                  title: 'Deploy succeeded',
+                  body: 'Production build v0.2.0 is live.',
+                  createdAt: '3h ago',
+                  readAt: '3h ago',
+                ),
+              ],
+              emptyText: 'You are all caught up!',
+              onMarkRead: (id) => ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Marked read: $id'),
+                  duration: const Duration(milliseconds: 800),
+                ),
+              ),
+              onMarkAllRead: () => ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Marked all as read'),
+                  duration: Duration(milliseconds: 800),
+                ),
+              ),
+              onItemClick: (item) => ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Clicked: ${item.title}'),
+                  duration: const Duration(milliseconds: 800),
+                ),
+              ),
             ),
           ),
         ),

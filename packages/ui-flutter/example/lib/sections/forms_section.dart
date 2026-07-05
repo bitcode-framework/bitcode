@@ -1,6 +1,6 @@
 // Forms demo — BcInput, BcSelect, BcCheckbox, BcToggle, BcSegmented, BcSlider,
 // BcNumberField, BcDateField, BcCombobox, BcMultiSelect, BcTagsInput,
-// BcToggleGroup, BcFieldDuration.
+// BcToggleGroup, BcFieldDuration, BcTextField, BcTimeField, BcTagGroup, BcForm.
 library forms_section;
 
 import 'package:flutter/material.dart';
@@ -29,6 +29,12 @@ class _FormsSectionState extends State<FormsSection> {
   List<String> _tags = ['flutter', 'dart'];
   String _toggleGroupSingle = 'left';
   num _durationSeconds = 3661;
+  TimeOfDay? _selectedTime = const TimeOfDay(hour: 14, minute: 30);
+  List<BcTagGroupTag> _tagGroupTags = const [
+    BcTagGroupTag(label: 'Frontend', value: 'fe'),
+    BcTagGroupTag(label: 'Backend', value: 'be'),
+    BcTagGroupTag(label: 'DevOps', value: 'devops'),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -285,6 +291,72 @@ class _FormsSectionState extends State<FormsSection> {
                 clearable: true,
               ),
             ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // -- BcTimeField --
+        DemoCard(
+          title: 'BcTimeField',
+          description: 'Adaptive time picker (Material showTimePicker / CupertinoDatePicker).',
+          child: BcYStack(
+            gap: 8,
+            children: [
+              BcTimeField(
+                label: 'Start Time',
+                value: _selectedTime,
+                onValueChange: (v, _) => setState(() => _selectedTime = v),
+              ),
+              if (_selectedTime != null)
+                Text(
+                  'Selected: ${_selectedTime!.hour.toString().padLeft(2, '0')}'
+                  ':${_selectedTime!.minute.toString().padLeft(2, '0')}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // -- BcTagGroup --
+        DemoCard(
+          title: 'BcTagGroup',
+          description: 'Group of tags with optional add/remove. Type and press Enter to add.',
+          child: BcTagGroup(
+            label: 'Skills',
+            tags: _tagGroupTags,
+            addable: true,
+            removable: true,
+            onChange: (tags, _) => setState(() => _tagGroupTags = tags),
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // -- BcForm (legacy child mode) --
+        DemoCard(
+          title: 'BcForm',
+          description: 'Reactive form container. Wraps a child widget tree and exposes a store via storeOf().',
+          child: BcForm(
+            initialValues: const {'name': 'Alice', 'role': 'Admin'},
+            child: BcYStack(
+              gap: 12,
+              children: [
+                BcInput(
+                  label: 'Name',
+                  placeholder: 'Enter name',
+                  defaultValue: 'Alice',
+                ),
+                BcInput(
+                  label: 'Role',
+                  placeholder: 'Enter role',
+                  defaultValue: 'Admin',
+                ),
+                Text(
+                  'BcForm provides a ReactiveStore scope; descendant fields can read/write via BcForm.storeOf(context).',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
           ),
         ),
       ],

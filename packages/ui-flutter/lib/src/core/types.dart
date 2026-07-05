@@ -887,6 +887,53 @@ class BcActivityEntry {
       Object.hash(id, actor, action, target, timestamp, variant);
 }
 
+/// Layout variant for the activity feed (mirrors TS `BcActivityLayout`).
+enum BcActivityLayout { timeline, feed, compact }
+
+/// Declarative data-source binding for the activity feed (ADR-005 §3).
+///
+/// Mirrors TS `BcActivityDataSource` ({ endpoint?, model?, recordId?, params? }).
+/// When provided, [BcActivity] fetches entries from the engine activity API.
+class BcActivityDataSource {
+  final String? endpoint;
+  final String? model;
+  final String? recordId;
+  final Map<String, String>? params;
+
+  const BcActivityDataSource({
+    this.endpoint,
+    this.model,
+    this.recordId,
+    this.params,
+  });
+
+  @override
+  String toString() =>
+      'BcActivityDataSource(endpoint: $endpoint, model: $model, recordId: $recordId, params: $params)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcActivityDataSource &&
+          endpoint == other.endpoint &&
+          model == other.model &&
+          recordId == other.recordId &&
+          _mapEq(params, other.params);
+
+  @override
+  int get hashCode => Object.hash(endpoint, model, recordId, params);
+
+  static bool _mapEq(Map<String, String>? a, Map<String, String>? b) {
+    if (a == null) return b == null;
+    if (b == null) return false;
+    if (a.length != b.length) return false;
+    for (final key in a.keys) {
+      if (a[key] != b[key]) return false;
+    }
+    return true;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // M6 BcTimelineSocial typed wrappers (ADR-011 Phase 5c — M6 social)
 // ---------------------------------------------------------------------------
@@ -1002,15 +1049,51 @@ class BcSocialPost {
 // M6 BcChatter typed wrappers (ADR-011 Phase 5c — M6 social)
 // ---------------------------------------------------------------------------
 
+/// A user mentioned inside a comment body.
+///
+/// Mirrors TS `BcChatterMention` ({ username, userId?, resolved? }).
+class BcChatterMention {
+  final String username;
+  final String? userId;
+  final bool resolved;
+
+  const BcChatterMention({
+    required this.username,
+    this.userId,
+    this.resolved = false,
+  });
+
+  @override
+  String toString() =>
+      'BcChatterMention(username: $username, userId: $userId, resolved: $resolved)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BcChatterMention &&
+          username == other.username &&
+          userId == other.userId &&
+          resolved == other.resolved;
+
+  @override
+  int get hashCode => Object.hash(username, userId, resolved);
+}
+
 /// Chat message for [BcChatter].
 ///
-/// Mirrors TS `BcChatterMessage` ({ id, author, avatar?, content, timestamp? }).
+/// Mirrors TS `BcChatterMessage`
+/// ({ id, author, avatar?, content, timestamp?, mentions?, parentId?,
+///   replies?, authorId? }).
 class BcChatterMessage {
   final String id;
   final String author;
   final String? avatar;
   final String content;
   final String? timestamp;
+  final List<BcChatterMention> mentions;
+  final String? parentId;
+  final List<BcChatterMessage> replies;
+  final String? authorId;
 
   const BcChatterMessage({
     required this.id,
@@ -1018,11 +1101,39 @@ class BcChatterMessage {
     required this.content,
     this.avatar,
     this.timestamp,
+    this.mentions = const [],
+    this.parentId,
+    this.replies = const [],
+    this.authorId,
   });
+
+  BcChatterMessage copyWith({
+    String? id,
+    String? author,
+    String? avatar,
+    String? content,
+    String? timestamp,
+    List<BcChatterMention>? mentions,
+    String? parentId,
+    List<BcChatterMessage>? replies,
+    String? authorId,
+  }) {
+    return BcChatterMessage(
+      id: id ?? this.id,
+      author: author ?? this.author,
+      avatar: avatar ?? this.avatar,
+      content: content ?? this.content,
+      timestamp: timestamp ?? this.timestamp,
+      mentions: mentions ?? this.mentions,
+      parentId: parentId ?? this.parentId,
+      replies: replies ?? this.replies,
+      authorId: authorId ?? this.authorId,
+    );
+  }
 
   @override
   String toString() =>
-      'BcChatterMessage(id: $id, author: $author, avatar: $avatar, content: $content, timestamp: $timestamp)';
+      'BcChatterMessage(id: $id, author: $author, avatar: $avatar, content: $content, timestamp: $timestamp, mentions: $mentions, parentId: $parentId, replies: ${replies.length}, authorId: $authorId)';
 
   @override
   bool operator ==(Object other) =>
@@ -1032,10 +1143,33 @@ class BcChatterMessage {
           author == other.author &&
           avatar == other.avatar &&
           content == other.content &&
-          timestamp == other.timestamp;
+          timestamp == other.timestamp &&
+          _listEquals(mentions, other.mentions) &&
+          parentId == other.parentId &&
+          _listEquals(replies, other.replies) &&
+          authorId == other.authorId;
 
   @override
-  int get hashCode => Object.hash(id, author, avatar, content, timestamp);
+  int get hashCode => Object.hash(
+        id,
+        author,
+        avatar,
+        content,
+        timestamp,
+        Object.hashAll(mentions),
+        parentId,
+        Object.hashAll(replies),
+        authorId,
+      );
+
+  static bool _listEquals<T>(List<T> a, List<T> b) {
+    if (identical(a, b)) return true;
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
 }
 
 // ---------------------------------------------------------------------------

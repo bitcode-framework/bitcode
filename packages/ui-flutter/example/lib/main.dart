@@ -33,6 +33,7 @@ import 'sections/print_section.dart';
 import 'sections/views_section.dart';
 import 'sections/native_section.dart';
 import 'sections/block_catalog_section.dart';
+import 'sections/builders_section.dart';
 
 void main() {
   // Redirect Flutter errors to console for debugging
@@ -200,6 +201,12 @@ class _DemoShellState extends State<DemoShell> {
       selectedIcon: Icons.dashboard,
       label: 'Block Catalog',
       builder: (_) => const BlockCatalogSection(),
+    ),
+    _NavItem(
+      icon: Icons.build_outlined,
+      selectedIcon: Icons.build,
+      label: 'Builders',
+      builder: (_) => const BuildersSection(),
     ),
   ];
 

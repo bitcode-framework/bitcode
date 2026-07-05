@@ -1,5 +1,6 @@
 ﻿// Media demo - BcViewerVideo, BcViewerAudio, BcViewerImage, BcViewerPdf,
-// BcViewerYoutube, BcGalleria, BcImage.
+// BcViewerDocument, BcViewerYoutube, BcViewerInstagram, BcViewerTiktok,
+// BcGalleria, BcImage, BcWebcam.
 library media_section;
 
 import 'package:flutter/material.dart';
@@ -158,6 +159,38 @@ class MediaSection extends StatelessWidget {
           description: 'Camera capture (dependency-free, caller wires the camera plugin).',
           child: BcWebcam(
             captureLabel: 'Take Photo',
+          ),
+        ),
+
+        // -- BcViewerDocument --
+        DemoCard(
+          title: 'BcViewerDocument',
+          description: 'Office/PDF document viewer with page navigation (renders an iframe embed on web).',
+          child: const BcViewerDocument(
+            src: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+            title: 'Dummy.pdf',
+            pageCount: 2,
+          ),
+        ),
+
+        // -- BcViewerInstagram --
+        DemoCard(
+          title: 'BcViewerInstagram',
+          description: 'Instagram post embed (renders an iframe on web; shows fallback on native).',
+          child: const BcViewerInstagram(
+            url: 'https://www.instagram.com/p/CpABC123xyz/',
+            title: 'Instagram Post',
+            captioned: true,
+          ),
+        ),
+
+        // -- BcViewerTiktok --
+        DemoCard(
+          title: 'BcViewerTiktok',
+          description: 'TikTok video embed (renders an iframe on web; shows fallback on native).',
+          child: const BcViewerTiktok(
+            videoId: '7106594319322901509',
+            title: 'TikTok Video',
           ),
         ),
       ],
