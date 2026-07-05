@@ -3,6 +3,13 @@
 > Flutter adapter, token bridge, demo parity, platform widgets.
 > Scope: `packages/ui-flutter/` + Flutter-side of `packages/ui` contracts.
 
+## 2026-07-05 — Full demo parity sweep (17 components)
+
+- **What:** 17 components added to demo parity: BcContextMenu, BcPortal, BcNotificationCenter, BcDrawer, BcStack, BcForm, BcTimeField, BcTagGroup, BcFieldDynLink, BcList, BcViewerDocument, BcViewerInstagram, BcViewerTiktok, BcPivot, BcFormBuilder, BcSchemaBuilder, BcWorkflowBuilder.
+- **Files:** 9 existing sections modified (forms, input_extended, overlays, navigation, primitives, data, media, views, main.dart) + 1 new section (`builders_section.dart`).
+- **Barrel fix:** Added missing `export 'src/components/bc_pivot.dart'` to `bc_ui_flutter.dart`.
+- **Verification:** flutter test 2106 pass / 0 fail; flutter analyze 0 issues on example app.
+
 ## 2026-07-01 — BcNotificationCenter Flutter widget (Phase 3 Notification)
 
 - **bc_notification_center.dart** — `packages/ui-flutter/lib/src/components/`. StatefulWidget. Adaptive rendering via PlatformWidget: iOS Cupertino dropdown (CupertinoButton bell + CupertinoAlertDialog panel), Android Material dropdown (IconButton bell + Dialog panel). Bell button with badge (99+ overflow), notification items list, mark-all-read, infinite scroll, loading/error/empty states.

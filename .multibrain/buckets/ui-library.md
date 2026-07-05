@@ -6,6 +6,20 @@
 
 ---
 
+## 2026-07-05 — Mitosis compiler bug sweep (10 source-level fixes)
+
+- **Status:** done. All 10 bugs found during demo-app browser QA, fixed at source level.
+- **Pattern 1 — const-outside-useStore (4 fixes):** Mitosis silently drops `const` declarations outside `useStore`. Fixed in BcChip (variant), BcAlert (severity, showBanner), BcKanbanBoard (selectedCard), BcLookupModal (colSpan). Solution: move to `useStore` getters.
+- **Pattern 2 — string style prop (4 fixes):** Mitosis passes `style` attribute value unchanged. React expects object, not CSS string. Fixed in BcWorkflowBuilder, BcTextField, BcPrintPreview, BcDashboard.
+- **Pattern 3 — dynamic tag (1 fix):** `const Tag = isInteractive ? 'button' : 'div'; <Tag>` — Mitosis doesn't support dynamic element types. Fixed BcChip with explicit `<Show>` branches.
+- **Pattern 4 — adapt-poc index.ts exports (14 fixes):** `export { CompName, default } from './Comp'` fails when target file only has `export default`. Fixed to `export { default as CompName } from './Comp'; export { default } from './Comp'`.
+- **Null safety:** BcLightbox.web.tsx `active.type` → `active?.type` (4 access points).
+- **Test updates:** BcChip.test.ts, BcLightbox.test.ts, BcShare.test.ts regex patterns updated to match fixed source code.
+- **Verification:** vitest 822 pass / 0 fail. tsc EXIT 0. vite build EXIT 0.
+- **Docs:** ADR-016 Phase 5 documents all fixes with root causes.
+
+---
+
 ## 2026-07-01 — BcNotificationCenter + BcNotificationItem (Phase 3 Notification)
 
 - **BcNotificationCenter.lite.tsx** — `packages/ui/src/components/overlays/notification/`. Bell button + dropdown panel, unread badge (99+ overflow), mark-read per item, mark-all-read, infinite scroll pagination, loading/error/empty states. Declarative `data-source` attribute for API binding. Uses `useStore` pattern.

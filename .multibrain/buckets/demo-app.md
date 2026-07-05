@@ -3,6 +3,16 @@
 > React demo (`packages/ui/demo-app`, 127+ components / 14+ groups) + Flutter demo (`packages/ui-flutter/example`) parity work.
 > Source of truth for status: `docs/adr/016-demo-app-qa-bug-audit.md` + handoffs.
 
+### [2026-07-05] Full Demo Coverage Milestone (204/204) — Droid
+
+- **Status:** done. All fatal bugs fixed, all 77 missing components demoed.
+- **Web:** 11 new demo files (FormsExtended, OverlaysExtended, NavigationExtended, DataDisplayExtended, FeedbackExtended, DataExtended, ChartsExtended, MediaExtended, SocialExtended, LayoutExtended, Builders). 77 new component demos + 11 group entries added to App.tsx. Total: 204 components across 25 groups.
+- **Flutter:** 17 components added across 9 sections + 1 new section (builders_section.dart). Missing `bc_pivot.dart` export added to barrel.
+- **Bug fixes (10 source-level):** 4 string-style bugs (BcWorkflowBuilder, BcTextField, BcPrintPreview, BcDashboard), 1 dynamic-tag bug (BcChip), 4 const-outside-useStore bugs (BcChip, BcAlert, BcKanbanBoard, BcLookupModal), 1 null-safety fix (BcLightbox.web.tsx), 14 adapt-poc index.ts export fixes.
+- **Mitosis patterns learned:** (a) `const` outside `useStore` is dropped by compiler — use getters; (b) `style` prop must be object not string for React target; (c) dynamic-tag `<Tag>` unsupported — use `<Show>` branches.
+- **Verification:** tsc EXIT 0, vite build EXIT 0, vitest 822 pass / 0 fail, flutter test 2106 pass / 0 fail, Playwright QA all groups render.
+- **Docs:** ADR-016 Phase 5 section appended. See `docs/adr/016-demo-app-qa-bug-audit.md`.
+
 ## Active threads
 
 ### [2026-07-01] Block Catalog Preview Demos — Agent K

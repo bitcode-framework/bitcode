@@ -543,3 +543,77 @@ It is:
 path that BcChart uses to import `loadEcharts`. Otherwise the registered
 state lives in a different module instance and charts silently fail. In the
 demo app, both import from `@/core/echarts-loader` (via Vite alias).
+
+---
+
+## Phase 5: Full Demo Coverage Milestone (2026-07-05)
+
+**Goal:** Close the demo gap from 127/204 (62%) to 204/204 (100%) for both
+Mitosis (web) and Flutter, while fixing all fatal runtime bugs discovered
+during browser QA.
+
+### Bug Fixes (Source-Level, Mitosis Compiler Patterns)
+
+| Bug | Component | Root Cause | Fix |
+|-----|-----------|------------|-----|
+| Blank page (React `style` expects object) | `BcWorkflowBuilder` | `style={'left: '+x+'px; top: '+y+'px;'}` — Mitosis passes string to React `style` prop which expects `Record<string,string>` | Changed to `style={{ left: x+'px', top: y+'px' }}` |
+| Blank page (same) | `BcTextField` | `style={\`height:${h}px\`}` string literal | Changed to `style={{ height: \`${h}px\` }}` |
+| Blank page (same) | `BcPrintPreview` | String style literal | Changed to object |
+| Blank page (same) | `BcDashboard` | `get gridStyle(): string` returned CSS string | Changed to `get gridStyle(): Record<string,string>` returning `{ gridTemplateColumns: ... }` |
+| `ReferenceError: Tag is not defined` | `BcChip` | `const Tag = state.isInteractive ? 'button' : 'div'` — Mitosis drops dynamic-tag consts, `<Tag>` unsupported | Rewrote with two `<Show>` branches (explicit `<button>` and `<div>`); moved `const variant` into useStore getter |
+| `ReferenceError: showBanner is not defined` | `BcAlert` | `const severity` / `const showBanner` declared outside useStore — Mitosis drops them | Moved into useStore as getters |
+| `ReferenceError: selectedCard is not defined` | `BcKanbanBoard` | `const selectedCard` outside useStore | Added `get selectedCard()` getter to useStore |
+| `ReferenceError: colSpan is not defined` | `BcLookupModal` | `const colSpan` outside useStore | Added `get colSpan()` getter to useStore |
+| `TypeError: Cannot read 'type' of undefined` | `BcLightbox.web.tsx` | `active.type` with no null guard | Added optional chaining: `active?.type`, `active?.src`, `active?.alt`, `active?.caption` |
+| Broken named export | 14 adapt-poc `index.ts` | `export { CompName, default } from './Comp'` — the named re-export tries to find `CompName` as a named export inside the target file, but the target only has `export default` | Changed to `export { default as CompName } from './Comp'; export { default } from './Comp'` |
+
+**Mitosis compiler pattern learned:** Variables declared as `const` outside
+`useStore` are silently dropped during compilation. This includes computed
+values derived from props. Always move derived `const` values into `useStore`
+as getters: `get computedProp() { return ... }`.
+
+**Mitosis compiler pattern learned:** The `style` attribute on JSX elements
+must receive an object (React convention), not a CSS string. Mitosis passes
+the value through unchanged. String styles work in Vue/Stencil targets but
+fatal-crash the React target.
+
+### Demo Coverage Added
+
+**Web (Mitosis):** 11 new demo files covering 77 previously-undemoed components:
+- `FormsExtended.tsx` (23: BcCascader, BcTagsInput, BcToggleGroup, BcRangeSlider, BcSlider, BcKnob, BcMentions, BcOtp, BcBarcode, BcDateTime, BcTextarea, BcRichText, BcCode, BcJson, BcGeo, BcSignature, BcDropZone, BcColorArea, BcColorSlider, BcColorSwatch, BcColorWheel, BcTransfer, BcTreeSelect)
+- `OverlaysExtended.tsx` (9: BcContextMenu, BcPortal, BcNotificationCenter, BcDrawer, BcStack, BcForm, BcTimeField, BcTagGroup, BcFieldDynLink)
+- `NavigationExtended.tsx` (11)
+- `DataDisplayExtended.tsx` (8)
+- `FeedbackExtended.tsx` (6)
+- `DataExtended.tsx` (2: BcKanbanBoard, BcPivot)
+- `ChartsExtended.tsx` (3)
+- `MediaExtended.tsx` (5)
+- `SocialExtended.tsx` (3: BcActivity, BcChatter, BcTimelineSocial)
+- `LayoutExtended.tsx` (3)
+- `Builders.tsx` (4: BcFormBuilder, BcSchemaBuilder, BcWorkflowBuilder, BcBuilder)
+
+**Flutter:** 17 components added across 9 modified sections + 1 new section
+(`builders_section.dart`). Missing `export 'src/components/bc_pivot.dart'`
+added to barrel.
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| `tsc --noEmit` (demo-app) | EXIT 0 |
+| `vite build` (demo-app) | EXIT 0 (1156 modules, 5.15s) |
+| `npm test` (packages/ui, vitest) | 822 pass / 13 skipped / 0 fail |
+| `flutter test` (packages/ui-flutter) | 2106 pass / 0 fail |
+| Browser QA (Playwright) | All groups render, 0 fatal errors |
+
+### Remaining Non-Fatal Warnings (Mitosis Compiler Limitations)
+
+These are cosmetic console warnings, not functional bugs:
+- `stroke-width` / `stroke-linecap` / `stroke-linejoin` in SVG elements (Mitosis doesn't transform kebab-case SVG attributes to React camelCase)
+- `class` vs `className` in adapt-poc `.web.tsx` files (these target Vue/Stencil conventions)
+- Key-prop warnings on `<For>`-compiled `.map()` calls (Mitosis `<For>` doesn't emit `key` props)
+- External API 400 for QR code service (network-dependent, not a code bug)
+
+Fixing these would require either post-build AST transforms or sweeping
+changes to 50+ `.lite.tsx` files. They do not affect rendering or
+functionality.
