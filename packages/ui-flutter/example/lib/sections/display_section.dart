@@ -40,6 +40,7 @@ class DisplaySection extends StatelessWidget {
           description: 'Compact pill badge with variant token colors.',
           child: BcXStack(
             gap: 8,
+            wrap: WrapAlignment.start,
             crossAxisAlignment: BcXStackAlign.center,
             children: [
               const BcBadge(label: 'Default'),

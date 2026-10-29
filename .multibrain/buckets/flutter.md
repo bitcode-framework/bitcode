@@ -3,6 +3,21 @@
 > Flutter adapter, token bridge, demo parity, platform widgets.
 > Scope: `packages/ui-flutter/` + Flutter-side of `packages/ui` contracts.
 
+## 2026-10-29 — Demo perfection sweep + public repo + GitHub Pages
+
+- **Published:** https://github.com/bitcode-framework/ui-flutter (467 files, self-contained, no cross-package imports) with MIT LICENSE and a rewritten README (badges, live-demo link, quick start, schema-kind table, design notes, component inventory, validation status).
+- **Live demo:** https://bitcode-framework.github.io/ui-flutter/ via `.github/workflows/pages.yml` (`flutter build web --release --base-href /<repo>/`, SPA 404 fallback, `.nojekyll`). Pages enabled with `build_type=workflow`; repo homepage + description point at the demo.
+- **Demo perfection sweep — all 17 sections now pass every guard.** Four widths audited (1400/1024/800/600) by new `example/test/overflow_audit_test.dart`, which captures overflow errors the existing sweep missed (it only failed on `ErrorWidget`).
+- **Root causes fixed:**
+  - `Display` — 5-badge `BcXStack` row needed 636px in 517px. Added `wrap`.
+  - `Print` — 3-button rows overflowed at ≤800px. Added `wrap`.
+  - `BcCalendarView` header — rigid `Row` (label + 3 nav buttons + mode switcher). Now `LayoutBuilder`: stacked below 560px, `Flexible` + wrapping controls above.
+  - `BcViewActivity` — non-scrolling `Column` clipped by a `SizedBox`. Now scrolls when bounded.
+  - `BcFormBuilder`/`BcSchemaBuilder`/`BcWorkflowBuilder` — three-pane canvas (180+260+280) and toolbar `Row` with `Spacer` overflowed narrow hosts. Toolbars scroll below 560/620px; canvas panes keep a 340px minimum and scroll horizontally; field-card label `Row` uses `Expanded` + ellipsis.
+- **Test-methodology fix:** the `Native` section test used `pumpAndSettle`, which can never settle against `BcNativeButton(loading: true)`'s perpetual spinner. Replaced with 20 bounded `pump` calls — a crash still surfaces an `ErrorWidget`.
+- **Rejected approach (recorded to save time later):** merging the required marker into `Text.rich` removed `find.text('First Name')` matches and broke 2 existing tests. Kept plain `Text` and gave the canvas enough width instead.
+- **Verification:** `flutter test` 2144 pass / 0 fail (library) + 24 pass (example). Browser: all 17 sections, 0 console errors. `flutter analyze`: 0 errors.
+
 ## 2026-10-29 — Fix: Media + Views sections blank (unbounded height)
 
 - **Symptom:** Clicking **Media** or **Views** in the Flutter demo left the content panel completely blank. Browser console: 53 errors (Media) / 35 errors (Views).

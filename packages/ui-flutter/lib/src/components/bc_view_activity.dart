@@ -246,17 +246,27 @@ class _BcViewActivityState extends State<BcViewActivity> {
     }
 
     final sorted = _sorted;
+    final items = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: sorted.map((entry) {
+        final selected = _selectedId == entry.id;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: _buildItem(entry, selected),
+        );
+      }).toList(),
+    );
+
+    // Entries size to their content, so a host that caps the height (e.g. a
+    // SizedBox in a dashboard card) would clip them. Scroll when bounded;
+    // shrink-wrap when the parent is already unbounded (a scroll view).
     return Semantics(
       container: true,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: sorted.map((entry) {
-          final selected = _selectedId == entry.id;
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: _buildItem(entry, selected),
-          );
-        }).toList(),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (!constraints.hasBoundedHeight) return items;
+          return SingleChildScrollView(child: items);
+        },
       ),
     );
   }

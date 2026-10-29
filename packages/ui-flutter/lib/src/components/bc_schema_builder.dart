@@ -565,58 +565,77 @@ class _BcSchemaBuilderState extends State<BcSchemaBuilder> {
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Row(
-        children: [
-          _buildTabButton(
-              BcSchemaBuilderTab.canvas, t('schema_builder.fields', 'Fields')),
-          const SizedBox(width: 4),
-          _buildTabButton(BcSchemaBuilderTab.json,
-              t('schema_builder.json_preview', 'JSON')),
-          const Spacer(),
-          if (_effectiveValidating)
-            Padding(
-              key: const Key('bc-schema-builder-validating'),
-              padding: const EdgeInsets.only(right: 8),
-              child: SizedBox(
-                width: 14,
-                height: 14,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: BcTheme.mutedForeground,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final tabs = <Widget>[
+            _buildTabButton(BcSchemaBuilderTab.canvas,
+                t('schema_builder.fields', 'Fields')),
+            const SizedBox(width: 4),
+            _buildTabButton(BcSchemaBuilderTab.json,
+                t('schema_builder.json_preview', 'JSON')),
+          ];
+
+          final status = <Widget>[
+            if (_effectiveValidating)
+              Padding(
+                key: const Key('bc-schema-builder-validating'),
+                padding: const EdgeInsets.only(right: 8),
+                child: SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: BcTheme.mutedForeground,
+                  ),
                 ),
               ),
-            ),
-          if (_effectiveValidation != null && !_effectiveValidating)
-            Padding(
-              key: const Key('bc-schema-builder-validation-status'),
-              padding: const EdgeInsets.only(right: 8),
-              child: Text(
-                _effectiveValidation!.valid
-                    ? t('schema_builder.validation_passed', 'Valid')
-                    : t('schema_builder.validation_failed', 'Invalid'),
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: _effectiveValidation!.valid
-                      ? BcTheme.success
-                      : BcTheme.destructive,
+            if (_effectiveValidation != null && !_effectiveValidating)
+              Padding(
+                key: const Key('bc-schema-builder-validation-status'),
+                padding: const EdgeInsets.only(right: 8),
+                child: Text(
+                  _effectiveValidation!.valid
+                      ? t('schema_builder.validation_passed', 'Valid')
+                      : t('schema_builder.validation_failed', 'Invalid'),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: _effectiveValidation!.valid
+                        ? BcTheme.success
+                        : BcTheme.destructive,
+                  ),
                 ),
               ),
+            PlatformElevatedButton(
+              key: const Key('bc-schema-builder-validate'),
+              onPressed: _effectiveValidating ? null : _runValidation,
+              child: Text(t('schema_builder.validate', 'Validate')),
             ),
-          PlatformElevatedButton(
-            key: const Key('bc-schema-builder-validate'),
-            onPressed: _effectiveValidating ? null : _runValidation,
-            child: Text(t('schema_builder.validate', 'Validate')),
-          ),
-          const SizedBox(width: 4),
-          PlatformElevatedButton(
-            key: const Key('bc-schema-builder-save'),
-            onPressed: (_effectiveSaveDisabled || _effectiveValidating)
-                ? null
-                : _handleSave,
-            child: Text(t('schema_builder.save', 'Save')),
-          ),
-        ],
+            const SizedBox(width: 4),
+            PlatformElevatedButton(
+              key: const Key('bc-schema-builder-save'),
+              onPressed: (_effectiveSaveDisabled || _effectiveValidating)
+                  ? null
+                  : _handleSave,
+              child: Text(t('schema_builder.save', 'Save')),
+            ),
+          ];
+
+          // Tabs plus actions exceed a narrow host, so scroll instead of
+          // overflowing. A Spacer needs bounded width, so it is only used in
+          // the wide layout.
+          if (constraints.maxWidth < 560) {
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [...tabs, const SizedBox(width: 12), ...status],
+              ),
+            );
+          }
+
+          return Row(children: [...tabs, const Spacer(), ...status]);
+        },
       ),
     );
   }
@@ -662,12 +681,32 @@ class _BcSchemaBuilderState extends State<BcSchemaBuilder> {
   }
 
   Widget _buildCanvasTab() {
-    return Row(
-      children: [
-        _buildPalette(),
-        Expanded(child: _buildCanvas()),
-        _buildPropertyPanel(),
-      ],
+    // Palette and property panel have fixed widths, so the three-pane row
+    // overflows as soon as the host is narrower than their sum plus a usable
+    // canvas. Below that threshold, keep every pane reachable by scrolling
+    // horizontally instead of clipping content.
+    const paletteWidth = 180.0;
+    const panelWidth = 280.0;
+    const minCanvasWidth = 340.0;
+    const minTotalWidth = paletteWidth + panelWidth + minCanvasWidth;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final panes = Row(
+          children: [
+            _buildPalette(),
+            Expanded(child: _buildCanvas()),
+            _buildPropertyPanel(),
+          ],
+        );
+
+        if (constraints.maxWidth >= minTotalWidth) return panes;
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(width: minTotalWidth, child: panes),
+        );
+      },
     );
   }
 
@@ -856,9 +895,11 @@ class _BcSchemaBuilderState extends State<BcSchemaBuilder> {
                 children: [
                   Row(
                     children: [
-                      Flexible(
+                      Expanded(
                         child: Text(
                           field.label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -881,6 +922,8 @@ class _BcSchemaBuilderState extends State<BcSchemaBuilder> {
                     field.type.isRelation && field.relationModel != null
                         ? '${field.name} (${field.type.id} -> ${field.relationModel})'
                         : '${field.name} (${field.type.id})',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 12,
                       color: BcTheme.mutedForeground,

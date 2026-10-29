@@ -1,4 +1,4 @@
-﻿// Print demo - BcExport, BcPrint, BcReportLink.
+// Print demo - BcExport, BcPrint, BcReportLink.
 library print_section;
 
 import 'package:flutter/material.dart';
@@ -52,6 +52,7 @@ class PrintSection extends StatelessWidget {
             children: [
               BcXStack(
                 gap: 12,
+                wrap: WrapAlignment.start,
                 crossAxisAlignment: BcXStackAlign.center,
                 children: [
                   BcPrint(
@@ -84,6 +85,7 @@ class PrintSection extends StatelessWidget {
               ),
               BcXStack(
                 gap: 12,
+                wrap: WrapAlignment.start,
                 crossAxisAlignment: BcXStackAlign.center,
                 children: [
                   BcPrint(

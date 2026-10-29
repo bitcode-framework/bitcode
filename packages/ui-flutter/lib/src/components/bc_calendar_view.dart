@@ -146,21 +146,23 @@ class _BcCalendarViewState extends State<BcCalendarView> {
   }
 
   Widget _buildHeader() {
-    return Row(
-      key: const Key('bc-calendar-view-header'),
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          _headerLabel,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: BcTheme.foreground),
-        ),
-        Row(
+    // The label and the control cluster can both be wide (three nav buttons
+    // plus the view-mode switcher). A rigid Row overflows as soon as the host
+    // is narrower than their combined natural width, so the label is allowed
+    // to ellipsize and the controls are allowed to wrap.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth < 560;
+
+        final controls = Wrap(
           key: const Key('bc-calendar-view-nav'),
+          spacing: 4,
+          runSpacing: 4,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             _navButton('‹', () => _navigate('prev'), 'Previous'),
             _navButton('Today', () => _navigate('today'), null),
             _navButton('›', () => _navigate('next'), 'Next'),
-            const SizedBox(width: 8),
             Container(
               decoration: BoxDecoration(
                 border: Border.all(color: BcTheme.border),
@@ -168,18 +170,24 @@ class _BcCalendarViewState extends State<BcCalendarView> {
               ),
               clipBehavior: Clip.antiAlias,
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: BcCalendarViewMode.values.map((v) {
                   final isActive = _view == v;
                   return GestureDetector(
                     onTap: () => _changeView(v),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       color: isActive ? BcTheme.primary : BcTheme.card,
                       child: Text(
                         v.name,
                         style: TextStyle(
                           fontSize: 13,
-                          color: isActive ? BcTheme.primaryForeground : BcTheme.foreground,
+                          color: isActive
+                              ? BcTheme.primaryForeground
+                              : BcTheme.foreground,
                         ),
                       ),
                     ),
@@ -188,8 +196,43 @@ class _BcCalendarViewState extends State<BcCalendarView> {
               ),
             ),
           ],
-        ),
-      ],
+        );
+
+        final label = Text(
+          _headerLabel,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: BcTheme.foreground,
+          ),
+        );
+
+        if (compact) {
+          // Stack label above controls so neither has to shrink to nothing.
+          return Column(
+            key: const Key('bc-calendar-view-header'),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              label,
+              const SizedBox(height: 8),
+              controls,
+            ],
+          );
+        }
+
+        return Row(
+          key: const Key('bc-calendar-view-header'),
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(child: label),
+            const SizedBox(width: 8),
+            Flexible(child: controls),
+          ],
+        );
+      },
     );
   }
 

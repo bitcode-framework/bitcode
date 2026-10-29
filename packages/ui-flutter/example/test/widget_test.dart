@@ -218,12 +218,19 @@ void main() {
   });
 
   // ADR-016 TASK 2: Native section renders without crashing.
+  //
+  // This section intentionally renders a `BcNativeButton(loading: true)`, whose
+  // CircularProgressIndicator animates indefinitely. `pumpAndSettle` can never
+  // settle against a perpetual animation, so pump a bounded number of frames
+  // instead — a crash would still surface an ErrorWidget.
   testWidgets('Native section renders without ErrorWidget (ADR-016 i18n)',
       (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(
       home: Scaffold(body: SingleChildScrollView(child: NativeSection())),
     ));
-    await tester.pumpAndSettle(const Duration(seconds: 2));
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
     expect(find.byType(ErrorWidget), findsNothing,
         reason: 'Native section rendered an ErrorWidget (crash)');
     expect(find.textContaining('Bc'), findsWidgets);
