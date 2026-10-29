@@ -15,8 +15,12 @@
 - **Installers:** `packages/go-json-runtimes/install.sh` (Linux/macOS/Windows-via-Git-Bash) and `install.ps1` (Windows). Detect OS/arch, download the release asset, verify SHA-256, install to a PATH dir, fall back to `go install`. Both verified end to end including the checksum-mismatch guard.
 - **Release:** `.github/workflows/release.yml` builds linux/darwin/windows × amd64/arm64 with `CGO_ENABLED=0` (cross-compiles cleanly), emits `.sha256` sidecars, publishes on tag push.
 - **Files touched:** `packages/go-json/{examples,cmd/cli,runtime,README.md,docs/cli-reference.md,AGENTS.md}`, `packages/go-json-runtimes/{go.mod,README.md,install.sh,install.ps1,.github/workflows/release.yml}`, `packages/go.work`, `docs/codebase.md`, root `AGENTS.md`
-- **Gotcha / note:** still needs `v0.1.0` tags pushed to both GitHub repos before `@latest` resolves to a real version (currently only pseudo-versions exist).
-- **Tests:** go-json `go test ./...` all pass, `go build`/`go vet` clean; runtimes `go test ./...` all pass.
+- **Gotcha / note:** published. `go-json` tagged v0.1.0–v0.1.2, `go-json-runtimes` tagged v0.1.0–v0.1.4; latest release is **v0.1.4** with 12 assets. Use `go install .../cmd/go-json@v0.1.4` (explicit version) — the Go proxy's `@latest` endpoint is a stale cache pinned to the poisoned v0.1.0 and will keep failing the sumdb check until it refreshes. The install scripts are unaffected because they read the GitHub releases API, which correctly reports v0.1.4.
+- **Two traps hit while publishing (both cost a release cycle):**
+  1. `go.work` masks a missing `go.sum` entry. Bumping the go-json dependency left `go.sum` stale; local builds passed, standalone builds (CI + consumers) failed with "missing go.sum entry". Always `GOWORK=off go mod tidy` before tagging. A CI step now enforces this.
+  2. **Never re-point a pushed tag.** sum.golang.org is append-only, so a re-tagged version permanently fails with a checksum mismatch for everyone. A poisoned version can only be abandoned by releasing a higher number.
+- **Version reporting:** `Version` is a fallback const; `buildVersion` is set by release ldflags; `ResolveVersion()` prefers ldflags, then `debug.ReadBuildInfo()` module version, then the const.
+- **Tests:** go-json `go test ./...` all pass, `go build`/`go vet` clean; runtimes `go test ./...` all pass standalone (`GOWORK=off`).
 
 ## 2026-07-13 — Scripts runtime resolution inventory
 - **What:** Checked existing script/runtime resolution vs ADR-020 layered render engines.
