@@ -110,7 +110,9 @@ Use full output when:
 - `packages/go-json/lang/` — Core language engine: AST, parser, compiler, VM, scope, types, errors, expr engine, debugger.
 - `packages/go-json/stdlib/` — Layer 2 stdlib functions (120+ functions: math, strings, arrays, maps, datetime, encoding, crypto, validate, format, env, types, path, JSON). Layer 1 is expr-lang built-ins (~68 functions, zero work).
 - `packages/go-json/runtime/` — Runtime API: `NewRuntime()`, `Execute()`, program cache, limits, logger, session context.
-- `packages/go-json/cmd/go-json/` — CLI entry point (placeholder for Phase 4.5b+).
+- `packages/go-json/cmd/go-json-lite/` — Lite CLI entry point (core only, no script runtimes).
+- `packages/go-json-runtimes/cmd/go-json/` — Full CLI entry point (script runtimes wired in). This is the recommended install.
+- `packages/go-json/examples/` — Runnable programs backing the README, verified by `examples_test.go`.
 - `packages/go-json/codegen/` — Code generation (reserved for Phase 4.5b+).
 - `packages/go-json/io/` — I/O modules (reserved for Phase 4.5c+).
 - `packages/go-json/testdata/` — Test fixture programs (`.json` and `.jsonc`).

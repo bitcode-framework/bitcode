@@ -1,0 +1,21 @@
+go 1.24
+
+// Local development workspace for the go-json modules.
+//
+// go-json-runtimes depends on the go-json module. Pointing at the sibling
+// directory with a `replace` directive in go.mod would work locally, but Go
+// refuses to `go install` any module whose go.mod contains a replace
+// directive. Keeping the override here leaves both published go.mod files
+// clean, so `go install` works for consumers while contributors still build
+// against local sources.
+//
+// The replace is version-specific because a module listed in `use` cannot also
+// be replaced at all versions.
+//
+// This file is for contributors only. Consumers install the published modules.
+use (
+	./go-json
+	./go-json-runtimes
+)
+
+replace github.com/bitcode-framework/go-json v0.1.0 => ./go-json

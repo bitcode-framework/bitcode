@@ -975,8 +975,23 @@ packages/go-json/
 │   ├── context.go                              # Session (UserID, Locale, TenantID, Groups) + ExecutionMeta (ID, Program, StartedAt)
 │   └── logger.go                               # Logger interface (Log(level, message, data)) + DefaultLogger (stdout)
 │
-├── cmd/go-json/
-│   └── main.go                                 # CLI placeholder
+├── cmd/go-json-lite/
+│   └── main.go                                 # Lite CLI entry point (core only, no script runtimes)
+│
+├── cmd/cli/
+│   ├── commands.go                             # Subcommand implementations + flag wiring
+│   └── args.go                                 # reorderArgs/parseFlags — lets flags appear before OR after the program path
+│
+├── examples/                                   # Runnable programs backing the README (indexed in examples/README.md)
+│   ├── 01-hello-world.json                     # let + return
+│   ├── 02-greet-input.json                     # input block, string building (+ .input.json)
+│   ├── 03-factorial.json                       # functions, recursion
+│   ├── 04-discount.jsonc                       # JSONC comments, trailing commas (+ .input.json)
+│   ├── 05-web-server.json                      # serve mode, routes, top-level status/body response
+│   ├── 06-io-modules.jsonc                     # io:fs read + aggregate (+ .data.json)
+│   ├── 07-script-plugins/                      # script: imports — predict.js -> format.js pipeline
+│   ├── examples_test.go                        # Executes every example; compile-checks the ones needing a server/runtime
+│   └── go/                                     # Embedding examples: embed-hello, embed-io, embed-extension
 │
 ├── codegen/                                    # Reserved for Phase 4.5b (struct codegen)
 ├── io/                                         # Reserved for Phase 4.5c (I/O modules)
@@ -1000,6 +1015,24 @@ packages/go-json/
 ```
 
 **82 tests** across 4 packages. `go build ./...` + `go vet ./...` clean.
+
+### CLI variants and distribution
+
+Two CLI binaries exist because `go-json-runtimes` depends on `go-json` — core cannot import the runtimes without a module cycle, and core keeps zero dependencies by design.
+
+| Binary | Module path | Script runtimes |
+|--------|-------------|-----------------|
+| `go-json` (full, recommended) | `packages/go-json-runtimes/cmd/go-json/` | goja, quickjs, yaegi, wasm, node, python |
+| `go-json-lite` | `packages/go-json/cmd/go-json-lite/` | none |
+
+Both share the implementation in `packages/go-json/cmd/cli/`.
+
+**Distribution:**
+
+- `packages/go-json-runtimes/install.sh` — POSIX installer (Linux, macOS, and Windows via Git Bash/MSYS2/Cygwin). Detects OS/arch, downloads the release asset, verifies SHA-256, installs to `/usr/local/bin` or `~/.local/bin`, falls back to `go install` when no prebuilt binary exists.
+- `packages/go-json-runtimes/install.ps1` — Windows installer. Same behavior, installs to `%LOCALAPPDATA%\go-json\bin` and appends it to the user PATH.
+- `packages/go-json-runtimes/.github/workflows/release.yml` — builds `go-json-{os}-{arch}` for linux/darwin/windows × amd64/arm64 (CGO disabled), emits `.sha256` sidecars, publishes a GitHub Release on tag push.
+- `packages/go.work` — contributor workspace. Holds the local `replace` for go-json so both published `go.mod` files stay free of replace directives (Go refuses to `go install` a module that has one).
 
 ---
 
