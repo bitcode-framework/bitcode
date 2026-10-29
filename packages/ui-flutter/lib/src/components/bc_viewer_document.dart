@@ -36,6 +36,11 @@ const _supportedExtensions = <String>{
   'csv',
 };
 
+/// Fallback viewport height, mirroring the web adapter's `height: '600px'`
+/// default. Used only when the host provides no bounded height (for example
+/// when the viewer sits inside a vertical scroll view).
+const double _defaultHeight = 600;
+
 class BcViewerDocumentState extends State<BcViewerDocument> {
   int? _internalPage;
   bool _isLoading = true;
@@ -203,7 +208,27 @@ class BcViewerDocumentState extends State<BcViewerDocument> {
 
     final page = currentPage;
 
-    final content = ClipRRect(
+    // The web adapter gives this viewer a fixed default height (`600px`) and
+    // fills it. Mirror that, but degrade gracefully when the host provides no
+    // height at all — e.g. inside a vertical scroll view. `Expanded` requires a
+    // bounded height, so using it unconditionally blanks the whole subtree.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final fillHeight = constraints.hasBoundedHeight;
+        final content = _buildFrame(page, fillHeight: fillHeight);
+
+        if (widget.title != null &&
+            widget.title!.isNotEmpty &&
+            !_loadFailed) {
+          return Semantics(label: widget.title, child: content);
+        }
+        return content;
+      },
+    );
+  }
+
+  Widget _buildFrame(int page, {required bool fillHeight}) {
+    final frame = ClipRRect(
       borderRadius: BorderRadius.circular(BcTheme.radius),
       child: Container(
         decoration: BoxDecoration(
@@ -213,21 +238,17 @@ class BcViewerDocumentState extends State<BcViewerDocument> {
         child: Column(
           children: [
             Expanded(child: _buildContent()),
-            if (!_loadFailed && widget.pageCount > 0)
-              _buildPageBar(page),
+            if (!_loadFailed && widget.pageCount > 0) _buildPageBar(page),
           ],
         ),
       ),
     );
 
-    if (widget.title != null && widget.title!.isNotEmpty && !_loadFailed) {
-      return Semantics(
-        label: widget.title,
-        child: content,
-      );
-    }
-
-    return content;
+    if (fillHeight) return frame;
+    // No height from the host: fall back to the web contract's 600px viewport.
+    // The SizedBox gives the inner Column a bounded height, which keeps
+    // `Expanded` valid and lets the content fill it.
+    return SizedBox(height: _defaultHeight, child: frame);
   }
 
   Widget _buildPageBar(int page) {

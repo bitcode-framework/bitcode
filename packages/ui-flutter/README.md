@@ -29,6 +29,15 @@ throwing, and the store value is never mutated.
 `detail` with many fields grows its row instead of overflowing a fixed cell
 height.
 
+### Height-adaptive widgets
+
+`BcPivot`, `BcViewerDocument`, `BcViewerInstagram`, and `BcViewerTiktok` branch
+on the incoming constraints via `LayoutBuilder`. They fill the box when the host
+provides a bounded height, and fall back to the web adapter's `600px` default
+viewport when it does not — for example inside a `SingleChildScrollView`. This
+mirrors the web contracts (`BcPivot` is `overflow-auto` with natural height; the
+viewers default to `height: '600px'`) and keeps them safe in any parent.
+
 ## Cross-tier infrastructure parity (ADR-013)
 
 The package ships Flutter parity for the `@bitcode/ui` cross-tier infrastructure
@@ -124,11 +133,13 @@ class CustomerForm extends StatelessWidget {
 
 ## Validation status
 
-- Full suite: **2131 tests passing**, 0 failing.
+- Full suite: **2144 tests passing**, 0 failing.
 - Chart tests (ADR-015): 111 passing — 48 golden-fixture parity + 34 helpers + 29 widget-contract.
 - Renderer scoped tests: 294 tests passing, including `bc_field_coercion_test.dart`
   (18 — JSON value coercion) and `bc_grid_layout_test.dart` (7 — content-sized
   grid cells).
+- `unbounded_height_test.dart`: 13 passing — `BcPivot` and the viewer widgets
+  render inside a vertical scroll view without a layout exception.
 - `flutter analyze`: 0 errors (3 pre-existing warnings in `bc_chatter.dart`,
   unrelated).
 - `build_runner`: generated files in sync.

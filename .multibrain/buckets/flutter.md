@@ -3,6 +3,19 @@
 > Flutter adapter, token bridge, demo parity, platform widgets.
 > Scope: `packages/ui-flutter/` + Flutter-side of `packages/ui` contracts.
 
+## 2026-10-29 — Fix: Media + Views sections blank (unbounded height)
+
+- **Symptom:** Clicking **Media** or **Views** in the Flutter demo left the content panel completely blank. Browser console: 53 errors (Media) / 35 errors (Views).
+- **Root cause:** `Expanded` requires a bounded height, but the demo wraps every section in `SingleChildScrollView` (unbounded height). Four widgets violated this:
+  - `bc_pivot.dart` — `Column > Expanded` in both `_buildMaterial` and `_buildCupertino`.
+  - `bc_viewer_document.dart` — `Column > Expanded` in `build`.
+  - `bc_viewer_instagram.dart` / `bc_viewer_tiktok.dart` — `Container(height: double.infinity)`, which becomes an infinite constraint under an unbounded parent.
+- **Contract divergence:** the web adapters never had this problem. `BcPivot` is `w-full overflow-auto` (natural height, no `Expanded`); `BcViewerDocument`, `BcViewerInstagram`, and `BcViewerTiktok` all declare `width: '100%'` / `height: '600px'` defaults. The Flutter ports dropped those props and replaced them with `Expanded` / `double.infinity`.
+- **Fix:** each widget now uses `LayoutBuilder` and branches on `constraints.hasBoundedHeight` — fill the host when bounded, fall back to the web contract's 600px viewport when not. `bc_viewer_youtube` already used `AspectRatio` and needed no change.
+- **Tests:** `test/unbounded_height_test.dart` (13) — pumps each widget inside `SingleChildScrollView` and asserts no layout exception, plus a bounded-box case to prove fill behaviour is preserved. All 13 failed before the fix.
+- **Verification:** `flutter test` 2144 pass / 0 fail. Live browser: Media 0 errors, Views 0 errors, `BcPivot` renders the full matrix with Grand Total 2480.
+- **Still failing (separate, pre-existing):** `Display` overflows horizontally by 119px at narrow widths (demo layout, not a crash); `Native` fails only on `pumpAndSettle timed out` (endless animation) while rendering cleanly in the browser with 0 console errors. Both are demo/test-harness issues, not library regressions.
+
 ## 2026-10-29 — Fix: Block Catalog red blocks + overflow (JSON coercion + grid layout)
 
 - **Symptom:** Block Catalog (Preview) demo section showed a red error block (`TypeError: "2026-06-18": type 'String' is not a subtype of type 'DateTime?'`) and yellow/black `RenderFlex overflowed by 62 px` bars.

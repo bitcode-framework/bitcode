@@ -260,13 +260,23 @@ class _BcPivotState extends State<BcPivot> {
     final isCupertino =
         platform == TargetPlatform.iOS || platform == TargetPlatform.macOS;
 
-    if (isCupertino) {
-      return _buildCupertino(context);
-    }
-    return _buildMaterial(context);
+    // The web adapter renders `bc-pivot-container` as an `overflow-auto` block
+    // with no fixed height: it grows with its content and scrolls only when a
+    // parent constrains it. Mirror that here. `Expanded` requires a bounded
+    // height, so using it unconditionally crashes as soon as a consumer places
+    // the pivot in a vertical scroll view.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final fillHeight = constraints.hasBoundedHeight;
+        if (isCupertino) {
+          return _buildCupertino(context, fillHeight: fillHeight);
+        }
+        return _buildMaterial(context, fillHeight: fillHeight);
+      },
+    );
   }
 
-  Widget _buildMaterial(BuildContext context) {
+  Widget _buildMaterial(BuildContext context, {required bool fillHeight}) {
     return Container(
       key: const Key('bc-pivot-container'),
       decoration: BoxDecoration(
@@ -276,6 +286,7 @@ class _BcPivotState extends State<BcPivot> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: fillHeight ? MainAxisSize.max : MainAxisSize.min,
         children: [
           if (widget.title != null)
             Padding(
@@ -289,13 +300,16 @@ class _BcPivotState extends State<BcPivot> {
                 ),
               ),
             ),
-          Expanded(child: _buildBody(context)),
+          if (fillHeight)
+            Expanded(child: _buildBody(context))
+          else
+            _buildBody(context),
         ],
       ),
     );
   }
 
-  Widget _buildCupertino(BuildContext context) {
+  Widget _buildCupertino(BuildContext context, {required bool fillHeight}) {
     return Container(
       key: const Key('bc-pivot-container'),
       decoration: BoxDecoration(
@@ -305,6 +319,7 @@ class _BcPivotState extends State<BcPivot> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: fillHeight ? MainAxisSize.max : MainAxisSize.min,
         children: [
           if (widget.title != null)
             Padding(
@@ -318,7 +333,10 @@ class _BcPivotState extends State<BcPivot> {
                 ),
               ),
             ),
-          Expanded(child: _buildBody(context)),
+          if (fillHeight)
+            Expanded(child: _buildBody(context))
+          else
+            _buildBody(context),
         ],
       ),
     );

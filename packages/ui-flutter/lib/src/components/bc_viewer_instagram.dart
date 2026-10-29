@@ -3,6 +3,10 @@ library bc_viewer_instagram;
 import 'package:flutter/material.dart';
 import '../theme/bc_theme.dart';
 
+/// Fallback embed height, mirroring the web adapter's `height: '600px'`
+/// default. Used when the host provides no bounded height.
+const double _defaultEmbedHeight = 600;
+
 class BcViewerInstagramState extends State<BcViewerInstagram> {
   bool get _isValidUrl {
     final url = widget.url;
@@ -44,7 +48,6 @@ class BcViewerInstagramState extends State<BcViewerInstagram> {
     return Container(
       key: const Key('bc_viewer_instagram_embed'),
       width: double.infinity,
-      height: double.infinity,
       color: BcTheme.muted,
       child: Center(
         child: Column(
@@ -68,38 +71,52 @@ class BcViewerInstagramState extends State<BcViewerInstagram> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_isValidUrl) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(BcTheme.radius),
-        child: Container(
-          decoration: BoxDecoration(
-            color: BcTheme.muted,
-            border: Border.all(color: BcTheme.border),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Web parity: the embed box is `width: 100%` / `height: 600px` by
+        // default. Fill the host's height when it is bounded; otherwise fall
+        // back to that default so the viewer still lays out inside a vertical
+        // scroll view, where an unbounded height is invalid.
+        final height = constraints.hasBoundedHeight
+            ? constraints.maxHeight
+            : _defaultEmbedHeight;
+
+        if (!_isValidUrl) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(BcTheme.radius),
+            child: Container(
+              height: height,
+              decoration: BoxDecoration(
+                color: BcTheme.muted,
+                border: Border.all(color: BcTheme.border),
+              ),
+              child: _buildErrorFallback(),
+            ),
+          );
+        }
+
+        final content = ClipRRect(
+          borderRadius: BorderRadius.circular(BcTheme.radius),
+          child: Container(
+            height: height,
+            decoration: BoxDecoration(
+              color: BcTheme.background,
+              border: Border.all(color: BcTheme.border),
+            ),
+            child: _buildEmbed(),
           ),
-          child: _buildErrorFallback(),
-        ),
-      );
-    }
+        );
 
-    final content = ClipRRect(
-      borderRadius: BorderRadius.circular(BcTheme.radius),
-      child: Container(
-        decoration: BoxDecoration(
-          color: BcTheme.background,
-          border: Border.all(color: BcTheme.border),
-        ),
-        child: _buildEmbed(),
-      ),
+        if (widget.title != null && widget.title!.isNotEmpty) {
+          return Semantics(
+            label: widget.title,
+            child: content,
+          );
+        }
+
+        return content;
+      },
     );
-
-    if (widget.title != null && widget.title!.isNotEmpty) {
-      return Semantics(
-        label: widget.title,
-        child: content,
-      );
-    }
-
-    return content;
   }
 }
 
