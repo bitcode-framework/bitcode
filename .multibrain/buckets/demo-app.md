@@ -3,6 +3,14 @@
 > React demo (`packages/ui/demo-app`, 127+ components / 14+ groups) + Flutter demo (`packages/ui-flutter/example`) parity work.
 > Source of truth for status: `docs/adr/016-demo-app-qa-bug-audit.md` + handoffs.
 
+### [2026-10-29] Demo published to GitHub Pages
+
+- **Live URL:** https://bitcode-framework.github.io/ui/ (204 components, 27 groups, 620 sections).
+- **Deploy:** `packages/ui/.github/workflows/pages.yml`, `build_type=workflow`. Checks out `bitcode-framework/ui-schema` as a sibling, builds Mitosis output, builds demo-app with `DEMO_BASE=<pages base_path>/`, touches `.nojekyll`, uploads `demo-app/dist`.
+- **Local parity:** `DEMO_BASE=/ui/ npm run build` reproduces the Pages build; asset URLs come out `/ui/`-prefixed.
+- **Verified live:** run 40807350876 green; URL 200, 352k chars body, 0 page errors. Only external media (wikimedia / googleapis sample videos) failed to load inside the sandbox.
+- **Cross-ref:** repo/README details → `ui-library` bucket.
+
 ### [2026-10-29] Demo startup unblocked: patch-package header + .lite resolution
 
 - **Symptom 1:** `npm install` in `demo-app` failed with `Failed to apply patch for package @builder.io/mitosis ... patch file could not be parsed`.

@@ -4,6 +4,8 @@ A JSON-driven low-code platform for building business applications. Define model
 
 **JSON is the source code. Go is the runtime. Modules are the packaging.**
 
+**[Live component gallery →](https://bitcode-framework.github.io/ui/)** — all 204 UI components rendered in the browser, no install required.
+
 ## Repository Structure
 
 ```
@@ -11,6 +13,8 @@ bitcode/
 ├── engine/              Go runtime — reads JSON, runs the app
 ├── packages/
 │   ├── components/      Stencil Web Components (@bitcode/components)
+│   ├── ui/              Cross-framework components via Mitosis (React/Vue/RN)
+│   ├── ui-schema/       Portable schema, expression, and block-catalog engine
 │   ├── go-json/         go-json — JSON/JSONC programming language engine
 │   ├── ui-flutter/      Flutter adapter for BitCode UI (ADR-011)
 │   └── tauri/           Tauri native shell (desktop + mobile)

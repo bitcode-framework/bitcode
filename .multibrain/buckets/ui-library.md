@@ -6,6 +6,18 @@
 
 ---
 
+## 2026-10-29 — Public repo front door + live demo on GitHub Pages
+
+- **`bitcode-framework/ui` now has a README + LICENSE** (was bare). README covers quick start, the required sibling `ui-schema` checkout, target matrix, component-group inventory, architecture (contract tiers, reactive forms, theming/RTL/i18n), script reference, layout, ADR index, and the Mitosis patch note.
+- **Live demo:** https://bitcode-framework.github.io/ui/ — deployed by `.github/workflows/pages.yml` (build_type=workflow). The workflow checks out `bitcode-framework/ui-schema` as a **sibling** dir so `@bitcode/ui-schema: file:../ui-schema` resolves, builds all targets, then builds demo-app with `DEMO_BASE` from `actions/configure-pages` output.
+- **`demo-app/vite.config.ts`** now honours `DEMO_BASE` (default `/`) for the project-site subpath.
+- **`bitcode-framework/ui-schema`** was empty; pushed the full `packages/ui-schema` tree (110 files, 308 tests pass). GitHub push protection rejected the first attempt because a test fixture contained a Stripe-shaped placeholder — replaced with `test-fixture-value-not-a-real-key`; history was rewritten before the first successful push so the secret never landed on the remote.
+- **`packages/ui-schema` is still not a submodule** of the BitCode monorepo; it lives at `packages/ui-schema` as a regular directory while `packages/ui` is a submodule. Anyone cloning `ui` standalone must clone `ui-schema` next to it.
+- **Verification:** Pages run 40807350876 succeeded (build + deploy); live URL returns 200, renders 352k chars body, 0 page errors (only external media URLs blocked in the sandbox).
+- **Cross-ref:** demo specifics → `demo-app` bucket.
+
+---
+
 ## 2026-10-29 — patch-package + .lite resolution (build/demo unblock)
 
 - **patch file was structurally invalid:** `patches/@builder.io+mitosis+0.13.1.patch` hunk 1 declared `@@ -237,7 +237,9 @@` while the body had 4 additions (actual `+237,11`). patch-package's `verifyHunkIntegrity` throws `hunk header integrity check failed`; `read.js` catches it and reports the misleading "patch file could not be parsed". Fixed header → patch applies.
