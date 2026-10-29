@@ -3,6 +3,19 @@
 > React demo (`packages/ui/demo-app`, 127+ components / 14+ groups) + Flutter demo (`packages/ui-flutter/example`) parity work.
 > Source of truth for status: `docs/adr/016-demo-app-qa-bug-audit.md` + handoffs.
 
+### [2026-10-29] Demo startup unblocked: patch-package header + .lite resolution
+
+- **Symptom 1:** `npm install` in `demo-app` failed with `Failed to apply patch for package @builder.io/mitosis ... patch file could not be parsed`.
+- **Root cause 1:** `patches/@builder.io+mitosis+0.13.1.patch` hunk 1 header said `@@ -237,7 +237,9 @@` but the hunk body has 4 added lines (`+237,11`). patch-package's `verifyHunkIntegrity` throws, then `read.js` mislabels it as a parse error. Fixed the header to `+237,11`. Verified against a pristine `npm pack @builder.io/mitosis@0.13.1` tarball in a temp sandbox: applies clean, idempotent on rerun.
+- **Symptom 2 (the real `npm run dev` blocker):** `Cannot assign to "reactiveStoreRef" because it is a constant` during Vite dep scan, pointing at `src/components/views/form/BcForm.lite.tsx`.
+- **Root cause 2:** `demo-app/vite.config.ts` `redirectRelativeCoreImports()` rewrites `@/core` → `src/core`, so `src/core/block-renderer/ready-catalog.ts` and `src/core/renderer/BcRenderer.lite.tsx` load, and *their* relative `.lite` imports (`BcLabel.lite`, `BcForm.lite`, `BcDataTable.lite`, …) resolved to raw Mitosis source instead of compiled output. esbuild cannot transpile `.lite.tsx`. NOT a stale-build problem — a full `npm run build` does not fix it.
+- **Fix:** added an early branch in `redirectRelativeCoreImports()`: any `.lite` import whose importer lives under `packages/ui/src/` now resolves to the compiled `output/react/src/<rel>.tsx` when that file exists.
+- **Also note:** the earlier esbuild warnings were masked because `npm run build` in `packages/ui` was never run after the last `src/` edit; running `mitosis build` alone leaves `output/` unformatted (`BcDataTable.tsx` fails to parse). Always use `npm run build` (runs reformat + sync + index post-steps), never bare `mitosis build`.
+- **Env gotcha:** `cmd`-spawned npm scripts in this shell see an empty `PATH`, so `patch-package` resolves as "not recognized". Workaround: prefix `$env:PATH="C:\Program Files\nodejs;C:\Windows\System32;C:\Windows;..."` before `npm install`.
+- **Verification:** `npm install` EXIT 0; `npm run build` (ui) EXIT 0 / 204 components; demo-app `vite build` EXIT 0 (1142 modules); `vite` dev server serves both `/` (352k chars body) and `/block-renderer-test.html` with 0 page errors; vitest 822 pass / 0 fail.
+- **Files:** `packages/ui/patches/@builder.io+mitosis+0.13.1.patch`, `packages/ui/demo-app/vite.config.ts`, `packages/ui/demo-app/README.md`.
+- **Cross-ref:** tooling/build details → `ui-library` bucket.
+
 ### [2026-07-05] Full Demo Coverage Milestone (204/204) — Droid
 
 - **Status:** done. All fatal bugs fixed, all 77 missing components demoed.

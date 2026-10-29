@@ -6,6 +6,18 @@
 
 ---
 
+## 2026-10-29 — patch-package + .lite resolution (build/demo unblock)
+
+- **patch file was structurally invalid:** `patches/@builder.io+mitosis+0.13.1.patch` hunk 1 declared `@@ -237,7 +237,9 @@` while the body had 4 additions (actual `+237,11`). patch-package's `verifyHunkIntegrity` throws `hunk header integrity check failed`; `read.js` catches it and reports the misleading "patch file could not be parsed". Fixed header → patch applies.
+- **Rule:** any hand-edited `.patch` must have correct hunk counts. Validate with `node -e "require('./node_modules/patch-package/dist/patch/parse.js').parsePatchFile(require('fs').readFileSync('patches/X.patch','utf8'))"`.
+- **`mitosis build` alone is not a build.** It leaves `output/react/src` unformatted (e.g. `BcDataTable.tsx` fails esbuild parse). Always run `npm run build`, which chains `apply-adapt-overrides` → `sync-regular-ts` → `reformat-react-output` → `generate-index`.
+- **`.lite` imports from hand-written `src/` must be redirected.** `src/core/block-renderer/ready-catalog.ts` and `src/core/renderer/BcBlockRenderer.tsx`/`BcRenderer.lite.tsx` import `*.lite`. Because `@/core` aliases to `src/core`, consumers pull those raw Mitosis sources. esbuild cannot transpile them → `Cannot assign to "reactiveStoreRef" because it is a constant`. `demo-app/vite.config.ts` now rewrites such imports to compiled `output/react/src/...tsx`.
+- **Env gotcha:** npm lifecycle scripts spawn `cmd`, which sees an empty `PATH` in this shell; `patch-package` then reports "not recognized". Prefix a minimal `$env:PATH` before `npm install`.
+- **Verification:** `npm run build` EXIT 0 / 204 components; demo `vite build` EXIT 0; dev server renders both entry pages, 0 page errors; vitest 822 pass / 0 fail.
+- **Cross-ref:** demo-specific repro → `demo-app` bucket.
+
+---
+
 ## 2026-07-05 — Mitosis compiler bug sweep (10 source-level fixes)
 
 - **Status:** done. All 10 bugs found during demo-app browser QA, fixed at source level.
