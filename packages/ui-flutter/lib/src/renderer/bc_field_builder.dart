@@ -35,6 +35,76 @@ Widget buildField(
 }
 
 // ---------------------------------------------------------------------------
+// JSON value coercion
+// ---------------------------------------------------------------------------
+//
+// `ReactiveStore.get()` returns `dynamic`, and the values a renderer receives
+// originate from JSON documents (or a host app's initial-values map), not from
+// Dart natives. A hard cast such as `as DateTime?` is runtime-checked and
+// throws a TypeError on any shape mismatch, which tears down the whole field
+// subtree. Every builder therefore coerces, and unconvertible input degrades to
+// `null` instead of crashing.
+
+/// Coerces a JSON scalar to [String]. `null` stays `null` so callers can
+/// distinguish "absent" from "empty".
+String? coerceString(Object? value) {
+  if (value == null) return null;
+  if (value is String) return value;
+  if (value is num || value is bool) return value.toString();
+  return null;
+}
+
+/// Coerces a JSON scalar to [num], parsing numeric strings.
+num? coerceNum(Object? value) {
+  if (value == null) return null;
+  if (value is num) return value;
+  if (value is String) return num.tryParse(value.trim());
+  if (value is bool) return value ? 1 : 0;
+  return null;
+}
+
+/// Coerces a JSON date to [DateTime].
+///
+/// Accepts a native [DateTime], an ISO 8601 string (`yyyy-MM-dd` or a full
+/// timestamp — the shape declared by the shared schema contract), or epoch
+/// milliseconds.
+DateTime? coerceDateTime(Object? value) {
+  if (value == null) return null;
+  if (value is DateTime) return value;
+  if (value is num) return DateTime.fromMillisecondsSinceEpoch(value.toInt());
+  if (value is String) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return null;
+    return DateTime.tryParse(trimmed);
+  }
+  return null;
+}
+
+/// Coerces a JSON scalar to [bool], accepting `1`/`0` and the common string
+/// spellings produced by form posts and query strings.
+bool? coerceBool(Object? value) {
+  if (value == null) return null;
+  if (value is bool) return value;
+  if (value is num) return value != 0;
+  if (value is String) {
+    switch (value.trim().toLowerCase()) {
+      case 'true':
+      case '1':
+      case 'yes':
+      case 'on':
+        return true;
+      case 'false':
+      case '0':
+      case 'no':
+      case 'off':
+      case '':
+        return false;
+    }
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
 // Reactive wrapper widget
 // ---------------------------------------------------------------------------
 
@@ -133,7 +203,7 @@ class _BcFieldBuilderState extends State<_BcFieldBuilder> {
     bool disabled,
   ) {
     final name = node.name;
-    final value = store.get(name) as String?;
+    final value = coerceString(store.get(name));
 
     TextInputType keyboardType;
     bool obscureText = false;
@@ -189,7 +259,7 @@ class _BcFieldBuilderState extends State<_BcFieldBuilder> {
     bool disabled,
   ) {
     final name = node.name;
-    final value = store.get(name) as num?;
+    final value = coerceNum(store.get(name));
 
     return BcNumberField(
       name: name,
@@ -213,7 +283,7 @@ class _BcFieldBuilderState extends State<_BcFieldBuilder> {
     bool disabled,
   ) {
     final name = node.name;
-    final value = store.get(name) as DateTime?;
+    final value = coerceDateTime(store.get(name));
 
     return BcDateField(
       name: name,
@@ -235,7 +305,7 @@ class _BcFieldBuilderState extends State<_BcFieldBuilder> {
     bool disabled,
   ) {
     final name = node.name;
-    final value = store.get(name) as String?;
+    final value = coerceString(store.get(name));
 
     final options = node.options
         .map((opt) => BcSelectOption<String>(
@@ -265,7 +335,7 @@ class _BcFieldBuilderState extends State<_BcFieldBuilder> {
     bool disabled,
   ) {
     final name = node.name;
-    final value = store.get(name) as bool?;
+    final value = coerceBool(store.get(name));
 
     return BcToggle(
       name: name,
@@ -286,7 +356,7 @@ class _BcFieldBuilderState extends State<_BcFieldBuilder> {
     bool disabled,
   ) {
     final name = node.name;
-    final value = store.get(name) as bool?;
+    final value = coerceBool(store.get(name));
 
     return BcCheckbox(
       name: name,

@@ -3,6 +3,18 @@
 > Flutter adapter, token bridge, demo parity, platform widgets.
 > Scope: `packages/ui-flutter/` + Flutter-side of `packages/ui` contracts.
 
+## 2026-10-29 — Fix: Block Catalog red blocks + overflow (JSON coercion + grid layout)
+
+- **Symptom:** Block Catalog (Preview) demo section showed a red error block (`TypeError: "2026-06-18": type 'String' is not a subtype of type 'DateTime?'`) and yellow/black `RenderFlex overflowed by 62 px` bars.
+- **Root cause A — hard casts at the renderer boundary.** `bc_field_builder.dart` used unchecked `as DateTime?` / `as num?` / `as bool?` / `as String?` on `store.get()`, which returns `dynamic`. Demo values come from JSON (`'orderDate': '2026-06-18'`), so the cast throws and tears down the subtree. Six call sites affected (input, number, date, select, toggle, checkbox). The web adapter's `BcDateField.lite.tsx` declares `value?: string` (ISO), so the Flutter adapter diverged from the shared contract.
+- **Root cause B — fixed-height grid cells.** `_buildGrid` used `GridView` + `childAspectRatio: 3.0`; a `detail` with 3-4 fields is taller than the allotted cell. The 100062 px overflow seen in one screenshot had the *same* cause (same grid, different available height) — not a separate bug.
+- **Fix A:** added `coerceString` / `coerceNum` / `coerceDateTime` / `coerceBool` at the top of `bc_field_builder.dart` and routed all six builders through them. Accepts native types, ISO strings, epoch millis, `1`/`0`, `'true'`/`'false'`/`'yes'`/`'on'`. Unconvertible input degrades to `null` instead of throwing. Store value is never mutated.
+- **Fix B:** replaced `GridView` with `_buildGridRows` — `Row` + `Expanded` cells, `CrossAxisAlignment.start`, 12 px spacing, trailing `SizedBox.shrink()` placeholders to keep column widths aligned. Cells now size to content.
+- **Tests added:** `test/renderer/bc_field_coercion_test.dart` (18), `test/renderer/bc_grid_layout_test.dart` (7), `example/test/block_catalog_section_test.dart` (4 — the section had zero coverage before). All three fail on unfixed code (verified by stashing the lib changes) and pass after.
+- **Updated:** 5 existing assertions in `bc_renderer_test.dart` / `bc_renderer_integration_test.dart` that asserted `GridView` internals; they now assert the observable contract (column count via widget positions).
+- **Verification:** `flutter test` 2131 pass / 0 fail (was 2106 + 25 new). `flutter analyze` 0 errors; 3 pre-existing warnings in `bc_chatter.dart` untouched. Live demo in Chrome: Block Catalog renders clean, 0 console errors, both bugs visually gone.
+- **Not fixed (pre-existing, out of scope):** 5 example-app section tests fail identically with and without this change (`Display`, `Media`, `Views`, `Native`, and the section sweep) — unrelated overflow/unbounded-height issues in those sections.
+
 ## 2026-07-05 — Full demo parity sweep (17 components)
 
 - **What:** 17 components added to demo parity: BcContextMenu, BcPortal, BcNotificationCenter, BcDrawer, BcStack, BcForm, BcTimeField, BcTagGroup, BcFieldDynLink, BcList, BcViewerDocument, BcViewerInstagram, BcViewerTiktok, BcPivot, BcFormBuilder, BcSchemaBuilder, BcWorkflowBuilder.

@@ -857,7 +857,7 @@ void main() {
   // VAL-CROSS-002 — Grid schema renders multiple children in grid layout
   // =========================================================================
   group('VAL-CROSS-002 grid layout', () {
-    testWidgets('renders GridView with 3 nested forms', (tester) async {
+    testWidgets('lays out 3 nested forms in one row', (tester) async {
       await _pumpRenderer(
         tester,
         BcRenderer(
@@ -869,19 +869,19 @@ void main() {
                 UiSchema(
                   type: UiSchemaKind.form,
                   fields: [
-                    FieldNode(name: 'a', type: FieldType.input),
+                    FieldNode(name: 'a', type: FieldType.input, label: 'A'),
                   ],
                 ),
                 UiSchema(
                   type: UiSchemaKind.form,
                   fields: [
-                    FieldNode(name: 'b', type: FieldType.input),
+                    FieldNode(name: 'b', type: FieldType.input, label: 'B'),
                   ],
                 ),
                 UiSchema(
                   type: UiSchemaKind.form,
                   fields: [
-                    FieldNode(name: 'c', type: FieldType.input),
+                    FieldNode(name: 'c', type: FieldType.input, label: 'C'),
                   ],
                 ),
               ],
@@ -890,8 +890,14 @@ void main() {
         ),
       );
 
-      expect(find.byType(GridView), findsOneWidget);
       expect(find.byType(BcForm), findsNWidgets(3));
+
+      // Three columns => all three forms start on the same row.
+      final a = tester.getTopLeft(find.byType(BcForm).at(0)).dy;
+      final b = tester.getTopLeft(find.byType(BcForm).at(1)).dy;
+      final c = tester.getTopLeft(find.byType(BcForm).at(2)).dy;
+      expect(b, equals(a));
+      expect(c, equals(a));
     });
   });
 

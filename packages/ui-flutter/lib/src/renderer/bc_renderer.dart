@@ -269,18 +269,7 @@ class _BcRendererState extends State<BcRenderer> {
         .map((child) => _buildRecursiveChild(child))
         .toList();
 
-    final gridView = GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: schema.columns,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        childAspectRatio: 3.0,
-      ),
-      itemCount: children.length,
-      itemBuilder: (context, index) => children[index],
-    );
+    final grid = _buildGridRows(children, schema.columns);
 
     if (titleDesc != null) {
       return Column(
@@ -288,11 +277,57 @@ class _BcRendererState extends State<BcRenderer> {
         mainAxisSize: MainAxisSize.min,
         children: [
           titleDesc,
-          gridView,
+          grid,
         ],
       );
     }
-    return gridView;
+    return grid;
+  }
+
+  /// Lays [children] out in rows of [columns] equal-width cells.
+  ///
+  /// Cells are sized by their content: the row uses
+  /// [CrossAxisAlignment.start] with [Expanded] cells, so a `detail` or `form`
+  /// with many fields grows the row instead of being clipped to a fixed cell
+  /// height. The previous `GridView` + `childAspectRatio` approach forced a
+  /// fixed cell height and overflowed whenever the content was taller.
+  ///
+  /// Trailing gaps in the last row keep the column widths aligned.
+  Widget _buildGridRows(List<Widget> children, int columns) {
+    if (children.isEmpty) return const SizedBox.shrink();
+
+    final columnCount = columns < 1 ? 1 : columns;
+    const spacing = 12.0;
+
+    final rows = <Widget>[];
+    for (var start = 0; start < children.length; start += columnCount) {
+      final cells = <Widget>[];
+      for (var offset = 0; offset < columnCount; offset++) {
+        if (offset > 0) cells.add(const SizedBox(width: spacing));
+        final index = start + offset;
+        cells.add(
+          Expanded(
+            child: index < children.length
+                ? children[index]
+                : const SizedBox.shrink(),
+          ),
+        );
+      }
+
+      if (rows.isNotEmpty) rows.add(const SizedBox(height: spacing));
+      rows.add(
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: cells,
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: rows,
+    );
   }
 
   // -- custom ---------------------------------------------------------------

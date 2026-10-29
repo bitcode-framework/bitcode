@@ -13,6 +13,22 @@ The package root exports the renderer and schema APIs:
 
 `BcRenderer` supports `form`, `detail`, `list`, `section`, `grid`, and `custom` schema kinds. `BcForm` also supports schema-driven fields, actions, and layout while preserving legacy child-only usage.
 
+### JSON value coercion
+
+`ReactiveStore.get()` returns `dynamic`, and renderer values normally originate
+from JSON documents rather than Dart natives. `buildField` therefore coerces
+before handing a value to a widget — it never hard-casts. `coerceString`,
+`coerceNum`, `coerceDateTime`, and `coerceBool` accept the native type as well
+as the JSON shape (ISO 8601 date strings, numeric strings, epoch millis,
+`1`/`0`, `'true'`/`'false'`). Unconvertible input degrades to `null` instead of
+throwing, and the store value is never mutated.
+
+### Grid layout
+
+`grid` sizes each cell from its content (`Row` + `Expanded`, top-aligned), so a
+`detail` with many fields grows its row instead of overflowing a fixed cell
+height.
+
 ## Cross-tier infrastructure parity (ADR-013)
 
 The package ships Flutter parity for the `@bitcode/ui` cross-tier infrastructure
@@ -108,10 +124,11 @@ class CustomerForm extends StatelessWidget {
 
 ## Validation status
 
-- Full suite: **1581 tests passing** (1527 pre-existing + 54 new ADR-013 Phase 5b
-  parity tests — `hooks_parity_test.dart` 38 + `animation_adapt_parity_test.dart` 16).
+- Full suite: **2131 tests passing**, 0 failing.
 - Chart tests (ADR-015): 111 passing — 48 golden-fixture parity + 34 helpers + 29 widget-contract.
-- Renderer scoped tests: 269 tests passing.
-- `flutter analyze`: 0 errors (300 info-level lints; 293 pre-existing baseline +
-  7 new `prefer_initializing_formals` on the parity files — non-blocking).
+- Renderer scoped tests: 294 tests passing, including `bc_field_coercion_test.dart`
+  (18 — JSON value coercion) and `bc_grid_layout_test.dart` (7 — content-sized
+  grid cells).
+- `flutter analyze`: 0 errors (3 pre-existing warnings in `bc_chatter.dart`,
+  unrelated).
 - `build_runner`: generated files in sync.

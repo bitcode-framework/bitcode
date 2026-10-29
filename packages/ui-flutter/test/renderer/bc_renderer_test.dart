@@ -468,10 +468,10 @@ void main() {
   });
 
   // =========================================================================
-  // VAL-RENDER-010 — Grid kind renders GridView with correct column count
+  // VAL-RENDER-010 — Grid kind lays children out in `columns` columns
   // =========================================================================
   group('VAL-RENDER-010 grid kind', () {
-    testWidgets('renders GridView with crossAxisCount = 3', (tester) async {
+    testWidgets('lays children out in 3 columns', (tester) async {
       await _pumpRenderer(
         tester,
         BcRenderer(
@@ -498,12 +498,14 @@ void main() {
         ),
       );
 
-      expect(find.byType(GridView), findsOneWidget);
-
-      final gridView = tester.widget<GridView>(find.byType(GridView));
-      final delegate = gridView.gridDelegate
-          as SliverGridDelegateWithFixedCrossAxisCount;
-      expect(delegate.crossAxisCount, 3);
+      // All three labels share one row, in left-to-right order.
+      final a = tester.getTopLeft(find.text('A'));
+      final b = tester.getTopLeft(find.text('B'));
+      final c = tester.getTopLeft(find.text('C'));
+      expect(b.dy, equals(a.dy));
+      expect(c.dy, equals(a.dy));
+      expect(b.dx, greaterThan(a.dx));
+      expect(c.dx, greaterThan(b.dx));
 
       // Nested BcRenderer for each child
       expect(find.byType(BcRenderer), findsNWidgets(4));
@@ -519,11 +521,15 @@ void main() {
               sections: [
                 UiSchema(
                   type: UiSchemaKind.form,
-                  fields: [FieldNode(name: 'a')],
+                  fields: [FieldNode(name: 'a', label: 'A')],
                 ),
                 UiSchema(
                   type: UiSchemaKind.form,
-                  fields: [FieldNode(name: 'b')],
+                  fields: [FieldNode(name: 'b', label: 'B')],
+                ),
+                UiSchema(
+                  type: UiSchemaKind.form,
+                  fields: [FieldNode(name: 'c', label: 'C')],
                 ),
               ],
             ),
@@ -531,10 +537,14 @@ void main() {
         ),
       );
 
-      final gridView = tester.widget<GridView>(find.byType(GridView));
-      final delegate = gridView.gridDelegate
-          as SliverGridDelegateWithFixedCrossAxisCount;
-      expect(delegate.crossAxisCount, 2);
+      // Default is two columns: A and B share a row, C wraps to the next.
+      final a = tester.getTopLeft(find.text('A'));
+      final b = tester.getTopLeft(find.text('B'));
+      final c = tester.getTopLeft(find.text('C'));
+      expect(b.dy, equals(a.dy));
+      expect(b.dx, greaterThan(a.dx));
+      expect(c.dy, greaterThan(a.dy));
+      expect(c.dx, equals(a.dx));
     });
   });
 
@@ -542,8 +552,7 @@ void main() {
   // VAL-RENDER-011 — Grid kind shows title and description
   // =========================================================================
   group('VAL-RENDER-011 grid title/description', () {
-    testWidgets('renders title and description above GridView',
-        (tester) async {
+    testWidgets('renders title and description above the grid', (tester) async {
       await _pumpRenderer(
         tester,
         BcRenderer(
@@ -555,7 +564,7 @@ void main() {
               sections: [
                 UiSchema(
                   type: UiSchemaKind.form,
-                  fields: [FieldNode(name: 'a')],
+                  fields: [FieldNode(name: 'a', label: 'A')],
                 ),
               ],
             ),
@@ -567,7 +576,7 @@ void main() {
       expect(find.text('Overview widgets'), findsOneWidget);
 
       final titleRect = tester.getTopLeft(find.text('Dashboard'));
-      final gridRect = tester.getTopLeft(find.byType(GridView));
+      final gridRect = tester.getTopLeft(find.text('A'));
       expect(gridRect.dy, greaterThan(titleRect.dy));
     });
 
@@ -581,7 +590,7 @@ void main() {
               sections: [
                 UiSchema(
                   type: UiSchemaKind.form,
-                  fields: [FieldNode(name: 'a')],
+                  fields: [FieldNode(name: 'a', label: 'A')],
                 ),
               ],
             ),
@@ -589,7 +598,7 @@ void main() {
         ),
       );
 
-      expect(find.byType(GridView), findsOneWidget);
+      expect(find.text('A'), findsOneWidget);
     });
   });
 
@@ -916,7 +925,6 @@ void main() {
 
       expect(find.byType(BcForm), findsNothing);
       expect(find.byType(BcDataTable<Map<String, dynamic>>), findsNothing);
-      expect(find.byType(GridView), findsNothing);
       expect(find.byType(SizedBox), findsWidgets);
     });
   });
