@@ -61,6 +61,18 @@ gh api -X POST repos/bitcode-framework/<repo>/pages -f build_type=workflow
 - **`bitcode` is private.** Any `go install` or clone command pointing at it is
   a dead link for visitors. Install commands must target `go-json` or
   `go-json-runtimes`.
+- **Do not state a license on the org profile.** Licensing is per repo, and
+  `bitcode` has no LICENSE yet. The org page used to assert MIT for everything;
+  that was wrong and was removed 2026-10-30.
+- **`packages/components` is NOT dead code.** It looks deprecated, and its own
+  README advertises 127 Stencil components, but it is what the engine's
+  `bc-*` markup and `tauri.conf.json` (`beforeDevCommand`) actually build
+  against. `packages/ui` emits a *different* tag set (`bc-input` vs
+  `bc-field-string`), so pointing the engine or Tauri at `packages/ui` is a
+  migration, not a rename. Verify before "fixing" any doc that says Stencil.
+- **The `bitcode` repo on GitHub is empty.** `bitcode-framework/bitcode` has no
+  commits, so it has no LICENSE and no README. Pushing the monorepo there is
+  still outstanding.
 
 ## 2026-10-30 — org profile corrected, three demos built, one credential leak found
 
@@ -82,6 +94,15 @@ gh api -X POST repos/bitcode-framework/<repo>/pages -f build_type=workflow
 
 ## Open Threads
 
+- **Push the monorepo to `bitcode-framework/bitcode`.** That repo is empty. Two
+  blockers found 2026-10-30 and not yet resolved:
+  1. The Stripe live key is still reachable in history (`465826e1`, `71885aa3`).
+     Pushing publishes it. Rotate the key and rewrite those commits first, or
+     accept that the org repo carries a dead credential.
+  2. `packages/expr-js` is an uninitialized submodule whose gitlink
+     (`257c4fab`) does not exist in the public `expr-js` remote, so a fresh
+     clone of the org repo cannot check it out. Re-point the gitlink at a real
+     commit first.
 - Rotate the leaked Stripe key. Removing it from the working tree is not
   enough; history still carries it.
 - Decide whether to archive `ui-web-components` or leave it as a redirect
@@ -91,3 +112,5 @@ gh api -X POST repos/bitcode-framework/<repo>/pages -f build_type=workflow
 - The profile README links `github.com/bitcode-framework/bitcode`, which 404s
   for anonymous visitors while that repo is private. The link is correct and
   will work once visibility changes; do not remove it.
+- Migrating the engine and Tauri shell from `packages/components` to
+  `packages/ui` is open work. The tag names differ, so it is not a drop-in swap.
