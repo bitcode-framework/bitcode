@@ -4,24 +4,30 @@ A JSON-driven low-code platform for building business applications. Define model
 
 **JSON is the source code. Go is the runtime. Modules are the packaging.**
 
-**[Live component gallery →](https://bitcode-framework.github.io/ui/)** — all 204 UI components rendered in the browser, no install required.
+**[Live component gallery →](https://bitcode-framework.github.io/ui/)** — browse the component library in the browser, no install required. Each package also has its own demo: [ui-schema](https://bitcode-framework.github.io/ui-schema/) (reactive engine), [ui-flutter](https://bitcode-framework.github.io/ui-flutter/), [go-json](https://bitcode-framework.github.io/go-json/), [go-json-runtimes](https://bitcode-framework.github.io/go-json-runtimes/), [expr-js](https://bitcode-framework.github.io/expr-js/).
 
 ## Repository Structure
 
 ```
 bitcode/
-├── engine/              Go runtime — reads JSON, runs the app
+├── engine/                Go runtime — reads JSON, runs the app
+│   ├── cmd/               CLI entry point
+│   ├── internal/          Compiler, domain, runtime, infrastructure, presentation
+│   ├── modules/           Built-in modules (base, crm, sales)
+│   └── embedded/          Modules compiled into the binary
 ├── packages/
-│   ├── components/      Stencil Web Components (@bitcode/components)
-│   ├── ui/              Cross-framework components via Mitosis (React/Vue/RN)
-│   ├── ui-schema/       Portable schema, expression, and block-catalog engine
-│   ├── go-json/         go-json — JSON/JSONC programming language engine
-│   ├── ui-flutter/      Flutter adapter for BitCode UI (ADR-011)
-│   └── tauri/           Tauri native shell (desktop + mobile)
+│   ├── ui/                Mitosis sources → React, Vue, React Native, Stencil
+│   ├── ui-schema/         Schema types, expression engine, reactive store, block catalog
+│   ├── ui-flutter/        Flutter adapter (ADR-011)
+│   ├── components/        Legacy Stencil Web Components — deprecated, see packages/ui
+│   ├── go-json/           JSON/JSONC programming language engine
+│   ├── go-json-runtimes/  Script runtimes for go-json (goja, QuickJS, Yaegi, WASM, Node, Python)
+│   ├── expr-js/           TypeScript port of expr-lang/expr
+│   └── tauri/             Tauri 2.0 native shell (desktop + mobile)
 ├── samples/
-│   └── erp/             Sample ERP application (CRM + HRM)
-├── docs/                Project-level documentation
-└── sprints/             Sprint planning & tracking
+│   └── erp/               Sample ERP application (CRM + HRM)
+├── docs/                  Project-level documentation
+└── sprints/               Sprint planning & tracking
 ```
 
 ## Quick Start
@@ -55,13 +61,17 @@ curl -X POST http://localhost:8080/api/contacts \
   -d '{"name":"Budi","email":"budi@test.com","company":"Acme"}'
 ```
 
-### Build Web Components
+### Build the UI packages
+
+`packages/ui` holds the Mitosis sources; its compiler emits React, Vue, React Native, and Stencil targets.
 
 ```bash
-cd packages/components
+cd packages/ui
 npm install
 npm run build
 ```
+
+The engine's JSON-to-markup compiler emits `bc-*` custom element names, which today resolve to `packages/components` (the legacy Stencil set). `packages/ui` compiles to the same four targets under a newer, shorter naming scheme (`bc-input` rather than `bc-field-string`), and migrating the engine to it is still open work. Do not start new components in `packages/components`.
 
 ### Flutter Adapter Status
 
@@ -86,7 +96,7 @@ cd packages/components && npm install
 cd ../tauri && npm run dev:desktop
 ```
 
-The desktop app builds the Stencil components first, then launches a native window with SQLite, offline sync, and all native capabilities.
+The desktop app builds the `packages/components` Stencil bundle first (`beforeDevCommand` in `tauri.conf.json`), then launches a native window with SQLite, offline sync, and all native capabilities.
 
 **Production build:**
 
@@ -250,7 +260,8 @@ docker-compose up -d
 - **Template engine** — Go html/template with helpers and partials
 - **File storage** — Local + S3 with attachments table, thumbnails, versioning, path formatting
 - **View system** — List, form, kanban, calendar, chart, custom views (SSR)
-- **Web Components** — 119 Stencil.js enterprise components (fields, layout, views, charts, dialogs, widgets, media viewers/players). **Standalone-capable** — works without BitCode framework
+- **UI components** — `packages/ui` holds the Mitosis sources and compiles to React, Vue, React Native, and Stencil. `packages/components` is the legacy Stencil-only set (127 components: fields, layout, views, charts, dialogs, widgets, media viewers) and is **deprecated** — it still backs the engine's `bc-*` markup and the Tauri shell, but new work belongs in `packages/ui`
+- **UI schema engine** — `packages/ui-schema` provides framework-neutral schema types, the expression engine, the reactive store, and the block catalog, with no DOM dependency
 - **Component Theming** — Light/dark/system-detect/custom themes via CSS custom properties
 - **4-Level Data Fetching** — Local data, URL endpoint, event intercept, custom fetcher function
 - **3-Level Validation** — Built-in rules, custom JS validators, server-side validation
@@ -277,7 +288,11 @@ docker-compose up -d
 | [Architecture](docs/architecture.md) | System design, data flow, core concepts, tech stack |
 | [Codebase](docs/codebase.md) | Full file map for engine, components, and samples |
 | [Features & Roadmap](docs/features.md) | 73-feature inventory, completion status, phased roadmap |
-| [Component Docs](packages/components/docs/README.md) | Per-component reference (props, events, methods, examples) |
+| [Component Docs](packages/components/docs/README.md) | Legacy Stencil component reference (props, events, methods, examples) |
+| [ui-schema](packages/ui-schema/README.md) | Schema types, expression engine, reactive store, block catalog |
+| [ui-flutter](packages/ui-flutter/README.md) | Flutter adapter and BcRenderer |
+| [go-json](packages/go-json/README.md) | JSON/JSONC language reference and built-in functions |
+| [expr-js](packages/expr-js/README.md) | TypeScript port of expr-lang/expr |
 | [Engine Architecture](engine/docs/architecture.md) | Engine internals, layer diagram, data flow |
 | [Engine Codebase](engine/docs/codebase.md) | Engine file map, test coverage, key interfaces |
 | [Engine Features](engine/docs/features/) | Per-feature deep docs: |
@@ -308,18 +323,15 @@ docker-compose up -d
 |-------|------------|
 | Runtime | Go 1.24+, Fiber v2, GORM |
 | go-json Engine | Go 1.24+, expr-lang/expr (JSON/JSONC programming language) |
-| Database | SQLite / PostgreSQL / MySQL |
+| Database | SQLite / PostgreSQL / MySQL / MongoDB |
 | Cache | In-memory / Redis |
 | Config | Viper (env + TOML/YAML) |
 | CLI | Cobra |
-| Web Components | Stencil.js (TypeScript) |
+| UI components | Mitosis (TypeScript) → React, Vue, React Native, Stencil |
+| Legacy UI | Stencil.js — `packages/components`, deprecated |
 | Flutter Adapter | Flutter / Dart (`packages/ui-flutter`) |
 | Charts | ECharts |
 | Rich Text | Tiptap |
 | Code Editor | CodeMirror |
 | Native Shell | Tauri 2.0 (Rust) |
 | Plugins | Node.js + Python via JSON-RPC |
-
-## License
-
-MIT
