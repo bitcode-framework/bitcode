@@ -62,7 +62,7 @@ test('security: PEM private key in migration notes is flagged', () => {
 
 test('security: assigned api_key is flagged', () => {
   const e = baseEntry({
-    securityPolicy: { notes: 'api_key = sk_live_abcdefghijklmnopqrstuvwxyz0123456789' },
+    securityPolicy: { notes: 'api_key = test-fixture-value-not-a-real-key' },
   });
   const r = validateSecurityPolicy(e, cfg);
   assert.ok(hasCode(r, POLICY_DIAGNOSTIC_CODES.SECRET_FOUND));
