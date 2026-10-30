@@ -16,6 +16,7 @@ Every public repo except `ui-tauri` has a working browser demo on GitHub Pages.
 | `go-json` | https://bitcode-framework.github.io/go-json/ | 200, 8 samples verified |
 | `go-json-runtimes` | https://bitcode-framework.github.io/go-json-runtimes/ | 200, 4 samples verified |
 | `expr-js` | https://bitcode-framework.github.io/expr-js/ | 200, 12 samples verified |
+| `ui-web-components` | https://bitcode-framework.github.io/ui-web-components/demo/ | 200, deprecated but working; **note the `/demo/` subpath** |
 
 ## How publishing works
 
@@ -43,10 +44,20 @@ gh api -X POST repos/bitcode-framework/<repo>/pages -f build_type=workflow
 - **`ui-web-components` is deprecated** and superseded by `ui`, `ui-schema`,
   and `ui-flutter`. Its description is prefixed `DEPRECATED` but it is not
   archived, because archiving hides the migration note.
+- **`ui-web-components` serves its gallery from `/demo/`, not the site root.**
+  The root 404s even though the deploy succeeds and `www/demo/` exists. Probing
+  subpaths found it. Do not "fix" this by linking the root.
+- **A successful `deploy-pages` run does not prove the URL works.** The
+  ui-web-components deploy reported success repeatedly while the root URL kept
+  404ing; the artifact was fine and the path was wrong. Always fetch the actual
+  URL, don't trust the green check.
 - **`lynx-stack` is an upstream fork** (lynx-family/lynx-stack) and must not be
   presented as ours.
 - **The `erp` repo is private** and deliberately absent from the profile README.
   The word "ERP" still appears there as an application type, which is intended.
+- **Do not state repo visibility in the profile README.** Visibility is a repo
+  setting the owner controls; asserting "(private)" goes stale the moment it
+  changes. Removed 2026-10-30 at the owner's request.
 - **`bitcode` is private.** Any `go install` or clone command pointing at it is
   a dead link for visitors. Install commands must target `go-json` or
   `go-json-runtimes`.
@@ -74,6 +85,9 @@ gh api -X POST repos/bitcode-framework/<repo>/pages -f build_type=workflow
 - Rotate the leaked Stripe key. Removing it from the working tree is not
   enough; history still carries it.
 - Decide whether to archive `ui-web-components` or leave it as a redirect
-  surface.
+  surface. It is currently live and linked, so archiving would break the link.
 - `ui-tauri` has no demo. Options: omit, link release binaries, or add a
   screenshot gallery.
+- The profile README links `github.com/bitcode-framework/bitcode`, which 404s
+  for anonymous visitors while that repo is private. The link is correct and
+  will work once visibility changes; do not remove it.
