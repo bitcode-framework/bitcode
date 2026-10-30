@@ -24,6 +24,7 @@
 | `offline-mode` | Tauri shell, sync engine, bc-native bridge, Phases 3–5 | 2026-06-30 | [buckets/offline-mode.md](buckets/offline-mode.md) |
 | `adr` | Architecture Decision Records (active frontier ADR-021 modular definition surface draft) | 2026-08-02 | [buckets/adr.md](buckets/adr.md) |
 | `demo-app` | React demo (`packages/ui/demo-app`) + Flutter demo parity, QA bug sweeps | 2026-10-29 | [buckets/demo-app.md](buckets/demo-app.md) |
+| `publishing` | Org profile README, per-repo metadata, GitHub Pages demos, subtree-split publishing | 2026-10-30 | [buckets/publishing.md](buckets/publishing.md) |
 
 ## How to Use (Agents)
 
