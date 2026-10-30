@@ -85,26 +85,25 @@ gh api -X POST repos/bitcode-framework/<repo>/pages -f build_type=workflow
   `go-json-runtimes` (`script:` bridge, 4 samples), plus the profile links.
 - Updated descriptions and homepages for `ui`, `ui-schema`, `ui-flutter`,
   `expr-js`, `go-json`, `go-json-runtimes`, and `bitcode`.
-- **Found a real Stripe live key** (`sk_live_…`, 44 chars) committed in
-  `packages/ui-schema/test/block-catalog/security-policy.test.ts:65`. GitHub
-  push protection caught it. Replaced with a placeholder in commit `a899e196`.
-  The key is still in monorepo history and **must be rotated** — the monorepo is
-  private, and the public `ui-schema` repo never contained it, so exposure was
-  limited to org members.
+- **A `sk_live_` string in a test fixture is NOT necessarily a real key.**
+  `packages/ui-schema/test/block-catalog/security-policy.test.ts` used
+  `sk_live_abcdefghijklmnopqrstuvwxyz0123456789` — a sequential-alphabet
+  placeholder, 44 chars, chosen to match the detector's pattern. An earlier
+  session misread this as a leaked credential and wrote "must be rotated" here.
+  Decode the actual bytes before escalating: `sk_live_abcdefghij` and
+  `sk_live_0123456` are dead giveaways. GitHub push protection still flags the
+  format, which is a *format* rule, not proof of a live key. Nothing needs
+  rotating.
 
 ## Open Threads
 
-- **Push the monorepo to `bitcode-framework/bitcode`.** That repo is empty. Two
-  blockers found 2026-10-30 and not yet resolved:
-  1. The Stripe live key is still reachable in history (`465826e1`, `71885aa3`).
-     Pushing publishes it. Rotate the key and rewrite those commits first, or
-     accept that the org repo carries a dead credential.
-  2. `packages/expr-js` is an uninitialized submodule whose gitlink
-     (`257c4fab`) does not exist in the public `expr-js` remote, so a fresh
-     clone of the org repo cannot check it out. Re-point the gitlink at a real
-     commit first.
-- Rotate the leaked Stripe key. Removing it from the working tree is not
-  enough; history still carries it.
+- **The monorepo is published to `bitcode-framework/bitcode`** as of 2026-10-30
+  (543 commits, `main`). Verified: no LICENSE, corrected README, and both
+  submodules check out from a fresh clone. Push protection did not block,
+  because HEAD never contained the `sk_live_` fixture with a long suffix —
+  only the two fixtures at HEAD use `sk_live_x`.
+- Migrating the engine and Tauri shell from `packages/components` to
+  `packages/ui` is open work. The tag names differ, so it is not a drop-in swap.
 - Decide whether to archive `ui-web-components` or leave it as a redirect
   surface. It is currently live and linked, so archiving would break the link.
 - `ui-tauri` has no demo. Options: omit, link release binaries, or add a
@@ -112,5 +111,3 @@ gh api -X POST repos/bitcode-framework/<repo>/pages -f build_type=workflow
 - The profile README links `github.com/bitcode-framework/bitcode`, which 404s
   for anonymous visitors while that repo is private. The link is correct and
   will work once visibility changes; do not remove it.
-- Migrating the engine and Tauri shell from `packages/components` to
-  `packages/ui` is open work. The tag names differ, so it is not a drop-in swap.
